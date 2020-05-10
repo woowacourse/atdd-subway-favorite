@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8" />
+  <title>RunningMap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
+  <link href="/service/css/app.css" rel="stylesheet" />
+  <link href="/service/css/search.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-200 h-screen">
+<div class="flex justify-center items-center flex-col app-container md:py-10 lg:py-10 relative">
+  <div class="max-w-sm w-full lg:width-350px rounded bg-white shadow-lg p-6">
+    <div class="font-bold text-xl mb-4 text-center">지하철 경로 검색</div>
+    <form class="bg-white mb-4">
+      <div class="flex flex-wrap mb-3">
+        <div class="w-5/12 h-12 text-center text-gray-800">
+          <input
+                  class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+                  id="departure-station-name"
+                  type="text"
+                  value=""
+                  placeholder="출발역"
+          />
+        </div>
+
+        <div class="w-2/12 h-12 text-center text-gray-800 flex justify-center items-center">
+          <span class="mdi mdi-swap-horizontal relative bottom-6px text-lg"></span>
+        </div>
+        <div class="w-5/12 h-12 text-center text-gray-800">
+          <input
+                  class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+                  id="arrival-station-name"
+                  type="text"
+                  value=""
+                  placeholder="도착역"
+          />
+        </div>
+      </div>
+      <button type="submit" id="search-button" class="w-full text-sm bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-bold py-2 px-4 rounded-sm">
+        검색
+      </button>
+    </form>
+  </div>
+
+  <div id="search-result-container" class="max-w-sm w-full lg:width-350px rounded bg-white shadow-lg p-6 relative border top hidden">
+    <div class="font-bold text-xl mb-4 text-center">
+      검색 결과
+      <button
+              id="favorite-button"
+              class="favorite-button mdi mdi-star-outline absolute text-gray-600 bg-transparent d-inline-block hover:bg-yellow-500 font-semibold hover:text-white py-2 px-3 hover:border-transparent rounded-full"
+      >
+      </button>
+    </div>
+    <div class="text-center mb-6">
+      <span>강남역</span>
+      <span class="mdi mdi-arrow-right-thick"></span>
+      <span>잠실역</span>
+    </div>
+    <ul class="flex border-b w-full">
+      <li class="-mb-px w-2/4">
+        <a class="w-full text-center bg-white inline-block border-l border-t border-r py-2 px-4 text-gray-700 font-semibold" href="#">최단거리</a>
+      </li>
+      <li class="w-2/4">
+        <a class="w-full bg-gray-200 text-center bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold" href="#"
+        >최소시간</a
+        >
+      </li>
+    </ul>
+    <div class="px-2 py-4 border-b">
+      <div class="w-full flex mb-3">
+        <div class="inline-block w-1/2 border-r text-center">
+          <div class="text-gray-600 text-sm">소요시간</div>
+          <div>12분</div>
+        </div>
+        <div class="inline-block w-1/2 text-center">
+          <div class="text-gray-600 text-sm">정차역</div>
+          <div>6개</div>
+        </div>
+      </div>
+      <div class="bg-yellow-500 text-center text-gray-700 text-xs rounded-sm">12분</div>
+    </div>
+    <div class="relative py-3">
+      <div class="px-2 py-1 w-full flex">
+        <div class="w-10/12 inline-block">
+          <span class="font-bold">
+            강남
+          </span>
+          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+          <span class="text-gray-600">역삼</span>
+          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+          <span class="text-gray-600">선릉</span>
+          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+          <span class="text-gray-600">삼성</span>
+          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+          <span class="font-bold">
+            잠실
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script type="module" src="/service/js/App.js"></script>
+<script type="module" src="/service/js/views/Search.js"></script>
+</body>
+</html>

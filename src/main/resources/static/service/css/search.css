@@ -1,0 +1,10 @@
+.favorite-button {
+  top: 14px;
+  right: 16px;
+}
+
+@media (max-width: 640px) {
+  .app-container {
+    top: 45px;
+  }
+}
