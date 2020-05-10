@@ -63,6 +63,6 @@ public class LineController {
     @GetMapping("/lines/detail")
     public ResponseEntity wholeLines() {
         WholeSubwayResponse result = lineService.wholeLines();
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().eTag(String.valueOf(result.hashCode())).body(result);
     }
 }

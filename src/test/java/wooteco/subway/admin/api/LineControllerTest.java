@@ -38,8 +38,7 @@ public class LineControllerTest {
         WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.wholeLines()).willReturn(response);
 
-        // TODO: 전체 지하철 노선도 정보를 조회하는 URI 입력하기
-        String uri = "";
+        String uri = "/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())
