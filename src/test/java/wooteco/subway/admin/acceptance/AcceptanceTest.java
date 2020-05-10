@@ -170,5 +170,15 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    WholeSubwayResponse retrieveWholeSubway() {
+        return
+                given().
+                        when().
+                        get("/lines/detail").
+                        then().
+                        log().all().
+                        extract().as(WholeSubwayResponse.class);
+    }
+
 }
 
