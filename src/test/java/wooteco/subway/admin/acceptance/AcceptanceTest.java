@@ -180,5 +180,17 @@ public class AcceptanceTest {
                         extract().as(WholeSubwayResponse.class);
     }
 
+    PathResponse findPath(String source, String target, String type) {
+        return
+                given().
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/paths?source=" + source + "&target=" + target + "&type=" + type).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(PathResponse.class);
+    }
 }
 
