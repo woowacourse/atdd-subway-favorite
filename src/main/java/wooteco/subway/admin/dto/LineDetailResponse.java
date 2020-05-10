@@ -5,7 +5,7 @@ import wooteco.subway.admin.domain.Station;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Set;
+import java.util.List;
 
 public class LineDetailResponse {
     private Long id;
@@ -15,13 +15,12 @@ public class LineDetailResponse {
     private int intervalTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    private Set<Station> stations;
+    private List<StationResponse> stations;
 
     public LineDetailResponse() {
     }
 
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Station> stations) {
+    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -29,10 +28,10 @@ public class LineDetailResponse {
         this.intervalTime = intervalTime;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.stations = stations;
+        this.stations = StationResponse.listOf(stations);
     }
 
-    public static LineDetailResponse of(Line line, Set<Station> stations) {
+    public static LineDetailResponse of(Line line, List<Station> stations) {
         return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(), stations);
     }
 
@@ -64,7 +63,7 @@ public class LineDetailResponse {
         return updatedAt;
     }
 
-    public Set<Station> getStations() {
+    public List<StationResponse> getStations() {
         return stations;
     }
 }

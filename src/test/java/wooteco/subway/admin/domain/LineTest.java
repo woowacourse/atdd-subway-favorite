@@ -22,6 +22,13 @@ public class LineTest {
     }
 
     @Test
+    void addLineStation() {
+        line.addLineStation(new LineStation(null, 4L, 10, 10));
+
+        assertThat(line.getStations()).hasSize(4);
+    }
+
+    @Test
     void getLineStations() {
         List<Long> stationIds = line.getLineStationsId();
 

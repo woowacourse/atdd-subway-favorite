@@ -20,7 +20,7 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping("/lines")
+    @PostMapping(value = "/lines")
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
         Line persistLine = lineService.save(view.toLine());
 
@@ -41,7 +41,7 @@ public class LineController {
 
     @PutMapping("/lines/{id}")
     public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
-        lineService.updateLine(id, view.toLine());
+        lineService.updateLine(id, view);
         return ResponseEntity.ok().build();
     }
 

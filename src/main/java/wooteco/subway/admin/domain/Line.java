@@ -15,8 +15,7 @@ public class Line {
     private int intervalTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    private Set<LineStation> stations = new LinkedHashSet<>();
+    private Set<LineStation> stations = new HashSet<>();
 
     public Line() {
     }
