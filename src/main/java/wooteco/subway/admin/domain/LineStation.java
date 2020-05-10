@@ -32,4 +32,9 @@ public class LineStation {
     public void updatePreLineStation(Long preStationId) {
         this.preStationId = preStationId;
     }
+
+    public boolean isLineStationOf(Long preStationId, Long stationId) {
+        return this.preStationId == preStationId && this.stationId == stationId
+                || this.preStationId == stationId && this.stationId == preStationId;
+    }
 }
