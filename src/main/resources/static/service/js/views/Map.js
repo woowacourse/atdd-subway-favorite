@@ -12,11 +12,12 @@ function Map() {
       loop: true,
       slideBy: 'page',
       speed: 400,
+      fixedWidth: 300,
       autoplayButtonOutput: false,
       mouseDrag: true,
       lazyload: true,
       controlsContainer: '#slider-controls',
-      items: 1,
+      items: 3,
       edgePadding: 25
     })
   }
