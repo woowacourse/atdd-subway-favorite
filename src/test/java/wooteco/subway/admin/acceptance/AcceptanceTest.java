@@ -137,14 +137,14 @@ public class AcceptanceTest {
                 log().all();
     }
 
-    void addLineStation(Long lineId, String preStationName, String stationName) {
-        addLineStation(lineId, preStationName, stationName, 10, 10);
+    void addLineStation(Long lineId, Long preStationId, Long stationId) {
+        addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    void addLineStation(Long lineId, String preStationName, String stationName, Integer distance, Integer duration) {
+    void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
         Map<String, String> params = new HashMap<>();
-        params.put("preStationName", preStationName);
-        params.put("stationName", stationName);
+        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
+        params.put("stationId", stationId.toString());
         params.put("distance", distance.toString());
         params.put("duration", duration.toString());
 
