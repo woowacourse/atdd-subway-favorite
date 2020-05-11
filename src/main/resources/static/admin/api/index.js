@@ -1,48 +1,80 @@
 const METHOD = {
   PUT() {
     return {
-      method: "PUT"
-    };
+      method: 'PUT'
+    }
   },
   DELETE() {
     return {
-      method: "DELETE"
-    };
+      method: 'DELETE'
+    }
   },
   POST(data) {
     return {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        content: data
+        ...data
       })
-    };
+    }
   }
-};
+}
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(data => data.json());
+  const request = (uri, config) => fetch(uri, config)
+  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
 
   const station = {
-    get() {
-      return request(`/stations`);
+    get(id) {
+      return requestWithJsonData(`/stations/${id}`)
+    },
+    getAll() {
+      return requestWithJsonData(`/stations`)
     },
     create(data) {
-      return request(`/station`, METHOD.POST(data));
+      return requestWithJsonData(`/stations`, METHOD.POST(data))
     },
     update(data, id) {
-      return request(`/station/${id}`, METHOD.PUT(data));
+      return requestWithJsonData(`/stations/${id}`, METHOD.PUT(data))
     },
     delete(id) {
-      return request(`/station/${id}`, METHOD.DELETE);
+      return request(`/stations/${id}`, METHOD.DELETE)
     }
-  };
+  }
+
+  const line = {
+    get(id) {
+      return requestWithJsonData(`/lines/${id}`)
+    },
+    getAll() {
+      return requestWithJsonData(`/lines`)
+    },
+    getAllDetail() {
+      return requestWithJsonData(`/lines/detail`)
+    },
+    addLineStation(lineId, lineStationCreateRequestView) {
+      return request(`/lines/${lineId}/stations`, METHOD.POST(lineStationCreateRequestView))
+    },
+    create(data) {
+      return requestWithJsonData(`/lines`, METHOD.POST(data))
+    },
+    update(id, data) {
+      return requestWithJsonData(`/lines`, METHOD.POST(data))
+    },
+    delete(id) {
+      return request(`/lines/${id}`, METHOD.DELETE)
+    }
+  }
+
+  const edge = {}
 
   return {
-    station
-  };
-})();
+    station,
+    line,
+    edge
+  }
+})()
 
-export default api;
+export default api
