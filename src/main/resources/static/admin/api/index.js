@@ -74,12 +74,9 @@ const api = (() => {
     }
   }
 
-  const edge = {}
-
   return {
     station,
-    line,
-    edge
+    line
   }
 })()
 
