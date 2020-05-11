@@ -1,6 +1,5 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
-import { subwayLinesTemplate, submitButtonTemplate, colorSelectOptionTemplate } from '../../utils/templates.js'
-import { defaultSubwayLines } from '../../utils/subwayMockData.js'
+import { ERROR_MESSAGE, EVENT_TYPE } from '../../utils/constants.js'
+import { colorSelectOptionTemplate, subwayLinesTemplate } from '../../utils/templates.js'
 import { subwayLineColorOptions } from '../../utils/defaultSubwayData.js'
 import Modal from '../../ui/Modal.js'
 import api from '../../api/index.js'
@@ -12,6 +11,8 @@ function AdminLine() {
   const $subwayLineEndTime = document.querySelector('#subway-end-time')
   const $subwayIntervalTime = document.querySelector('#subway-interval-time')
   const $subwayLineFormSubmitButton = document.querySelector('#submit-button')
+  const $submitButton = document.querySelector('#submit-button')
+  const $subwayLineCreateButton = document.querySelector('#subway-line-create-btn')
   let $activeSubwayLineItem = null
 
   const subwayLineModal = new Modal()
@@ -42,6 +43,7 @@ function AdminLine() {
       return
     }
     const lineId = $subwayLineItem.dataset.lineId
+    console.log(lineId)
     api.line
       .delete(lineId)
       .then(() => {
@@ -56,7 +58,6 @@ function AdminLine() {
     const $target = event.target
     const $subwayLineItem = $target.closest('.subway-line-item')
     $activeSubwayLineItem = $subwayLineItem
-    const $submitButton = document.querySelector('#submit-button')
     const isUpdateButton = $target.classList.contains('mdi-pencil')
     if (!isUpdateButton) {
       return
@@ -86,41 +87,26 @@ function AdminLine() {
     }
     api.line
       .update($activeSubwayLineItem.dataset.lineId, updatedSubwayLine)
-      .then(line => {
+      .then(() => {
         subwayLineModal.toggle()
-        $activeSubwayLineItem.querySelector('.line-name').innerText = line.name
+        $activeSubwayLineItem.querySelector('.line-name').innerText = updatedSubwayLine.name
       })
-      .catch(() => {
-        alert('업데이트에 실패했습니다.')
-      })
+      .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onSubmitHandler = event => {
     event.preventDefault()
     const $target = event.target
-    const isUpdateSubmit = $target.classList.contains('update-submit-button')
+    const isUpdateSubmit = !!$activeSubwayLineItem
     isUpdateSubmit ? updateSubwayLine($target) : createSubwayLine()
   }
 
-  const initSubwayLines = () => {
-    api.line
-      .getAll()
-      .then(lines => {
-        lines.map(line => {
-          if (line.length > 0) {
-            $subwayLineList.insertAdjacentHTML('beforeend', subwayLinesTemplate(line))
-          }
-        })
-      })
-      .catch(() => {
-        alert('데이터를 불러오는데 실패했습니다.')
-      })
-  }
-
-  const initEventListeners = () => {
-    $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onDeleteSubwayLine)
-    $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onShowUpdateSubwayLineModal)
-    $subwayLineFormSubmitButton.addEventListener(EVENT_TYPE.CLICK, onSubmitHandler)
+  const onCreateLineFormInitializeHandler = () => {
+    $activeSubwayLineItem = null
+    $subwayLineNameInput.value = ''
+    $subwayLineStartTime.value = ''
+    $subwayLineEndTime.value = ''
+    $subwayIntervalTime.value = ''
   }
 
   const onSelectColorHandler = event => {
@@ -133,13 +119,18 @@ function AdminLine() {
 
   const initCreateSubwayLineForm = () => {
     const $colorSelectContainer = document.querySelector('#subway-line-color-select-container')
-    const colorSelectTemplate = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(option, index)).join('')
-    $colorSelectContainer.insertAdjacentHTML('beforeend', colorSelectTemplate)
+    $colorSelectContainer.innerHTML = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(option, index)).join('')
     $colorSelectContainer.addEventListener(EVENT_TYPE.CLICK, onSelectColorHandler)
   }
 
+  const initEventListeners = () => {
+    $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onDeleteSubwayLine)
+    $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onShowUpdateSubwayLineModal)
+    $subwayLineFormSubmitButton.addEventListener(EVENT_TYPE.CLICK, onSubmitHandler)
+    $subwayLineCreateButton.addEventListener(EVENT_TYPE.CLICK, onCreateLineFormInitializeHandler)
+  }
+
   this.init = () => {
-    initSubwayLines()
     initEventListeners()
     initCreateSubwayLineForm()
   }
