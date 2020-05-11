@@ -23,9 +23,9 @@ function AdminStation() {
     }
     api.station
       .create(newStation)
-      .then(() => {
+      .then(data => {
         $stationNameInput.value = ''
-        $stationList.insertAdjacentHTML('beforeend', listItemTemplate(stationName))
+        $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
       })
       .catch(() => {
         alert('에러가 발생했습니다.')
@@ -35,9 +35,24 @@ function AdminStation() {
   const onRemoveStationHandler = event => {
     const $target = event.target
     const isDeleteButton = $target.classList.contains('mdi-delete')
-    if (isDeleteButton) {
-      $target.closest('.list-item').remove()
+    if (!isDeleteButton) {
+      return
     }
+    api.station
+      .delete($target.closest('.list-item').dataset.id)
+      .then(() => {
+        $target.closest('.list-item').remove()
+      })
+      .catch(() => alert(ERROR_MESSAGE.COMMON))
+  }
+
+  const initStations = () => {
+    api.station
+      .getAll()
+      .then(stations => {
+        $stationList.innerHTML = stations.map(station => listItemTemplate(station)).join('')
+      })
+      .catch(() => alert(ERROR_MESSAGE.COMMON))
   }
 
   const initEventListeners = () => {
@@ -48,6 +63,7 @@ function AdminStation() {
 
   const init = () => {
     initEventListeners()
+    initStations()
   }
 
   return {

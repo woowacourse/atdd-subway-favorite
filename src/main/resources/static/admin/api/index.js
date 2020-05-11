@@ -40,7 +40,7 @@ const api = (() => {
       return requestWithJsonData(`/stations/${id}`, METHOD.PUT(data))
     },
     delete(id) {
-      return request(`/stations/${id}`, METHOD.DELETE)
+      return request(`/stations/${id}`, METHOD.DELETE())
     }
   }
 
@@ -64,7 +64,7 @@ const api = (() => {
       return requestWithJsonData(`/lines`, METHOD.POST(data))
     },
     delete(id) {
-      return request(`/lines/${id}`, METHOD.DELETE)
+      return request(`/lines/${id}`, METHOD.DELETE())
     }
   }
 
