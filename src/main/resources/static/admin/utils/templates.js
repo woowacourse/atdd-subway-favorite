@@ -62,11 +62,9 @@ export const initNavigation = () => {
 
 export const colorSelectOptionTemplate = (option, index) => {
   const hasNewLine = ++index % 7 === 0
-
-  return `<button data-color="${option.bgColor}" class="color-select-option button w-6 h-6 ${option.bgColor} ${
-    option.hoverColor
-  } font-bold p-1 rounded">
-             </button> ${hasNewLine ? '<br/>' : ''}`
+  return `<button data-color="${option.bgColor}" class="color-select-option button w-6 h-6 
+            ${option.bgColor} ${option.hoverColor} font-bold p-1 rounded">
+           </button> ${hasNewLine ? '<br/>' : ''}`
 }
 
 export const submitButtonTemplate = isUpdateSubmit => {
