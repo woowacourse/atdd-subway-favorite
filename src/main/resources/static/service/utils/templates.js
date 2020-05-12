@@ -1,24 +1,7 @@
 export const listItemTemplate = data =>
   `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
     ${data.name}
-    <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
-       <span class="mdi mdi-delete"></span>
-    </button>
   </div>`
-
-export const subwayLinesTemplate = line =>
-  `<div class="subway-line-item border border-gray-200 py-2 px-4 text-gray-800" data-line-id="${line.id}">
-      <span class="${line.bgColor} w-3 h-3 rounded-full inline-block mr-1"></span>
-      <span>${line.name}</span>
-      <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
-         <span class="mdi mdi-delete"></span>
-      </button>
-      <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
-         <span class="mdi mdi-pencil"></span>
-      </button>
-    </div>`
-
-export const optionTemplate = data => `<option value="${data.id}">${data.name}</option>`
 
 export const navTemplate = `<nav class="flex items-center justify-between flex-wrap bg-yellow-500 p-4 relative">
   <div class="flex items-center flex-shrink-0 text-gray-800 w-full">
@@ -51,19 +34,42 @@ export const subwayLinesItemTemplate = line => {
           </div>`
 }
 
+export const searchResultTemplate = result => {
+  const lastIndex = result.stations.length - 1
+  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.name, index, lastIndex)).join('')
+  return `<div class="px-2 py-4 border-b">
+      <div class="w-full flex mb-3">
+        <div class="inline-block w-1/2 border-r text-center">
+          <div class="text-gray-600 text-sm">소요시간</div>
+          <div>${result.duration}분</div>
+        </div>
+        <div class="inline-block w-1/2 text-center">
+          <div class="text-gray-600 text-sm">거리</div>
+          <div>${result.distance}km</div>
+        </div>
+      </div>
+    </div>
+    <div class="relative pt-3 pb-10">
+      <div class="px-2 py-1 w-full flex">
+        <div class="w-10/12 inline-block">
+          ${pathResultTemplate}
+        </div>
+      </div>
+    </div>`
+}
+
+export const pathStationTemplate = (name, index, lastIndex) => {
+  return `
+  ${
+    index === 0 || index === lastIndex
+      ? `<span class="font-bold">${name}</span>`
+      : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+         <span class="text-gray-600">${name}</span>
+         ${index === lastIndex - 1 ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
+        `
+  }`
+}
+
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
-}
-
-export const colorSelectOptionTemplate = (option, index) => {
-  const hasNewLine = ++index % 7 === 0
-
-  return `<button data-color="${option.bgColor}" class="color-select-option button w-6 h-6 ${option.bgColor} ${
-    option.hoverColor
-  } font-bold p-1 rounded">
-             </button> ${hasNewLine ? '<br/>' : ''}`
-}
-
-export const submitButtonTemplate = isUpdateSubmit => {
-  return `<button type="submit" id="submit-button" data-is-update="${isUpdateSubmit}" class="px-4 bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 rounded text-white text-sm">확인</button>`
 }

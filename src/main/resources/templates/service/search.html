@@ -51,45 +51,17 @@
     >
     </button>
     <ul class="flex border-b w-full">
-      <li class="-mb-px w-2/4">
-        <a class="w-full text-center bg-white inline-block border-l border-t border-r py-2 px-4 text-gray-700 font-semibold" href="#">최단거리</a>
+      <li id="shortest-distance-tab" class="-mb-px w-2/4 active-tab tab-menu">
+        <a class="w-full text-center inline-block py-2 px-4 font-semibold" href="#">최단거리</a>
       </li>
-      <li class="w-2/4">
-        <a class="w-full bg-gray-200 text-center bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold" href="#"
+      <li id="minimum-time-tab" class="w-2/4 tab-menu">
+        <a class="w-full text-center bg-white inline-block py-2 px-4 font-semibold" href="#"
         >최소시간</a
         >
       </li>
     </ul>
-    <div class="px-2 py-4 border-b">
-      <div class="w-full flex mb-3">
-        <div class="inline-block w-1/2 border-r text-center">
-          <div class="text-gray-600 text-sm">소요시간</div>
-          <div>12분</div>
-        </div>
-        <div class="inline-block w-1/2 text-center">
-          <div class="text-gray-600 text-sm">거리</div>
-          <div>20km</div>
-        </div>
-      </div>
-    </div>
-    <div class="relative pt-3 pb-10">
-      <div class="px-2 py-1 w-full flex">
-        <div class="w-10/12 inline-block">
-          <span class="font-bold">
-            강남
-          </span>
-          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
-          <span class="text-gray-600">역삼</span>
-          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
-          <span class="text-gray-600">선릉</span>
-          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
-          <span class="text-gray-600">삼성</span>
-          <span class="mdi mdi-arrow-right-bold text-gray-500"></span>
-          <span class="font-bold">
-            잠실
-          </span>
-        </div>
-      </div>
+    <div id="search-result">
+
     </div>
   </div>
 </div>

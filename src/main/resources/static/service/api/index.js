@@ -37,7 +37,7 @@ const api = (() => {
 
   const path = {
     find(params) {
-      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
     }
   }
 
