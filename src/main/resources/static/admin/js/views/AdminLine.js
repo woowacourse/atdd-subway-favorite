@@ -55,12 +55,12 @@ function AdminLine() {
 
   const onShowUpdateSubwayLineModal = event => {
     const $target = event.target
-    const $subwayLineItem = $target.closest('.subway-line-item')
-    $activeSubwayLineItem = $subwayLineItem
     const isUpdateButton = $target.classList.contains('mdi-pencil')
     if (!isUpdateButton) {
       return
     }
+    const $subwayLineItem = $target.closest('.subway-line-item')
+    $activeSubwayLineItem = $subwayLineItem
     const lineId = $subwayLineItem.dataset.id
     api.line
       .get(lineId)
@@ -73,7 +73,7 @@ function AdminLine() {
         $submitButton.classList.add('update-submit-button')
       })
       .catch(() => {
-        alert('데이터를 불러올 수 없습니다.')
+        alert(ERROR_MESSAGE.COMMON)
       })
   }
 
