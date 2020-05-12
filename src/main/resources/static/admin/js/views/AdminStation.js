@@ -12,8 +12,7 @@ function AdminStation() {
       return
     }
     event.preventDefault()
-    const $stationNameInput = document.querySelector('#station-name')
-    const stationName = $stationNameInput.value
+    const stationName = $stationInput.value
     if (!stationName) {
       alert(ERROR_MESSAGE.NOT_EMPTY)
       return
@@ -24,7 +23,7 @@ function AdminStation() {
     api.station
       .create(newStation)
       .then(data => {
-        $stationNameInput.value = ''
+        $stationInput.value = ''
         $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
       })
       .catch(() => {
