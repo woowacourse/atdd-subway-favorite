@@ -55,11 +55,13 @@ function Search() {
     if (isFavorite) {
       classList.add('mdi-star-outline')
       classList.add('text-gray-600')
+      classList.add('bg-yellow-500')
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
     } else {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
+      classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
     }
