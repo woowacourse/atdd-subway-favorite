@@ -38,9 +38,7 @@ function AdminEdge() {
     const stationId = $target.closest('.list-item').dataset.id
     api.line
       .deleteLineStation(lineId, stationId)
-      .then(() => {
-        $target.closest('.list-item').remove()
-      })
+      .then(() => $target.closest('.list-item').remove())
       .catch(() => alert(ERROR_MESSAGE.COMMON))
   }
 
@@ -57,22 +55,6 @@ function AdminEdge() {
       .catch(error => {
         alert('데이터를 불러오는데 실패했습니다.')
       })
-  }
-
-  const initSubwayLineOptions = subwayLines => {
-    const subwayLineOptionTemplate = subwayLines.map(line => optionTemplate(line)).join('')
-    const $lineSelectOption = document.querySelector('#line-select-options')
-    $lineSelectOption.innerHTML = subwayLineOptionTemplate
-  }
-
-  const initStationOptions = () => {
-    api.line.get($lineSelectOptions.value).then(data => {
-      const stations = data.stations ? data.stations : []
-      if (stations.length > 0) {
-        const $stationSelectOption = document.querySelector('#previous-select-options')
-        $stationSelectOption.innerHTML = stations.map(station => optionTemplate(station)).join('')
-      }
-    })
   }
 
   const onCreateEdgeHandler = event => {
@@ -95,11 +77,22 @@ function AdminEdge() {
 
   const initCreateEdgeForm = event => {
     event.preventDefault()
-    initSubwayLineOptions(subwayLines)
-    initStationOptions()
+    initPreviousStationOptions()
+    initNextStationOptions()
+    initLineOptions(subwayLines)
   }
 
-  const initSubwayStationOptions = () => {
+  const initPreviousStationOptions = () => {
+    api.line.get($lineSelectOptions.value).then(data => {
+      const stations = data.stations ? data.stations : []
+      if (stations.length > 0) {
+        const $stationSelectOption = document.querySelector('#previous-select-options')
+        $stationSelectOption.innerHTML = stations.map(station => optionTemplate(station)).join('')
+      }
+    })
+  }
+
+  const initNextStationOptions = () => {
     api.station
       .getAll()
       .then(stations => {
@@ -108,15 +101,20 @@ function AdminEdge() {
       .catch(() => alert(ERROR_MESSAGE.COMMON))
   }
 
+  const initLineOptions = subwayLines => {
+    const subwayLineOptionTemplate = subwayLines.map(line => optionTemplate(line)).join('')
+    const $lineSelectOption = document.querySelector('#line-select-options')
+    $lineSelectOption.innerHTML = subwayLineOptionTemplate
+  }
+
   const initEventListeners = () => {
     $subwayLinesSlider.addEventListener(EVENT_TYPE.CLICK, onDeleteStationHandler)
     $createEdgeButton.addEventListener(EVENT_TYPE.CLICK, onCreateEdgeHandler)
     $subwayLineAddButton.addEventListener(EVENT_TYPE.CLICK, initCreateEdgeForm)
   }
 
-  this.init = async () => {
+  this.init = () => {
     initEventListeners()
-    initSubwayStationOptions()
     initSubwayLinesView()
   }
 }
