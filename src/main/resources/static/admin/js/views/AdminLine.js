@@ -132,6 +132,7 @@ function AdminLine() {
   this.init = () => {
     initEventListeners()
     initCreateSubwayLineForm()
+  }
 }
 
 const adminLine = new AdminLine()
