@@ -6,10 +6,6 @@
   width: 170px;
 }
 
-.modal {
-  transition: opacity 0.25s ease;
-}
-
 body {
   overflow-y: hidden;
 }
