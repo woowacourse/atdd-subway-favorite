@@ -35,15 +35,14 @@ function AdminLine() {
       })
   }
 
-  const onDeleteSubwayLine = event => {
+  const onDeleteSubwayLineHandler = event => {
     const $target = event.target
     const $subwayLineItem = $target.closest('.subway-line-item')
     const isDeleteButton = $target.classList.contains('mdi-delete')
     if (!isDeleteButton) {
       return
     }
-    const lineId = $subwayLineItem.dataset.lineId
-    console.log(lineId)
+    const lineId = $subwayLineItem.dataset.id
     api.line
       .delete(lineId)
       .then(() => {
@@ -62,7 +61,7 @@ function AdminLine() {
     if (!isUpdateButton) {
       return
     }
-    const lineId = $subwayLineItem.dataset.lineId
+    const lineId = $subwayLineItem.dataset.id
     api.line
       .get(lineId)
       .then(line => {
@@ -86,7 +85,7 @@ function AdminLine() {
       intervalTime: $subwayIntervalTime.value
     }
     api.line
-      .update($activeSubwayLineItem.dataset.lineId, updatedSubwayLine)
+      .update($activeSubwayLineItem.dataset.id, updatedSubwayLine)
       .then(() => {
         subwayLineModal.toggle()
         $activeSubwayLineItem.querySelector('.line-name').innerText = updatedSubwayLine.name
@@ -124,7 +123,7 @@ function AdminLine() {
   }
 
   const initEventListeners = () => {
-    $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onDeleteSubwayLine)
+    $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onDeleteSubwayLineHandler)
     $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onShowUpdateSubwayLineModal)
     $subwayLineFormSubmitButton.addEventListener(EVENT_TYPE.CLICK, onSubmitHandler)
     $subwayLineCreateButton.addEventListener(EVENT_TYPE.CLICK, onCreateLineFormInitializeHandler)
@@ -133,7 +132,6 @@ function AdminLine() {
   this.init = () => {
     initEventListeners()
     initCreateSubwayLineForm()
-  }
 }
 
 const adminLine = new AdminLine()

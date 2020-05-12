@@ -69,6 +69,9 @@ const api = (() => {
     update(id, data) {
       return request(`/lines/${id}`, METHOD.PUT(data))
     },
+    deleteLineStation(lineId, stationId) {
+      return request(`/lines/${lineId}/stations/${stationId}`, METHOD.DELETE())
+    },
     delete(id) {
       return request(`/lines/${id}`, METHOD.DELETE())
     }

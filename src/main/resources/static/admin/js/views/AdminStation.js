@@ -32,7 +32,7 @@ function AdminStation() {
       })
   }
 
-  const onRemoveStationHandler = event => {
+  const onDeleteStationHandler = event => {
     const $target = event.target
     const isDeleteButton = $target.classList.contains('mdi-delete')
     if (!isDeleteButton) {
@@ -58,7 +58,7 @@ function AdminStation() {
   const initEventListeners = () => {
     $stationAddButton.addEventListener(EVENT_TYPE.CLICK, onAddStationHandler)
     $stationInput.addEventListener(EVENT_TYPE.KEY_PRESS, onAddStationHandler)
-    $stationList.addEventListener(EVENT_TYPE.CLICK, onRemoveStationHandler)
+    $stationList.addEventListener(EVENT_TYPE.CLICK, onDeleteStationHandler)
   }
 
   const init = () => {

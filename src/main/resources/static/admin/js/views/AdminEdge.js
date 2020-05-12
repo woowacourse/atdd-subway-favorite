@@ -1,4 +1,4 @@
-import { optionTemplate, subwayLinesItemTemplate } from '../../utils/templates.js'
+import { optionTemplate, subwayLinesItemTemplate, subwayLinesTemplate } from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
 import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 import Modal from '../../ui/Modal.js'
@@ -9,6 +9,7 @@ function AdminEdge() {
   const $createEdgeButton = document.querySelector('#create-edge-button')
   const $lineSelectOptions = document.querySelector('#line-select-options')
   const $subwayLineAddButton = document.querySelector('#subway-line-add-btn')
+  const $nextStationSelectOptions = document.querySelector('#next-station-select-options')
   const createSubwayEdgeModal = new Modal()
   let subwayLines = []
 
@@ -27,12 +28,20 @@ function AdminEdge() {
     })
   }
 
-  const onRemoveStationHandler = event => {
+  const onDeleteStationHandler = event => {
     const $target = event.target
     const isDeleteButton = $target.classList.contains('mdi-delete')
-    if (isDeleteButton) {
-      $target.closest('.list-item').remove()
+    if (!isDeleteButton) {
+      return
     }
+    const lineId = $target.closest('.subway-line-item').dataset.id
+    const stationId = $target.closest('.list-item').dataset.id
+    api.line
+      .deleteLineStation(lineId, stationId)
+      .then(() => {
+        $target.closest('.list-item').remove()
+      })
+      .catch(() => alert(ERROR_MESSAGE.COMMON))
   }
 
   const initSubwayLinesView = () => {
@@ -68,20 +77,10 @@ function AdminEdge() {
 
   const onCreateEdgeHandler = event => {
     event.preventDefault()
-    const nextStationName = document.querySelector('#next-station-name').value
-    api.station
-      .create({ name: nextStationName })
-      .then(station => {
-        createEdge(station)
-      })
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
-  }
-
-  const createEdge = station => {
     const lineId = $lineSelectOptions.value
     const newEdge = {
       preStationId: document.querySelector('#previous-select-options').value,
-      stationId: station.id,
+      stationId: document.querySelector('#next-station-select-options').value,
       distance: document.querySelector('#distance').value,
       duration: document.querySelector('#duration').value
     }
@@ -100,15 +99,25 @@ function AdminEdge() {
     initStationOptions()
   }
 
+  const initSubwayStationOptions = () => {
+    api.station
+      .getAll()
+      .then(stations => {
+        $nextStationSelectOptions.innerHTML = stations.map(station => optionTemplate(station)).join('')
+      })
+      .catch(() => alert(ERROR_MESSAGE.COMMON))
+  }
+
   const initEventListeners = () => {
-    $subwayLinesSlider.addEventListener(EVENT_TYPE.CLICK, onRemoveStationHandler)
+    $subwayLinesSlider.addEventListener(EVENT_TYPE.CLICK, onDeleteStationHandler)
     $createEdgeButton.addEventListener(EVENT_TYPE.CLICK, onCreateEdgeHandler)
     $subwayLineAddButton.addEventListener(EVENT_TYPE.CLICK, initCreateEdgeForm)
   }
 
-  this.init = () => {
-    initSubwayLinesView()
+  this.init = async () => {
     initEventListeners()
+    initSubwayStationOptions()
+    initSubwayLinesView()
   }
 }
 
