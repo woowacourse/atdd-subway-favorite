@@ -62,10 +62,10 @@ export const pathStationTemplate = (name, index, lastIndex) => {
   return `
   ${
     index === 0 || index === lastIndex
-      ? `<span class="font-bold">${name}</span>`
+      ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
+        <span class="font-bold">${name}</span>`
       : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
          <span class="text-gray-600">${name}</span>
-         ${index === lastIndex - 1 ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
         `
   }`
 }
