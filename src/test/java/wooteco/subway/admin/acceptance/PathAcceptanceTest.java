@@ -43,26 +43,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // 2호선
         LineResponse lineResponse1 = createLine("2호선");
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getName(), 0, 0);
-        addLineStation(lineResponse1.getId(), stationResponse1.getName(), stationResponse2.getName(), 5, 10);
-        addLineStation(lineResponse1.getId(), stationResponse2.getName(), stationResponse3.getName(), 5, 10);
+        addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5, 10);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 10);
 
         // 분당선
         LineResponse lineResponse2 = createLine("분당선");
-        addLineStation(lineResponse2.getId(), null, stationResponse3.getName(), 0, 0);
-        addLineStation(lineResponse2.getId(), stationResponse3.getName(), stationResponse4.getName(), 5, 10);
-        addLineStation(lineResponse2.getId(), stationResponse4.getName(), stationResponse5.getName(), 5, 10);
+        addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5, 10);
+        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5, 10);
 
         // 3호선
         LineResponse lineResponse3 = createLine("3호선");
-        addLineStation(lineResponse3.getId(), null, stationResponse5.getName(), 0, 0);
-        addLineStation(lineResponse3.getId(), stationResponse5.getName(), stationResponse6.getName(), 5, 10);
-        addLineStation(lineResponse3.getId(), stationResponse6.getName(), stationResponse7.getName(), 5, 10);
+        addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
+        addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5, 10);
+        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5, 10);
 
         // 신분당선
         LineResponse lineResponse4 = createLine("신분당선");
-        addLineStation(lineResponse4.getId(), null, stationResponse1.getName(), 0, 0);
-        addLineStation(lineResponse4.getId(), stationResponse1.getName(), stationResponse7.getName(), 40, 3);
+        addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
+        addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
 
     }
 

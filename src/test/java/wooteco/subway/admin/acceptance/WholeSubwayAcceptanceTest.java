@@ -18,16 +18,16 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse1 = createStation("강남역");
         StationResponse stationResponse2 = createStation("역삼역");
         StationResponse stationResponse3 = createStation("삼성역");
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getName());
-        addLineStation(lineResponse1.getId(), stationResponse1.getName(), stationResponse2.getName());
-        addLineStation(lineResponse1.getId(), stationResponse2.getName(), stationResponse3.getName());
+        addLineStation(lineResponse1.getId(), null, stationResponse1.getId());
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId());
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId());
 
         LineResponse lineResponse2 = createLine("신분당선");
         StationResponse stationResponse5 = createStation("양재역");
         StationResponse stationResponse6 = createStation("양재시민의숲역");
-        addLineStation(lineResponse2.getId(), null, stationResponse1.getName());
-        addLineStation(lineResponse2.getId(), stationResponse1.getName(), stationResponse5.getName());
-        addLineStation(lineResponse2.getId(), stationResponse5.getName(), stationResponse6.getName());
+        addLineStation(lineResponse2.getId(), null, stationResponse1.getId());
+        addLineStation(lineResponse2.getId(), stationResponse1.getId(), stationResponse5.getId());
+        addLineStation(lineResponse2.getId(), stationResponse5.getId(), stationResponse6.getId());
 
         List<LineDetailResponse> response = retrieveWholeSubway().getLineDetailResponse();
         assertThat(response.size()).isEqualTo(2);
