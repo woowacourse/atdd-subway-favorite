@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.member;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
@@ -7,18 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 @Component
-public class BearerTokenExtractor {
+public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
-    public static String BEARER_TYPE = "Bearer";
-    public static final String ACCESS_TOKEN_TYPE = BearerTokenExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
+    public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
 
-    public String extract(HttpServletRequest request) {
+    public String extract(HttpServletRequest request, String type) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
-            if ((value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase()))) {
-                String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
-                request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, BEARER_TYPE.length()).trim());
+            if ((value.toLowerCase().startsWith(type.toLowerCase()))) {
+                String authHeaderValue = value.substring(type.length()).trim();
+                request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, type.length()).trim());
                 int commaIndex = authHeaderValue.indexOf(',');
                 if (commaIndex > 0) {
                     authHeaderValue = authHeaderValue.substring(0, commaIndex);

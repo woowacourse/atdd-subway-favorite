@@ -41,4 +41,17 @@ public class Member {
     public String getPassword() {
         return password;
     }
+
+    public void update(String name, String password) {
+        if (StringUtils.isNotBlank(name)) {
+            this.name = name;
+        }
+        if (StringUtils.isNotBlank(password)) {
+            this.password = password;
+        }
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
 }
