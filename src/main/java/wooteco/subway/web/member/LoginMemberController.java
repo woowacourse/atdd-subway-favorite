@@ -7,6 +7,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -36,6 +37,23 @@ public class LoginMemberController {
         session.setAttribute("loginMemberEmail", email);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> getMemberOfMine(@LoginMember Member member) {
+        return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest param) {
+        memberService.updateMember(member, param);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping({"/me/basic", "/me/session", "/me/bearer"})

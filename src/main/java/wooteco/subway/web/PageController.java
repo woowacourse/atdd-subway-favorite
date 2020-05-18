@@ -49,16 +49,6 @@ public class PageController {
         return "service/search";
     }
 
-    @GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
-    public String joinPage() {
-        return "service/join";
-    }
-
-    @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
-    public String loginPage() {
-        return "service/login";
-    }
-
     @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
     public String favoritesPage() {
         return "service/favorite";

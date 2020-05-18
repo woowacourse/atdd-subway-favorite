@@ -23,7 +23,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
                              HttpServletResponse response, Object handler) {
         String token = authExtractor.extract(request, "Bearer");
         if (StringUtils.isEmpty(token)) {
-            return true;
+            throw new InvalidAuthenticationException("존재하지 않는 토큰");
         }
 
         if (!jwtTokenProvider.validateToken(token)) {

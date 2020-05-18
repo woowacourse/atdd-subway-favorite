@@ -12,8 +12,8 @@ import wooteco.subway.web.member.login.JwtTokenProvider;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,12 +46,13 @@ public class MemberServiceTest {
 
     @Test
     void createToken() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
-        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        Optional<Member> member = Optional.of(new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD));
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(member);
+        when(jwtTokenProvider.createToken(TEST_USER_EMAIL)).thenReturn("token");
 
-        memberService.createToken(loginRequest);
+        LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        String token = memberService.createToken(request);
 
-        verify(jwtTokenProvider).createToken(anyString());
+        assertThat(token).isNotBlank();
     }
 }

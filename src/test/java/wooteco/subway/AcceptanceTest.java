@@ -12,6 +12,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -297,6 +298,64 @@ public class AcceptanceTest {
     public void deleteMember(MemberResponse memberResponse) {
         given().when().
                 delete("/members/" + memberResponse.getId()).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/oauth/token").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(TokenResponse.class);
+    }
+
+    public MemberResponse getMember(TokenResponse tokenResponse) {
+        return
+                given().
+                        auth().oauth2(tokenResponse.getAccessToken()).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/me").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(MemberResponse.class);
+    }
+
+    public void updateMember(TokenResponse tokenResponse) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public void deleteMember(TokenResponse tokenResponse) {
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                when().
+                delete("/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());

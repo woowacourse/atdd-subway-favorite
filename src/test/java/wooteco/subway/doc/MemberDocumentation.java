@@ -1,6 +1,5 @@
 package wooteco.subway.doc;
 
-
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 

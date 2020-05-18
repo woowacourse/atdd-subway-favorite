@@ -13,7 +13,10 @@ public class WebMvcConfig implements WebMvcConfigurer{
     private final BearerAuthInterceptor bearerAuthInterceptor;
     private final LoginMemberMethodArgumentResolver loginMemberArgumentResolver;
 
-    public WebMvcConfig(BasicAuthInterceptor basicAuthInterceptor, SessionInterceptor sessionInterceptor, BearerAuthInterceptor bearerAuthInterceptor, LoginMemberMethodArgumentResolver loginMemberArgumentResolver) {
+    public WebMvcConfig(BasicAuthInterceptor basicAuthInterceptor,
+                        SessionInterceptor sessionInterceptor,
+                        BearerAuthInterceptor bearerAuthInterceptor,
+                        LoginMemberMethodArgumentResolver loginMemberArgumentResolver) {
         this.basicAuthInterceptor = basicAuthInterceptor;
         this.sessionInterceptor = sessionInterceptor;
         this.bearerAuthInterceptor = bearerAuthInterceptor;
@@ -23,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(basicAuthInterceptor).addPathPatterns("/me/basic");
         registry.addInterceptor(sessionInterceptor).addPathPatterns("/me/session");
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me/bearer");
+        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me/bearer", "/me", "/favorites/**");
     }
 
     @Override
