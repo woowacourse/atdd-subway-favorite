@@ -23,7 +23,7 @@ public class MemberPageController {
         return "service/login";
     }
 
-    @GetMapping(value = "/me", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
     public String myPage() {
         return "service/mypage-edit";
     }
