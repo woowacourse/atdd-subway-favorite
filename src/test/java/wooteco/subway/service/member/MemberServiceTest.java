@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.web.member.login.JwtTokenProvider;
 
 import java.util.Optional;
 
