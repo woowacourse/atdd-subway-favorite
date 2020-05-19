@@ -17,7 +17,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {
-        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, TEST_USER_PASSWORD);
 
         MemberResponse memberResponse = myInfoWithBasicAuth(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
@@ -29,7 +29,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Session")
     @Test
     void myInfoWithSession() {
-        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, TEST_USER_PASSWORD);
 
         MemberResponse memberResponse = myInfoWithSession(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
@@ -41,7 +41,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, TEST_USER_PASSWORD);
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         MemberResponse memberResponse = myInfoWithBearerAuth(tokenResponse);

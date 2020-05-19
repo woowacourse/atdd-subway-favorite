@@ -1,6 +1,7 @@
 package wooteco.subway;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.dto.ExceptionResponse;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -247,11 +249,12 @@ public class AcceptanceTest {
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
     }
 
-    public String createMember(String email, String name, String password) {
+    private ValidatableResponse createMember(String email, String name, String password, String confirmPassword) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
         params.put("password", password);
+        params.put("confirmPassword", confirmPassword);
 
         return
                 given().
@@ -261,9 +264,20 @@ public class AcceptanceTest {
                         when().
                         post("/members").
                         then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().header("Location");
+                        log().all();
+    }
+
+    public String createMemberSuccessfully(String email, String name, String password, String confirmPassword) {
+        return createMember(email, name, password, confirmPassword).
+                statusCode(HttpStatus.CREATED.value()).
+                extract().header("Location");
+    }
+
+    public ExceptionResponse createMemberFailed(String email, String name, String password, String confirmPassword,
+                                                int statusCode) {
+        return createMember(email, name, password, confirmPassword).
+                statusCode(statusCode).
+                extract().as(ExceptionResponse.class);
     }
 
     public MemberResponse getMember(String email) {
