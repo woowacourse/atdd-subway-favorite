@@ -64,7 +64,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithSession(String email, String password) {
-        // TODO: form auth를 활용하여 /me/session 요청하여 내 정보 조회
         return given().auth()
                 .form(email, password, new FormAuthConfig("/login", "email", "password"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -78,8 +77,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        // TODO: oauth2 auth(bearer)를 활용하여 /me/bearer 요청하여 내 정보 조회
-        return null;
+        return given().auth()
+                .oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/me/bearer")
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
     }
 
     public TokenResponse login(String email, String password) {
