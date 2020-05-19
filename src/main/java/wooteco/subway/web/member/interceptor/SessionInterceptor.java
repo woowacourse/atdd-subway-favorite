@@ -3,6 +3,7 @@ package wooteco.subway.web.member.interceptor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,5 +18,9 @@ public class SessionInterceptor implements HandlerInterceptor {
         }
 
         return true;
+    }
+
+    @Override
+    public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView) throws Exception {
     }
 }

@@ -1,9 +1,11 @@
 package wooteco.subway.domain.member;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
 public class Member {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Id
     private Long id;
     private String email;

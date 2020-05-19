@@ -22,12 +22,16 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        // TODO: Authorization 헤더를 통해 Bearer 값을 추출 (authExtractor.extract() 메서드 활용)
+        String token = authExtractor.extract(request, "bearer");
+        if (token.isEmpty()) {
+            return true;
+        }
 
-        // TODO: 추출한 토큰값의 유효성 검사 (jwtTokenProvider.validateToken() 메서드 활용)
+        if (!jwtTokenProvider.validateToken(token)) {
+            return true;
+        }
 
-        // TODO: 추출한 토큰값에서 email 정보 추출 (jwtTokenProvider.getSubject() 메서드 활용)
-        String email = "";
+        String email = jwtTokenProvider.getSubject(token);
 
         request.setAttribute("loginMemberEmail", email);
         return true;

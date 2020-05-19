@@ -26,7 +26,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestParam Map<String, String> paramMap, HttpSession session) {
+    public ResponseEntity<Void> login(@RequestParam Map<String, String> paramMap, HttpSession session) {
         String email = paramMap.get("email");
         String password = paramMap.get("password");
         if (!memberService.loginWithForm(email, password)) {
