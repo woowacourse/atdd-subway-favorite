@@ -67,17 +67,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		return
 			given().auth()
 				.form(email, password, new FormAuthConfig("/login", "email", "password"))
-			.when()
+				.when()
 				.get("/me/session")
-			.then()
+				.then()
 				.log().all()
 				.statusCode(HttpStatus.OK.value())
 				.extract().as(MemberResponse.class);
 	}
 
 	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-		// TODO: oauth2 auth(bearer)를 활용하여 /me/bearer 요청하여 내 정보 조회
-		return null;
+		return
+			given().auth()
+				.oauth2(tokenResponse.getAccessToken())
+				.when()
+				.get("/me/bearer")
+				.then()
+				.log().all()
+				.statusCode(HttpStatus.OK.value())
+				.extract().as(MemberResponse.class);
 	}
 
 	public TokenResponse login(String email, String password) {
