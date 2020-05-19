@@ -1,5 +1,9 @@
 package wooteco.subway.web.member.interceptor;
 
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,15 +26,15 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
 	}
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-		// TODO: Authorization 헤더를 통해 Basic 값을 추출 (authExtractor.extract() 메서드 활용)
+	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
+		final Object handler) {
+		final byte[] decode = Base64.getDecoder().decode(authExtractor.extract(request, "basic"));
+		final List<String> decodes = Arrays.asList(new String(decode).split(":"));
 
-		// TODO: 추출한 Basic 값을 Base64를 통해 email과 password 값 추출(Base64.getDecoder().decode() 메서드 활용)
+		final String email = decodes.get(0);
+		final String password = decodes.get(1);
 
-		String email = "";
-		String password = "";
-
-		Member member = memberService.findMemberByEmail(email);
+		final Member member = memberService.findMemberByEmail(email);
 		if (!member.checkPassword(password)) {
 			throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
 		}
