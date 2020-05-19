@@ -9,9 +9,11 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Base64;
 
 @Component
 public class BasicAuthInterceptor implements HandlerInterceptor {
+    public static final String BASIC = "Basic";
     private AuthorizationExtractor authExtractor;
     private MemberService memberService;
 
@@ -22,12 +24,11 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // TODO: Authorization 헤더를 통해 Basic 값을 추출 (authExtractor.extract() 메서드 활용)
-
-        // TODO: 추출한 Basic 값을 Base64를 통해 email과 password 값 추출(Base64.getDecoder().decode() 메서드 활용)
-
-        String email = "";
-        String password = "";
+        String sourceCode = authExtractor.extract(request, BASIC);
+        byte[] decode = Base64.getDecoder().decode(sourceCode);
+        String[] userInfo = new String(decode).split(":");
+        String email = userInfo[0];
+        String password = userInfo[1];
 
         Member member = memberService.findMemberByEmail(email);
         if (!member.checkPassword(password)) {
