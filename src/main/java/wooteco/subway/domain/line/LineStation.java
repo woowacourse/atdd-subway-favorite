@@ -37,7 +37,7 @@ public class LineStation {
 
     public boolean isLineStationOf(Long preStationId, Long stationId) {
         return this.preStationId == preStationId && this.stationId == stationId
-            || this.preStationId == stationId && this.stationId == preStationId;
+                || this.preStationId == stationId && this.stationId == preStationId;
     }
 
     @Override
@@ -46,11 +46,11 @@ public class LineStation {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        LineStation that = (LineStation)o;
+        LineStation that = (LineStation) o;
         return distance == that.distance &&
-            duration == that.duration &&
-            Objects.equals(preStationId, that.preStationId) &&
-            Objects.equals(stationId, that.stationId);
+                duration == that.duration &&
+                Objects.equals(preStationId, that.preStationId) &&
+                Objects.equals(stationId, that.stationId);
     }
 
     @Override
