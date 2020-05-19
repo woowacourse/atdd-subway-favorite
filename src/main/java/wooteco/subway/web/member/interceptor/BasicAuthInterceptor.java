@@ -1,5 +1,6 @@
 package wooteco.subway.web.member.interceptor;
 
+import java.util.Base64;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.domain.member.Member;
@@ -24,10 +25,13 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // TODO: Authorization 헤더를 통해 Basic 값을 추출 (authExtractor.extract() 메서드 활용)
 
+        String basic = authExtractor.extract(request, "BASIC");
         // TODO: 추출한 Basic 값을 Base64를 통해 email과 password 값 추출(Base64.getDecoder().decode() 메서드 활용)
-
-        String email = "";
-        String password = "";
+        byte[] decode = Base64.getDecoder().decode(basic);
+        String decodedAuth = new String(decode);
+        String[] splitAuth = decodedAuth.split(":");
+        String email = splitAuth[0];
+        String password = splitAuth[1];
 
         Member member = memberService.findMemberByEmail(email);
         if (!member.checkPassword(password)) {
