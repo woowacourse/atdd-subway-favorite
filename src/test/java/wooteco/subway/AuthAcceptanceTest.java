@@ -1,5 +1,6 @@
 package wooteco.subway;
 
+import io.restassured.authentication.FormAuthConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public MemberResponse myInfoWithBasicAuth(String email, String password) {
         return given().auth().preemptive()
                 .basic(email, password)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/me/basic")
                 .then()
@@ -64,7 +65,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public MemberResponse myInfoWithSession(String email, String password) {
         // TODO: form auth를 활용하여 /me/session 요청하여 내 정보 조회
-        return null;
+        return given().auth()
+                .form(email, password, new FormAuthConfig("/login", "email", "password"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/me/session")
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
