@@ -1,14 +1,17 @@
 package wooteco.subway.web.member.interceptor;
 
+import java.util.Base64;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.AuthorizationExtractor;
 import wooteco.subway.web.member.InvalidAuthenticationException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class BasicAuthInterceptor implements HandlerInterceptor {
@@ -21,13 +24,17 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+        Object handler) {
         // TODO: Authorization 헤더를 통해 Basic 값을 추출 (authExtractor.extract() 메서드 활용)
+        String credential = authExtractor.extract(request, "basic");
 
         // TODO: 추출한 Basic 값을 Base64를 통해 email과 password 값 추출(Base64.getDecoder().decode() 메서드 활용)
+        byte[] decode = Base64.getDecoder().decode(credential);
+        String[] decodedBytes = new String(decode).split(":");
 
-        String email = "";
-        String password = "";
+        String email = decodedBytes[0];
+        String password = decodedBytes[1];
 
         Member member = memberService.findMemberByEmail(email);
         if (!member.checkPassword(password)) {
