@@ -3,9 +3,14 @@ package wooteco.subway.service.member;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exceptions.DuplicatedEmailException;
+import wooteco.subway.exceptions.PasswordConflictException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+
+import java.util.Objects;
 
 @Service
 public class MemberService {
@@ -18,7 +23,17 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
+        String email = member.getEmail();
+        if (memberRepository.findByEmail(email).isPresent()) {
+            throw new DuplicatedEmailException(email);
+        }
         return memberRepository.save(member);
+    }
+
+    public void validatePassword(MemberRequest memberRequest) {
+        if (!Objects.equals(memberRequest.getPassword(), memberRequest.getConfirmPassword())) {
+            throw new PasswordConflictException();
+        }
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
