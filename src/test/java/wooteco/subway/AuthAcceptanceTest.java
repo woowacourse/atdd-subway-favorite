@@ -1,17 +1,20 @@
 package wooteco.subway;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+
+@Disabled
 public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Basic Auth")
     @Test
@@ -70,15 +73,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("password", password);
 
         return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                        post("/oauth/token").
+                post("/oauth/token").
                 then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(TokenResponse.class);
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(TokenResponse.class);
     }
 }
