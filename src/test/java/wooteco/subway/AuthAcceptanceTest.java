@@ -77,9 +77,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	}
 
 	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-		// TODO: oauth2 auth(bearer)를 활용하여 /me/bearer 요청하여 내 정보 조회
 		return given().
-			auth().form("", "").
+			auth().oauth2(tokenResponse.getAccessToken()).
 			accept(MediaType.APPLICATION_JSON_VALUE).
 			when().
 			get("/me/bearer").
