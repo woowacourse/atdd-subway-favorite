@@ -1,25 +1,26 @@
 package wooteco.subway;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -100,7 +101,7 @@ public class AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/lines").
+                    post("/admin/lines").
                         then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
@@ -110,7 +111,7 @@ public class AcceptanceTest {
     public LineDetailResponse getLine(Long id) {
         return
                 given().when().
-                        get("/lines/" + id).
+                    get("/admin/lines/" + id).
                         then().
                         log().all().
                         extract().as(LineDetailResponse.class);
@@ -127,7 +128,7 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/lines/" + id).
+            put("/admin/lines/" + id).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
@@ -136,7 +137,7 @@ public class AcceptanceTest {
     public List<LineResponse> getLines() {
         return
                 given().when().
-                        get("/lines").
+                    get("/admin/lines").
                         then().
                         log().all().
                         extract().
@@ -145,7 +146,7 @@ public class AcceptanceTest {
 
     public void deleteLine(Long id) {
         given().when().
-                delete("/lines/" + id).
+            delete("/admin/lines/" + id).
                 then().
                 log().all();
     }
@@ -166,7 +167,7 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/lines/" + lineId + "/stations").
+            post("/admin/lines/" + lineId + "/stations").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
@@ -177,7 +178,7 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
+            delete("/admin/lines/" + lineId + "/stations/" + stationId).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
@@ -187,7 +188,7 @@ public class AcceptanceTest {
         return
                 given().
                         when().
-                        get("/lines/detail").
+                    get("/admin/lines/detail").
                         then().
                         log().all().
                         extract().as(WholeSubwayResponse.class);

@@ -52,28 +52,28 @@ const api = (() => {
 
   const line = {
     get(id) {
-      return requestWithJsonData(`/lines/${id}`)
+        return requestWithJsonData(`/admin/lines/${id}`)
     },
     getAll() {
-      return requestWithJsonData(`/lines`)
+        return requestWithJsonData(`/admin/lines`)
     },
     getAllDetail() {
-      return requestWithJsonData(`/lines/detail`)
+        return requestWithJsonData(`/admin/lines/detail`)
     },
     addLineStation(lineId, lineStationCreateRequestView) {
-      return request(`/lines/${lineId}/stations`, METHOD.POST(lineStationCreateRequestView))
+        return request(`/admin/lines/${lineId}/stations`, METHOD.POST(lineStationCreateRequestView))
     },
     create(data) {
-      return requestWithJsonData(`/lines`, METHOD.POST(data))
+        return requestWithJsonData(`/admin/lines`, METHOD.POST(data))
     },
     update(id, data) {
-      return request(`/lines/${id}`, METHOD.PUT(data))
+        return request(`/admin/lines/${id}`, METHOD.PUT(data))
     },
     deleteLineStation(lineId, stationId) {
-      return request(`/lines/${lineId}/stations/${stationId}`, METHOD.DELETE())
+        return request(`/admin/lines/${lineId}/stations/${stationId}`, METHOD.DELETE())
     },
     delete(id) {
-      return request(`/lines/${id}`, METHOD.DELETE())
+        return request(`/admin/lines/${id}`, METHOD.DELETE())
     }
   }
 
