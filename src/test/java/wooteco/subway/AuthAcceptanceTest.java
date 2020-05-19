@@ -51,11 +51,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	}
 
 	public MemberResponse myInfoWithBasicAuth(String email, String password) {
-		// TODO: basic auth를 활용하여 /me/basic 요청하여 내 정보 조회
-		// Map<String, String> params = new HashMap<>();
-		// params.put("email", email);
-		// params.put("password", password);
-
 		return
 			given()
 				.auth()
@@ -74,8 +69,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	}
 
 	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-		// TODO: oauth2 auth(bearer)를 활용하여 /me/bearer 요청하여 내 정보 조회
-		return null;
+		return
+			given().
+				accept(MediaType.APPLICATION_JSON_VALUE).
+				auth().
+				preemptive().
+				oauth2(tokenResponse.getAccessToken()).
+				when().
+				get("/me/bearer").
+				then().
+				log().all().
+				extract().as(MemberResponse.class);
 	}
 
 	public TokenResponse login(String email, String password) {
