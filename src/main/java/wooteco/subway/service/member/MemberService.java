@@ -30,12 +30,6 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void validatePassword(MemberRequest memberRequest) {
-        if (!Objects.equals(memberRequest.getPassword(), memberRequest.getConfirmPassword())) {
-            throw new PasswordConflictException();
-        }
-    }
-
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.getName(), param.getPassword());

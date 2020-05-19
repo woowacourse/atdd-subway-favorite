@@ -42,7 +42,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, TEST_USER_PASSWORD);
-        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        TokenResponse tokenResponse = loginSuccessfully(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         MemberResponse memberResponse = myInfoWithBearerAuth(tokenResponse);
         assertThat(memberResponse.getId()).isNotNull();

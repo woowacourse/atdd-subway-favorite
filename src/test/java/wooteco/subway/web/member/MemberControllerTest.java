@@ -53,7 +53,8 @@ public class MemberControllerTest {
 
 		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
 				"\"name\":\"" + TEST_USER_NAME + "\"," +
-				"\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+				"\"password\":\"" + TEST_USER_PASSWORD + "\"," +
+				"\"confirmPassword\":\"" + TEST_USER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(post("/members")
 				                     .content(inputJson)

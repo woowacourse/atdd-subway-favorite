@@ -16,8 +16,9 @@ public class MemberDocumentation {
 				                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email " +
 						                                                                              "address"),
 				                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-				                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
-		                ),
+				                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password"),
+						fieldWithPath("confirmPassword").type(JsonFieldType.STRING).description("The user's confirm password")
+				),
 		                responseHeaders(
 				                headerWithName("Location").description("The user's location who just created")
 		                )
