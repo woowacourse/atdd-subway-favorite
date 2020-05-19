@@ -1,14 +1,15 @@
 package wooteco.subway.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 import wooteco.subway.web.member.interceptor.BasicAuthInterceptor;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 import wooteco.subway.web.member.interceptor.SessionInterceptor;
-
-import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -18,9 +19,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final LoginMemberMethodArgumentResolver loginMemberArgumentResolver;
 
     public WebMvcConfig(BasicAuthInterceptor basicAuthInterceptor,
-                        SessionInterceptor sessionInterceptor,
-                        BearerAuthInterceptor bearerAuthInterceptor,
-                        LoginMemberMethodArgumentResolver loginMemberArgumentResolver) {
+        SessionInterceptor sessionInterceptor,
+        BearerAuthInterceptor bearerAuthInterceptor,
+        LoginMemberMethodArgumentResolver loginMemberArgumentResolver) {
         this.basicAuthInterceptor = basicAuthInterceptor;
         this.sessionInterceptor = sessionInterceptor;
         this.bearerAuthInterceptor = bearerAuthInterceptor;

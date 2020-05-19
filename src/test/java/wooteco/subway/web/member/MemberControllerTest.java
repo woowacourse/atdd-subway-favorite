@@ -1,19 +1,17 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static wooteco.subway.AcceptanceTest.*;
+import static wooteco.subway.service.member.MemberServiceTest.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -32,6 +30,7 @@ import wooteco.subway.service.member.MemberService;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
+
     @MockBean
     protected MemberService memberService;
 
@@ -39,7 +38,8 @@ public class MemberControllerTest {
     protected MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+    public void setUp(WebApplicationContext webApplicationContext,
+        RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .addFilter(new ShallowEtagHeaderFilter())
             .apply(documentationConfiguration(restDocumentation))
@@ -63,5 +63,4 @@ public class MemberControllerTest {
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
     }
-
 }

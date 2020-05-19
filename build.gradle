@@ -1,7 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
-	id "org.asciidoctor.convert" version "1.5.9.2"
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'org.asciidoctor.convert' version '1.5.9.2'
 	id 'java'
 }
 
@@ -20,9 +20,9 @@ dependencies {
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
 	implementation 'org.jgrapht:jgrapht-core:1.0.1'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -45,7 +45,7 @@ asciidoctor {
 
 bootJar {
 	dependsOn asciidoctor
-	from("${asciidoctor.outputDir}/html5") {
+	from ("${asciidoctor.outputDir}/html5") {
 		into 'static/docs'
 	}
 }

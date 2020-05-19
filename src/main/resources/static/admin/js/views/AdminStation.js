@@ -1,4 +1,4 @@
-import { EVENT_TYPE, ERROR_MESSAGE, KEY_TYPE } from '../../utils/constants.js'
+import { ERROR_MESSAGE, EVENT_TYPE, KEY_TYPE } from '../../utils/constants.js'
 import { listItemTemplate } from '../../utils/templates.js'
 import api from '../../api/index.js'
 
@@ -21,14 +21,14 @@ function AdminStation() {
       name: stationName
     }
     api.station
-      .create(newStation)
-      .then(data => {
-        $stationInput.value = ''
-        $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
-      })
-      .catch(() => {
-        alert('에러가 발생했습니다.')
-      })
+    .create(newStation)
+    .then(data => {
+      $stationInput.value = ''
+      $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
+    })
+    .catch(() => {
+      alert('에러가 발생했습니다.')
+    })
   }
 
   const onDeleteStationHandler = event => {
@@ -38,20 +38,20 @@ function AdminStation() {
       return
     }
     api.station
-      .delete($target.closest('.list-item').dataset.id)
-      .then(() => {
-        $target.closest('.list-item').remove()
-      })
-      .catch(() => alert(ERROR_MESSAGE.COMMON))
+    .delete($target.closest('.list-item').dataset.id)
+    .then(() => {
+      $target.closest('.list-item').remove()
+    })
+    .catch(() => alert(ERROR_MESSAGE.COMMON))
   }
 
   const initStations = () => {
     api.station
-      .getAll()
-      .then(stations => {
-        $stationList.innerHTML = stations.map(station => listItemTemplate(station)).join('')
-      })
-      .catch(() => alert(ERROR_MESSAGE.COMMON))
+    .getAll()
+    .then(stations => {
+      $stationList.innerHTML = stations.map(station => listItemTemplate(station)).join('')
+    })
+    .catch(() => alert(ERROR_MESSAGE.COMMON))
   }
 
   const initEventListeners = () => {
