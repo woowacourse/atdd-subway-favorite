@@ -1,21 +1,20 @@
 package wooteco.subway.domain.path;
 
-import wooteco.subway.domain.line.LineStation;
-
 import java.util.function.Function;
 
+import wooteco.subway.domain.line.LineStation;
+
 public enum PathType {
-    DISTANCE(lineStation -> lineStation.getDistance()),
-    DURATION(lineStation -> lineStation.getDuration());
+	DISTANCE(lineStation -> lineStation.getDistance()),
+	DURATION(lineStation -> lineStation.getDuration());
 
-    private Function<LineStation, Integer> expression;
+	private Function<LineStation, Integer> expression;
 
-    PathType(Function<LineStation, Integer> expression) {
-        this.expression = expression;
-    }
+	PathType(Function<LineStation, Integer> expression) {
+		this.expression = expression;
+	}
 
-
-    public int findWeightOf(LineStation lineStation) {
-        return expression.apply(lineStation);
-    }
+	public int findWeightOf(LineStation lineStation) {
+		return expression.apply(lineStation);
+	}
 }

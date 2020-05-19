@@ -1,74 +1,75 @@
 <!DOCTYPE html>
 <html lang="kr">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8"/>
     <title>RunningMap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
-    <link href="/service/css/app.css" rel="stylesheet" />
-  </head>
-  <body class="bg-gray-200 h-screen">
-    <div class="flex justify-center items-center app-container py-10">
-      <div class="max-w-md width-350px rounded bg-white shadow-lg p-6">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+          name="viewport"/>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet"/>
+    <link href="/service/css/app.css" rel="stylesheet"/>
+</head>
+<body class="bg-gray-200 h-screen">
+<div class="flex justify-center items-center app-container py-10">
+    <div class="max-w-md width-350px rounded bg-white shadow-lg p-6">
         <div class="font-bold text-xl mb-4 text-center">회원가입</div>
         <form class="bg-white rounded mb-4">
-          <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="email">
-              email
-            </label>
-            <input
-              class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="text"
-              placeholder="email"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="name">
-              name
-            </label>
-            <input
-              class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="name"
-              type="text"
-              placeholder="name"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="password">
-              password
-            </label>
-            <input
-              class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type="password"
-              placeholder="password"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="password-check">
-              password 확인
-            </label>
-            <input
-              class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password-check"
-              type="password"
-              placeholder="password 확인"
-            />
-          </div>
-          <button
-            class="w-full bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
-            type="button"
-          >
-            회원가입
-          </button>
+            <div class="mb-4">
+                <label class="block text-gray-600 text-sm font-bold mb-2" for="email">
+                    email
+                </label>
+                <input
+                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email"
+                        placeholder="email"
+                        type="text"
+                />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-600 text-sm font-bold mb-2" for="name">
+                    name
+                </label>
+                <input
+                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="name"
+                        placeholder="name"
+                        type="text"
+                />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-600 text-sm font-bold mb-2" for="password">
+                    password
+                </label>
+                <input
+                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password"
+                        placeholder="password"
+                        type="password"
+                />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-600 text-sm font-bold mb-2" for="password-check">
+                    password 확인
+                </label>
+                <input
+                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password-check"
+                        placeholder="password 확인"
+                        type="password"
+                />
+            </div>
+            <button
+                    class="w-full bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
+                    type="button"
+            >
+                회원가입
+            </button>
         </form>
         <div class="mt-5 flex subway-lines-container relative overflow-y-auto">
-          <div id="subway-line-list" class="w-full overflow-y-auto"></div>
+            <div class="w-full overflow-y-auto" id="subway-line-list"></div>
         </div>
-      </div>
     </div>
-    <script type="module" src="/service/js/App.js"></script>
-  </body>
+</div>
+<script src="/service/js/App.js" type="module"></script>
+</body>
 </html>

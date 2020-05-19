@@ -29,33 +29,33 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 @AutoConfigureMockMvc
 @Import(ETagHeaderFilter.class)
 public class LineControllerTest {
-    @MockBean
-    private LineService lineService;
-
     @Autowired
     protected MockMvc mockMvc;
+    @MockBean
+    private LineService lineService;
 
     @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
     @Test
     void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
+        WholeSubwayResponse response = WholeSubwayResponse.of(
+            Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.findLinesWithStations()).willReturn(response);
 
         String uri = "/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(header().exists("ETag"))
-                .andReturn();
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
 
         String eTag = mvcResult.getResponse().getHeader("ETag");
 
         mockMvc.perform(get(uri).header("If-None-Match", eTag))
-                .andDo(print())
-                .andExpect(status().isNotModified())
-                .andExpect(header().exists("ETag"))
-                .andReturn();
+            .andDo(print())
+            .andExpect(status().isNotModified())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
     }
 
     private LineDetailResponse createMockResponse() {
