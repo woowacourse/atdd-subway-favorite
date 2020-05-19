@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -32,7 +33,8 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(param.getEmail())
+            .orElseThrow(RuntimeException::new);
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }

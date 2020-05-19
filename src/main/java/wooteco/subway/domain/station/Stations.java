@@ -15,8 +15,8 @@ public class Stations {
 
     public Station extractStationById(Long stationId) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> it.getId() == stationId)
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 }
