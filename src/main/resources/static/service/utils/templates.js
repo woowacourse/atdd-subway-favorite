@@ -7,7 +7,7 @@ export const memberInfo = member => {
   if (!member) {
     return ` <a href="/login" class="inline-block login-button absolute text-sm px-4 py-2 leading-none border rounded text-gray-800 border-gray-800 hover:border-transparent hover:bg-yellow-400">로그인</a>`;
   }
-  return `<div class="dropdown inline-block relative">
+  return `<div class="dropdown inline-block absolute right-10px">
       <button class="text-gray-800 border-gray-800 hover:border-transparent hover:bg-yellow-400 font-semibold py-2 px-5 rounded inline-flex items-center">
         <span class="mr-1">${
           member && member.name ? member.name : "이름 없음"
@@ -16,12 +16,24 @@ export const memberInfo = member => {
           <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> 
         </svg>
       </button>
-      <ul class="dropdown-menu absolute hidden text-gray-700 bg-white shadow rounded">
+      <ul class="dropdown-menu absolute hidden text-gray-700 bg-white shadow rounded z-10">
         <li>
-          <a href="/mypage" class="rounded-t hover:bg-gray-400 py-2 px-5 block whitespace-no-wrap">나의정보</a>
+          <a href="/mypage" class="rounded-t hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
+            <span class="mdi mdi-account mr-1"></span>
+            나의정보
+          </a>
         </li>
         <li>
-          <a href="/logout" class="rounded-b hover:bg-gray-400 py-2 px-5 block whitespace-no-wrap">로그아웃</a>
+          <a href="/me/favorites" class="hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
+            <span class="mdi mdi-star mr-1"></span>
+            즐겨찾기
+          </a>
+        </li>
+        <li>
+          <a href="/logout" class="rounded-b hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
+          <span class="mdi mdi-logout mr-1"></span>
+          로그아웃
+          </a>
         </li>
       </ul>
     </div>`;
@@ -114,4 +126,22 @@ export const initNavigation = member => {
   document
     .querySelector("body")
     .insertAdjacentHTML("afterBegin", navTemplate(member));
+};
+
+export const edgeItemTemplate = edge => {
+  return `<li data-edge-id="${
+    edge.id
+  }" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+            <span class="mdi mdi-subway-variant mr-2"></span>
+            <span data-source-station-id="${edge.sourceStationId}">${
+    edge.sourceStationName ? edge.sourceStationName : "출발역"
+  }</span>
+            <span class="mdi mdi-arrow-right text-gray-500"></span>
+            <span data-target-station-id="${edge.targetStationId}">${
+    edge.sourceStationName ? edge.sourceStationName : "도착역"
+  }</span>
+            <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+              <span class="mdi mdi-delete"></span>
+            </button>
+          </li>`;
 };

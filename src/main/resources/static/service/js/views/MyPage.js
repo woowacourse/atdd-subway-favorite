@@ -13,43 +13,46 @@ function MyInfo() {
   const $signOutButton = document.querySelector("#sign-out-button");
   const $updateButton = document.querySelector("#update-button");
 
-  const onSignOutHandler = event => {
+  const onSignOutHandler = async event => {
     event.preventDefault();
-    if (confirm("정말 탈퇴하시겠습니까?")) {
-      api.loginMember
-        .delete()
-        .then(() => {
-          localStorage.setItem("jwt", "");
-          location.href = "/";
-        })
-        .catch(() => showSnackbar(ERROR_MESSAGE.COMMON));
+    if (!confirm("정말 탈퇴하시겠습니까?")) {
+      return;
+    }
+    try {
+      await api.loginMember.delete();
+      localStorage.setItem("jwt", "");
+      location.href = "/";
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
 
-  const onUpdateHandler = event => {
+  const onUpdateHandler = async event => {
     event.preventDefault();
-    const updatedInfo = {
-      name: $name.value,
-      email: $email.value,
-      password: $password.value
-    };
-    api.loginMember
-      .update(updatedInfo)
-      .then(() => {
-        showSnackbar(SUCCESS_MESSAGE.SAVE);
-      })
-      .catch(() => showSnackbar(ERROR_MESSAGE.COMMON));
+    try {
+      const updatedInfo = {
+        name: $name.value,
+        email: $email.value,
+        password: $password.value
+      };
+      await api.loginMember.update(updatedInfo);
+      showSnackbar(SUCCESS_MESSAGE.SAVE);
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
+    }
   };
 
-  const initMyInfo = () => {
-    api.loginMember
-      .get()
-      .then(member => {
+  const initMyInfo = async () => {
+    try {
+      const member = await api.loginMember.get();
+      if (member) {
         $email.value = member.email;
         $name.value = member.name;
         $password.value = member.password;
-      })
-      .catch(() => showSnackbar(ERROR_MESSAGE.COMMON));
+      }
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
+    }
   };
 
   this.init = () => {

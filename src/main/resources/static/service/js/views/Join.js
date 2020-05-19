@@ -11,18 +11,19 @@ function Join() {
 
   const onJoinHandler = async event => {
     event.preventDefault();
-    if (isValid()) {
+    if (!isValid()) {
+      return;
+    }
+    try {
       const newMember = {
         email: $email.value,
         name: $name.value,
         password: $password.value
       };
-      api.member
-        .create(newMember)
-        .then(() => {
-          location.href = "/login";
-        })
-        .catch(error => console.log(error));
+      await api.member.create(newMember);
+      location.href = "/login";
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
 
@@ -33,11 +34,11 @@ function Join() {
     const passwordCheck = $passwordCheck.value;
     if (!email || !name || !password) {
       showSnackbar(ERROR_MESSAGE.COMMON);
-      return;
+      return false;
     }
     if (password !== passwordCheck) {
       showSnackbar(ERROR_MESSAGE.PASSWORD_CHECK);
-      return;
+      return false;
     }
     return true;
   };

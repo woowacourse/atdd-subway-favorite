@@ -7,27 +7,33 @@ function Login() {
   const $email = document.querySelector("#email");
   const $password = document.querySelector("#password");
 
-  const onLogin = event => {
+  const onLogin = async event => {
     event.preventDefault();
-    const email = $email.value;
-    const password = $password.value;
-    if (!email && !password) {
+    if (!isValid()) {
       showSnackbar(ERROR_MESSAGE.COMMON);
       return;
     }
-    const loginMember = {
-      email: email,
-      password: password
-    };
-    api.member
-      .login(loginMember)
-      .then(jwt => {
-        if (!!jwt) {
-          localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
-          location.href = "/";
-        }
-      })
-      .catch(error => console.log(error));
+    try {
+      const loginMember = {
+        email: $email.value,
+        password: $password.value
+      };
+      const jwt = await api.member.login(loginMember);
+      if (jwt) {
+        localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
+        location.href = "/";
+        return;
+      }
+      showSnackbar(ERROR_MESSAGE.COMMON);
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
+    }
+  };
+
+  const isValid = () => {
+    const email = $email.value;
+    const password = $password.value;
+    return !email || !password;
   };
 
   this.init = () => {
