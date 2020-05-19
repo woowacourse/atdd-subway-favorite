@@ -20,7 +20,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
