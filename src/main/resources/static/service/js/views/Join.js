@@ -48,7 +48,8 @@ function Join() {
       password: passwordValue,
     }
 
-    api.member.create(validData);
+    api.member.create(validData)
+      .then(() => location.href = '/');
   }
 
   this.init = () => {
