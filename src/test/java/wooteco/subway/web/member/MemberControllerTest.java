@@ -17,11 +17,13 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.LoginRequest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.service.member.MemberServiceTest.*;
@@ -61,5 +63,25 @@ public class MemberControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(MemberDocumentation.createMember());
+    }
+
+    @Test
+    void updateMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(memberService.createToken(any())).willReturn("JWT Token");
+
+        String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(put("/members/1")
+                .header("Authorization", memberService.createToken(request))
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.updateMember());
     }
 }
