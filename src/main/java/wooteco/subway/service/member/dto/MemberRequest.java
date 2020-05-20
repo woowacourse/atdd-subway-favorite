@@ -2,12 +2,11 @@ package wooteco.subway.service.member.dto;
 
 import wooteco.subway.domain.member.Member;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 public class MemberRequest {
-    @Pattern(regexp = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$"
-            , message = "잘못된 이메일 값입니다.")
+    @Email(message = "올바른 이메일 형식을 입력해주세요")
     @NotBlank
     private String email;
     @NotBlank(message = "이름에 빈값을 넣지 마세요.")
