@@ -1,11 +1,14 @@
 package wooteco.subway.service.member;
 
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.member.exception.DuplicateMemberException;
 
 @Service
 public class MemberService {
@@ -18,7 +21,11 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        return memberRepository.save(member);
+        try {
+            return memberRepository.save(member);
+        } catch (DbActionExecutionException e) {
+            throw new DuplicateMemberException(member.getEmail());
+        }
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
@@ -32,7 +39,8 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(param.getEmail())
+            .orElseThrow(RuntimeException::new);
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }

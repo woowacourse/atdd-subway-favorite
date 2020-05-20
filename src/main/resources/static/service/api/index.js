@@ -23,8 +23,13 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config).then(async response => {
+    if (response.ok) {
+      return response
+    }
+    throw await response.json()
+  })
+  const requestWithJsonData = (uri, config) => request(uri, config).then(data => data.json())
 
   const line = {
     getAll() {
@@ -41,9 +46,16 @@ const api = (() => {
     }
   }
 
+  const member = {
+    join(data) {
+      return request('/members', METHOD.POST(data))
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member
   }
 })()
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import wooteco.subway.service.member.exception.DuplicateMemberException;
 import wooteco.subway.web.dto.ErrorResponse;
 
 @RestControllerAdvice
@@ -14,6 +15,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e) {
         ErrorResponse errorResponse = new ErrorResponse("유효한 입력이 아닙니다.", e.getBindingResult());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(DuplicateMemberException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateMemberException() {
+        ErrorResponse errorResponse = new ErrorResponse("이미 가입된 이메일 입니다.");
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
