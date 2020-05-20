@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
