@@ -30,21 +30,28 @@ const api = (() => {
     getAll() {
       return request(`/lines/detail`)
     },
-    getAllDetail() {
-      return requestWithJsonData(`/lines/detail`)
-    }
+      getAllDetail() {
+          return requestWithJsonData(`/lines/detail`)
+      }
   }
 
-  const path = {
-    find(params) {
-      return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+    const path = {
+        find(params) {
+            return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+        }
     }
-  }
 
-  return {
-    line,
-    path
-  }
+    const member = {
+        create(data) {
+            return request(`/members`, METHOD.POST(data));
+        }
+    }
+
+    return {
+        line,
+        path,
+        member
+    }
 })()
 
 export default api

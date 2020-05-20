@@ -12,8 +12,8 @@ public class Station {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private Station() {
-    }
+    public Station() {
+	}
 
     public Station(String name) {
         this.name = name;
