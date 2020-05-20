@@ -345,12 +345,12 @@ public class AcceptanceTest {
                         log().all();
     }
 
-    public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
+    public MemberResponse getMyInfo(TokenResponse tokenResponse) {
         return given().
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/me/bearer").
+                get("/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).

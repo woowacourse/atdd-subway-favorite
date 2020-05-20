@@ -30,17 +30,17 @@ public class LoginMemberController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestParam Map<String, String> paramMap, HttpSession session) {
         String email = paramMap.get("email");
-        String password = paramMap.get("password");
-        if (!memberService.loginWithForm(email, password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-        }
+	    String password = paramMap.get("password");
+	    if (!memberService.loginWithForm(email, password)) {
+		    throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
+	    }
 
 	    session.setAttribute("loginMemberEmail", email);
 
 	    return ResponseEntity.ok().build();
     }
 
-	@GetMapping({"/me/basic", "/me/session", "/me/bearer"})
+	@GetMapping({"/me"})
 	public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}

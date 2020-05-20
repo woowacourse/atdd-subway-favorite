@@ -104,9 +104,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExceptionResponse emptyEmailResponse = loginFailed("", TEST_USER_PASSWORD, HttpStatus.BAD_REQUEST.value());
         assertThat(emptyEmailResponse.getErrorMessage()).isEqualTo("이메일은 공란이 될 수 없습니다!");
-
-        ExceptionResponse emptyResponse = loginFailed("", "", HttpStatus.BAD_REQUEST.value());
-        assertThat(emptyResponse.getErrorMessage()).isEqualTo("이메일은 공란이 될 수 없습니다!");
     }
 
     /**
@@ -139,18 +136,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD,
                                  TEST_USER_PASSWORD);
         TokenResponse tokenResponse = loginSuccessfully(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-        MemberResponse memberResponse = myInfoWithBearerAuth(tokenResponse);
+        MemberResponse memberResponse = getMyInfo(tokenResponse);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
         updateMyInfoSuccessfully(tokenResponse, "NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD,
                                  "NEW_" + TEST_USER_PASSWORD);
-        MemberResponse memberResponse2 = myInfoWithBearerAuth(tokenResponse);
+        MemberResponse memberResponse2 = getMyInfo(tokenResponse);
         assertThat(memberResponse2.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
         updateMyInfoSuccessfully(tokenResponse, "MODIFIED_" + TEST_USER_NAME, "", "");
-        MemberResponse memberResponse3 = myInfoWithBearerAuth(tokenResponse);
+        MemberResponse memberResponse3 = getMyInfo(tokenResponse);
         assertThat(memberResponse3.getName()).isEqualTo("MODIFIED_" + TEST_USER_NAME);
 
         ExceptionResponse exceptionResponse = updateMyInfoFailed(tokenResponse, TEST_USER_NAME, TEST_USER_PASSWORD,
