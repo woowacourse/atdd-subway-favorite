@@ -1,4 +1,5 @@
 import api from "../../api/index.js";
+import { EVENT_TYPE } from '../../utils/constants.js';
 
 function Join() {
 
@@ -37,7 +38,7 @@ function Join() {
     })
   }
 
-  $joinForm.addEventListener("submit", onSubmitHandler);
+  $joinForm.addEventListener(EVENT_TYPE.SUBMIT, onSubmitHandler);
 }
 
 const join = new Join();

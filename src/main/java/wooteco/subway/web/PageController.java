@@ -20,6 +20,11 @@ public class PageController {
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
+        return "service/index";
+    }
+
+    @GetMapping("/admin")
+    public String adminIndex() {
         return "admin/index";
     }
 

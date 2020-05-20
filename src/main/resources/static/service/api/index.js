@@ -1,23 +1,38 @@
 const METHOD = {
+  GET() {
+    return {
+      method: "GET",
+      headers: {
+        "Authorization": localStorage.getItem("Authorization"),
+      },
+    }
+  },
   PUT() {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        "Authorization": localStorage.getItem("Authorization"),
+      },
     }
   },
   DELETE() {
     return {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        "Authorization": localStorage.getItem("Authorization"),
+      },
     }
   },
   POST(data) {
     return {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "Authorization": localStorage.getItem("Authorization"),
       },
       body: JSON.stringify({
         ...data
-      })
+      }),
     }
   }
 }
@@ -45,6 +60,9 @@ const api = (() => {
     join(joinRequest) {
       return request("/members", METHOD.POST(joinRequest));
     },
+    login(loginRequest) {
+      return request("/oauth/token", METHOD.POST(loginRequest));
+    }
   }
 
   return {
