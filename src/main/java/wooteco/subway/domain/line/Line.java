@@ -53,7 +53,8 @@ public class Line {
 	}
 
 	public Line update(Line line) {
-		return new Line(line.id, line.name, line.startTime, line.endTime, line.intervalTime, line.createdAt, line.updatedAt, line.stations);
+		return new Line(this.id, line.name, line.startTime, line.endTime, line.intervalTime, this.createdAt,
+			this.updatedAt, this.stations);
 	}
 
 	public void addLineStation(LineStation lineStation) {
