@@ -4,6 +4,7 @@ import api from "../../api/index.js";
 function MyPageEdit() {
   const $editButton = document.querySelector('#edit-button')
   const $editForm = document.querySelector('#edit-form')
+  const $deleteButton = document.querySelector('#delete-button')
 
   const $email = document.querySelector('#email')
   const $nameValue = document.querySelector('#name').value
@@ -38,8 +39,15 @@ function MyPageEdit() {
         .update(memberId, userInfo)
   }
 
+  const onDelete = event => {
+    event.preventDefault()
+    const memberId = $editForm.dataset.memberId
+    api.member.delete(memberId)
+  }
+
   this.init = () => {
     $editButton.addEventListener(EVENT_TYPE.CLICK, onEdit);
+    $deleteButton.addEventListener(EVENT_TYPE.CLICK, onDelete);
     initUserInfo();
   }
 }

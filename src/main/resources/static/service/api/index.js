@@ -61,6 +61,9 @@ const api = (() => {
     },
     update(id, data) {
       request(`/members/${id}`, METHOD.PUT(data))
+    },
+    delete(id) {
+      request(`/members/${id}`, METHOD.DELETE())
     }
   }
 
