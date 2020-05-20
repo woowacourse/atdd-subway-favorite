@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
     <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="/service/lib/snackbar/snackbar.css" rel="stylesheet"/>
     <link href="/service/css/app.css" rel="stylesheet" />
   </head>
   <body class="bg-gray-200 h-screen">
@@ -58,8 +59,9 @@
             />
           </div>
           <button
-            class="w-full bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
-            type="button"
+                  class="w-full bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
+                  id="join-button"
+                  type="button"
           >
             회원가입
           </button>
@@ -70,5 +72,6 @@
       </div>
     </div>
     <script type="module" src="/service/js/App.js"></script>
+    <script src="/service/js/views/Join.js" type="module"></script>
   </body>
 </html>
