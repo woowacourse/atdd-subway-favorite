@@ -24,7 +24,7 @@ function Join() {
             }
             window.location.href = '/';
         }).catch(error =>
-            error.text.then(error => alert(error)))
+            error.text().then(error => alert(error)))
     }
 
     const validatePassword = event => {
