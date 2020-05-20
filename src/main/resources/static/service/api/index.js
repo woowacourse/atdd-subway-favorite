@@ -44,6 +44,9 @@ const api = (() => {
   const member = {
     create(params) {
       return request('/members', METHOD.POST(params))
+    },
+    find(params) {
+      return requestWithJsonData('/login')
     }
   }
 
