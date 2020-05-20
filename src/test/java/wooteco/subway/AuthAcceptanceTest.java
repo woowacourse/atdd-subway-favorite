@@ -52,7 +52,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithBasicAuth(String email, String password) {
-        // TODO: basic auth를 활용하여 /me/basic 요청하여 내 정보 조회
         return given().auth()
             .preemptive()
             .basic(email, password)
@@ -65,7 +64,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithSession(String email, String password) {
-        // TODO: form auth를 활용하여 /me/session 요청하여 내 정보 조회
         return given().auth()
             .form(email, password, new FormAuthConfig("/login", "email", "password"))
             .when()
@@ -77,7 +75,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        // TODO: oauth2 auth(bearer)를 활용하여 /me/bearer 요청하여 내 정보 조회
         return given().auth()
             .preemptive()
             .oauth2(tokenResponse.getAccessToken())
