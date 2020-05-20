@@ -14,9 +14,9 @@
     - [x] password / password 확인의 값이 같지 않다면 api 를 호출하지 않는다
     - [x] email, name, password 를 담은 request 를 보낸다
        - [x] 각 값에 대한 유효성을 서버에서 검사한다
-    - [ ] 중복된 email 이 입력되었는지 검사한다
-    - [ ] 정보가 유효하다면 회원을 생성한다
-    - [ ] 실행 결과를 alert 를 이용해서 출력한다
+    - [x] 중복된 email 이 입력되었는지 검사한다
+    - [x] 정보가 유효하다면 회원을 생성한다
+    - [x] 실행 결과를 alert 를 이용해서 출력한다
 
 2. 로그인
     - [x] email / password 의 값을 담아서 request 를 보낸다

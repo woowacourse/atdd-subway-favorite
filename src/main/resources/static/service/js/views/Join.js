@@ -19,8 +19,14 @@ function Join() {
       };
       api.member
         .create(newMember)
-        .then(() => {
-          location.href = "/login";
+        .then((response) => {
+          if (response.ok) {
+            location.href = "/login";
+          } else {
+            response.json().then(response => {
+              alert(response.errorMessage);
+            });
+          }
         })
         .catch(error => console.log(error));
     }
