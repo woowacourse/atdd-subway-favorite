@@ -1,5 +1,6 @@
 package wooteco.subway.web.member;
 
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -61,5 +62,10 @@ public class MemberControllerTest {
 			.andExpect(status().isCreated())
 			.andDo(print())
 			.andDo(MemberDocumentation.createMember());
+	}
+
+	@Test
+	public void updateMember() {
+		
 	}
 }
