@@ -1,21 +1,21 @@
 package wooteco.subway.service.member;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
-
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -35,6 +35,7 @@ public class MemberServiceTest {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
     }
 
+    @DisplayName("멤버 생성 테스트")
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -44,6 +45,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("토큰 생성 테스트")
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -54,4 +56,12 @@ public class MemberServiceTest {
 
         verify(jwtTokenProvider).createToken(anyString());
     }
+
+    // TODO: 2020/05/20 RUD 단위테스트 추가
+    // TODO: 2020/05/20 컨트롤러에서의 인증 방식 고민해보기
+    // TODO: 2020/05/20 RestAssured를 MockMvc로 변경 
+    // TODO: 2020/05/20 API 문서 작성
+    // TODO: 2020/05/20 Exception Handler 추가 
+    // TODO: 2020/05/20 Dynamic Test 방식으로 변경 
+    // TODO: 2020/05/20 페이지 연동
 }

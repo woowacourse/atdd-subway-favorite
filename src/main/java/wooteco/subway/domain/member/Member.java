@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
@@ -53,5 +55,14 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean isAuthenticated(Long id) {
+        return Objects.nonNull(this.id) && this.id == id;
+    }
+
+    public boolean isAuthenticated(final String email) {
+        return Objects.nonNull(this.email) && this.email.equals(email);
+
     }
 }
