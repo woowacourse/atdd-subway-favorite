@@ -1,5 +1,7 @@
 package wooteco.subway.service.member;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -47,5 +49,10 @@ public class MemberService {
     public boolean loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
         return member.checkPassword(password);
+    }
+
+    public boolean isExistEmail(String email) {
+        Optional<Member> byEmail = memberRepository.findByEmail(email);
+        return byEmail.isPresent();
     }
 }

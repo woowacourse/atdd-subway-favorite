@@ -13,8 +13,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     @Test
     void memberAcceptanceTest() {
-        assertThat(registerMember("dd@naver.com", "디디", "1q2w3e4r", "1q2w3e4r")).isEqualTo("/members/1");
-        assertThat(registerMember("fucct@naver.com", "둔덩", "qwerqwer", "qwerqwer")).isEqualTo("/members/2");
+        assertThat(registerMember("dd@naver.com", "디디", "1q2w3e4r", "1q2w3e4r")).isEqualTo(
+            "/members/1");
+        assertThat(registerMember("fucct@naver.com", "둔덩", "qwerqwer", "qwerqwer")).isEqualTo(
+            "/members/2");
+
+        assertThatThrownBy(
+            () -> registerMember("abc@naver.com", "abc", "abcd", "abc")).isInstanceOf(
+            RuntimeException.class).hasMessageMatching("패스워드가 일치하지 않습니다.");
 
     }
 }

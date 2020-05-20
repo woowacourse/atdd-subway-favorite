@@ -24,7 +24,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RegisterMember MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RegisterMember @Validated MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
             .created(URI.create("/members/" + member.getId()))
@@ -52,6 +52,6 @@ public class MemberController {
 
     @ExceptionHandler(value = NotMatchPasswordException.class)
     public ResponseEntity<ErrorResponse> exceptionHandle(NotMatchPasswordException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+        throw new RuntimeException();
     }
 }

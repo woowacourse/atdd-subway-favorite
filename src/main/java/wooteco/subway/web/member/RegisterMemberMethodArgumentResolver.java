@@ -22,11 +22,18 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRawRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 
 @Component
 public class RegisterMemberMethodArgumentResolver implements HandlerMethodArgumentResolver {
+    private final MemberService memberService;
+
+    public RegisterMemberMethodArgumentResolver(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(RegisterMember.class);
@@ -41,11 +48,15 @@ public class RegisterMemberMethodArgumentResolver implements HandlerMethodArgume
         ObjectMapper objectMapper = new ObjectMapper();
         MemberRawRequest memberRawRequest = objectMapper.readValue(reader, MemberRawRequest.class);
 
+        String email = memberRawRequest.getEmail();
         String password = memberRawRequest.getPassword();
         String passwordCheck = memberRawRequest.getPasswordCheck();
 
         if (!Objects.equals(password, passwordCheck)) {
             throw new NotMatchPasswordException("패스워드가 일치하지 않습니다.");
+        }
+        if (memberService.isExistEmail(email)) {
+            throw new DuplicateEmailException("이미 존재하는 이메일입니다.");
         }
         return memberRawRequest.toMemberRequest();
     }
