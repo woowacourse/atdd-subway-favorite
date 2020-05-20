@@ -52,7 +52,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	}
 
 	public MemberResponse myInfoWithBasicAuth(String email, String password) {
-		// TODO: basic auth를 활용하여 /me/basic 요청하여 내 정보 조회
 		return given().
 			auth().
 			preemptive().
