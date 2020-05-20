@@ -70,6 +70,53 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		badLogin(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 	}
 
+	/*
+	given 로그인 하지 않은 상태
+	when 회원정보를 조회한다.
+	then 회원정보 조회가 불가능하다.
+
+	when 회원정보를 수정한다.
+	then 회원정보 수정이 불가능하다.
+
+	when 회원정보를 삭제한다.
+	then 회원정보 삭제가 불가능하다.
+	*/
+
+	@DisplayName("로그인 하지않고 회원정보를 관리하려 하는 경우")
+	@Test
+	public void manageMemberWithoutLogin() {
+		getMemberWithoutLogin();
+		updateMemberWithoutLogin();
+		deleteMemberWithoutLogin();
+	}
+
+	private void deleteMemberWithoutLogin() {
+		given()
+			.when()
+			.delete("/me/bearer")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	private void updateMemberWithoutLogin() {
+		given()
+			.when()
+			.put("/me/bearer")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	private void getMemberWithoutLogin() {
+		given()
+			.when()
+			.get("/me/bearer")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
+
 	private void deleteMemberWithBearerAuth(TokenResponse tokenResponse) {
 		given()
 			.auth()
