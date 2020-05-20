@@ -1,9 +1,5 @@
 const METHOD = {
-  PUT() {
-    return {
-      method: 'PUT'
-    }
-  },
+
   DELETE() {
     return {
       method: 'DELETE'
@@ -41,9 +37,16 @@ const api = (() => {
     }
   }
 
+  const member = {
+    create(params) {
+      return request(`/members`, METHOD.POST(params))
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member
   }
 })()
 

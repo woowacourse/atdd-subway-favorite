@@ -1,9 +1,9 @@
 ## 회원 관리 기능
 1. 회원가입
-    - [ ] 인수테스트 작성
-    - [ ] email, name, password, password 확인 으로 회원가입 요청
-    - [ ] join.js 작성
-    - [ ] 회원가입 완료 시 로그인 페이지로 이동
+    - [x] 인수테스트 작성
+    - [x] email, name, password, password 확인 으로 회원가입 요청
+    - [x] join.js 작성
+    - [x] 회원가입 완료 시 로그인 페이지로 이동
 2. 로그인
     - [ ] 인수테스트 작성
     - [ ] email, password로 로그인 요청
