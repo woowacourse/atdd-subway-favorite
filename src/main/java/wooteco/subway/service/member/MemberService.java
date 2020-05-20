@@ -5,6 +5,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
@@ -17,8 +18,8 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Member createMember(Member member) {
-        return memberRepository.save(member);
+    public Member createMember(MemberRequest memberRequest) {
+        return memberRepository.save(memberRequest.toMember());
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
