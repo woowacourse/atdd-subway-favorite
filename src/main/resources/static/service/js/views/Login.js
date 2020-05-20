@@ -3,19 +3,28 @@ import api from '../../api/index.js'
 
 function Login() {
     const $loginButton = document.querySelector('#login-button')
-    const onLogin = event => {
+    const onLogin = async event => {
         event.preventDefault()
         const emailValue = document.querySelector('#email').value
         const passwordValue = document.querySelector('#password').value
         if (!emailValue && !passwordValue) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.LOGIN_FAIL,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            // Snackbar.show({
+            //     text: ERROR_MESSAGE.LOGIN_FAIL,
+            //     pos: 'bottom-center',
+            //     showAction: false,
+            //     duration: 2000
+            // })
+            alert("login fail")
             return
         }
+
+        const loginDetail = {
+            email: emailValue,
+            password: passwordValue,
+        }
+
+        const response = await api.member.login(loginDetail)
+        return console.log(response);
     }
 
     this.init = () => {

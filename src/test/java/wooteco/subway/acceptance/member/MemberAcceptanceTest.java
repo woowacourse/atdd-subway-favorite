@@ -8,7 +8,6 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-
     @DisplayName("회원 관리 기능")
     @Test
     void manageMember() {

@@ -17,6 +17,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.MemberResponse;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
@@ -49,7 +50,8 @@ public class MemberControllerTest {
     @Test
     public void createMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member);
+        MemberResponse response = MemberResponse.of(member);
+        given(memberService.createMember(any())).willReturn(response);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
                 "\"name\":\"" + TEST_USER_NAME + "\"," +
