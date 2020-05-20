@@ -44,7 +44,7 @@ public class MemberService {
 	}
 
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		return memberRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("해당하는 이메일이 없습니다."));
 	}
 
 	public boolean loginWithForm(String email, String password) {
