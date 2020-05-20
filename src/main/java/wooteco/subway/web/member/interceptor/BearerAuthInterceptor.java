@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
@@ -31,7 +32,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
             request.setAttribute("loginMemberEmail", email);
             return true;
         }
-        return false;
+        throw new InvalidAuthenticationException("토큰이 유효하지 않습니다.");
     }
 
     @Override

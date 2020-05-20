@@ -39,6 +39,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract().as(MemberResponse.class);
     }
 
+    @Test
+    void bearerAuthWithUnauthorizedToken() {
+        given()
+            .auth()
+            .oauth2("invalid_token")
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/me/bearer")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
     public TokenResponse login(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
