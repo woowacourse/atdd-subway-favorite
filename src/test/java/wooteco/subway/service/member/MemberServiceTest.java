@@ -39,6 +39,7 @@ public class MemberServiceTest {
     @Test
     void createMember() {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.save(any())).thenReturn(new Member(1L, memberRequest.getEmail(), memberRequest.getName(), memberRequest.getPassword()));
         memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());

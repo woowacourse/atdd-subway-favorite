@@ -26,6 +26,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @JoinMember
     @PostMapping("/members")
     public ResponseEntity<DefaultResponse<Void>> createMember(@RequestBody MemberRequest memberRequest) {
         Long memberId = memberService.createMember(memberRequest);

@@ -1,39 +1,30 @@
 package wooteco.subway.web.member.interceptor;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.JoinMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-    private AuthorizationExtractor authExtractor;
-    private JwtTokenProvider jwtTokenProvider;
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
-        this.authExtractor = authExtractor;
-        this.jwtTokenProvider = jwtTokenProvider;
+    private final Authentication authentication;
+
+    public BearerAuthInterceptor(final Authentication authentication) {
+        this.authentication = authentication;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        String token = authExtractor.extract(request, "bearer");
-        if (token.isEmpty()) {
-            return true;
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        if (!handlerMethod.getMethod().isAnnotationPresent(JoinMember.class)) {
+            authentication.setAuthentication(request);
         }
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            return true;
-        }
-
-        String email = jwtTokenProvider.getSubject(token);
-
-        request.setAttribute("loginMemberEmail", email);
         return true;
     }
 
