@@ -1,23 +1,25 @@
 package wooteco.subway.service.member.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
 import wooteco.subway.domain.member.Member;
 
-public class MemberRequest {
-
+public class MemberRawRequest {
     private String email;
     private String name;
     private String password;
+    private String passwordCheck;
 
-    public MemberRequest() {
+    public MemberRawRequest() {
     }
 
-    public MemberRequest(String email, String name, String password) {
+    public MemberRawRequest(String email, String name, String password, String passwordCheck) {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.passwordCheck = passwordCheck;
+    }
+
+    public MemberRequest toMemberRequest() {
+        return new MemberRequest(email, name, password);
     }
 
     public String getEmail() {
@@ -32,7 +34,7 @@ public class MemberRequest {
         return password;
     }
 
-    public Member toMember() {
-        return new Member(email, name, password);
+    public String getPasswordCheck() {
+        return passwordCheck;
     }
 }

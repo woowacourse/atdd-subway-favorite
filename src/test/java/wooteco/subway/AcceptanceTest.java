@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.print.attribute.standard.Media;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
@@ -245,6 +247,25 @@ public class AcceptanceTest {
         LineResponse lineResponse4 = createLine("신분당선");
         addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
+    }
+
+    public String registerMember(String email, String name, String password, String passwordCheck) {
+        Map<String, String> view = new HashMap<>();
+        view.put("email", email);
+        view.put("name", name);
+        view.put("password", password);
+        view.put("passwordCheck", passwordCheck);
+
+        return
+            given().body(view).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value()).
+                extract().header("Location");
     }
 
     public String createMember(String email, String name, String password) {

@@ -1,12 +1,17 @@
 package wooteco.subway.web.member;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.error.ErrorResponse;
 
 import java.net.URI;
 
@@ -19,11 +24,11 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RegisterMember MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
-                .created(URI.create("/members/" + member.getId()))
-                .build();
+            .created(URI.create("/members/" + member.getId()))
+            .build();
     }
 
     @GetMapping("/members")
@@ -33,7 +38,8 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
+        @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -42,5 +48,10 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(value = NotMatchPasswordException.class)
+    public ResponseEntity<ErrorResponse> exceptionHandle(NotMatchPasswordException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     }
 }
