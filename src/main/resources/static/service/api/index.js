@@ -41,9 +41,16 @@ const api = (() => {
     }
   }
 
+  const member = {
+    join(joinRequest) {
+      return request("/members", METHOD.POST(joinRequest));
+    },
+  }
+
   return {
     line,
-    path
+    path,
+    member,
   }
 })()
 

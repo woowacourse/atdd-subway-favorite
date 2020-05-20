@@ -1,0 +1,43 @@
+import api from "../../api/index.js";
+
+function Join() {
+
+  const $joinForm = document.querySelector("#join-form");
+  const $emailInput = document.querySelector("#email");
+  const $nameInput = document.querySelector("#name");
+  const $passwordInput = document.querySelector("#password");
+  const $passwordCheckInput = document.querySelector("#password-check");
+
+  const onSubmitHandler = event => {
+    event.preventDefault();
+    const email = $emailInput.value;
+    const name = $nameInput.value;
+    const password = $passwordInput.value;
+    const passwordCheck = $passwordCheckInput.value;
+    if (!(email && name && password)) {
+      return;
+    }
+    if (password !== passwordCheck) {
+      alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+    const joinRequest = {
+      email,
+      name,
+      password,
+    }
+    api.member.join(joinRequest)
+    .then(response => {
+      if (response.status === 201) {
+        return location.href = "/login";
+      }
+      if (response.status !== 201) {
+        alert("회원가입에 성공하지 못했습니다.")
+      }
+    })
+  }
+
+  $joinForm.addEventListener("submit", onSubmitHandler);
+}
+
+const join = new Join();
