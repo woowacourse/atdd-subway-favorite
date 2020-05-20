@@ -40,16 +40,19 @@ public class Line {
 		return new Line(null, name, startTime, endTime, intervalTime, null, null, LineStations.empty());
 	}
 
-	public Line withId(Long id) {
-		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, this.updatedAt, this.stations);
+	public Line withId(final Long id) {
+		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, this.updatedAt,
+			this.stations);
 	}
 
 	public Line withCreatedAt(LocalDateTime createdAt) {
-		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, createdAt, this.updatedAt, this.stations);
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, createdAt, this.updatedAt,
+			this.stations);
 	}
 
 	public Line withUpdatedAt(LocalDateTime updatedAt) {
-		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, updatedAt, this.stations);
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, updatedAt,
+			this.stations);
 	}
 
 	public Line update(Line line) {

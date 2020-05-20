@@ -46,7 +46,7 @@ public class MemberControllerTest {
 
 	@Test
 	public void createMember() throws Exception {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD).withId(1L);
 		given(memberService.createMember(any())).willReturn(member);
 
 		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
