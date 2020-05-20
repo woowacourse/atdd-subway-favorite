@@ -33,18 +33,25 @@ const api = (() => {
     getAllDetail() {
       return requestWithJsonData(`/lines/detail`)
     }
-  }
+  };
 
   const path = {
     find(params) {
       return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
     }
-  }
+  };
+
+  const user = {
+    join(params) {
+      return request(`/members`, METHOD.POST(params))
+    }
+  };
 
   return {
     line,
-    path
+    path,
+    user
   }
-})()
+})();
 
 export default api
