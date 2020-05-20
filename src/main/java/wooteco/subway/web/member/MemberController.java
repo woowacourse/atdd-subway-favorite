@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,37 +19,41 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
+@RequestMapping("/members")
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
-        Member member = memberService.createMember(view.toMember());
+    @PostMapping
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest memberRequest) {
+        Member member = memberService.createMember(memberRequest.toMember());
         return ResponseEntity
-            .created(URI.create("/members/" + member.getId()))
-            .build();
+                .created(URI.create("/members/" + member.getId()))
+                .build();
     }
 
-    @GetMapping("/members")
+    @GetMapping
     public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
         Member member = memberService.findMemberByEmail(email);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
+            @RequestBody UpdateMemberRequest updateMemberRequest) {
+        memberService.updateMember(id, updateMemberRequest);
+        return ResponseEntity.ok()
+                .build();
     }
 
-    @DeleteMapping("/members/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                .build();
     }
 }
