@@ -44,6 +44,9 @@ const api = (() => {
   const member = {
     create(params){
       return request(`/members`, METHOD.POST(params));
+    },
+    login(params){
+      return request('/oauth/token', METHOD.POST(params));
     }
   }
 
