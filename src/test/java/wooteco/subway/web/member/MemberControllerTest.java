@@ -16,6 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 
@@ -70,7 +71,7 @@ public class MemberControllerTest {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
-        given(memberService.createToken(any())).willReturn("JWT Token");
+        given(memberService.createToken(any())).willReturn(new JwtTokenProvider("thisisSecreckey=twice love", 123L).createToken(TEST_USER_EMAIL));
 
         String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
                 "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
