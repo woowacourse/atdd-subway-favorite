@@ -47,10 +47,18 @@ const api = (() => {
     }
   }
 
+  const login = {
+    login(data) {
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(data))
+    }
+  }
+
+
   return {
     line,
     path,
-    member
+    member,
+    login
   }
 })()
 

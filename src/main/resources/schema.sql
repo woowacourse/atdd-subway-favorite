@@ -38,4 +38,7 @@ create table if not exists MEMBER
     primary key(id)
 );
 
+INSERT INTO MEMBER (email, name, password)
+VALUES ('jun@naver.com', 'tiger', '1234');
+
 -- // TODO 즐겨찾기 테이블 스키마 추가
