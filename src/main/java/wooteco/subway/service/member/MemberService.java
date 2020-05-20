@@ -1,5 +1,6 @@
 package wooteco.subway.service.member;
 
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -18,7 +19,11 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        return memberRepository.save(member);
+        try {
+            return memberRepository.save(member);
+        } catch (DbActionExecutionException e) {
+            throw new CreateMemberException(CreateMemberException.WRONG_CREATE_MESSAGE);
+        }
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {

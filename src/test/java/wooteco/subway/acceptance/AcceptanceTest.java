@@ -1,7 +1,12 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -14,12 +19,6 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")

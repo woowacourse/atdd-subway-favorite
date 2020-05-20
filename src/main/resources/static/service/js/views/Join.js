@@ -21,10 +21,10 @@ function Join() {
 
     api.user.join(data).then(data => {
       if (!data.ok) {
-        return
+        throw new Error("회원가입 입력을 잘못했습니다.");
       }
       window.location.href = "/login";
-    });
+    }).catch(error => alert(error.message));
   };
   this.init = () => {
     $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoin)

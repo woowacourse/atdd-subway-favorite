@@ -6,8 +6,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static wooteco.subway.AcceptanceTest.TEST_USER_EMAIL;
-import static wooteco.subway.AcceptanceTest.TEST_USER_PASSWORD;
+import static wooteco.subway.acceptance.AcceptanceTest.TEST_USER_EMAIL;
+import static wooteco.subway.acceptance.AcceptanceTest.TEST_USER_PASSWORD;
 import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
 
 import org.junit.jupiter.api.BeforeEach;
