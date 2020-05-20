@@ -92,7 +92,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(invalidPasswordResponse.getErrorMessage()).isEqualTo("비밀번호가 틀렸습니다!");
 
         ExceptionResponse invalidEmailResponse = loginFailed("NOT_REGISTERED_EMAIL", TEST_USER_PASSWORD, HttpStatus.UNAUTHORIZED.value());
-        assertThat(invalidEmailResponse.getErrorMessage()).isEqualTo("가입되지 않은 이메일입니다!");
+        assertThat(invalidEmailResponse.getErrorMessage()).isEqualTo("NOT_REGISTERED_EMAIL은 가입되지 않은 이메일입니다!");
 
         ExceptionResponse emptyPasswordResponse = loginFailed(TEST_USER_EMAIL, "", HttpStatus.BAD_REQUEST.value());
         assertThat(emptyPasswordResponse.getErrorMessage()).isEqualTo("비밀번호는 공란이 될 수 없습니다!");

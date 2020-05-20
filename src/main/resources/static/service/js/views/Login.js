@@ -1,4 +1,4 @@
-import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')

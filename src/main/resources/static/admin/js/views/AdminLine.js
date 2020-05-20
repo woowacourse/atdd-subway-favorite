@@ -1,6 +1,6 @@
-import { ERROR_MESSAGE, EVENT_TYPE } from '../../utils/constants.js'
-import { colorSelectOptionTemplate, subwayLinesTemplate } from '../../utils/templates.js'
-import { subwayLineColorOptions } from '../../utils/defaultSubwayData.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import {colorSelectOptionTemplate, subwayLinesTemplate} from '../../utils/templates.js'
+import {subwayLineColorOptions} from '../../utils/defaultSubwayData.js'
 import Modal from '../../ui/Modal.js'
 import api from '../../api/index.js'
 

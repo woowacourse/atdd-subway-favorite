@@ -4,13 +4,11 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exceptions.DuplicatedEmailException;
-import wooteco.subway.exceptions.PasswordConflictException;
+import wooteco.subway.exceptions.InvalidEmailException;
+import wooteco.subway.exceptions.InvalidPasswordException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-
-import java.util.Objects;
 
 @Service
 public class MemberService {
@@ -41,12 +39,13 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        String email = param.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new InvalidEmailException(email));
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new InvalidPasswordException();
         }
 
-        return jwtTokenProvider.createToken(param.getEmail());
+        return jwtTokenProvider.createToken(email);
     }
 
     public Member findMemberByEmail(String email) {

@@ -1,6 +1,6 @@
-import { optionTemplate, subwayLinesItemTemplate, subwayLinesTemplate } from '../../utils/templates.js'
+import {optionTemplate, subwayLinesItemTemplate} from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
-import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 import Modal from '../../ui/Modal.js'
 import api from '../../api/index.js'
 

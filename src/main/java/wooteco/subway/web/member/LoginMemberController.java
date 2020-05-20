@@ -9,6 +9,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -20,7 +21,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/oauth/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
