@@ -6,7 +6,6 @@ function Join() {
   const onJoin = event => {
 
     event.preventDefault();
-    console.log("haha");
     const emailValue = document.querySelector('#email').value
     const nameValue = document.querySelector('#name').value;
     const passwordValue = document.querySelector('#password').value
@@ -20,7 +19,12 @@ function Join() {
       password: passwordValue,
     };
 
-    api.user.join(data);
+    api.user.join(data).then(data => {
+      if (!data.ok) {
+        return
+      }
+      window.location.href = "/login";
+    });
   };
   this.init = () => {
     $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoin)
