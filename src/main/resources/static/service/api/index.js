@@ -41,9 +41,16 @@ const api = (() => {
     }
   }
 
+  const member = {
+    create(params) {
+      return request('/members', METHOD.POST(params))
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member,
   }
 })()
 

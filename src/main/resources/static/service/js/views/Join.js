@@ -1,5 +1,6 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 import showSnackbar from "../../lib/snackbar/index.js";
+import api from "../../api/index.js";
 
 const validateEmail = (email) => {
   const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -40,6 +41,14 @@ function Join() {
     }
 
     validate(data)
+
+    const validData = {
+      email: emailValue,
+      name: nameValue,
+      password: passwordValue,
+    }
+
+    api.member.create(validData);
   }
 
   this.init = () => {
