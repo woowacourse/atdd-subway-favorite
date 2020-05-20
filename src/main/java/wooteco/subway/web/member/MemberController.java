@@ -23,7 +23,6 @@ public class MemberController {
 
     @PostMapping("/members")
     public ResponseEntity createMember(@Valid @RequestBody MemberRequest view) {
-
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
@@ -35,6 +34,7 @@ public class MemberController {
         Member member = memberService.findMemberByEmail(email);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
+
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
