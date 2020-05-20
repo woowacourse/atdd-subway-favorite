@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 
 @DataJdbcTest
 public class MemberRepositoryTest {
@@ -26,5 +27,15 @@ public class MemberRepositoryTest {
     void findByEmail() {
         Member findMember = memberRepository.findByEmail(this.member.getEmail()).get();
         assertThat(findMember).isEqualToComparingFieldByField(member);
+    }
+
+    @Test
+    void duplicatedEmail() {
+        Member newMember = new Member(TEST_USER_EMAIL, "KYLE","ORANGE");
+        memberRepository.save(member);
+
+        assertThatThrownBy(() -> {
+            memberRepository.save(newMember);
+        }).isInstanceOf(DbActionExecutionException.class);
     }
 }

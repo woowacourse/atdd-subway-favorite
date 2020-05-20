@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
@@ -9,6 +10,8 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.net.URI;
+
+import javax.validation.Valid;
 
 @RestController
 public class MemberController {
@@ -19,7 +22,8 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+    public ResponseEntity createMember(@Valid @RequestBody MemberRequest view) {
+
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))

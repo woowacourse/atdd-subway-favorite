@@ -11,8 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,10 +30,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
@@ -43,6 +50,10 @@ public class MemberControllerTest extends AcceptanceTest {
     @Autowired
     private MockMvc mockMvc;
     private Member member;
+
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -70,6 +81,38 @@ public class MemberControllerTest extends AcceptanceTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"asdasd","qweqwe", "cvpxcv@asdasd@", "@", "asdasd   @ asdasd"})
+    void duplicatedEmailException(String input) throws Exception {
+        when(memberService.createMember(any())).thenReturn(member);
+        String inputJson = "{\"email\":\"" + input + "\"," +
+            "\"name\":\"" + TEST_USER_NAME + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().is4xxClientError())
+            .andDo(print());
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"' ':hi:bye", "hi@hi:' ':bye", "hi@hi:bye:'  '"},delimiter = ':')
+    void emptyInput(String email, String name, String password) throws Exception {
+        when(memberService.createMember(any())).thenReturn(member);
+        String inputJson = "{\"email\":\"" + email + "\"," +
+            "\"name\":\"" + name + "\"," +
+            "\"password\":\"" + password + "\"}";
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().is4xxClientError())
+            .andDo(print());
     }
 
     @Test
@@ -105,13 +148,16 @@ public class MemberControllerTest extends AcceptanceTest {
     }
 
     @Test
+    @Disabled
     void deleteUser() throws Exception {
         when(memberService.createMember(member)).thenCallRealMethod();
-        TokenResponse token = login(member.getEmail(), member.getPassword());
+        doNothing().when(memberService).deleteMember(1L);
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        TokenResponse token = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        doNothing().when(memberService).deleteMember(member.getId());
-        this.mockMvc.perform(delete("/members/" + member.getId())
-            .header("Authorization", "Bearer" + token.getAccessToken())
+
+        this.mockMvc.perform(delete("/members/" + 1)
+            .header("Authorization", "bearer" + token.getAccessToken())
         )
             .andExpect(status().isNoContent())
             .andDo(print())
