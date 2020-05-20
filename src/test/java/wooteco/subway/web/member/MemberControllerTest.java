@@ -33,19 +33,92 @@ public class MemberControllerTest {
     @DisplayName("올바른 값이 입력되면 회원가입이 된다")
     @Test
     void createMemberTest() throws Exception {
-        Member member = new Member(1L,"ramen6315@gmail.com","ramen","6315)");
-        MemberRequest memberRequest = new MemberRequest("ramen6315@gmail.com","ramen","6315)");
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
+        given(memberService.createMember(any())).willReturn(member);
+
+        MemberRequest memberRequest = new MemberRequest("ramen6315@gmail.com", "ramen", "6315)");
+
+        String uri = "/members";
+        String content = gson.toJson(memberRequest);
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - email 형식 X")
+    @Test
+    void createMemberTestFail1() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
+        MemberRequest memberRequest = new MemberRequest("이메일형식X", "ramen", "6315)");
         given(memberService.createMember(any())).willReturn(member);
 
         String uri = "/members";
         String content = gson.toJson(memberRequest);
 
         mockMvc.perform(post(uri)
-            .content(content)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - 이름 빈값")
+    @Test
+    void createMemberTestFail2() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
+        MemberRequest memberRequest = new MemberRequest("이메일형식X", "", "6315)");
+        given(memberService.createMember(any())).willReturn(member);
+
+        String uri = "/members";
+        String content = gson.toJson(memberRequest);
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - 비밀번호 3자 이하")
+    @Test
+    void createMemberTestFail3() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "631");
+        MemberRequest memberRequest = new MemberRequest("이메일형식X", "ramen", "631");
+        given(memberService.createMember(any())).willReturn(member);
+
+        String uri = "/members";
+        String content = gson.toJson(memberRequest);
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - null")
+    @Test
+    void createMemberTestFail4() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "631");
+        MemberRequest memberRequest = new MemberRequest(null, null, null);
+        given(memberService.createMember(any())).willReturn(member);
+
+        String uri = "/members";
+        String content = gson.toJson(memberRequest);
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 
 }
