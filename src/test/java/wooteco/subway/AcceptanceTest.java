@@ -119,6 +119,7 @@ public class AcceptanceTest {
 
 	public void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
 		Map<String, String> params = new HashMap<>();
+		params.put("name", "a");
 		params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");

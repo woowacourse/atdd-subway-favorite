@@ -36,8 +36,7 @@ public class LineService {
 
 	public void updateLine(Long id, LineRequest request) {
 		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-		persistLine.update(request.toLine());
-		lineRepository.save(persistLine);
+		lineRepository.save(persistLine.update(request.toLine().withId(id)));
 	}
 
 	public void deleteLineById(Long id) {

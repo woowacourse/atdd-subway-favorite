@@ -32,6 +32,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	void myInfoWithSession() {
 		createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
+
 		MemberResponse memberResponse = myInfoWithSession(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
 		assertThat(memberResponse.getId()).isNotNull();

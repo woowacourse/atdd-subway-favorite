@@ -60,7 +60,7 @@ public class LineControllerTest {
 
     private LineDetailResponse createMockResponse() {
         List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+        return LineDetailResponse.of(Line.of(null, null, null, 0), stations);
     }
 }
 

@@ -12,30 +12,60 @@ import org.springframework.data.relational.core.mapping.Embedded;
 
 public class Line {
 	@Id
-	private Long id;
-	private String name;
-	private LocalTime startTime;
-	private LocalTime endTime;
-	private int intervalTime;
+	private final Long id;
+	private final String name;
+	private final LocalTime startTime;
+	private final LocalTime endTime;
+	private final int intervalTime;
 	@CreatedDate
-	private LocalDateTime createdAt;
+	private final LocalDateTime createdAt;
 	@LastModifiedDate
-	private LocalDateTime updatedAt;
+	private final LocalDateTime updatedAt;
 	@Embedded.Empty
-	private LineStations stations = LineStations.empty();
+	private final LineStations stations;
 
-	public Line() {
-	}
-
-	public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+	Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+		LocalDateTime createdAt, LocalDateTime updatedAt, LineStations stations) {
+		this.id = id;
 		this.name = name;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.intervalTime = intervalTime;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.stations = stations;
 	}
 
-	public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-		this(null, name, startTime, endTime, intervalTime);
+	public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+		return new Line(null, name, startTime, endTime, intervalTime, null, null, LineStations.empty());
+	}
+
+	public Line withId(Long id) {
+		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, this.updatedAt, this.stations);
+	}
+
+	public Line withCreatedAt(LocalDateTime createdAt) {
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, createdAt, this.updatedAt, this.stations);
+	}
+
+	public Line withUpdatedAt(LocalDateTime updatedAt) {
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, updatedAt, this.stations);
+	}
+
+	public Line update(Line line) {
+		return new Line(line.id, line.name, line.startTime, line.endTime, line.intervalTime, line.createdAt, line.updatedAt, line.stations);
+	}
+
+	public void addLineStation(LineStation lineStation) {
+		stations.add(lineStation);
+	}
+
+	public void removeLineStationById(Long stationId) {
+		stations.removeById(stationId);
+	}
+
+	public List<Long> getStationIds() {
+		return stations.getStationIds();
 	}
 
 	public Long getId() {
@@ -68,32 +98,5 @@ public class Line {
 
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
-	}
-
-	public void update(Line line) {
-		if (line.getName() != null) {
-			this.name = line.getName();
-		}
-		if (line.getStartTime() != null) {
-			this.startTime = line.getStartTime();
-		}
-		if (line.getEndTime() != null) {
-			this.endTime = line.getEndTime();
-		}
-		if (line.getIntervalTime() != 0) {
-			this.intervalTime = line.getIntervalTime();
-		}
-	}
-
-	public void addLineStation(LineStation lineStation) {
-		stations.add(lineStation);
-	}
-
-	public void removeLineStationById(Long stationId) {
-		stations.removeById(stationId);
-	}
-
-	public List<Long> getStationIds() {
-		return stations.getStationIds();
 	}
 }

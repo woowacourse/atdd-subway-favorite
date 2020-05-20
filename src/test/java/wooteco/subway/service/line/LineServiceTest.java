@@ -49,7 +49,7 @@ public class LineServiceTest {
 		station3 = new Station(3L, STATION_NAME3);
 		station4 = new Station(4L, STATION_NAME4);
 
-		line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+		line = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(1L);
 		line.addLineStation(new LineStation(null, 1L, 10, 10));
 		line.addLineStation(new LineStation(1L, 2L, 10, 10));
 		line.addLineStation(new LineStation(2L, 3L, 10, 10));
