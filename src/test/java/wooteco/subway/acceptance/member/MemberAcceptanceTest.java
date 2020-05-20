@@ -43,7 +43,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	 * then 회원 정보를 조회해서 수정 잘됐는지 확인한다.
 	 *
 	 * when 회원 탈퇴 한다.
-	 * then 회원조회를 해서 탈퇴되었는지 확인한다.
+	 * then 로그인 요청을 해서 탈퇴되었는지 확인한다.
 	 * */
 
 	@DisplayName("회원 자기 자신이 정보를 관리한다")
@@ -130,7 +130,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 			post("/oauth/token").
 			then().
 			log().all().
-			statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			statusCode(HttpStatus.BAD_REQUEST.value());
 	}
 
 	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
