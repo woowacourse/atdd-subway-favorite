@@ -1,4 +1,12 @@
 const METHOD = {
+  GET(data) {
+    return {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${data}`
+      },
+    }
+  },
   PUT() {
     return {
       method: 'PUT'
@@ -50,6 +58,9 @@ const api = (() => {
   const login = {
     login(data) {
       return requestWithJsonData(`/oauth/token`, METHOD.POST(data))
+    },
+    getUserInfo(token) {
+      return requestWithJsonData(`/me/bearer`, METHOD.GET(token))
     }
   }
 
