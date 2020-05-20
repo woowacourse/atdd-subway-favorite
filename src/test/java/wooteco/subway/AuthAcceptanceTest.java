@@ -70,16 +70,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 extract().as(MemberResponse.class);
     }
-
-    public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        return given().
-                auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/me/bearer").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().as(MemberResponse.class);
-    }
 }
