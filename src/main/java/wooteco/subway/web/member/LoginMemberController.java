@@ -23,6 +23,7 @@ public class LoginMemberController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param, HttpSession session) {
+        // TODO: 2020/05/20 session 생성 주체 확인
         if (!memberService.loginWithForm(param.getEmail(), param.getPassword())) {
             throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
         }
@@ -33,8 +34,7 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
 
-    // TODO: 2020/05/20 추후 /me로 통합
-    @GetMapping({"/me/session", "/me/bearer"})
+    @GetMapping({"/mypage"})
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }

@@ -1,4 +1,13 @@
 const METHOD = {
+  GET_WITH_AUTH() {
+    return {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("auth") || ""
+      }
+    }
+  },
   PUT() {
     return {
       method: 'PUT'
@@ -45,8 +54,11 @@ const api = (() => {
     create(params) {
       return request('/members', METHOD.POST(params))
     },
-    find(params) {
+    login(params) {
       return requestWithJsonData('/login', METHOD.POST(params))
+    },
+    find() {
+      return requestWithJsonData('/mypage', METHOD.GET_WITH_AUTH())
     }
   }
 

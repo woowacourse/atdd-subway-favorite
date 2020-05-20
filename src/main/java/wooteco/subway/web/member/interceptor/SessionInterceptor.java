@@ -13,7 +13,7 @@ public class SessionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String email = (String) request.getSession().getAttribute("loginMemberEmail");
         if (Strings.isNotBlank(email)) {
-            request.setAttribute("loginMemberEmail", email);
+            request.setAttribute("loginMemberEmailSession", email);
         }
 
         return true;

@@ -64,6 +64,16 @@ public class PageController {
         return "service/login";
     }
 
+    @GetMapping(value = "/my-page", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPage() {
+        return "service/mypage";
+    }
+
+    @GetMapping(value = "/my-page-edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPageEdit() {
+        return "service/mypage-edit";
+    }
+
     @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
     public String favoritesPage() {
         return "service/favorite";
