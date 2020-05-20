@@ -16,7 +16,6 @@ public class Station {
 		this.id = id;
 		this.name = name;
 		this.createdAt = createdAt;
-
 	}
 
 	public static Station of(String name) {

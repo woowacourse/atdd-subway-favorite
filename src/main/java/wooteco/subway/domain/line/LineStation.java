@@ -3,16 +3,20 @@ package wooteco.subway.domain.line;
 import java.util.Objects;
 
 public class LineStation {
-	private Long preStationId;
-	private Long stationId;
-	private int distance;
-	private int duration;
+	private final Long preStationId;
+	private final Long stationId;
+	private final int distance;
+	private final int duration;
 
-	public LineStation(Long preStationId, Long stationId, int distance, int duration) {
+	LineStation(Long preStationId, Long stationId, int distance, int duration) {
 		this.preStationId = preStationId;
 		this.stationId = stationId;
 		this.distance = distance;
 		this.duration = duration;
+	}
+
+	public static LineStation of(Long preStationId, Long stationId, int distance, int duration) {
+		return new LineStation(preStationId, stationId, distance, duration);
 	}
 
 	public Long getPreStationId() {
@@ -31,8 +35,8 @@ public class LineStation {
 		return duration;
 	}
 
-	public void updatePreLineStation(Long preStationId) {
-		this.preStationId = preStationId;
+	public LineStation updatePreLineStation(Long preStationId) {
+		return new LineStation(preStationId, this.stationId, this.distance, this.duration);
 	}
 
 	public boolean isLineStationOf(Long preStationId, Long stationId) {

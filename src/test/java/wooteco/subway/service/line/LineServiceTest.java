@@ -50,9 +50,9 @@ public class LineServiceTest {
 		station4 = Station.of(STATION_NAME4).withId(4L);
 
 		line = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(1L);
-		line.addLineStation(new LineStation(null, 1L, 10, 10));
-		line.addLineStation(new LineStation(1L, 2L, 10, 10));
-		line.addLineStation(new LineStation(2L, 3L, 10, 10));
+		line.addLineStation(LineStation.of(null, 1L, 10, 10));
+		line.addLineStation(LineStation.of(1L, 2L, 10, 10));
+		line.addLineStation(LineStation.of(2L, 3L, 10, 10));
 	}
 
 	@Test

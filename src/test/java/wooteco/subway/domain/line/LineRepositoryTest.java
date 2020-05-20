@@ -15,16 +15,16 @@ public class LineRepositoryTest {
 
 	@Test
 	void addLineStation() {
-		// given
-		Line line = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-		Line persistLine = lineRepository.save(line);
-		persistLine.addLineStation(new LineStation(null, 1L, 10, 10));
-		persistLine.addLineStation(new LineStation(1L, 2L, 10, 10));
+        // given
+        Line line = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line persistLine = lineRepository.save(line);
+        persistLine.addLineStation(LineStation.of(null, 1L, 10, 10));
+        persistLine.addLineStation(LineStation.of(1L, 2L, 10, 10));
 
-		// when
-		Line resultLine = lineRepository.save(persistLine);
+        // when
+        Line resultLine = lineRepository.save(persistLine);
 
-		// then
-		assertThat(resultLine.getStations()).hasSize(2);
-	}
+        // then
+        assertThat(resultLine.getStations()).hasSize(2);
+    }
 }

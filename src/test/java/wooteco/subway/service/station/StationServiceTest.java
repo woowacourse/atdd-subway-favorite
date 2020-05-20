@@ -29,20 +29,20 @@ public class StationServiceTest {
 
 	@Test
 	public void removeStation() {
-		Station station1 = stationRepository.save(Station.of("강남역"));
-		Station station2 = stationRepository.save(Station.of("역삼역"));
-		Line line = lineRepository.save(Line.of("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
+        Station station1 = stationRepository.save(Station.of("강남역"));
+        Station station2 = stationRepository.save(Station.of("역삼역"));
+        Line line = lineRepository.save(Line.of("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
 
-		line.addLineStation(new LineStation(null, station1.getId(), 10, 10));
-		line.addLineStation(new LineStation(station1.getId(), station2.getId(), 10, 10));
-		lineRepository.save(line);
+        line.addLineStation(LineStation.of(null, station1.getId(), 10, 10));
+        line.addLineStation(LineStation.of(station1.getId(), station2.getId(), 10, 10));
+        lineRepository.save(line);
 
-		stationService.deleteStationById(station1.getId());
+        stationService.deleteStationById(station1.getId());
 
-		Optional<Station> resultStation = stationRepository.findById(station1.getId());
-		assertThat(resultStation).isEmpty();
+        Optional<Station> resultStation = stationRepository.findById(station1.getId());
+        assertThat(resultStation).isEmpty();
 
-		Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
-		assertThat(resultLine.getStations()).hasSize(1);
-	}
+        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
+        assertThat(resultLine.getStations()).hasSize(1);
+    }
 }

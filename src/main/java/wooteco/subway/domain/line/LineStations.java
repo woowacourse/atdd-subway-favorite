@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.Set;
 
 public class LineStations {
-	private Set<LineStation> stations;
+	private final Set<LineStation> stations;
 
-	public LineStations(Set<LineStation> stations) {
+	LineStations(Set<LineStation> stations) {
 		this.stations = stations;
 	}
 
@@ -56,7 +56,11 @@ public class LineStations {
 
 	private void updatePreStationOfNextLineStation(Long targetStationId, Long newPreStationId) {
 		extractByPreStationId(targetStationId)
-			.ifPresent(it -> it.updatePreLineStation(newPreStationId));
+			.ifPresent(it -> {
+				final LineStation lineStation = it.updatePreLineStation(newPreStationId);
+				stations.remove(it);
+				stations.add(lineStation);
+			});
 	}
 
 	private Optional<LineStation> extractByStationId(Long stationId) {
@@ -72,10 +76,10 @@ public class LineStations {
 	}
 
 	public int getTotalDistance() {
-		return stations.stream().mapToInt(it -> it.getDistance()).sum();
+		return stations.stream().mapToInt(LineStation::getDistance).sum();
 	}
 
 	public int getTotalDuration() {
-		return stations.stream().mapToInt(it -> it.getDuration()).sum();
+		return stations.stream().mapToInt(LineStation::getDuration).sum();
 	}
 }

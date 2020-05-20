@@ -45,7 +45,7 @@ public class LineService {
 
 	public void addLineStation(Long id, LineStationCreateRequest request) {
 		Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-		LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+		LineStation lineStation = LineStation.of(request.getPreStationId(), request.getStationId(),
 			request.getDistance(), request.getDuration());
 		line.addLineStation(lineStation);
 
