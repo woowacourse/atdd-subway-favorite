@@ -38,7 +38,8 @@ public class LoginMemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
+    // TODO: 2020/05/20 추후 /me로 통합
+    @GetMapping({"/me/session", "/me/bearer"})
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
