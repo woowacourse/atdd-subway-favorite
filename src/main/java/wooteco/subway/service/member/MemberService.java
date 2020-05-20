@@ -6,9 +6,13 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.InvalidRegisterException;
+import wooteco.subway.web.member.NoSuchMemberException;
 
 @Service
 public class MemberService {
+    private static final String EMAIL_REG_EXP = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -18,7 +22,21 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
+        validateEmailAddress(member.getEmail());
+        validateDuplication(member);
         return memberRepository.save(member);
+    }
+
+    private void validateEmailAddress(String email) {
+        if (!email.matches(EMAIL_REG_EXP)) {
+            throw new InvalidRegisterException(InvalidRegisterException.INVALID_EMAIL_FORMAT_MSG);
+        }
+    }
+
+    private void validateDuplication(Member member) {
+        if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
+            throw new InvalidRegisterException(InvalidRegisterException.DUPLICATE_EMAIL_MSG);
+        }
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
@@ -41,7 +59,8 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
     }
 
     public boolean loginWithForm(String email, String password) {
