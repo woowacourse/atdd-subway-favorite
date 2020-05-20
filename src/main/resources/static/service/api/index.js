@@ -7,9 +7,15 @@ const METHOD = {
       },
     }
   },
-  PUT() {
+  PUT(data) {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
@@ -52,6 +58,9 @@ const api = (() => {
   const member = {
     create(data) {
       request(`/members`, METHOD.POST(data))
+    },
+    update(id, data) {
+      request(`/members/${id}`, METHOD.PUT(data))
     }
   }
 
