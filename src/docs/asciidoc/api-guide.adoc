@@ -11,12 +11,12 @@ endif::[]
 :operation-http-response-title: Example Response
 
 [[resources]]
-= Resources
+= 자원
 
 [[resources-members]]
-== Member
+== 멤버
 
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,http-response,request-fields,request-body']
