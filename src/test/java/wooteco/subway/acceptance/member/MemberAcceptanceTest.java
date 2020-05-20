@@ -16,75 +16,86 @@ import wooteco.subway.service.member.dto.TokenResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
-	@DisplayName("회원 관리 기능")
-	@Test
-	void manageMember() {
-		String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		assertThat(location).isNotBlank();
+    @DisplayName("회원 정보 관리")
+    @Test
+    void memberInfo() {
+        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(location).isNotBlank();
 
-		MemberResponse memberResponse = getMember(TEST_USER_EMAIL);
-		assertThat(memberResponse.getId()).isNotNull();
-		assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
-		assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        assertThat(tokenResponse.getAccessToken()).isNotBlank();
 
-		updateMember(memberResponse);
-		MemberResponse updatedMember = getMember(TEST_USER_EMAIL);
-		assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
+        MemberResponse memberResponse = getMember(TEST_USER_EMAIL, tokenResponse.getAccessToken());
+        updateMemberWhenLoggedIn(memberResponse, tokenResponse.getAccessToken(), "NEW_NAME", "NEW_PASSWORD");
 
-		deleteMember(memberResponse);
-	}
+        MemberResponse memberResponseAfterEdit = getMember(TEST_USER_EMAIL, tokenResponse.getAccessToken());
+        assertThat(memberResponseAfterEdit).isNotNull();
+        assertThat(memberResponseAfterEdit.getName()).isEqualTo("NEW_NAME");
+        assertThat(memberResponseAfterEdit.getId()).isNotNull();
+        assertThat(memberResponseAfterEdit.getEmail()).isEqualTo(TEST_USER_EMAIL);
 
-	@DisplayName("회원 정보 관리")
-	@Test
-	void memberInfo() {
-		String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		assertThat(location).isNotBlank();
+        deleteMember(memberResponseAfterEdit, tokenResponse.getAccessToken());
 
-		TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		assertThat(tokenResponse.getAccessToken()).isNotBlank();
+        /**
+         * Feature: 회원 정보 관리
+         *
+         * Scenario: 회원 정보를 관리한다.
+         * When 회원가입 요청을 한다.
+         * Then 회원가입이 된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있지 않다.
+         * When 로그인을 요청한다
+         * Then 로그인이 된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 조회 요청을 한다.
+         * Then 회원정보가 조회된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 수정 요청을 한다.
+         * Then 회원정보가 수정된다.
+         *  And 변경된 사항을 확인한다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 삭제 요청을 한다.
+         * Then 회원정보가 삭제된다.
+         */
+    }
 
-		/**
-		 * Feature: 회원 정보 관리
-		 *
-		 * Scenario: 회원 정보를 관리한다.
-		 * When 회원가입 요청을 한다.
-		 * Then 회원가입이 된다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있지 않다.
-		 * When 로그인을 요청한다
-		 * Then 로그인이 된다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있다.
-		 * When 회원정보 조회 요청을 한다.
-		 * Then 회원정보가 조회된다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있다.
-		 * When 회원정보 수정 요청을 한다.
-		 * Then 회원정보가 수정된다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있다.
-		 * When 회원정보 삭제 요청을 한다.
-		 * Then 회원정보가 삭제된다.
-		 */
+    private TokenResponse login(String email, String password) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("email", email);
+        paramMap.put("password", password);
 
-	}
+        return
+            given()
+                .body(paramMap)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/oauth/token")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+    }
 
-	private TokenResponse login(String email, String password) {
-		Map<String, String> paramMap = new HashMap<>();
-		paramMap.put("email", email);
-		paramMap.put("password", password);
+    public void updateMemberWhenLoggedIn(MemberResponse memberResponse, String accessToken, String name, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("password", password);
 
-		return
-			given()
-				.body(paramMap)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.when()
-				.post("/oauth/token")
-				.then()
-				.log().all()
-				.statusCode(HttpStatus.OK.value())
-				.extract().as(TokenResponse.class);
-	}
-
+        given()
+            .auth()
+            .preemptive()
+            .oauth2(accessToken)
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .put("/members/" + memberResponse.getId())
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value());
+    }
 }

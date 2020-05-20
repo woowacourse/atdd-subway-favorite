@@ -7,6 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,9 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -24,7 +30,9 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.TokenResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -37,12 +45,19 @@ public class MemberControllerTest {
     @Autowired
     protected MockMvc mockMvc;
 
+    @Autowired
+    protected JwtTokenProvider tokenProvider;
+
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .addFilter(new ShallowEtagHeaderFilter())
-            .apply(documentationConfiguration(restDocumentation))
-            .build();
+    public void setUp(WebApplicationContext webApplicationContext,
+        RestDocumentationContextProvider restDocumentation) {
+
+        this.mockMvc =
+            MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .addFilter(new ShallowEtagHeaderFilter())
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
     }
 
     @Test
@@ -61,5 +76,59 @@ public class MemberControllerTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
+    }
+
+    @Test
+    public void updateMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.createMember(any())).willReturn(member);
+
+        final String token = tokenProvider.createToken(TEST_USER_EMAIL);
+
+        String inputJson =
+            "{\"name\":\"" + TEST_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(put("/members/1")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " +token)
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    public void readMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.createMember(any())).willReturn(member);
+        given(memberService.findMemberByEmail(TEST_USER_EMAIL)).willReturn(member);
+
+        final String token = tokenProvider.createToken(TEST_USER_EMAIL);
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/members?email="+TEST_USER_EMAIL)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " +token)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.readMember());
+    }
+
+    @Test
+    public void deleteMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.createMember(any())).willReturn(member);
+
+        final String token = tokenProvider.createToken(TEST_USER_EMAIL);
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", 1)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " +token)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(MemberDocumentation.deleteMember());
     }
 }
