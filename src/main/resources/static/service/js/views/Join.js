@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import {EVENT_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 
 function Join() {
@@ -23,14 +23,15 @@ function Join() {
                 throw response;
             }
             window.location.href = '/';
-        }).catch(error =>
-            error.text().then(error => alert(error)))
+        }).catch(error => {
+            error.json().then(error => {
+                alert(error.message)
+            })
+        })
     }
 
     const validatePassword = event => {
-        console.log($passwordCheck.value);
         if ($password.value === $passwordCheck.value) {
-            console.log("일치")
             $joinButton.removeAttribute("disabled");
             $passwordCheckMessage.hidden = true;
             return
@@ -41,8 +42,7 @@ function Join() {
 
     this.init = () => {
         $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoin)
-        $passwordCheck.addEventListener("keyup", validatePassword)
-
+        $passwordCheck.addEventListener(EVENT_TYPE.KEY_UP, validatePassword)
     }
 }
 

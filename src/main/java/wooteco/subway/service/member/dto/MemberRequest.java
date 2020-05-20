@@ -2,13 +2,16 @@ package wooteco.subway.service.member.dto;
 
 import wooteco.subway.domain.member.Member;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class MemberRequest {
-    @NotBlank(message = "이메일을 입력하세요")
+    @Email(message = "이메일 형식이 맞지 않습니다.")
+    @NotBlank(message = "이메일을 입력하세요.")
     private String email;
-    @NotBlank(message = "이름을 입력하세요")
+    @NotBlank(message = "이름을 입력하세요.")
     private String name;
+    @NotBlank(message = "비밀번호를 입력하세요.")
     private String password;
 
     public String getEmail() {
