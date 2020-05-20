@@ -42,7 +42,6 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
                            HttpServletResponse response,
                            Object handler,
                            ModelAndView modelAndView) throws Exception {
-
     }
 
     @Override

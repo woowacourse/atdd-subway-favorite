@@ -22,8 +22,20 @@ const METHOD = {
   }
 }
 
+const resolver = (response) => {
+  return new Promise((resolve, reject) => {
+    let func;
+    response.status < 400 ? func = resolve : func = reject;
+    if (response.status !== 204) {
+      response.json().then(data => func({'status': response.status, 'body': data}));
+      return;
+    }
+    func({'status': response.status})
+  });
+}
+
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
+  const request = (uri, config) => fetch(uri, config).then(resolver);
   const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
 
   const line = {
@@ -41,9 +53,16 @@ const api = (() => {
     }
   }
 
+  const member = {
+    join(data) {
+      return request("/members", METHOD.POST(data));
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member
   }
 })()
 

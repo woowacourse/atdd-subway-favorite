@@ -1,10 +1,13 @@
 package wooteco.subway.service.member;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.exception.DuplicatedEmailException;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
@@ -17,8 +20,20 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Member createMember(Member member) {
-        return memberRepository.save(member);
+    public Long createMember(MemberRequest memberRequest) {
+        Member member = new Member(memberRequest.getEmail(), memberRequest.getName(), memberRequest.getPassword());
+        validateName(member);
+        try {
+            return memberRepository.save(member).getId();
+        } catch (DuplicateKeyException e) {
+            throw new DuplicatedEmailException(member.getEmail());
+        }
+    }
+
+    private void validateName(final Member member) {
+        if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
+            throw new DuplicatedEmailException(member.getEmail());
+        }
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {

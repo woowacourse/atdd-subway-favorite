@@ -1,11 +1,12 @@
 package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import wooteco.subway.domain.member.Member;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 import javax.servlet.http.HttpSession;
@@ -26,7 +27,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestParam Map<String, String> paramMap, HttpSession session) {
+    public ResponseEntity<Void> login(@LoginMember @RequestParam Map<String, String> paramMap, HttpSession session) {
         String email = paramMap.get("email");
         String password = paramMap.get("password");
         if (!memberService.loginWithForm(email, password)) {
@@ -38,8 +39,4 @@ public class LoginMemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
-        return ResponseEntity.ok().body(MemberResponse.of(member));
-    }
 }
