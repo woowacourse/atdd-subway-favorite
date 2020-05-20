@@ -21,6 +21,17 @@ public class MemberDocumentation {
 		);
 	}
 
+	public static RestDocumentationResultHandler getMember() {
+		return document("members/get",
+			requestFields(
+				fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address")
+			),
+			requestHeaders(
+				headerWithName("Authorization").description("The token for login which is Bearer Type")
+			)
+		);
+	}
+
 	public static RestDocumentationResultHandler updateMember() {
 		return document("members/update",
 			requestFields(

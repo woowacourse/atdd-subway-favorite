@@ -5,11 +5,9 @@ import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
@@ -30,25 +28,25 @@ public class MemberController {
 	public ResponseEntity createMember(@RequestBody MemberRequest view) {
 		Member member = memberService.createMember(view.toMember());
 		return ResponseEntity
-			.created(URI.create("/members/" + member.getId()))
+			.created(URI.create("/members/me/" + member.getId()))
 			.build();
 	}
 
-	@GetMapping("/members")
-	public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
-		Member member = memberService.findMemberByEmail(email);
+	@GetMapping("/members/me")
+	public ResponseEntity<MemberResponse> getMember(@LoginMember Member member) {
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}
 
-	@PutMapping("/members/{id}")
-	public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-		memberService.updateMember(id, param);
+	@PutMapping("/members/me")
+	public ResponseEntity<Void> updateMember(@LoginMember Member member,
+		@RequestBody UpdateMemberRequest updateMemberRequest) {
+		memberService.updateMember(member.getId(), updateMemberRequest);
 		return ResponseEntity.ok().build();
 	}
 
-	@DeleteMapping("/members/{id}")
-	public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-		memberService.deleteMember(id);
-		return ResponseEntity.noContent().build();
+	@DeleteMapping("/members/me")
+	public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+		memberService.deleteMember(member.getId());
+		return ResponseEntity.ok().build();
 	}
 }

@@ -10,12 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import io.restassured.authentication.FormAuthConfig;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-
 	@DisplayName("Bearer Auth")
 	@Test
 	void myInfoWithBearerAuth() {
@@ -28,13 +26,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 	}
 
-
 	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
 		return given().auth()
 			.oauth2(tokenResponse.getAccessToken())
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/me/bearer")
+			.get("/members/me")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
