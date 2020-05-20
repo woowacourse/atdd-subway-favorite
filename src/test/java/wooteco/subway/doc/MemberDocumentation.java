@@ -7,6 +7,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.ResultHandler;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
@@ -41,6 +42,14 @@ public class MemberDocumentation {
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                 fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
             ),
+            requestHeaders(
+                headerWithName("Authorization").description("The token for login which is Bearer Type")
+            )
+        );
+    }
+
+    public static ResultHandler deleteMember() {
+        return document("members/delete",
             requestHeaders(
                 headerWithName("Authorization").description("The token for login which is Bearer Type")
             )

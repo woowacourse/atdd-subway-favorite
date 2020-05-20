@@ -16,6 +16,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -48,6 +49,26 @@ public class MemberServiceTest {
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(member));
         Member foundMember = memberService.findMemberByEmail(member.getEmail());
         assertThat(member).isEqualToComparingFieldByField(foundMember);
+    }
+
+    @Test
+    void update() {
+        when(memberRepository.findById(1L)).thenReturn(Optional.ofNullable(member));
+        when(memberRepository.save(member)).thenReturn(member);
+
+        memberService.updateMember(1L, new UpdateMemberRequest("오렌지", "똑똑"));
+        assertThat(member).isEqualToComparingFieldByField(member);
+    }
+
+    @Test
+    void delete() {
+        doNothing().when(memberRepository).deleteById(1L);
+        when(memberRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
+        memberService.deleteMember(1L);
+        
+        assertThatThrownBy(() -> {
+            memberService.findById(1L);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
