@@ -19,10 +19,10 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
-        Member member = memberService.createMember(view.toMember());
+    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+        MemberResponse response = memberService.createMember(request.toMember());
         return ResponseEntity
-                .created(URI.create("/members/" + member.getId()))
+                .created(URI.create("/members/" + response.getId()))
                 .build();
     }
 
