@@ -25,6 +25,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.MemberResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -49,7 +50,7 @@ public class MemberControllerTest {
     @Test
     public void createMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member);
+        given(memberService.createMember(any())).willReturn(MemberResponse.of(member));
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +

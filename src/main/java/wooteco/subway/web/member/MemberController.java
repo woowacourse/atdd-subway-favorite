@@ -27,10 +27,10 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
-        Member member = memberService.createMember(view.toMember());
+    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+        MemberResponse memberResponse = memberService.createMember(memberRequest);
         return ResponseEntity
-            .created(URI.create("/members/" + member.getId()))
+            .created(URI.create("/members/" + memberResponse.getId()))
             .build();
     }
 

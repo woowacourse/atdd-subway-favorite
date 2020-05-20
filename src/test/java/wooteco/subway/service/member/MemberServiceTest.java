@@ -1,5 +1,6 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -15,6 +16,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -36,11 +38,22 @@ public class MemberServiceTest {
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
+            TEST_USER_PASSWORD);
 
-        memberService.createMember(member);
+        memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
+    }
+
+    @Test
+    void duplicateEmail() {
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
+            TEST_USER_PASSWORD);
+        when(memberRepository.existsByEmail(anyString())).thenReturn(true);
+
+        assertThatThrownBy(() -> memberService.createMember(memberRequest))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

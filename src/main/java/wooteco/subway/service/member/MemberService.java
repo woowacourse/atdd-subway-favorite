@@ -6,6 +6,8 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
@@ -18,8 +20,16 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Member createMember(Member member) {
-        return memberRepository.save(member);
+    public MemberResponse createMember(MemberRequest memberRequest) {
+        validateDuplicateEmail(memberRequest.getEmail());
+        Member member = memberRepository.save(memberRequest.toMember());
+        return MemberResponse.of(member);
+    }
+
+    private void validateDuplicateEmail(String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다");
+        }
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
