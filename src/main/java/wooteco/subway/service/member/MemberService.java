@@ -23,30 +23,39 @@ public class MemberService {
     public Member createMember(Member member) {
         String email = member.getEmail();
         if (memberRepository.findByEmail(email).isPresent()) {
-            throw new DuplicatedEmailException(email);
+	        throw new DuplicatedEmailException(email);
         }
-        return memberRepository.save(member);
+	    return memberRepository.save(member);
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
-        memberRepository.save(member);
-    }
+	public void updateMember(Long id, UpdateMemberRequest param) {
+		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		member.update(param.getName(), param.getPassword());
+		memberRepository.save(member);
+	}
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
-    }
+	public void updateMember(Member member, UpdateMemberRequest param) {
+		member.update(param.getName(), param.getPassword());
+		memberRepository.save(member);
+	}
 
-    public String createToken(LoginRequest param) {
-        String email = param.getEmail();
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new InvalidEmailException(email));
-        if (!member.checkPassword(param.getPassword())) {
-            throw new InvalidPasswordException();
-        }
+	public void deleteMember(Long id) {
+		memberRepository.deleteById(id);
+	}
 
-        return jwtTokenProvider.createToken(email);
-    }
+	public void deleteMember(Member member) {
+		memberRepository.delete(member);
+	}
+
+	public String createToken(LoginRequest param) {
+		String email = param.getEmail();
+		Member member = memberRepository.findByEmail(email).orElseThrow(() -> new InvalidEmailException(email));
+		if (!member.checkPassword(param.getPassword())) {
+			throw new InvalidPasswordException();
+		}
+
+		return jwtTokenProvider.createToken(email);
+	}
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);

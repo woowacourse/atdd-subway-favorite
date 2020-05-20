@@ -7,6 +7,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -34,13 +35,26 @@ public class LoginMemberController {
             throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
         }
 
-        session.setAttribute("loginMemberEmail", email);
+	    session.setAttribute("loginMemberEmail", email);
 
-        return ResponseEntity.ok().build();
+	    return ResponseEntity.ok().build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
-        return ResponseEntity.ok().body(MemberResponse.of(member));
-    }
+	@GetMapping({"/me/basic", "/me/session", "/me/bearer"})
+	public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
+		return ResponseEntity.ok().body(MemberResponse.of(member));
+	}
+
+	@PutMapping("/me")
+	public ResponseEntity<Void> updateMember(@LoginMember Member member,
+	                                         @Valid @RequestBody UpdateMemberRequest request) {
+		memberService.updateMember(member, request);
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/me")
+	public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+		memberService.deleteMember(member);
+		return ResponseEntity.noContent().build();
+	}
 }
