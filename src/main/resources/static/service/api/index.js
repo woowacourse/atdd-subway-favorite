@@ -8,9 +8,16 @@ const METHOD = {
       }
     }
   },
-  PUT() {
+  PUT(data) {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("auth") || ""
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
@@ -59,6 +66,9 @@ const api = (() => {
     },
     find() {
       return requestWithJsonData('/mypage', METHOD.GET_WITH_AUTH())
+    },
+    edit(data) {
+      return request(`/members/${data.id}`, METHOD.PUT(data))
     }
   }
 
