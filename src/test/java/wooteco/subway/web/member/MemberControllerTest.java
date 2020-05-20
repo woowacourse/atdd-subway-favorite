@@ -61,4 +61,5 @@ public class MemberControllerTest {
 			.andDo(print())
 			.andDo(MemberDocumentation.createMember());
 	}
+
 }
