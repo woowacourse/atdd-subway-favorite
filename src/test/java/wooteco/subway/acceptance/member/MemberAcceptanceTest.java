@@ -64,6 +64,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		memberResponse = myInfoWithBearerAuth(tokenResponse);
 		assertThat(memberResponse.getId()).isNotNull();
 		assertThat(memberResponse.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
+
+		deleteMemberWithBearerAuth(tokenResponse);
+
+		badLogin(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+	}
+
+	private void deleteMemberWithBearerAuth(TokenResponse tokenResponse) {
+		given()
+			.auth()
+			.oauth2(tokenResponse.getAccessToken())
+			.when()
+			.delete("/me/bearer")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.OK.value());
 	}
 
 	private void updateInfoBearerAuth(TokenResponse tokenResponse) {
@@ -100,6 +115,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 				log().all().
 				statusCode(HttpStatus.OK.value()).
 				extract().as(TokenResponse.class);
+	}
+
+	private void badLogin(String email, String password) {
+		Map<String, String> params = new HashMap<>();
+		params.put("email", email);
+		params.put("password", password);
+
+		given().
+			body(params).
+			contentType(MediaType.APPLICATION_JSON_VALUE).
+			accept(MediaType.APPLICATION_JSON_VALUE).
+			when().
+			post("/oauth/token").
+			then().
+			log().all().
+			statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 
 	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {

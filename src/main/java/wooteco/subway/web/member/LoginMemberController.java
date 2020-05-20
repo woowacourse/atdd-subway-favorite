@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,6 +56,12 @@ public class LoginMemberController {
 	public ResponseEntity<Void> updateMemberOfMineBearer(@LoginMember Member member,
 		@RequestBody UpdateMemberRequest updateMemberRequest) {
 		memberService.updateMember(member.getId(), updateMemberRequest);
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/me/bearer")
+	public ResponseEntity<Void> deleteMemberOfMineBearer(@LoginMember Member member) {
+		memberService.deleteMember(member.getId());
 		return ResponseEntity.ok().build();
 	}
 }
