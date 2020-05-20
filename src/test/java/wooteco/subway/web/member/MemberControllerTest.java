@@ -31,6 +31,7 @@ import wooteco.subway.service.member.MemberService;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
+    private Member member;
     @MockBean
     private MemberService memberService;
 
@@ -43,11 +44,12 @@ public class MemberControllerTest {
             .addFilter(new ShallowEtagHeaderFilter())
             .apply(documentationConfiguration(restDocumentation))
             .build();
+        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
     }
 
     @Test
     void createMember() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
         when(memberService.createMember(any())).thenReturn(member);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -63,4 +65,18 @@ public class MemberControllerTest {
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
     }
+
+    @Test
+    void findByEmail() throws Exception {
+        when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
+
+        this.mockMvc.perform(get("/members")
+            .param("email", member.getEmail())
+            .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.findByEmail());
+    }
+
 }

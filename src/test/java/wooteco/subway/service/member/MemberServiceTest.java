@@ -1,21 +1,21 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
-
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -24,6 +24,7 @@ public class MemberServiceTest {
     public static final String TEST_USER_PASSWORD = "brown";
 
     private MemberService memberService;
+    private Member member;
 
     @Mock
     private MemberRepository memberRepository;
@@ -33,15 +34,20 @@ public class MemberServiceTest {
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
         memberService.createMember(member);
-
         verify(memberRepository).save(any());
+    }
+
+    @Test
+    void findByEmail() {
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(member));
+        Member foundMember = memberService.findMemberByEmail(member.getEmail());
+        assertThat(member).isEqualToComparingFieldByField(foundMember);
     }
 
     @Test

@@ -20,3 +20,4 @@ endif::[]
 === 회원 가입
 
 operation::members/create[snippets='http-request,http-response']
+operation::members/find[snippets='http-request,http-response']
