@@ -17,10 +17,12 @@ function Login() {
       password: passwordValue
     }
 
-    api.login.login(userData).then(data => {
-      console.log(data);
+    api.login
+        .login(userData)
+        .then(data => {
+          console.log(data.accessToken)
+          sessionStorage.setItem("acceptToken", data.accessToken)
     })
-
   }
 
   this.init = () => {
