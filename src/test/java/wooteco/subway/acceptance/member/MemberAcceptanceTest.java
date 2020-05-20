@@ -26,4 +26,38 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         deleteMember(memberResponse);
     }
+
+    @DisplayName("회원 정보 관리")
+    @Test
+    void memberInfo() {
+        /**
+         * Feature: 회원 정보 관리
+         *
+         * Scenario: 회원 정보를 관리한다.
+         * When 회원가입 요청을 한다.
+         * Then 회원가입이 된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있지 않다.
+         * When 로그인을 요청한다
+         * Then 로그인이 된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 조회 요청을 한다.
+         * Then 회원정보가 조회된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 수정 요청을 한다.
+         * Then 회원정보가 수정된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 삭제 요청을 한다.
+         * Then 회원정보가 삭제된다.
+         */
+
+
+
+
+
+    }
+
 }
