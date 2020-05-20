@@ -7,21 +7,28 @@ import org.springframework.data.annotation.Id;
 
 public class Station {
 	@Id
-	private Long id;
-	private String name;
+	private final Long id;
+	private final String name;
 	@CreatedDate
-	private LocalDateTime createdAt;
+	private final LocalDateTime createdAt;
 
-	public Station() {
-	}
-
-	public Station(String name) {
-		this.name = name;
-	}
-
-	public Station(Long id, String name) {
+	Station(Long id, String name, LocalDateTime createdAt) {
 		this.id = id;
 		this.name = name;
+		this.createdAt = createdAt;
+
+	}
+
+	public static Station of(String name) {
+		return new Station(null, name, null);
+	}
+
+	public Station withId(final Long id) {
+		return new Station(id, this.name, this.createdAt);
+	}
+
+	public Station withCreatedAt(final LocalDateTime createdAt) {
+		return new Station(this.id, this.name, createdAt);
 	}
 
 	public Long getId() {

@@ -59,7 +59,7 @@ public class LineControllerTest {
     }
 
     private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
+        List<Station> stations = Arrays.asList(Station.of(""), Station.of(""), Station.of(""));
         return LineDetailResponse.of(Line.of(null, null, null, 0), stations);
     }
 }

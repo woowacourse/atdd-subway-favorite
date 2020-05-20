@@ -44,10 +44,10 @@ public class LineServiceTest {
 	void setUp() {
 		lineService = new LineService(lineStationService, lineRepository);
 
-		station1 = new Station(1L, STATION_NAME1);
-		station2 = new Station(2L, STATION_NAME2);
-		station3 = new Station(3L, STATION_NAME3);
-		station4 = new Station(4L, STATION_NAME4);
+		station1 = Station.of(STATION_NAME1).withId(1L);
+		station2 = Station.of(STATION_NAME2).withId(2L);
+		station3 = Station.of(STATION_NAME3).withId(3L);
+		station4 = Station.of(STATION_NAME4).withId(4L);
 
 		line = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(1L);
 		line.addLineStation(new LineStation(null, 1L, 10, 10));
