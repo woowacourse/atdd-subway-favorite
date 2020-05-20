@@ -39,6 +39,11 @@ public class PageController {
         return "admin/admin-edge";
     }
 
+    @GetMapping(value = "/service", produces = MediaType.TEXT_HTML_VALUE)
+    public String servicePage() {
+        return "service/index";
+    }
+
     @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
     public String mapPage() {
         return "service/map";
