@@ -7,9 +7,6 @@ function MyPageEdit() {
   const $deleteButton = document.querySelector('#delete-button')
 
   const $email = document.querySelector('#email')
-  const $nameValue = document.querySelector('#name').value
-  const $passwordValue = document.querySelector('#password').value
-  const $passwordCheckValue = document.querySelector('#password-check').value
 
   const initUserInfo = async () => {
     const token = sessionStorage.getItem("accessToken");
@@ -19,7 +16,11 @@ function MyPageEdit() {
     })
   }
 
-  const onEdit = event => {
+  const onEdit = async event => {
+    const $nameValue = document.querySelector('#name').value
+    const $passwordValue = document.querySelector('#password').value
+    const $passwordCheckValue = document.querySelector('#password-check').value
+
     event.preventDefault()
     if (!($nameValue && $passwordValue && $passwordCheckValue)) {
       Snackbar.show({ text: ERROR_MESSAGE.EDIT_EMPTY_FAIL, pos: 'bottom-center', showAction: false, duration: 2000 })
@@ -35,14 +36,17 @@ function MyPageEdit() {
       password: $passwordValue
     }
     const memberId = $editForm.dataset.memberId
-    api.member
+    await api.member
         .update(memberId, userInfo)
+
+    window.location = "/mypage"
   }
 
   const onDelete = event => {
     event.preventDefault()
     const memberId = $editForm.dataset.memberId
     api.member.delete(memberId)
+    window.location = "/service";
   }
 
   this.init = () => {

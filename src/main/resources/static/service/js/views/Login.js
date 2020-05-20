@@ -3,7 +3,7 @@ import api from "../../api/index.js";
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')
-  const onLogin = event => {
+  const onLogin = async event => {
     event.preventDefault()
     const emailValue = document.querySelector('#email').value
     const passwordValue = document.querySelector('#password').value
@@ -17,11 +17,13 @@ function Login() {
       password: passwordValue
     }
 
-    api.login
+    await api.login
         .login(userData)
         .then(data => {
           sessionStorage.setItem("accessToken", data.accessToken)
     })
+
+    window.location = "/mypage"
   }
 
   this.init = () => {
