@@ -41,9 +41,38 @@ const api = (() => {
     }
   }
 
+  const member = {
+    create(data) {
+      return requestWithJsonData(`/members`, METHOD.POST(data));
+    },
+    getMemberByEmail() {
+      return request(`/members`)
+    },
+    update(data, id) {
+      return requestWithJsonData(`/members/${id}`, METHOD.PUT(data));
+    },
+    delete(id) {
+      return request(`/members/${id}`);
+    }
+  }
+
+  const login = {
+    createToken(data) {
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(data));
+    },
+    loginWithIdPsw(data) {
+      return requestWithJsonData(`/login`, METHOD.POST(data));
+    },
+    getMemberOfMine(data) {
+      return requestWithJsonData(`/me/bearer`, METHOD.GET(data));
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member,
+    login
   }
 })()
 

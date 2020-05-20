@@ -10,6 +10,18 @@ function Login() {
       Snackbar.show({ text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000 })
       return
     }
+    const value = {
+      email: emailValue,
+      password: passwordValue
+    };
+    api.login.
+    loginWithIdPsw(value)
+        .then((token) => {
+          localStorage.setItem("accessToken", token.accessToken);
+          localStorage.setItem("tokenType", token.tokenType);
+          location.href='/';
+        })
+        .catch(error => alert(ERROR_MESSAGE))
   }
 
   this.init = () => {

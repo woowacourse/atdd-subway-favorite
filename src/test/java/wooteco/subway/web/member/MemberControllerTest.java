@@ -57,13 +57,6 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(post("/members")
                 .content(inputJson)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
-
-        this.mockMvc.perform(post("/members")
-                .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isCreated())
