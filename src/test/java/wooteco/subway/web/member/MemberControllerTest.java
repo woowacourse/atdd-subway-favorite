@@ -67,8 +67,9 @@ public class MemberControllerTest {
                 .andDo(print())
                 .andDo(MemberDocumentation.createMember());
     }
+
     @Test
-    public void getMemberByEmail() throws Exception {
+    public void findMemberByEmail() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
@@ -95,5 +96,16 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    public void deleteMember() throws Exception {
+        this.mockMvc.perform(delete("/members/1")
+                .header("Authorization", "Bearer TestToken")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteMember());
     }
 }

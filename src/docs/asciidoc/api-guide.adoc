@@ -24,10 +24,15 @@ operation::members/create[snippets='http-request,http-response,request-fields']
 [[resources-members-findByEmail]]
 === 회원 정보 불러 오기
 
-operation::members/findByEmail[snippets='http-request,http-response,request-parameters']
+operation::members/findByEmail[snippets='http-request,http-response,request-parameters,request-headers']
 
 [[resources-members-update]]
 === 회원 정보 수정
 
-operation::members/update[snippets='http-request,http-response,request-fields']
+operation::members/update[snippets='http-request,http-response,request-fields,request-headers']
+
+[[resources-members-delete]]
+=== 회원 탈퇴
+
+operation::members/delete[snippets='http-request,http-response,request-headers']
 

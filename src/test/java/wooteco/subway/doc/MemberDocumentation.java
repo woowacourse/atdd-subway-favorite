@@ -48,4 +48,12 @@ public class MemberDocumentation {
                 )
         );
     }
+
+    public static RestDocumentationResultHandler deleteMember() {
+        return document("members/delete",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                )
+        );
+    }
 }
