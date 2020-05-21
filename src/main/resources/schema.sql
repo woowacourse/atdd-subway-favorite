@@ -39,4 +39,6 @@ create table if not exists MEMBER
 );
 
 INSERT INTO MEMBER(EMAIL, NAME, PASSWORD) VALUES ('aa@aa.com', 'a', 'a');
+INSERT INTO MEMBER(EMAIL, NAME, PASSWORD) VALUES ('bb@bb.com', 'b', 'b');
+
 -- // TODO 즐겨찾기 테이블 스키마 추가

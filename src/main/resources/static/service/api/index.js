@@ -1,4 +1,12 @@
 const METHOD = {
+    GET_WITH_AUTH(token) {
+        return {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        }
+    },
     PUT() {
         return {
             method: 'PUT'
@@ -45,8 +53,11 @@ const api = (() => {
         create(data) {
             return request(`/members`, METHOD.POST(data))
         },
-        login(data){
-            return request('/login', METHOD.POST(data))
+        login(data) {
+            return request(`/login`, METHOD.POST(data))
+        },
+        getWithAuth(token) {
+            return requestWithJsonData(`/members`, METHOD.GET_WITH_AUTH(token))
         }
     }
 

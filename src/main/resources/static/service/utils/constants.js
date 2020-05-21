@@ -2,6 +2,10 @@ export const EVENT_TYPE = {
     CLICK: 'click'
 }
 
+export const HTTP_HEADERS = {
+    AUTHORIZATION: 'Authorization',
+}
+
 export const ERROR_MESSAGE = {
     LOGIN_FAIL: '😭 로그인이 실패했습니다. 다시 시도해주세요.'
 }

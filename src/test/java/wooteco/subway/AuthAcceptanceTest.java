@@ -1,7 +1,9 @@
 package wooteco.subway;
 
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -42,16 +44,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", email);
         params.put("password", password);
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post(uri).
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(TokenResponse.class);
+
+        Response response = given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post(uri).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value())
+                .extract()
+                .response();
+        String token = response.getHeader(HttpHeaders.AUTHORIZATION);
+        return TokenResponse.of(token);
     }
 }

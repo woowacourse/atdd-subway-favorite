@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import {EVENT_TYPE, HTTP_HEADERS} from '../../utils/constants.js'
 import api from '../../api/index.js'
 
 function Login() {
@@ -24,7 +24,9 @@ function Login() {
         }
 
         const response = await api.member.login(loginDetail)
-        return console.log(response);
+        const token = response.headers.get(HTTP_HEADERS.AUTHORIZATION)
+        sessionStorage.setItem(HTTP_HEADERS.AUTHORIZATION, token)
+        window.location.href = "/"
     }
 
     this.init = () => {
