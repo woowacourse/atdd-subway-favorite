@@ -91,6 +91,9 @@ const api = (() => {
     const me = {
         retrieve() {
             return requestWithJsonData(`/me`, METHOD.GET(getToken()))
+        },
+        update(data) {
+            return request(`/me`, METHOD.PUT(data, getToken()))
         }
     }
 
