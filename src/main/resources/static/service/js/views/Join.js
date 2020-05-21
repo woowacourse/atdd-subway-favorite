@@ -21,14 +21,15 @@ function Join() {
             .then(res => console.log(res))
             .catch(err => console.log(err.message));
 
-        await api.loginMember
+        const accessToken = await api.loginMember
             .login({
                 email: $newMemberEmail.value,
                 password: $newMemberPassword.value
             })
-            .then(res => console.log(res))
+            .then(res => res.accessToken)
             .catch(err => console.log(err.message));
 
+        localStorage["token"] = accessToken;
         window.location.href = "/map";
     }
 
