@@ -114,19 +114,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      * when 로그인 되어 있는 회원의 회원정보 조회를 요청한다.
      * then 로그인 되어 있는 회원의 회원정보가 조회된다.
      * <p>
-     * given 로그인이 되어 있다.
      * when 이름, 비밀번호 수정을 요청한다.
      * then 회원정보가 수정된다.
      * <p>
-     * given 로그인이 되어 있다.
      * when 정보를 모두 입력하지 않은 채 수정을 요청한다.
      * then 회원정보가 수정된다.
      * <p>
-     * given 로그인이 되어 있다.
      * when 비밀번호와 확인용 비밀번호를 다르게 입력하여 수정을 요청한다.
      * then 수정이 실패한다.
      * <p>
-     * given 로그인이 되어 있다.
      * when 로그인 되어 있는 회원의 회원정보 삭제를 요청한다.
      * then 회원정보가 삭제된다.
      */
