@@ -1,5 +1,6 @@
 package wooteco.subway.infra;
 
+
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,9 +19,7 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String subject) {
-        System.out.println("분기4");
         Claims claims = Jwts.claims().setSubject(subject);
-        System.out.println("확인하고 싶다구요!"+claims.getSubject());
         Date now = new Date();
         Date validity = new Date(now.getTime()
                 + validityInMilliseconds);
