@@ -145,7 +145,7 @@ public class LoginMemberControllerTest {
                                 requestFields(fieldWithPath("email").description("The user's email."),
                                 fieldWithPath("password").description("The user's password.")))).
         when().
-                post("/login").
+                post("/oauth/token").
         then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
