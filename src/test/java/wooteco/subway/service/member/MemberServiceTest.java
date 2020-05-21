@@ -10,7 +10,9 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.InvalidRegisterException;
+import wooteco.subway.web.member.InvalidUpdateException;
 
 import java.util.Optional;
 
@@ -77,5 +79,21 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.createMember(member))
                 .isInstanceOf(InvalidRegisterException.class)
                 .hasMessage(InvalidRegisterException.DUPLICATE_EMAIL_MSG);
+    }
+
+    @Test
+    void updateOtherAccount() {
+        Member member1 = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member2 = new Member("jason@woowahan.com", "제이슨", "jason");
+        String token = jwtTokenProvider.createToken(member2.getEmail());
+
+        UpdateMemberRequest updateData = new UpdateMemberRequest("가나다", "1234");
+
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member1));
+        when(jwtTokenProvider.getSubject(any())).thenReturn(member2.getEmail());
+
+        assertThatThrownBy(() -> memberService.updateMember(token, member1.getId(), updateData))
+                .isInstanceOf(InvalidUpdateException.class);
+
     }
 }

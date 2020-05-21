@@ -20,3 +20,14 @@ endif::[]
 === 회원 가입
 
 operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources]]
+= Resources
+
+[[resources-members]]
+== Member
+
+[[resources-members-create]]
+=== 회원 정보 수정
+
+operation::members/update[snippets='http-request,http-response,request-fields']

@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,12 +16,15 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.AcceptanceTest.*;
@@ -35,8 +37,14 @@ public class MemberControllerTest {
     @MockBean
     protected MemberService memberService;
 
+    @MockBean
+    protected MemberRepository memberRepository;
+
     @Autowired
     protected MockMvc mockMvc;
+
+    @Autowired
+    protected JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -45,6 +53,7 @@ public class MemberControllerTest {
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
     }
+
 
     @Test
     public void createMember() throws Exception {
@@ -62,5 +71,24 @@ public class MemberControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(MemberDocumentation.createMember());
+    }
+
+    @Test
+    public void updateMemberTest() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        String token = jwtTokenProvider.createToken(member.getEmail());
+
+        String inputJson = "{\"name\":\"" + "abc" + "\"," +
+                "\"password\":\"" + "de" + "\"}";
+
+        this.mockMvc.perform(put("/members/1")
+                .header("Authorization", token)
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.updateMember());
     }
 }

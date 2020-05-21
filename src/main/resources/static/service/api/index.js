@@ -57,11 +57,8 @@ const api = (() => {
   }
 
   const login = {
-    createToken(data) {
-      return requestWithJsonData(`/oauth/token`, METHOD.POST(data));
-    },
-    loginWithIdPsw(data) {
-      return requestWithJsonData(`/login`, METHOD.POST(data));
+    loginWithToken(data) {
+        return requestWithJsonData(`/oauth/token`, METHOD.POST(data));
     },
     getMemberOfMine(data) {
       return requestWithJsonData(`/me/bearer`, METHOD.GET(data));

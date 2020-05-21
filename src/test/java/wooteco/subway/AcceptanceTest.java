@@ -12,6 +12,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -40,6 +41,9 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+
+    public static final String TEST_UPDATED_USER_NAME = "제이슨";
+    public static final String TEST_UPDATED_USER_PASSWORD = "jason";
 
     @LocalServerPort
     public int port;
@@ -278,12 +282,13 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember(TokenResponse tokenResponse, MemberResponse memberResponse) {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("name", "NEW_" + TEST_UPDATED_USER_NAME);
+        params.put("password", "NEW_" + TEST_UPDATED_USER_PASSWORD);
 
         given().
+                header("Authorization", tokenResponse.getAccessToken()).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -291,7 +296,8 @@ public class AcceptanceTest {
                 put("/members/" + memberResponse.getId()).
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
+                statusCode(HttpStatus.OK.value()).
+                extract().header("Authorization");
     }
 
     public void deleteMember(MemberResponse memberResponse) {
@@ -300,6 +306,24 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/oauth/token").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(TokenResponse.class);
     }
 }
 

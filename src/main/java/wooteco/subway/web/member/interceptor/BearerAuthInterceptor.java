@@ -3,6 +3,7 @@ package wooteco.subway.web.member.interceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
@@ -14,10 +15,12 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     public static final String BEARER = "bearer";
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
+    private MemberRepository memberRepository;
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
+    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
         this.authExtractor = authExtractor;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberRepository = memberRepository;
     }
 
     @Override

@@ -7,6 +7,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.InvalidRegisterException;
+import wooteco.subway.web.member.InvalidUpdateException;
 import wooteco.subway.web.member.NoSuchMemberException;
 
 @Service
@@ -39,10 +40,14 @@ public class MemberService {
         }
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
-        memberRepository.save(member);
+    public void updateMember(String token, Long id, UpdateMemberRequest param) {
+        Member targetMember = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        String email = jwtTokenProvider.getSubject(token);
+        if (!email.equals(targetMember.getEmail())) {
+            throw new InvalidUpdateException();
+        }
+        targetMember.update(param.getName(), param.getPassword());
+        memberRepository.save(targetMember);
     }
 
     public void deleteMember(Long id) {

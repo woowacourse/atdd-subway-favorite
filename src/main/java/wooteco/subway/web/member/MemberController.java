@@ -8,6 +8,7 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -33,8 +34,9 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    public ResponseEntity<MemberResponse> updateMember(HttpServletRequest request, @PathVariable Long id, @RequestBody UpdateMemberRequest param) {
+        String token = request.getParameter("Authorization");
+        memberService.updateMember(token, id, param);
         return ResponseEntity.ok().build();
     }
 
