@@ -36,6 +36,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      * then 회원으로 추가되지 않았다.
      */
 
+
     @DisplayName("회원가입 테스트")
     @Test
     void joinMember() {
@@ -134,7 +135,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD,
-                                 TEST_USER_PASSWORD);
+                TEST_USER_PASSWORD);
         TokenResponse tokenResponse = loginSuccessfully(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         MemberResponse memberResponse = getMyInfo(tokenResponse);
         assertThat(memberResponse.getId()).isNotNull();
@@ -142,7 +143,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
         updateMyInfoSuccessfully(tokenResponse, "NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD,
-                                 "NEW_" + TEST_USER_PASSWORD);
+                "NEW_" + TEST_USER_PASSWORD);
         MemberResponse memberResponse2 = getMyInfo(tokenResponse);
         assertThat(memberResponse2.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
@@ -151,12 +152,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse3.getName()).isEqualTo("MODIFIED_" + TEST_USER_NAME);
 
         ExceptionResponse exceptionResponse = updateMyInfoFailed(tokenResponse, TEST_USER_NAME, TEST_USER_PASSWORD,
-                                                                 "CONFIRM_" + TEST_USER_PASSWORD);
+                "CONFIRM_" + TEST_USER_PASSWORD);
         assertThat(exceptionResponse.getErrorMessage()).isEqualTo("비밀번호와 비밀번호 확인란에 적은 비밀번호가 다르면 안됩니다!");
 
         deleteMyInfo(tokenResponse);
         ExceptionResponse invalidEmailResponse = loginFailed(TEST_USER_EMAIL, TEST_USER_PASSWORD,
-                                                             HttpStatus.UNAUTHORIZED.value());
+                HttpStatus.UNAUTHORIZED.value());
         assertThat(invalidEmailResponse.getErrorMessage()).isEqualTo(TEST_USER_EMAIL + "은 가입되지 않은 이메일입니다!");
     }
 
@@ -200,5 +201,29 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("로그인을 두번 했을 경우 토큰이 같은 지")
+    @Test
+    void loginTwice() {
+        createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, TEST_USER_PASSWORD);
+        TokenResponse tokenResponse = loginSuccessfully(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        MemberResponse memberResponse = getMyInfo(tokenResponse);
+        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
+        assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
+
+        TokenResponse tokenResponse2 = loginSuccessfully(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        MemberResponse memberResponse2 = getMyInfo(tokenResponse2);
+        assertThat(memberResponse2.getId()).isNotNull();
+        assertThat(memberResponse2.getEmail()).isEqualTo(TEST_USER_EMAIL);
+        assertThat(memberResponse2.getName()).isEqualTo(TEST_USER_NAME);
+
+        MemberResponse memberResponse3 = getMyInfo(tokenResponse);
+        assertThat(memberResponse3.getId()).isNotNull();
+        assertThat(memberResponse3.getEmail()).isEqualTo(TEST_USER_EMAIL);
+        assertThat(memberResponse3.getName()).isEqualTo(TEST_USER_NAME);
+
+        assertThat(tokenResponse.getAccessToken()).isEqualTo(tokenResponse2.getAccessToken());
     }
 }

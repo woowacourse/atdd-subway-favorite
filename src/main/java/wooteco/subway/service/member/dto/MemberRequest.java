@@ -1,5 +1,6 @@
 package wooteco.subway.service.member.dto;
 
+import org.apache.naming.factory.BeanFactory;
 import wooteco.subway.domain.member.Member;
 
 import javax.validation.constraints.NotBlank;

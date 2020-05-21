@@ -6,7 +6,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Objects;
 
-
 public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Object> {
     private String field;
     private String other;
