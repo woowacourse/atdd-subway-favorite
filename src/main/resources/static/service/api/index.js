@@ -19,8 +19,18 @@ const METHOD = {
         ...data
       })
     }
+  },
+
+  AUTH_GET(token) {
+    return {
+      method: 'GET',
+      headers: {
+        'authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    }
   }
-}
+};
 
 const api = (() => {
   const request = (uri, config) => fetch(uri, config)
@@ -51,6 +61,9 @@ const api = (() => {
     },
     login(params) {
       return requestWithJsonData(`/oauth/token`, METHOD.POST(params))
+    },
+    getInfo(token) {
+      return requestWithJsonData(`/me/bearer`, METHOD.AUTH_GET(token))
     }
   };
 

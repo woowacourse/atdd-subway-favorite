@@ -1,6 +1,6 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 import api from "../../api/index.js"
-import {cookieApi} from "../../utils/cookieApi.js";
+import cookieApi from "../../utils/cookieApi.js";
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')
