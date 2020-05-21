@@ -56,10 +56,6 @@ public class MemberDocumentation {
 				fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
 				fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
 			)
-			// ,
-			// requestHeaders(
-			// 	headerWithName("Authorization").description("The token for login which is Bearer Type")
-			// )
 		);
 	}
 
