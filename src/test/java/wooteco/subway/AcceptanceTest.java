@@ -18,7 +18,10 @@ import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -299,6 +302,62 @@ public class AcceptanceTest {
 	public void deleteMember(MemberResponse memberResponse) {
 		given().when().
 			delete("/members/" + memberResponse.getId()).
+			then().
+			log().all().
+			statusCode(HttpStatus.NO_CONTENT.value());
+	}
+
+	public TokenResponse login(LoginRequest loginRequest) {
+		Map<String, String> params = new HashMap<>();
+		params.put("email", loginRequest.getEmail());
+		params.put("password", loginRequest.getPassword());
+
+		return given().
+			body(params).
+			contentType(MediaType.APPLICATION_JSON_VALUE).
+			accept(MediaType.APPLICATION_JSON_VALUE).
+			when().
+			post("/oauth/token").
+			then().
+			log().all().
+			statusCode(HttpStatus.OK.value()).
+			extract().as(TokenResponse.class);
+	}
+
+	public MemberResponse getMemberOfMineBasic(String token) {
+		return given().auth()
+			.oauth2(token)
+			.when()
+			.get("/me")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.OK.value())
+			.extract()
+			.as(MemberResponse.class);
+	}
+
+	public void updateMemberOfMineBasic(String token, UpdateMemberRequest updateMemberRequest) {
+		Map<String, String> params = new HashMap<>();
+		params.put("name", updateMemberRequest.getName());
+		params.put("password", updateMemberRequest.getPassword());
+
+		given().auth()
+			.oauth2(token)
+			.body(params)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.put("/me")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.OK.value());
+	}
+
+	public void deleteMemberOfMineBasic(String token) {
+		given().auth().
+			oauth2(token).
+			when().
+			delete("/me").
 			then().
 			log().all().
 			statusCode(HttpStatus.NO_CONTENT.value());

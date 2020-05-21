@@ -31,7 +31,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			given().auth()
 				.oauth2(tokenResponse.getAccessToken())
 				.when()
-				.get("/me/bearer")
+				.get("/me")
 				.then()
 				.log().all()
 				.statusCode(HttpStatus.OK.value())

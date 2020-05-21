@@ -42,6 +42,7 @@ class LoginMemberControllerTest {
 
 	@Autowired
 	protected MockMvc mockMvc;
+
 	@Autowired
 	protected JwtTokenProvider jwtTokenProvider;
 
