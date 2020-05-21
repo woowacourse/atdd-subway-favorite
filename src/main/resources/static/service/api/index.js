@@ -41,9 +41,25 @@ const api = (() => {
     }
   }
 
+  const member = {
+    create(data) {
+      return request(`/members`, METHOD.POST(data))
+    },
+    find(email) {
+      return request(`/members?email=${email}`)
+    },
+    update(id, data) {
+      return requestWithJsonData(`/members/${id}`, METHOD.PUT(data))
+    },
+    delete(id) {
+      return requestWithJsonData(`/members/${id}`, METHOD.DELETE())
+    },
+  }
+
   return {
     line,
-    path
+    path,
+    member
   }
 })()
 
