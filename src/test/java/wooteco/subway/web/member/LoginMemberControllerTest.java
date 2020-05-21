@@ -16,7 +16,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.LoginRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -27,20 +29,23 @@ public class LoginMemberControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     @DisplayName("로그인 요청")
     void login() throws Exception {
         given(memberService.createToken(any())).willReturn("token");
 
-        String inputJson =
-            "{\"email\":\"" + TEST_USER_EMAIL + "\"," + "\"password\":\"" + TEST_USER_PASSWORD
-                + "\"}";
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        String inputJson = objectMapper.writeValueAsString(loginRequest);
 
         mockMvc.perform(post("/oauth/token").content(inputJson)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
-            .andExpect(content().json("{\"accessToken\":\"token\",\"tokenType\":\"bearer\"}"))
+            .andExpect(jsonPath("$.accessToken").value("token"))
+            .andExpect(jsonPath("$.tokenType").value("bearer"))
             .andDo(print());
     }
 }
