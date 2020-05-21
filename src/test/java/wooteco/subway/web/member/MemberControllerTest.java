@@ -18,7 +18,6 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -78,5 +77,32 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    public void deleteMember() throws Exception {
+        this.mockMvc.perform(delete("/me/bearer")
+                .header("Authorization", "bearer tokenValues")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteMember());
+    }
+
+    @Test
+    public void loginMember() throws Exception {
+        given(memberService.createToken(any())).willReturn("tokenValues");
+
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/oauth/token")
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.loginMember());
     }
 }

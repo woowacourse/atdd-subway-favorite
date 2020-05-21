@@ -18,7 +18,17 @@ endif::[]
 
 operation::members/create[snippets='http-request,http-response,request-fields']
 
+[[resources-oauth-token-bearer]]
+=== 로그인
+
+operation::oauth/token/bearer[snippets='http-request,request-fields,http-response,response-fields']
+
 [[resources-me-bearer-update]]
 === 회원 정보 수정
 
-operation::me/bearer/update[snippets='http-request,request-body,request-fields']
+operation::me/bearer/update[snippets='http-request,request-headers,request-body,request-fields']
+
+[[resources-me-bearer-delete]]
+=== 회원 탈퇴
+
+operation::me/bearer/delete[snippets='http-request,request-headers']

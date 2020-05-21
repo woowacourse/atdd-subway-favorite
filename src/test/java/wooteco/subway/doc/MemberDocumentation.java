@@ -6,8 +6,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
@@ -30,7 +29,28 @@ public class MemberDocumentation {
                         fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
                 ),
                 requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                        headerWithName("Authorization").description("The token for update which is Bearer Type")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteMember() {
+        return document("me/bearer/delete",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for delete which is Bearer Type")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler loginMember() {
+        return document("oauth/token/bearer",
+                requestFields(
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                ),
+                responseFields(
+                        fieldWithPath("accessToken").type(JsonFieldType.STRING).description("The token value"),
+                        fieldWithPath("tokenType").type(JsonFieldType.STRING).description("The token type")
                 )
         );
     }
