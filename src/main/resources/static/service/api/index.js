@@ -1,4 +1,5 @@
 import { ERROR_MESSAGE } from '../utils/constants.js'
+import { request, requestWithJsonData } from './request.js';
 
 const METHOD = {
   PUT() {
@@ -25,14 +26,6 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(async response => {
-    if (response.ok) {
-      return response
-    }
-    return Promise.reject()
-  })
-  const requestWithJsonData = (uri, config) => request(uri, config).then(data => data.json())
-
   const line = {
     getAll() {
       return request(`/lines/detail`)

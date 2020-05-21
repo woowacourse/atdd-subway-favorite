@@ -32,7 +32,7 @@ function Login() {
     try {
       validate(loginInfo)
       user.login(await api.member.login(loginInfo))
-      location.replace('/favorites')
+      location.replace('/service')
     }
     catch (error) {
       Snackbar.show({
@@ -45,7 +45,7 @@ function Login() {
   }
 
   this.init = () => {
-    user.isLoggedIn() && location.replace('/favorites')
+    user.isLoggedIn() && location.replace('/service')
     $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin)
   }
 }

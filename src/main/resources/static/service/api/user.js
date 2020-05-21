@@ -1,9 +1,10 @@
+import { request, requestWithJsonData } from './request.js';
+
 export default (() => {
   let headers = {}
   let active = false
 
   const login = ({ accessToken, tokenType }) => {
-    console.log(accessToken, tokenType)
     headers = {
       Authorization: `${tokenType} ${accessToken}`
     }
@@ -11,6 +12,38 @@ export default (() => {
     localStorage.setItem('token_type', tokenType)
     active = true
   }
+
+  const logout = () => {
+    localStorage.clear()
+    active = false
+    headers = {}
+  }
+
+  const getInfo = () => requestWithJsonData('/me', {
+    headers
+  }).catch(() => {
+    throw new Error("정보를 불러오는데 실패했습니다.")
+  })
+
+  const update = (data) => request('/me', {
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    method: "PATCH",
+    body: JSON.stringify(data)
+  }).catch(() => {
+    throw new Error("정보를 불러오는데 실패했습니다.")
+  })
+
+  const deleteAccount = () => request("/me", {
+    headers,
+    method: "DELETE"
+  }).catch(() => {
+    throw new Error("정보를 불러오는데 실패했습니다.")
+  }).then(() => {
+    logout()
+  })
 
   const isLoggedIn = () => active
 
@@ -27,6 +60,9 @@ export default (() => {
 
   return {
     login,
-    isLoggedIn
+    getInfo,
+    isLoggedIn,
+    update,
+    deleteAccount
   }
 })()
