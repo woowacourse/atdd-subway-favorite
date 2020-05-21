@@ -15,6 +15,13 @@ export const isSamePassword = (password, passwordCheck) => {
     return password === passwordCheck;
 }
 
-export const isValidPasswordLength = password => {
+export const isValidJoinPasswordLength = password => {
+    return password.length > 4 && password.length < 20;
+}
+
+export const isValidUpdatePasswordLength = password => {
+    if (password.length === 0) {
+        return true;
+    }
     return password.length > 4 && password.length < 20;
 }

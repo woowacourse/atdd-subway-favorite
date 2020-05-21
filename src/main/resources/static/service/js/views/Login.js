@@ -1,6 +1,6 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js';
-import {isValidEmail, isValidPasswordLength} from "../../utils/validation.js";
+import {isValidEmail, isValidJoinPasswordLength} from "../../utils/validation.js";
 
 function Login() {
     const $loginButton = document.querySelector('#login-button');
@@ -18,7 +18,7 @@ function Login() {
             })
             return;
         }
-        if (!isValidPasswordLength(passwordValue)) {
+        if (!isValidJoinPasswordLength(passwordValue)) {
             Snackbar.show({
                 text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
                 pos: 'bottom-center',

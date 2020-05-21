@@ -10,6 +10,11 @@ export const ERROR_MESSAGE = {
   INVALID_PASSWORD_LENGTH: '비밀번호 길이는 5자 이상 20자 미만이어야 합니다.'
 }
 
+export const SUCCESS_MESSAGE = {
+  UPDATE_SUCCESS: '회원 정보가 수정되었습니다.',
+  SIGN_OUT_SUCCESS: '회원 탈퇴되었습니다.'
+}
+
 export const PATH_TYPE = {
   DISTANCE: 'DISTANCE',
   DURATION: 'DURATION'

@@ -1,5 +1,5 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
-import {isSamePassword, isValidEmail, isValidName, isValidPasswordLength} from '../../utils/validation.js'
+import {isSamePassword, isValidEmail, isValidJoinPasswordLength, isValidName} from '../../utils/validation.js'
 import api from '../../api/index.js'
 
 function Join() {
@@ -38,7 +38,7 @@ function Join() {
             })
             return;
         }
-        if (!isValidPasswordLength(passwordValue)) {
+        if (!isValidJoinPasswordLength(passwordValue)) {
             Snackbar.show({
                 text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
                 pos: 'bottom-center',
