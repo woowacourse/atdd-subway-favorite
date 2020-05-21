@@ -31,7 +31,8 @@ public class MemberService {
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+            .orElseThrow(NotFoundMemberException::new);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -51,11 +52,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+        return memberRepository.findByEmail(email)
+            .orElseThrow(NotFoundMemberException::new);
     }
 }

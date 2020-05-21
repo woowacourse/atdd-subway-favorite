@@ -32,7 +32,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/me/bearer")
+            .get("/me")
             .then()
             .log().all()
             .statusCode(HttpStatus.OK.value())
@@ -46,7 +46,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .oauth2("invalid_token")
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/me/bearer")
+            .get("/me")
             .then()
             .log().all()
             .statusCode(HttpStatus.UNAUTHORIZED.value());

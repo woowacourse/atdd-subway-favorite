@@ -17,6 +17,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.member.exception.DuplicateMemberException;
 import wooteco.subway.service.member.exception.IncorrectPasswordException;
 import wooteco.subway.service.member.exception.NotFoundMemberException;
@@ -89,5 +90,43 @@ public class MemberServiceTest {
 
         assertThatExceptionOfType(IncorrectPasswordException.class)
             .isThrownBy(() -> memberService.createToken(loginRequest));
+    }
+
+    @Test
+    @DisplayName("이메일로 회원 조회")
+    void findMemberByEmail() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+
+        assertThat(memberService.findMemberByEmail(TEST_USER_EMAIL)).isEqualTo(member);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회원 조회 시 예외 발생")
+    void findMemberByInvalidEmail() {
+        when(memberRepository.findByEmail("invalid_email")).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(NotFoundMemberException.class)
+            .isThrownBy(() -> memberService.findMemberByEmail("invalid_email"));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정")
+    void updateMember() {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("updateName",
+            "updatePassword");
+        memberService.updateMember(member.getId(), updateMemberRequest);
+
+        verify(memberRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("회원 삭제")
+    void deleteMember() {
+        memberService.deleteMember(1L);
+        verify(memberRepository).deleteById(any());
     }
 }
