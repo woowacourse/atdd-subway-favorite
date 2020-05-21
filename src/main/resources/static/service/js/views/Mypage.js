@@ -1,8 +1,8 @@
 import api from '../../api/index.js'
 
 function MyPage() {
-    const $email = document.querySelector("#email");
-    const $name = document.querySelector("#name");
+    const $email = document.querySelector("#email-field");
+    const $name = document.querySelector("#name-field");
 
     this.init = () => {
         api.member.myinfo().then(data => {

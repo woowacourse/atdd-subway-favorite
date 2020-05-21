@@ -38,9 +38,10 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    @DeleteMapping("/members")
+    public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+        System.out.println("TWICELOVE" + member.getId() + "이름은 " + member.getName());
+        memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 }

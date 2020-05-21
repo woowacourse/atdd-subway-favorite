@@ -10,12 +10,20 @@ const METHOD = {
   },
   PUT() {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("jwt") || ""
+      }
     }
   },
   DELETE() {
     return {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("jwt") || ""
+      }
     }
   },
   POST(data) {
@@ -60,8 +68,8 @@ const api = (() => {
     update(id, data) {
       return requestWithJsonData(`/members/${id}`, METHOD.PUT(data))
     },
-    delete(id) {
-      return requestWithJsonData(`/members/${id}`, METHOD.DELETE())
+    delete() {
+      return request(`/members`, METHOD.DELETE())
     },
     login(data) {
       return requestWithJsonData('/login', METHOD.POST(data))
