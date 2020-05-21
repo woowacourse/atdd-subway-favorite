@@ -27,7 +27,7 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
 
 		// then : 토큰을 응답받는다.
 		assertThat(tokenResponse.getAccessToken()).isNotBlank();
-		assertThat(tokenResponse.getTokenType()).isEqualTo("Bearer");
+		assertThat(tokenResponse.getTokenType()).isEqualTo("bearer");
 
 		// when : 회원정보를 요청한다.
 		MemberResponse memberResponse = findMemberBy(tokenResponse);
@@ -61,7 +61,7 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
 			auth().oauth2(tokenResponse.getAccessToken()).
 			accept(MediaType.APPLICATION_JSON_VALUE).
 			when().
-			get("/me/bearer").
+			get("/oauth/member").
 			then().
 			log().all().
 			statusCode(HttpStatus.OK.value()).

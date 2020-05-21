@@ -70,7 +70,7 @@ class LoginMemberControllerTest {
 
 		mockMvc.perform(post("/oauth/token")
 			.content(jsonRequest)
-			.contentType(MediaType.APPLICATION_JSON + "; charset=UTF-8")
+			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
