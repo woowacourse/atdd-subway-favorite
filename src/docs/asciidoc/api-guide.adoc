@@ -16,7 +16,17 @@ endif::[]
 [[resources-members]]
 == Member
 
-[[resources-members-create]]
-=== 회원 가입
+[[resources-members-retreive]]
+=== 내 정보
 
-operation::members/create[snippets='http-request,http-response,request-fields']
+operation::me/retrieve[snippets='http-request,http-response']
+
+[[resources-members-update]]
+=== 내 정보 수정
+
+operation::me/update[snippets='http-request,http-response,request-fields']
+
+[[resources-members-delete]]
+=== 탈퇴
+
+operation::me/delete[snippets='http-request,http-response']
