@@ -55,11 +55,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMember(memberResponse);
+        updateMember(tokenResponse);
         MemberResponse updatedMember = getMember(tokenResponse);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(memberResponse);
+        deleteMember(tokenResponse);
     }
 
+    @DisplayName("로그인 하지 않은 상태에서 멤버 정보 조회")
+    @Test
+    void getMemberInfoFromUnauthorizedUser() {
+        Integer code = given()
+                .when()
+                .get("/me")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract().as(new TypeRef<DefaultResponse<Void>>() {
+                }).getCode();
+
+        assertThat(code).isEqualTo(ErrorCode.TOKEN_NOT_FOUND.getCode());
+    }
 }

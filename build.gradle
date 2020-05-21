@@ -38,10 +38,10 @@ ext {
 test {
 	useJUnitPlatform()
 	outputs.dir snippetsDir
+	finalizedBy asciidoctor
 }
 
 asciidoctor {
-	dependsOn test
 	inputs.dir snippetsDir
 }
 
