@@ -21,7 +21,7 @@ export const memberInfo = member => {
           <a href="/mypage" class="rounded-t hover:bg-gray-400 py-2 px-5 block whitespace-no-wrap">나의정보</a>
         </li>
         <li>
-          <a href="/logout" class="rounded-b hover:bg-gray-400 py-2 px-5 block whitespace-no-wrap">로그아웃</a>
+          <a id="logout-button" href="/logout" class="rounded-b hover:bg-gray-400 py-2 px-5 block whitespace-no-wrap">로그아웃</a>
         </li>
       </ul>
     </div>`;
