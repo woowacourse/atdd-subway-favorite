@@ -73,3 +73,46 @@ export const pathStationTemplate = (name, index, lastIndex) => {
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
+
+export const mainMenuTemplate = (isLogin) => {
+  if (isLogin) {
+    return `
+    <ul class="text-blue-700">
+            <li class="inline-block p-1">
+              <a href="/" id="log-out" class="underline">로그아웃</a>
+            </li>
+            <li class="inline-block p-1">
+              <a class="underline" href="/my-page">마이페이지</a>
+            </li>
+            <li class="inline-block p-1">
+              <a class="underline" href="/my-page-edit">나의 정보 수정</a>
+            </li>
+            <li class="inline-block p-1">
+              <a href="/map" class="underline">전체 노선 보기</a>
+            </li>
+            <li class="inline-block p-1">
+              <a href="/search" class="underline">경로 검색</a>
+          </li>
+        </ul>`
+  } else {
+    return `
+    <ul class="text-blue-700">
+            <li class="inline-block p-1">
+              <a href="/login" id="log-out" class="underline">로그인</a>
+            </li>
+            <li class="inline-block p-1">
+              <a href="/join" class="underline">회원가입</a>
+            </li>
+            <li class="inline-block p-1">
+              <a href="/map" class="underline">전체 노선 보기</a>
+            </li>
+            <li class="inline-block p-1">
+              <a href="/search" class="underline">경로 검색</a>
+          </li>
+        </ul>`
+  }
+}
+
+export const initMainMenu = (isLogin) => {
+  document.querySelector('#menu').insertAdjacentHTML('afterBegin', mainMenuTemplate(isLogin))
+}
