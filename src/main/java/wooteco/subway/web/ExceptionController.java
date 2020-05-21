@@ -1,7 +1,6 @@
 package wooteco.subway.web;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,6 +9,7 @@ import wooteco.subway.exceptions.DuplicatedEmailException;
 import wooteco.subway.exceptions.InvalidEmailException;
 import wooteco.subway.exceptions.InvalidPasswordException;
 import wooteco.subway.web.dto.ExceptionResponse;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -27,10 +27,9 @@ public class ExceptionController {
 	}
 
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	@ExceptionHandler({InvalidPasswordException.class, InvalidEmailException.class})
+	@ExceptionHandler({InvalidPasswordException.class, InvalidEmailException.class,
+			InvalidAuthenticationException.class})
 	public ExceptionResponse invalidPassword(RuntimeException e) {
 		return new ExceptionResponse(e.getMessage());
 	}
-
-
 }
