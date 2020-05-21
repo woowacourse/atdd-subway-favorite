@@ -82,4 +82,8 @@ public class MemberDocumentation {
             )
         );
     }
+
+    public static RestDocumentationResultHandler deleteMember() {
+        return document("members/delete");
+    }
 }

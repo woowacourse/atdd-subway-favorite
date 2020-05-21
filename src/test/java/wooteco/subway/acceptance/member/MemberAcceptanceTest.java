@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.web.error.ErrorResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
@@ -28,31 +28,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMember(memberResponse);
+        TokenResponse tokenResponse = getToken(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        updateMember(memberResponse, tokenResponse);
         MemberResponse updatedMember = getMember(TEST_USER_EMAIL);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(memberResponse);
+        deleteMember(memberResponse, tokenResponse);
     }
 
-    private ErrorResponse createInvalidMember(String email, String name, String password,
-        String passwordCheck) {
+    private TokenResponse getToken(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
-        params.put("name", name);
         params.put("password", password);
-        params.put("passwordCheck", passwordCheck);
 
-        return
-            given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/members").
-                then().
-                log().all().
-                statusCode(HttpStatus.BAD_REQUEST.value()).
-                extract().as(ErrorResponse.class);
+        return given()
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/oauth/token")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(TokenResponse.class);
     }
 }

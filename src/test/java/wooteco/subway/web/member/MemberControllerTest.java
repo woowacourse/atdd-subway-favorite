@@ -196,4 +196,16 @@ public class MemberControllerTest {
             .andDo(print())
             .andDo(MemberDocumentation.updateMember());
     }
+
+    @Test
+    void deleteMember() throws Exception {
+        this.mockMvc.perform(delete("/members/" + 1L))
+            .andExpect(status().isNoContent())
+            .andDo(print());
+
+        this.mockMvc.perform(delete("/members/" + 1L))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(MemberDocumentation.deleteMember());
+    }
 }

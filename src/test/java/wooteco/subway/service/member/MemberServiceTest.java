@@ -42,7 +42,6 @@ public class MemberServiceTest {
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
         memberService.createMember(member);
 
         verify(memberRepository).save(any());
@@ -83,5 +82,12 @@ public class MemberServiceTest {
             "NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD));
         assertThat(member).extracting(Member::getName).isEqualTo("NEW_" + TEST_USER_NAME);
         assertThat(member).extracting(Member::getPassword).isEqualTo("NEW_" + TEST_USER_PASSWORD);
+    }
+
+    @Test
+        // TODO: 2020/05/21 어떻게 해야할지?
+    void deleteMember() {
+        // memberService.deleteMember(member.getId());
+        // assertThatThrownBy(() -> memberService.findMemberByEmail(member.getEmail())).isInstanceOf(RuntimeException.class);
     }
 }

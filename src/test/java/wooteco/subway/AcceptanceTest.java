@@ -19,6 +19,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -258,28 +259,6 @@ public class AcceptanceTest {
             40, 3);
     }
 
-    public String registerMember(String email, String name, String password, String passwordCheck) {
-        Map<String, String> view = new HashMap<>();
-        view.put("email", email);
-        view.put("name", name);
-        view.put("password", password);
-        view.put("passwordCheck", passwordCheck);
-
-        try {
-            return given().body(view).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/members").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value()).
-                extract().header("Location");
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
     public String createMember(String email, String name, String password, String passwordCheck) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -312,12 +291,14 @@ public class AcceptanceTest {
                 extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         given().
+            header("Authorization",
+                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
             body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
@@ -328,8 +309,10 @@ public class AcceptanceTest {
             statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
+    public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         given().when().
+            header("Authorization",
+                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
             delete("/members/" + memberResponse.getId()).
             then().
             log().all().

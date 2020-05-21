@@ -31,9 +31,14 @@ endif::[]
 [[resources-members-update]]
 === 정보 수정
 
+[[resources-members-delete]]
+=== 정보 삭제
+
+
 
 operation::members/create[snippets='http-request,http-response,request-fields']
 operation::members/duplicate-create[snippets='http-request,http-response,request-fields']
 operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
 operation::members/get[snippets='http-request,http-response']
 operation::members/update[snippets='http-request,http-response,request-fields']
+operation::members/delete[snippets='http-request,http-response]
