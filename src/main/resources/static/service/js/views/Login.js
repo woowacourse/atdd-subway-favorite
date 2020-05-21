@@ -19,7 +19,8 @@ function Login() {
         email: emailValue,
         password: passwordValue
       })
-    }).then(data => console.log(data.json()))
+    }).then(data => data.json())
+        .then(data => sessionStorage.setItem("token",data.accessToken))
 
   }
 
