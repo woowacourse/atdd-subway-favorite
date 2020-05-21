@@ -56,24 +56,29 @@
  - [x] 유효성 검증
  
 - 회원정보 조회
- - [ ] 뷰 연결
- - [ ] 인수 테스트 작성
- - [ ] Controller 테스트 작성
+ - [x] 뷰 연결
+ - [x] Controller 테스트 작성
+ - [ ] Controller 기능 구현 
  - [ ] Service 테스트 작성
+ - [ ] Service 기능 구현
  - [ ] API 연결
  
 - 회원정보 수정
- - [ ] 뷰 연결
+ - [x] 뷰 연결
  - [ ] 인수 테스트 작성
  - [ ] Controller 테스트 작성
+ - [ ] Controller 기능 구현 
  - [ ] Service 테스트 작성
+ - [ ] Service 기능 구현
  - [ ] API 연결
  
 - 회원정보 삭제
- - [ ] 뷰 연결
+ - [x] 뷰 연결
  - [ ] 인수 테스트 작성
  - [ ] Controller 테스트 작성
+ - [ ] Controller 기능 구현 
  - [ ] Service 테스트 작성
+ - [ ] Service 기능 구현
  - [ ] API 연결
  
 ## 추가 사항
