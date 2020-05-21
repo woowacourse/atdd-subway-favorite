@@ -25,3 +25,18 @@ operation::members/create[snippets='http-request,http-response']
 === 로그인
 
 operation::oauth/token[snippets='http-request,http-response']
+
+[[resources-members-mypage]]
+=== 내정보
+
+operation::me[snippets='http-request,http-response']
+
+[[resources-members-mypage-edit]]
+=== 내정보 수정
+
+operation::me-edit[snippets='http-request,http-response']
+
+[[resources-members-mypage-delete]]
+=== 탈퇴
+
+operation::me-delete[snippets='http-request,http-response']

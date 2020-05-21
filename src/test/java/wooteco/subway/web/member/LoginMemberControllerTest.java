@@ -24,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.MemberLoginDocumentation;
+import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -58,8 +59,8 @@ class LoginMemberControllerTest {
 	void login() throws Exception {
 		final String email = "a@email.com";
 		final String password = "1234";
-		LoginRequest loginRequest = new LoginRequest(email, password);
-		String token = jwtTokenProvider.createToken(loginRequest.getEmail());
+		final LoginRequest loginRequest = new LoginRequest(email, password);
+		final String token = jwtTokenProvider.createToken(loginRequest.getEmail());
 
 		given(memberService.createToken(any())).willReturn(token);
 
@@ -80,8 +81,8 @@ class LoginMemberControllerTest {
 	void login2() throws Exception {
 		final String email = "";
 		final String password = "1234";
-		LoginRequest loginRequest = new LoginRequest(email, password);
-		String token = jwtTokenProvider.createToken(loginRequest.getEmail());
+		final LoginRequest loginRequest = new LoginRequest(email, password);
+		final String token = jwtTokenProvider.createToken(loginRequest.getEmail());
 
 		given(memberService.createToken(any())).willReturn(token);
 
@@ -101,8 +102,8 @@ class LoginMemberControllerTest {
 	void login3() throws Exception {
 		final String email = "asdfasdf";
 		final String password = "1234";
-		LoginRequest loginRequest = new LoginRequest(email, password);
-		String token = jwtTokenProvider.createToken(loginRequest.getEmail());
+		final LoginRequest loginRequest = new LoginRequest(email, password);
+		final String token = jwtTokenProvider.createToken(loginRequest.getEmail());
 
 		given(memberService.createToken(any())).willReturn(token);
 
@@ -122,8 +123,8 @@ class LoginMemberControllerTest {
 	void login4() throws Exception {
 		final String email = "a@email.com";
 		final String password = "";
-		LoginRequest loginRequest = new LoginRequest(email, password);
-		String token = jwtTokenProvider.createToken(loginRequest.getEmail());
+		final LoginRequest loginRequest = new LoginRequest(email, password);
+		final String token = jwtTokenProvider.createToken(loginRequest.getEmail());
 
 		given(memberService.createToken(any())).willReturn(token);
 
@@ -136,5 +137,58 @@ class LoginMemberControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
 			.andDo(print());
+	}
+
+	@Test
+	void getMemberOfMineBasic() throws Exception {
+		final String email = "a@email.com";
+		final String password = "1234";
+		final Member member = Member.of(email, "asdf", password).withId(1L);
+		final String token = jwtTokenProvider.createToken(email);
+		given(memberService.findMemberByEmail(any())).willReturn(member);
+
+		this.mockMvc.perform(get("/me")
+			.header("authorization", "Bearer " + token))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(MemberLoginDocumentation.getMemberOfMineBasic());
+	}
+
+	@Test
+	void updateMemberOfMineBasic() throws Exception {
+		final String email = "a@email.com";
+		final String password = "1234";
+		final String name = "asdf";
+		final String token = jwtTokenProvider.createToken(email);
+		final Member member = Member.of(email, name, password).withId(1L);
+		given(memberService.findMemberByEmail(any())).willReturn(member);
+
+		String inputJson = "{\"name\":\"" + "brown" + "\"," +
+			"\"password\":\"" + password + "\"}";
+
+		this.mockMvc.perform(put("/me")
+			.content(inputJson)
+			.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("authorization", "Bearer " + token))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(MemberLoginDocumentation.updateMemberOfMineBasic());
+	}
+
+	@Test
+	void deleteMemberOfMineBasic() throws Exception {
+		final String email = "a@email.com";
+		final String password = "1234";
+		final String name = "asdf";
+		final String token = jwtTokenProvider.createToken(email);
+		final Member member = Member.of(email, name, password).withId(1L);
+		given(memberService.findMemberByEmail(any())).willReturn(member);
+
+		this.mockMvc.perform(delete("/me")
+			.header("authorization", "Bearer " + token))
+			.andExpect(status().isNoContent())
+			.andDo(print())
+			.andDo(MemberLoginDocumentation.deleteMemberOfMineBasic());
 	}
 }
