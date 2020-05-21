@@ -1,33 +1,51 @@
+import {ERROR_MESSAGE, EVENT_TYPE} from "../../utils/constants.js";
+import showSnackbar from "../../lib/snackbar/index.js";
 import api from "../../api/index.js";
-import {ERROR_MESSAGE} from "../../utils/constants.js";
 
 function Join() {
+    const $joinButton = document.querySelector("#join-button");
     const $email = document.querySelector("#email");
     const $name = document.querySelector("#name");
     const $password = document.querySelector("#password");
     const $passwordCheck = document.querySelector("#password-check");
-    const $button = document.querySelector("button");
 
-    const onClick = event => {
-        const joinRequest = {};
-        joinRequest.email = $email.value;
-        joinRequest.name = $name.value;
-        joinRequest.password = $password.value;
-        joinRequest.passwordCheck = $passwordCheck.value;
+    const onJoinHandler = async event => {
+        event.preventDefault();
+        if (!isValid()) {
+            return;
+        }
+        try {
+            const newMember = {
+                email: $email.value,
+                name: $name.value,
+                password: $password.value
+            };
+            await api.member.create(newMember);
+            location.href = "/login";
+        } catch (e) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
+        }
+    };
 
-        if (joinRequest.password !== joinRequest.passwordCheck) {
-            alert(ERROR_MESSAGE.NOT_MATCH_PASSWORD);
+    const isValid = () => {
+        const email = $email.value;
+        const name = $name.value;
+        const password = $password.value;
+        const passwordCheck = $passwordCheck.value;
+        if (!email || !name || !password) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
             return false;
         }
-
-        api.member.join(joinRequest)
-            .then(body => window.location.href = "/login")
-            .catch(error => alert(ERROR_MESSAGE.DUPLICATED_EMAIL));
+        if (password !== passwordCheck) {
+            showSnackbar(ERROR_MESSAGE.PASSWORD_CHECK);
+            return false;
+        }
+        return true;
     };
 
     this.init = () => {
-        $button.addEventListener("click", onClick)
-    }
+        $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoinHandler);
+    };
 }
 
 const join = new Join();

@@ -1,4 +1,4 @@
-package wooteco.subway.web.member.interceptor;
+package wooteco.subway.web.member.auth;
 
 import org.springframework.web.context.request.NativeWebRequest;
 

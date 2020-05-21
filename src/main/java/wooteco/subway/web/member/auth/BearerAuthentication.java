@@ -1,10 +1,9 @@
-package wooteco.subway.web.member.interceptor;
+package wooteco.subway.web.member.auth;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.web.member.AuthorizationExtractor;
-import wooteco.subway.web.member.InvalidAuthenticationException;
+import wooteco.subway.web.dto.ErrorCode;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -26,11 +25,11 @@ public class BearerAuthentication implements Authentication {
     public void setAuthentication(final HttpServletRequest request) {
         String token = authExtractor.extract(request, "bearer");
         if (token.isEmpty()) {
-            throw new InvalidAuthenticationException("토큰이 존재하지 않습니다.");
+            return;
         }
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthenticationException("토큰이 유효하지 않습니다.");
+            throw new InvalidAuthenticationException(ErrorCode.TONEN_NOT_AUTHORIZED);
         }
 
         String email = jwtTokenProvider.getSubject(token);
@@ -42,7 +41,7 @@ public class BearerAuthentication implements Authentication {
         Object rawAuth = request.getAttribute("loginMemberEmail", SCOPE_REQUEST);
         T auth = tClass.cast(rawAuth);
         if (Objects.isNull(auth)) {
-            throw new InvalidAuthenticationException("인증 정보가 존재하지 않습니다.");
+            throw new InvalidAuthenticationException(ErrorCode.TOKEN_NOT_FOUND);
         }
         return auth;
     }
