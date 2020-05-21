@@ -3,6 +3,8 @@ import api from '../../api/index.js'
 
 function MyPageEdit() {
     const $updateButton = document.querySelector('#update-button')
+    const $deleteButton = document.querySelector('#delete-button')
+
     const $email = document.querySelector('#email')
     const $name = document.querySelector('#name')
     const $password = document.querySelector('#password')
@@ -35,9 +37,15 @@ function MyPageEdit() {
         api.member.update(memberId, token, updateDetail)
     }
 
+    const onDelete = event => {
+        event.preventDefault()
+        api.member.delete(memberId, token)
+    }
+
     this.init = () => {
         show()
         $updateButton.addEventListener(EVENT_TYPE.CLICK, onUpdate)
+        $deleteButton.addEventListener(EVENT_TYPE.CLICK, onDelete)
     }
 }
 

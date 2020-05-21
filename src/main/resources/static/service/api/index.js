@@ -19,9 +19,12 @@ const METHOD = {
             })
         }
     },
-    DELETE() {
+    DELETE(id, token) {
         return {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Authorization': token,
+             },
         }
     },
     POST(data) {
@@ -66,8 +69,11 @@ const api = (() => {
         getWithAuth(token) {
             return requestWithJsonData(`/members`, METHOD.GET_WITH_AUTH(token))
         },
-        update(memberId, token, data) {
-            return request(`/members/${memberId}`, METHOD.PUT(token, data))
+        update(id, token, data) {
+            return request(`/members/${id}`, METHOD.PUT(token, data))
+        },
+        delete(id, token) {
+            return request(`/members/${id}`, METHOD.DELETE(id, token))
         }
     }
 
