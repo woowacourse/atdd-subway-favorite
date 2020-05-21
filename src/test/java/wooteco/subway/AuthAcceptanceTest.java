@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
-public class AuthAcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
         return given().auth()

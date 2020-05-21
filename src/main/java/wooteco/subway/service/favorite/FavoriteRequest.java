@@ -1,5 +1,7 @@
 package wooteco.subway.service.favorite;
 
+import wooteco.subway.domain.favorite.Favorite;
+
 public class FavoriteRequest {
 
     private Long source;
@@ -11,5 +13,9 @@ public class FavoriteRequest {
 
     public Long getTarget() {
         return target;
+    }
+
+    public Favorite toFavorite(Long memberId) {
+        return Favorite.of(memberId, source, target);
     }
 }

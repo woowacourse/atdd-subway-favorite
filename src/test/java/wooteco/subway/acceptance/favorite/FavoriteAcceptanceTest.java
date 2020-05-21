@@ -35,7 +35,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String location = addFavorite(tokenResponse, stationResponse1.getId(),
             stationResponse2.getId());
 
-        Boolean has = hasFavorite(tokenResponse, stationResponse1.getId(), stationResponse2.getId());
+        Boolean has = hasFavorite(tokenResponse, stationResponse1.getId(),
+            stationResponse2.getId());
 
         assertThat(has).isTrue();
 
