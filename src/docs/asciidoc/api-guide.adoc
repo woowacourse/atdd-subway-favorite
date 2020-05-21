@@ -28,7 +28,12 @@ endif::[]
 [[resources-members-get]]
 === 정보 조회
 
+[[resources-members-update]]
+=== 정보 수정
+
+
 operation::members/create[snippets='http-request,http-response,request-fields']
 operation::members/duplicate-create[snippets='http-request,http-response,request-fields']
 operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
-operation::members/get[snippets='http-request,http-response,request-fields']
+operation::members/get[snippets='http-request,http-response']
+operation::members/update[snippets='http-request,http-response,request-fields']

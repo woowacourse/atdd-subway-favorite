@@ -16,6 +16,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -23,6 +24,7 @@ public class MemberServiceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+    public static final long TEST_USER_ID = 1L;
 
     private MemberService memberService;
     private Member member;
@@ -34,7 +36,7 @@ public class MemberServiceTest {
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
-        member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
@@ -71,5 +73,15 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void updateMember() {
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+        when(memberRepository.save(any())).thenReturn(member);
+        memberService.updateMember(member.getId(), new UpdateMemberRequest(
+            "NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD));
+        assertThat(member).extracting(Member::getName).isEqualTo("NEW_" + TEST_USER_NAME);
+        assertThat(member).extracting(Member::getPassword).isEqualTo("NEW_" + TEST_USER_PASSWORD);
     }
 }

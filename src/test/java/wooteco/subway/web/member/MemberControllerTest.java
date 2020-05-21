@@ -26,6 +26,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -35,6 +36,9 @@ public class MemberControllerTest {
 
     @MockBean
     protected MemberService memberService;
+
+    @MockBean
+    protected JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -166,5 +170,30 @@ public class MemberControllerTest {
             .andExpect(jsonPath("$.name", Matchers.is(TEST_USER_NAME)))
             .andDo(print())
             .andDo(MemberDocumentation.getMember());
+    }
+
+    @Test
+    void updateMember() throws Exception {
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(put("/members/" + 1L)
+            .header("Authorization", "tmp")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print());
+
+        this.mockMvc.perform(put("/members/" + 1L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "tmp")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.updateMember());
     }
 }
