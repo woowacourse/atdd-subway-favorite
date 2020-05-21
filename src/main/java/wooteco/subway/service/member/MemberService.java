@@ -33,15 +33,16 @@ public class MemberService {
 	}
 
 	public String createToken(LoginRequest param) {
-		Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+		Member member = memberRepository.findByEmail(param.getEmail())
+			.orElseThrow(() -> new RuntimeException("해당 이메일이 존재하지 않습니다."));
 		if (!member.checkPassword(param.getPassword())) {
-			throw new RuntimeException("잘못된 패스워드");
+			throw new RuntimeException("패스워드가 일치하지 않습니다.");
 		}
 
 		return jwtTokenProvider.createToken(param.getEmail());
 	}
 
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		return memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("해당 이메일이 존재하지 않습니다."));
 	}
 }
