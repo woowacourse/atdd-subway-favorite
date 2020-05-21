@@ -50,10 +50,12 @@ public class MemberControllerTest {
     public void createMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
+        given(memberService.isNotExistEmail(any())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"," +
+            "\"passwordCheck\":\"" + TEST_USER_PASSWORD + "\"}";
 
         this.mockMvc.perform(post("/members")
             .content(inputJson)
@@ -69,5 +71,76 @@ public class MemberControllerTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
+    }
+
+    @Test
+    void createDuplicateMember() throws Exception {
+        Member member1 = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.createMember(any())).willReturn(member1);
+        given(memberService.isNotExistEmail(any())).willReturn(true);
+
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+            "\"name\":\"" + TEST_USER_NAME + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"," +
+            "\"passwordCheck\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andDo(print());
+
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andDo(print())
+            .andDo(MemberDocumentation.createMember());
+
+        given(memberService.isNotExistEmail(any())).willReturn(false);
+
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(MemberDocumentation.createDuplicateMember());
+    }
+
+    @Test
+    void createNotMatchPasswordMember() throws Exception {
+        Member member1 = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_OTHER_USER_PASSWORD);
+        given(memberService.createMember(any())).willReturn(member1);
+        given(memberService.isNotExistEmail(any())).willReturn(true);
+
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+            "\"name\":\"" + TEST_USER_NAME + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"," +
+            "\"passwordCheck\":\"" + TEST_OTHER_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+
+        this.mockMvc.perform(post("/members")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(MemberDocumentation.createNotMatchPasswordMember());
     }
 }

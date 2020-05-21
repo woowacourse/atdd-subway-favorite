@@ -1,8 +1,12 @@
 package wooteco.subway.web.member;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,6 +63,12 @@ public class MemberController {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> exceptionHandle(MethodArgumentNotValidException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        BindingResult bindingResult = e.getBindingResult();
+        List<String> errorMessages = bindingResult.getAllErrors()
+            .stream()
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.badRequest().body(new ErrorResponse(errorMessages.get(0)));
     }
 }

@@ -19,4 +19,12 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response,request-fields,request-body,response-body']
+[[resources-members-duplicate-create]]
+==== 회원 가입 이메일 중복
+
+[[resources-members-not-match-password-create]]
+==== 회원 가입 패스워드 불일치
+
+operation::members/create[snippets='http-request,http-response,request-fields']
+operation::members/duplicate-create[snippets='http-request,http-response,request-fields']
+operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
