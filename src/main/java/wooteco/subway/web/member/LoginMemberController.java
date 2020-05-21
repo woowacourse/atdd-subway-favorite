@@ -22,7 +22,8 @@ public class LoginMemberController {
     @PostMapping("/oauth/token")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
-        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+        return ResponseEntity.ok()
+                .body(new TokenResponse(token, "Bearer"));
     }
 
     @PostMapping("/login")
@@ -38,7 +39,7 @@ public class LoginMemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
