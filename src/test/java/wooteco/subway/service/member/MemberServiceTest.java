@@ -11,7 +11,6 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
-import wooteco.subway.service.member.dto.MemberResponse;
 
 import java.util.Optional;
 
