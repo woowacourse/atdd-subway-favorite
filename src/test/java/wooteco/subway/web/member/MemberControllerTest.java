@@ -21,8 +21,10 @@ import wooteco.subway.service.member.MemberService;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
@@ -45,7 +47,6 @@ public class MemberControllerTest {
 				.build();
 	}
 
-
 	@Test
 	public void createMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -63,5 +64,18 @@ public class MemberControllerTest {
 				.andDo(print())
 				.andDo(MemberDocumentation.createMember());
 	}
-}
 
+	@Test
+	public void readMember() throws Exception {
+		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		given(memberService.findMemberByEmail(any())).willReturn(member);
+
+		this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.name").value(TEST_USER_NAME))
+				.andDo(print())
+				.andDo(MemberDocumentation.readMember());
+	}
+}

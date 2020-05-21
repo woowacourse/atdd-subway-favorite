@@ -7,8 +7,10 @@ endif::[]
 :toc: left
 :toclevels: 2
 :sectlinks:
-:operation-http-request-title: Example Request
-:operation-http-response-title: Example Response
+:operation-http-request-title: 요청 예시
+:operation-request-fields-title: 요청 JSON 데이터
+:operation-http-response-title: 응답 예시
+:operation-request-parameters-title: 요청 파라미터 데이터
 
 [[resources]]
 = 자원
@@ -19,4 +21,9 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response,request-fields,request-body']
+operation::members/create[snippets='http-request,request-fields,http-response']
+
+[[resources-members-read]]
+=== 회원 정보 조회
+
+operation::members/read[snippets='http-request,request-parameters,http-response']
