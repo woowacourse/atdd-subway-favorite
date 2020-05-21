@@ -10,11 +10,21 @@ function Login() {
         const passwordValue = document.querySelector('#password').value;
 
         if (!isValidEmail(emailValue)) {
-            alert(ERROR_MESSAGE.WRONG_EMAIL_FORMAT);
+            Snackbar.show({
+                text: ERROR_MESSAGE.WRONG_EMAIL_FORMAT,
+                pos: 'bottom-center',
+                showAction: false,
+                duration: 2000
+            })
             return;
         }
         if (!isValidPasswordLength(passwordValue)) {
-            alert(ERROR_MESSAGE.INVALID_PASSWORD_LENGTH);
+            Snackbar.show({
+                text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
+                pos: 'bottom-center',
+                showAction: false,
+                duration: 2000
+            })
             return;
         }
 
@@ -27,7 +37,12 @@ function Login() {
             .login(request)
             .then(response => {
                 if (!response.ok) {
-                    alert("로그인 실패");
+                    Snackbar.show({
+                        text: ERROR_MESSAGE.LOGIN_FAIL,
+                        pos: 'bottom-center',
+                        showAction: false,
+                        duration: 2000
+                    })
                     return;
                 }
                 response.json()

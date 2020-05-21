@@ -12,19 +12,39 @@ function Join() {
         const passwordCheckValue = document.querySelector('#password-check').value
 
         if (!isValidEmail(emailValue)) {
-            alert(ERROR_MESSAGE.WRONG_EMAIL_FORMAT);
+            Snackbar.show({
+                text: ERROR_MESSAGE.WRONG_EMAIL_FORMAT,
+                pos: 'bottom-center',
+                showAction: false,
+                duration: 2000
+            })
             return;
         }
         if (!isValidName(nameValue)) {
-            alert(ERROR_MESSAGE.EMPTY_NAME);
+            Snackbar.show({
+                text: ERROR_MESSAGE.EMPTY_NAME,
+                pos: 'bottom-center',
+                showAction: false,
+                duration: 2000
+            })
             return;
         }
         if (!isSamePassword(passwordValue, passwordCheckValue)) {
-            alert(ERROR_MESSAGE.MISMATCH_PASSWORD);
+            Snackbar.show({
+                text: ERROR_MESSAGE.MISMATCH_PASSWORD,
+                pos: 'bottom-center',
+                showAction: false,
+                duration: 2000
+            })
             return;
         }
         if (!isValidPasswordLength(passwordValue)) {
-            alert(ERROR_MESSAGE.INVALID_PASSWORD_LENGTH);
+            Snackbar.show({
+                text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
+                pos: 'bottom-center',
+                showAction: false,
+                duration: 2000
+            })
             return;
         }
 
