@@ -23,8 +23,21 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config).then(data => {
+    if (!data.ok) {
+      return data.json().then(error => {
+        throw new Error(error.errorMessage)
+      })
+    }
+  })
+  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => {
+    if (data.ok) {
+      return data.json()
+    }
+    return data.json().then(error => {
+      throw new Error(error.errorMessage)
+    })
+  })
 
   const line = {
     getAll() {
@@ -41,9 +54,16 @@ const api = (() => {
     }
   }
 
+  const member = {
+    join(params) {
+      return request(`/members`, METHOD.POST(params))
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member
   }
 })()
 
