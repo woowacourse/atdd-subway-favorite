@@ -41,6 +41,15 @@ const METHOD = {
         ...data
       })
     }
+  },
+  AUTH_DELETE(token) {
+    return {
+      method: 'DELETE',
+      headers: {
+        'authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    }
   }
 };
 
@@ -80,6 +89,9 @@ const api = (() => {
     },
     update(token, id, data) {
       return request(`/members/` + id, METHOD.AUTH_PUT(token, data))
+    },
+    delete(token, id) {
+      return request(`/members/` + id, METHOD.AUTH_DELETE(token))
     }
   };
 

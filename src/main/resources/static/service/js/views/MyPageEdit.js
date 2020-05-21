@@ -5,10 +5,11 @@ import cookieApi from "../../utils/cookieApi.js";
 function MyPageEdit() {
 
   const $saveButton = document.querySelector("#save-button");
+  const $deleteButton = document.querySelector("#delete-button");
 
   const isInvalid = function(emailValue, nameValue, passwordValue, passwordCheckValue) {
     return false;  // Todo: 마저 작성
-  }
+  };
 
   const onSave = event => {
     event.preventDefault();
@@ -36,8 +37,22 @@ function MyPageEdit() {
     }).catch(error => alert("입력이 잘못됐습니다. ㅠㅠ"));
   };
 
+  const onDelete = event => {
+    event.preventDefault();
+    if (!window.confirm("진짜로 탈퇴하시겠습니까!?")) {
+      return;
+    }
+    const token = cookieApi.getCookie("token");
+    const id = cookieApi.getCookie("id");
+
+    api.user.delete(token, id).then(data =>
+      window.location.href = "/"
+    ).catch(e => alert("삭제 실패.."));
+  };
+
   this.init = () => {
-    $saveButton.addEventListener(EVENT_TYPE.CLICK, onSave)
+    $saveButton.addEventListener(EVENT_TYPE.CLICK, onSave);
+    $deleteButton.addEventListener(EVENT_TYPE.CLICK, onDelete);
   }
 }
 
