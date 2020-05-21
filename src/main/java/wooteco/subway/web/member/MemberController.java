@@ -32,15 +32,14 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    @PutMapping("/members")
+    public ResponseEntity<Void> updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest param) {
+        memberService.updateMember(member.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members")
     public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
-        System.out.println("TWICELOVE" + member.getId() + "이름은 " + member.getName());
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }

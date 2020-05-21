@@ -1,5 +1,5 @@
 import api from '../../api/index.js'
-import {EVENT_TYPE} from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
 
 function MyPageEdit() {
     const $email = document.querySelector("#email");
@@ -11,7 +11,41 @@ function MyPageEdit() {
 
     const onUpdate = event => {
         event.preventDefault();
-        alert("업데이트는 안돼용!!")
+        if (isValid()) {
+            const updatedMember = {
+                name: $name.value,
+                password: $password.value
+            }
+            api.member.update(updatedMember)
+                .then(() => {
+                    location.href = "/mypage";
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
+    }
+
+    const isValid = () => {
+        const name = $name.value;
+        const password = $password.value;
+        const passwordCheck = $passwordCheck.value;
+
+        if (!name) {
+            alert(ERROR_MESSAGE.NAME_EMPTY)
+            return false;
+        }
+
+        if (!password) {
+            alert(ERROR_MESSAGE.PASSWORD_EMPTY)
+            return false;
+        }
+
+        if (password !== passwordCheck) {
+            alert(ERROR_MESSAGE.PASSWORD_MISMATCH)
+            return false;
+        }
+        return true;
     }
 
     const onDelete = event => {
