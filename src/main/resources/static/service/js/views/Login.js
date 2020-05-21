@@ -1,38 +1,49 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
-import api from '../../api/index.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from "../../utils/constants.js";
+import showSnackbar from "../../lib/snackbar/index.js";
+import api from "../../api/index.js";
 
 function Login() {
-    const $loginButton = document.querySelector('#login-button')
-    const $emailValue = document.querySelector('#email')
-    const $passwordValue = document.querySelector('#password')
+    const $loginButton = document.querySelector("#login-button");
+    const $email = document.querySelector("#email");
+    const $password = document.querySelector("#password");
 
     const onLogin = async event => {
-        event.preventDefault()
-        const loginForm = {
-            email: $emailValue.value,
-            password: $passwordValue.value
+        event.preventDefault();
+        if (!isValid()) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
+            return;
         }
-        if (!$emailValue.value && !$passwordValue.value) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.LOGIN_FAIL,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
-            return
+        try {
+            const loginMember = {
+                email: $email.value,
+                password: $password.value
+            };
+            const jwt = await api.member.login(loginMember);
+            if (jwt) {
+                localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
+                location.href = "/";
+                return;
+            }
+            showSnackbar(ERROR_MESSAGE.COMMON);
+        } catch (e) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
         }
-        const token = await api.member.login(loginForm)
-            .then(res => res)
-            .catch(err => console.log(err.message))
+    };
 
-        localStorage["token"] = "Bearer " + token;
-        window.location.href = "/map";
-    }
+    const isValid = () => {
+        const email = $email.value;
+        const password = $password.value;
+
+        console.log(email)
+        console.log(password);
+
+        return email && password;
+    };
 
     this.init = () => {
-        $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin)
-    }
+        $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin);
+    };
 }
 
-const login = new Login()
-login.init()
+const login = new Login();
+login.init();

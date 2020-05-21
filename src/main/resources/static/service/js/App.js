@@ -1,27 +1,26 @@
-import {initNavigation} from "../utils/templates.js";
+import { initNavigation } from "../utils/templates.js";
 import api from "../api/index.js";
 
 function SubwayApp() {
-    const renderNavigation = () => {
-        const jwt = localStorage['token']
-        console.log(localStorage);
-        if (jwt) {
-            api.loginMember
-                .get()
-                .then(member => {
-                    if (member) {
-                        initNavigation(member);
-                    }
-                })
-                .catch(() => initNavigation());
-        } else {
-            initNavigation();
-        }
-    };
+  const renderNavigation = () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      api.loginMember
+        .get()
+        .then(member => {
+          if (member) {
+            initNavigation(member);
+          }
+        })
+        .catch(() => initNavigation());
+    } else {
+      initNavigation();
+    }
+  };
 
-    this.init = () => {
-        renderNavigation();
-    };
+  this.init = () => {
+    renderNavigation();
+  };
 }
 
 const subwayApp = new SubwayApp();
