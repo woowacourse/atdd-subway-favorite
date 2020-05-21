@@ -13,3 +13,8 @@ endif::[]
 === 회원 가입
 
 operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources-me-bearer-update]]
+=== 회원 정보 수정
+
+operation::me/bearer/update[snippets='http-request,request-body,request-fields']
