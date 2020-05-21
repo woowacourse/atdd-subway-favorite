@@ -1,11 +1,13 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,6 +17,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -73,5 +76,37 @@ public class MemberServiceTest {
 		memberService.createToken(loginRequest);
 
 		verify(jwtTokenProvider).createToken(anyString());
+	}
+
+	@DisplayName("로그인 이메일이 없는 경우 예외 처리를 한다.")
+	@Test
+	void createToken2() {
+		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+		assertThatThrownBy(() -> memberService.createToken(loginRequest))
+			.isInstanceOf(NotFoundMemberException.class)
+			.hasMessageContaining("해당하는");
+	}
+
+	@DisplayName("비밀번호가 틀렸을 경우 예외 처리를 한다.")
+	@Test
+	void createToken3() {
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, "abcd");
+
+		assertThatThrownBy(() -> memberService.createToken(loginRequest))
+			.isInstanceOf(IllegalPasswordException.class)
+			.hasMessageContaining("잘못된");
+	}
+
+	@DisplayName("찾는 이메일이 없을 경우 예외 처리를한다.")
+	@Test
+	void findMemberByEmail() {
+		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+		assertThatThrownBy(() -> memberService.findMemberByEmail("a@email.com"))
+			.isInstanceOf(NotFoundMemberException.class)
+			.hasMessageContaining("해당하는");
 	}
 }
