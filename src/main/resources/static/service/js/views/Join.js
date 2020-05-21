@@ -21,7 +21,7 @@ function Join() {
         .create(newMember)
         .then((response) => {
           if (response.ok) {
-            location.href = "/login";
+            location.href = "/";
           } else {
             response.json().then(response => {
               alert(response.errorMessage);

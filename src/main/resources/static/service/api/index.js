@@ -47,9 +47,12 @@ const api = (() => {
   const requestWithJsonData = (uri, config) =>
     fetch(uri, config).then(response => {
       if (!response.ok) {
+        response.json().then(response => alert(response.errorMessage))
         return;
       }
-      return response.json();
+      return response.json().catch(() => {
+        throw new Error("json fail");
+      });
     });
 
   const member = {

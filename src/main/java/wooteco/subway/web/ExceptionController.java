@@ -13,4 +13,9 @@ public class ExceptionController {
     public ResponseEntity<ErrorResponse> getDuplicateKeyException(DuplicateKeyException exception) {
         return ResponseEntity.badRequest().body(new ErrorResponse("중복된 값을 입력하였습니다."));
     }
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<ErrorResponse> getRuntimeException(RuntimeException exception) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
+    }
 }
