@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import wooteco.subway.service.member.exception.DuplicateMemberException;
 import wooteco.subway.web.dto.ErrorResponse;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,6 +23,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDuplicateMemberException() {
         ErrorResponse errorResponse = new ErrorResponse("이미 가입된 이메일 입니다.");
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(InvalidAuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAuthenticationException() {
+        ErrorResponse errorResponse = new ErrorResponse("토큰이 유효하지 않습니다.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
