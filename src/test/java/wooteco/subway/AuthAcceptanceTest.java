@@ -30,9 +30,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		return
 			given().
 				accept(MediaType.APPLICATION_JSON_VALUE).
-				auth().
-				preemptive().
-				oauth2(tokenResponse.getAccessToken()).
+				header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
 				when().
 				get("/me/bearer").
 				then().

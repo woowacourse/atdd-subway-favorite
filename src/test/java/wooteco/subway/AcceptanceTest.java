@@ -19,6 +19,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -287,12 +288,12 @@ public class AcceptanceTest {
                 extract().as(MemberResponse.class);
     }
 
-    public MemberResponse getMember(String email, String token) {
+    public MemberResponse getMember(String email, TokenResponse tokenResponse
+    ) {
         return
-            given()
-                .auth()
-                .preemptive()
-                .oauth2(token)
+            given().
+                header("Authorization",
+                    tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/members?email=" + email)
@@ -326,11 +327,9 @@ public class AcceptanceTest {
             statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse, String token) {
-        given()
-            .auth()
-            .preemptive()
-            .oauth2(token)
+    public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
+        given().
+            header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
             .when()
             .delete("/members/" + memberResponse.getId())
             .then()

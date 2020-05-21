@@ -33,8 +33,6 @@ public class MemberService {
 	}
 
 	public String createToken(LoginRequest param) {
-		System.out.println("###" + param.getEmail());
-
 		Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
 		if (!member.checkPassword(param.getPassword())) {
 			throw new RuntimeException("잘못된 패스워드");
