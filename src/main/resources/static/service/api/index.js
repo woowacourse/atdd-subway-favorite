@@ -1,12 +1,22 @@
 const METHOD = {
-  PUT() {
+  PUT(token, data) {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        'authorization': 'bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
-  DELETE() {
+  DELETE(token) {
     return {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'authorization': 'bearer ' + token,
+      },
     }
   },
   POST(data) {
@@ -59,6 +69,12 @@ const api = (() => {
     },
     get(token) {
       return requestWithJsonData('/members/me', METHOD.GET(token));
+    },
+    update(token, data) {
+      return request('/members/me', METHOD.PUT(token, data));
+    },
+    delete(token) {
+      return request('/members/me', METHOD.DELETE(token));
     }
   }
 
