@@ -35,10 +35,8 @@ import io.restassured.specification.RequestSpecification;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
@@ -82,6 +80,12 @@ public class MemberControllerTest extends AcceptanceTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
+    }
+
+    @Test
+    void notSamePasswordConfirm() {
+        when(memberService.createMember(any())).thenReturn(member);
+
     }
 
     @ParameterizedTest

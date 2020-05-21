@@ -22,8 +22,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request,
-        HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String credential = authExtractor.extract(request, "Bearer");
         if (!jwtTokenProvider.validateToken(credential)) {
             throw new InvalidAuthenticationException("유효하지 않은 토큰입니다.");
