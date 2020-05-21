@@ -3,6 +3,7 @@ package wooteco.subway.web.member.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,6 +25,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = authExtractor.extract(request, "bearer");
         if (!jwtTokenProvider.validateToken(token)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         }
 

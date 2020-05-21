@@ -11,22 +11,25 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-	private final BearerAuthInterceptor bearerAuthInterceptor;
-	private final LoginMemberMethodArgumentResolver loginMemberArgumentResolver;
+    private final BearerAuthInterceptor bearerAuthInterceptor;
+    private final LoginMemberMethodArgumentResolver loginMemberArgumentResolver;
 
-	public WebMvcConfig(BearerAuthInterceptor bearerAuthInterceptor,
-		LoginMemberMethodArgumentResolver loginMemberArgumentResolver) {
-		this.bearerAuthInterceptor = bearerAuthInterceptor;
-		this.loginMemberArgumentResolver = loginMemberArgumentResolver;
-	}
+    public WebMvcConfig(BearerAuthInterceptor bearerAuthInterceptor,
+            LoginMemberMethodArgumentResolver loginMemberArgumentResolver) {
+        this.bearerAuthInterceptor = bearerAuthInterceptor;
+        this.loginMemberArgumentResolver = loginMemberArgumentResolver;
+    }
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me/bearer");
-	}
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(bearerAuthInterceptor)
+                .addPathPatterns("/me/bearer")
+                .addPathPatterns("/members")
+                .excludePathPatterns("/members/signup");
+    }
 
-	@Override
-	public void addArgumentResolvers(List argumentResolvers) {
-		argumentResolvers.add(loginMemberArgumentResolver);
-	}
+    @Override
+    public void addArgumentResolvers(List argumentResolvers) {
+        argumentResolvers.add(loginMemberArgumentResolver);
+    }
 }
