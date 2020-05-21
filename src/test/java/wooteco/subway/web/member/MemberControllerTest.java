@@ -53,14 +53,11 @@ public class MemberControllerTest {
             .andDo(print());
     }
 
-    @DisplayName("회원 가입 실패")
+    @DisplayName("회원 가입 실패 - 유효하지 않은 형식")
     @ParameterizedTest
     @MethodSource("provideInvalidMemberRequest")
     void register_failure_invalid_input(String email, String name, String password) throws
         Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member);
-
         String inputJson = "{\"email\":\"" + email + "\"," +
             "\"name\":\"" + name + "\"," +
             "\"password\":\"" + password + "\"}";
