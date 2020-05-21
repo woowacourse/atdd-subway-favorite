@@ -18,4 +18,9 @@ public class ExceptionController {
 	public ResponseEntity<String> handleInvalidAuthenticationException(Exception e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
 	}
+
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<String> handleWholeException(Exception e) {
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
 }

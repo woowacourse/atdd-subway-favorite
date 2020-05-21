@@ -1,15 +1,36 @@
-import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, SUCCESS} from '../../utils/constants.js'
+import api from "../../api/index.js";
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')
-  const onLogin = event => {
+  const onLogin = async event => {
     event.preventDefault()
     const emailValue = document.querySelector('#email').value
     const passwordValue = document.querySelector('#password').value
+    const requestData = {
+      email: emailValue,
+      password: passwordValue
+    }
+
     if (!emailValue && !passwordValue) {
-      Snackbar.show({ text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000 })
+      Snackbar.show({text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
       return
     }
+
+    api.member.login(requestData).then(async response => {
+      if (!response.ok) {
+        return Snackbar.show({
+          text: '😭' + await response.text(),
+          pos: 'bottom-center',
+          showAction: false,
+          duration: 2000
+        })
+      }
+      const tokenResponse = await response.json();
+      localStorage.setItem(emailValue, tokenResponse.accessToken);
+      Snackbar.show({text: SUCCESS.LOGIN, pos: 'bottom-center', showAction: false, duration: 2000})
+    });
+
   }
 
   this.init = () => {

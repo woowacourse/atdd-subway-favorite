@@ -45,6 +45,9 @@ const api = (() => {
     create(data) {
       return request('/members', METHOD.POST(data));
     },
+    login(data) {
+      return fetch('/oauth/token', METHOD.POST(data));
+    },
     get() {
 
     }

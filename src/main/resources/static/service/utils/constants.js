@@ -12,7 +12,8 @@ export const ERROR_MESSAGE = {
 }
 
 export const SUCCESS = {
-  JOIN: '😁 회원가입 완료'
+  JOIN: '😁 회원가입 완료',
+  LOGIN: '😁 로그인 완료',
 }
 
 export const PATH_TYPE = {
