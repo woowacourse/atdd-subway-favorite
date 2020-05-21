@@ -1,16 +1,17 @@
 package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Map;
 
 @RestController
 public class LoginMemberController {
@@ -20,7 +21,6 @@ public class LoginMemberController {
         this.memberService = memberService;
     }
 
-    // TODO : 유효하지 않은 처리 테스트 코드 작성
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest param) {
         String token = memberService.createToken(param);
