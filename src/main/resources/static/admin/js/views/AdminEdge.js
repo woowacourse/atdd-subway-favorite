@@ -2,7 +2,7 @@ import { optionTemplate, subwayLinesItemTemplate, subwayLinesTemplate } from '..
 import tns from '../../lib/slider/tiny-slider.js'
 import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 import Modal from '../../ui/Modal.js'
-import api from '../../api/index.js'
+import api from '../../api'
 
 function AdminEdge() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')

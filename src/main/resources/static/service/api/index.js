@@ -1,50 +1,91 @@
 const METHOD = {
-  PUT() {
+  GET_WITH_AUTH() {
     return {
-      method: 'PUT'
-    }
-  },
-  DELETE() {
-    return {
-      method: 'DELETE'
-    }
-  },
-  POST(data) {
-    return {
-      method: 'POST',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
+      }
+    };
+  },
+  PUT(data) {
+    return {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
       },
       body: JSON.stringify({
         ...data
       })
-    }
+    };
+  },
+  DELETE() {
+    return {
+      method: "DELETE",
+      headers: {
+        Authorization: localStorage.getItem("jwt") || ""
+      }
+    };
+  },
+  POST(data) {
+    return {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    };
   }
-}
+};
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+  const request = (uri, config) => fetch(uri, config);
+  const requestWithJsonData = (uri, config) =>
+    fetch(uri, config).then(response => {
+      if (!response.ok) {
+        return;
+      }
+      return response.json();
+    });
 
-  const line = {
-    getAll() {
-      return request(`/lines/detail`)
+  const member = {
+    get(id) {
+      return requestWithJsonData(`/members/${id}`);
     },
-    getAllDetail() {
-      return requestWithJsonData(`/lines/detail`)
+    create(newMember) {
+      return request(`/members`, METHOD.POST(newMember));
+    },
+    update(id, updatedData) {
+      return request(`/members/${id}`, METHOD.PUT(updatedData));
+    },
+    delete(id) {
+      return request(`/members/${id}`, METHOD.DELETE());
+    },
+    login(loginInfo) {
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(loginInfo));
     }
-  }
+  };
 
-  const path = {
-    find(params) {
-      return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+  const loginMember = {
+    get() {
+      return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
+    },
+    update(updatedInfo) {
+      return request(`/me`, METHOD.PUT(updatedInfo));
+    },
+    delete() {
+      return request(`/me`, METHOD.DELETE());
     }
-  }
+  };
 
   return {
-    line,
-    path
-  }
-})()
+    member,
+    loginMember
+  };
+})();
 
-export default api
+export default api;

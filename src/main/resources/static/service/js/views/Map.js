@@ -1,6 +1,6 @@
 import { subwayLinesItemTemplate } from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
-import api from '../../api/index.js'
+import api from '../../api'
 
 function Map() {
   const $subwayLinesSlider = document.querySelector('.subway-lines-slider')

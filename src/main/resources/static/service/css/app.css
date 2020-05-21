@@ -47,6 +47,10 @@ body.modal-active {
   right: 10px;
 }
 
+.top-5px {
+  top: 5px;
+}
+
 .top-50 {
   top: 50%;
 }
@@ -64,4 +68,14 @@ body.modal-active {
 }
 .max-width-md {
   max-width: 960px;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+  right: 0;
+}
+
+.login-button {
+  margin-top: 2px;
+  right: 30px;
 }
