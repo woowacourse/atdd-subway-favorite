@@ -39,4 +39,3 @@ create table if not exists MEMBER
 );
 
 -- // TODO 즐겨찾기 테이블 스키마 추가
-INSERT INTO MEMBER (email, name, password) VALUES ('ramen6315@gmail.com', 'ramen', '6315');
