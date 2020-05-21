@@ -5,11 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,13 +19,17 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
+import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineResponse;
+import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationCreateRequest;
 import wooteco.subway.service.station.dto.StationResponse;
 
 @AutoConfigureMockMvc
@@ -71,13 +72,13 @@ public class AcceptanceTest {
     }
 
     public void deleteStation(Long id) throws Exception {
-        mockMvc.perform(delete("/stations/" + id))
+        mockMvc.perform(delete("/stations/{id}", id))
             .andDo(print())
             .andReturn();
     }
 
     public LineDetailResponse getLine(Long id) throws Exception {
-        String result = mockMvc.perform(get("/lines/" + id))
+        String result = mockMvc.perform(get("/lines/{id}", id))
             .andDo(print())
             .andReturn()
             .getResponse()
@@ -86,14 +87,9 @@ public class AcceptanceTest {
     }
 
     public void updateLine(Long id, LocalTime startTime, LocalTime endTime) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
+        String body = objectMapper.writeValueAsString(new LineRequest(null, startTime, endTime, 10));
 
-        String body = objectMapper.writeValueAsString(params);
-
-        mockMvc.perform(put("/lines/" + id)
+        mockMvc.perform(put("/lines/{id}", id)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .content(body))
@@ -112,7 +108,7 @@ public class AcceptanceTest {
     }
 
     public void deleteLine(Long id) throws Exception {
-        mockMvc.perform(delete("/lines/" + id))
+        mockMvc.perform(delete("/lines/{id}", id))
             .andDo(print())
             .andReturn();
     }
@@ -124,15 +120,10 @@ public class AcceptanceTest {
     public void addLineStation(
         Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration
     ) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        params.put("preStationId", preStationId == null ? "" : preStationId.toString());
-        params.put("stationId", stationId.toString());
-        params.put("distance", distance.toString());
-        params.put("duration", duration.toString());
+        String body = objectMapper.writeValueAsString(
+            new LineStationCreateRequest(preStationId, stationId, distance, duration));
 
-        String body = objectMapper.writeValueAsString(params);
-
-        mockMvc.perform(post("/lines/" + lineId + "/stations")
+        mockMvc.perform(post("/lines/{id}/stations", lineId)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .content(body))
@@ -141,7 +132,7 @@ public class AcceptanceTest {
     }
 
     public void removeLineStation(Long lineId, Long stationId) throws Exception {
-        mockMvc.perform(delete("/lines/" + lineId + "/stations/" + stationId)
+        mockMvc.perform(delete("/lines/{lineId}/stations/{stationId}", lineId, stationId)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print());
@@ -159,7 +150,10 @@ public class AcceptanceTest {
     }
 
     public PathResponse findPath(String source, String target, String type) throws Exception {
-        String result = mockMvc.perform(get("/paths?source=" + source + "&target=" + target + "&type=" + type)
+        String result = mockMvc.perform(get("/paths")
+            .param("source", source)
+            .param("target", target)
+            .param("type", type)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
@@ -212,10 +206,7 @@ public class AcceptanceTest {
     }
 
     public StationResponse createStation(String name) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        String body = objectMapper.writeValueAsString(params);
+        String body = objectMapper.writeValueAsString(new StationCreateRequest(name));
 
         String result = mockMvc.perform(post("/stations")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -230,13 +221,8 @@ public class AcceptanceTest {
     }
 
     public LineResponse createLine(String name) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-
-        String body = objectMapper.writeValueAsString(params);
+        String body = objectMapper.writeValueAsString(
+            new LineRequest(name, LocalTime.of(5, 30), LocalTime.of(23, 30), 10));
 
         String result = mockMvc.perform(post("/lines")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -265,12 +251,7 @@ public class AcceptanceTest {
     }
 
     public String createMember(String email, String name, String password) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("name", name);
-        params.put("password", password);
-
-        String body = objectMapper.writeValueAsString(params);
+        String body = objectMapper.writeValueAsString(new MemberRequest(email, name, password));
 
         return mockMvc.perform(post("/members")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -308,7 +289,8 @@ public class AcceptanceTest {
         UpdateMemberRequest updateMemberRequest
     ) throws Exception {
         String updateJsonInfo = objectMapper.writeValueAsString(updateMemberRequest);
-        mockMvc.perform(put("/members/" + memberResponse.getId())
+
+        mockMvc.perform(put("/members/{id}", memberResponse.getId())
             .header(AUTHORIZATION, tokenResponse)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(updateJsonInfo))
@@ -322,7 +304,7 @@ public class AcceptanceTest {
     ) throws Exception {
         String body = objectMapper.writeValueAsString(updateMemberRequest);
 
-        mockMvc.perform(put("/members/" + memberResponse.getId())
+        mockMvc.perform(put("/members/{id}", memberResponse.getId())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .content(body))
@@ -331,7 +313,7 @@ public class AcceptanceTest {
     }
 
     public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) throws Exception {
-        mockMvc.perform(delete("/members/" + memberResponse.getId())
+        mockMvc.perform(delete("/members/{id}", memberResponse.getId())
             .header(AUTHORIZATION, tokenResponse)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())

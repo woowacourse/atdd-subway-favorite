@@ -101,7 +101,7 @@ public class MemberServiceTest {
     }
     // TODO: 2020/05/20 컨트롤러에서의 인증 방식 고민해보기
     // TODO: 2020/05/20 Exception Handler 추가
-    // TODO: 2020/05/21 MockMvc 리팩토링
     // TODO: 2020/05/20 Dynamic Test 방식으로 변경
+    // TODO: 2020/05/21 즐겨찾기 기능 추가 (테이블, DTO, Entity, 인수 테스트, 단위 테스트, 컨트롤러 테스트 및 문서 자동화)
     // TODO: 2020/05/20 페이지 연동
 }
