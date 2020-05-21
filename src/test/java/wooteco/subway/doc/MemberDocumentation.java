@@ -24,6 +24,19 @@ public class MemberDocumentation {
         );
     }
 
+    public static RestDocumentationResultHandler loginMember() {
+        return document("members/login",
+                requestFields(
+                        fieldWithPath("email").type(JsonFieldType.STRING)
+                                .description("The user's email address"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                ),
+                responseHeaders(
+                        headerWithName("Authorization").description("The user's authorization who just created")
+                )
+        );
+    }
+
     public static RestDocumentationResultHandler updateMember() {
         return document("members/update",
                 requestFields(
