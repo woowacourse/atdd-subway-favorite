@@ -31,15 +31,16 @@ public class MemberServiceTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    private Member member;
+
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
         memberService.createMember(member);
 
         verify(memberRepository).save(any());
@@ -47,7 +48,6 @@ public class MemberServiceTest {
 
     @Test
     void createToken() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
@@ -58,7 +58,6 @@ public class MemberServiceTest {
 
     @Test
     void findMemberByEmail() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
 
         Member result = memberService.findMemberByEmail(TEST_USER_EMAIL);
@@ -70,7 +69,6 @@ public class MemberServiceTest {
 
     @Test
     void updateMember() {
-        Member member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         String updatedName = "updatedName";
         String updatedPassword = "updatedPassword";
 
@@ -81,5 +79,11 @@ public class MemberServiceTest {
 
         assertThat(member.getName()).isEqualTo(updatedName);
         assertThat(member.getPassword()).isEqualTo(updatedPassword);
+    }
+
+    @Test
+    void deleteMember() {
+        doNothing().when(memberRepository).deleteById(TEST_USER_ID);
+        memberService.deleteMember(TEST_USER_ID);
     }
 }

@@ -106,12 +106,6 @@ public class MemberControllerTest {
                 .isEqualTo(gson.toJson(expected));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
-    }
-
     @Test
     void updateMember() throws Exception {
         Map<String, String> params = new LinkedHashMap<>();
@@ -129,5 +123,12 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    void deleteMember() throws Exception {
+        mockMvc.perform(delete("/members/{id}", TEST_ID))
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 }
