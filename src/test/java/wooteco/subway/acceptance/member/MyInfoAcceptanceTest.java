@@ -15,12 +15,13 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
-public class MemberAcceptanceTest extends AcceptanceTest {
+public class MyInfoAcceptanceTest extends AcceptanceTest {
 
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "1234";
     public static final String TEST_WRONG_PASSWORD = "1111";
+    public static final String ME_URL = "/me";
 
     public static String createMember(String email, String name, String password) {
         Map<String, String> params = new HashMap<>();
@@ -41,19 +42,52 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 extract().header("Location");
     }
 
-    public static void deleteMemberWithBearerAuth(String location, TokenResponse tokenResponse) {
+    public static void deleteMemberWithBearerAuth(TokenResponse tokenResponse) {
         given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
-            delete(location).
+            delete(ME_URL).
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void deleteMemberWithoutBearerAuth(String location) {
+    public static void deleteMemberWithoutBearerAuth() {
         given().when().
-            delete(location).
+            delete(ME_URL).
+            then().
+            log().all().
+            statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void updateMemberWithBearerAuth(TokenResponse tokenResponse) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+
+        given().auth().
+            oauth2(tokenResponse.getAccessToken()).
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            put(ME_URL).
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
+    }
+
+    public static void updateMemberWithoutBearerAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+
+        given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            put(ME_URL).
             then().
             log().all().
             statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -68,8 +102,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         failLogin(TEST_USER_EMAIL, TEST_WRONG_PASSWORD);
 
         myInfoWithoutBearerAuth();
-        updateMemberWithoutBearerAuth(location);
-        deleteMemberWithoutBearerAuth(location);
+        updateMemberWithoutBearerAuth();
+        deleteMemberWithoutBearerAuth();
 
         TokenResponse tokenResponse = successLogin(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
@@ -78,43 +112,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMemberWithBearerAuth(location, tokenResponse);
+        updateMemberWithBearerAuth(tokenResponse);
         MemberResponse updatedMemberResponse = myInfoWithBearerAuth(tokenResponse);
         assertThat(updatedMemberResponse.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMemberWithBearerAuth(location, tokenResponse);
-    }
-
-    public void updateMemberWithBearerAuth(String location, TokenResponse tokenResponse) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
-
-        given().auth().
-            oauth2(tokenResponse.getAccessToken()).
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            put(location).
-            then().
-            log().all().
-            statusCode(HttpStatus.OK.value());
-    }
-
-    public void updateMemberWithoutBearerAuth(String location) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
-
-        given().
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            put(location).
-            then().
-            log().all().
-            statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        deleteMemberWithBearerAuth(tokenResponse);
     }
 }

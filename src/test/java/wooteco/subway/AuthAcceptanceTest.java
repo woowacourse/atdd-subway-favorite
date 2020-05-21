@@ -1,7 +1,7 @@
 package wooteco.subway;
 
 import static org.assertj.core.api.Assertions.*;
-import static wooteco.subway.acceptance.member.MemberAcceptanceTest.*;
+import static wooteco.subway.acceptance.member.MyInfoAcceptanceTest.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class AuthAcceptanceTest {
         return given().auth()
             .oauth2(tokenResponse.getAccessToken())
             .when()
-            .get("/me/bearer")
+            .get("/me")
             .then()
             .assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -31,7 +31,7 @@ public class AuthAcceptanceTest {
     public static void myInfoWithoutBearerAuth() {
         given()
             .when()
-            .get("/me/bearer")
+            .get("/me")
             .then()
             .assertThat()
             .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());

@@ -1,14 +1,10 @@
 package wooteco.subway.web.member.interceptor;
 
-import java.util.Map;
-import java.util.Objects;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import wooteco.subway.infra.JwtTokenProvider;
@@ -28,7 +24,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
         HttpServletResponse response, Object handler) {
-        String accessToken = authExtractor.extract(request, "bearer");
+        final String accessToken = authExtractor.extract(request, "bearer");
 
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다!");
@@ -36,16 +32,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
         final String loginId = jwtTokenProvider.getSubject(accessToken);
 
-        final Map<String, String> pathVariables = (Map<String, String>)request
-            .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-
-        final String requestId = pathVariables.get("id");
-
-        if (!Objects.equals(loginId, requestId)) {
-            throw new IllegalArgumentException("권한이 없는 사용자입니다!");
-        }
-
-        request.setAttribute("loginMemberId", requestId);
+        request.setAttribute("loginMemberId", loginId);
         return true;
     }
 
