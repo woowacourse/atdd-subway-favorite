@@ -1,7 +1,7 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
+import cookieApi from "../../utils/cookieApi.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -76,6 +76,7 @@ function Search() {
 
   this.init = () => {
     initEventListener()
+    alert("token : " + cookieApi.getCookie("token"));
   }
 }
 

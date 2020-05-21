@@ -24,7 +24,11 @@ const METHOD = {
 
 const api = (() => {
   const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => {
+    if (!data.ok) {
+      throw new Error();
+    }
+    return data.json()})
 
   const line = {
     getAll() {
@@ -44,6 +48,9 @@ const api = (() => {
   const user = {
     join(params) {
       return request(`/members`, METHOD.POST(params))
+    },
+    login(params) {
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(params))
     }
   };
 

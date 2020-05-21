@@ -17,9 +17,14 @@ public class PageController {
         this.stationService = stationService;
     }
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public String index() {
+    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
+    public String adminIndex() {
         return "admin/index";
+    }
+
+    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceIndex() {
+        return "service/index";
     }
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
