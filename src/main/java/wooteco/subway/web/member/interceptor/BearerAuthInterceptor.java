@@ -25,7 +25,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
                              HttpServletResponse response, Object handler) {
         String token = authExtractor.extract(request, "Bearer");
         if(!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthenticationException("이메일과 비밀번호를 확인해주세요.");
+            throw new InvalidAuthenticationException("만료된 세션입니다.");
         };
 
         String email = jwtTokenProvider.getSubject(token);

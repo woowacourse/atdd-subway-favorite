@@ -26,6 +26,7 @@ function Login() {
     })
     .catch(error => alert(ERROR_MESSAGE.COMMON))
 
+    alert("로그인 성공!")
     window.location.replace("/search")
   }
 

@@ -40,6 +40,16 @@ const api = (() => {
   const member = {
     create(params) {
       return request(`/members`, METHOD.POST(params))
+    },
+
+    get() {
+      return requestWithJsonData(`/me/bearer`, {
+        method: 'GET',
+        headers: {
+          'Content-Type':'application/json',
+          'authorization':'Bearer ' + localStorage.getItem('token')
+        }
+      })
     }
   }
 

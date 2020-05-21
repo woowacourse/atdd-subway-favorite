@@ -38,20 +38,8 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        System.out.println(param.getEmail());
         Member member = memberRepository.findByEmail(param.getEmail())
             .orElseThrow(NotExistEmailException::new);
-        //
-        // Member member;
-        // Optional<Member> memberOptional = memberRepository.findByEmail(param.getEmail());
-        // System.out.println(memberOptional);
-        // // if (memberOptional.isPresent()) {
-        // try {
-        //     member = memberOptional.get();
-        //     // } else {
-        // } catch(Exception e) {
-        //     throw new NoSuchElementException();
-        // }
 
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
