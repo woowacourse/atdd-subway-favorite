@@ -9,8 +9,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 public class MemberDocumentation {
 	public static RestDocumentationResultHandler createMember() {
@@ -33,15 +32,15 @@ public class MemberDocumentation {
 		);
 	}
 
-//    public static RestDocumentationResultHandler updateMember() {
-//        return document("members/update",
-//                requestFields(
-//                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-//                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
-//                ),
-//                requestHeaders(
-//                        headerWithName("Authorization").description("The token for login which is Bearer Type")
-//                )
-//        );
-//    }
+	public static RestDocumentationResultHandler updateMember() {
+		return document("members/update",
+				pathParameters(
+						parameterWithName("id").description("수정할 User id")
+				),
+				requestFields(
+						fieldWithPath("name").type(JsonFieldType.STRING).description("User의 새로운 이름"),
+						fieldWithPath("password").type(JsonFieldType.STRING).description("User의 새로운 비밀번호")
+				)
+		);
+	}
 }

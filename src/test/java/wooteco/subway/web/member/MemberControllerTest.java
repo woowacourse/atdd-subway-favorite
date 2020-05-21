@@ -20,9 +20,9 @@ import wooteco.subway.service.member.MemberService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,5 +77,22 @@ public class MemberControllerTest {
 				.andExpect(jsonPath("$.name").value(TEST_USER_NAME))
 				.andDo(print())
 				.andDo(MemberDocumentation.readMember());
+	}
+
+	@Test
+	public void updateMember() throws Exception {
+		doNothing().when(memberService).updateMember(any(), any());
+
+		String inputJson = "{" +
+				"\"name\":\"" + TEST_USER_NAME + "\"," +
+				"\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+		this.mockMvc.perform(put("/members/{id}", 1L)
+				.content(inputJson)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(print())
+				.andDo(MemberDocumentation.updateMember());
 	}
 }
