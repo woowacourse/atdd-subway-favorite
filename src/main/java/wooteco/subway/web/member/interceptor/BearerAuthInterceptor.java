@@ -4,8 +4,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import wooteco.subway.config.Auth;
-import wooteco.subway.config.IsAuth;
+import wooteco.subway.web.auth.Auth;
+import wooteco.subway.web.auth.IsAuth;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
