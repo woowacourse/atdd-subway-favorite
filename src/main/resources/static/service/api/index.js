@@ -1,4 +1,13 @@
 const METHOD = {
+  AUTHORIZED_GET() {
+    return {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("jwt") || ""
+      }
+    }
+  },
   PUT() {
     return {
       method: 'PUT'
@@ -55,7 +64,10 @@ const api = (() => {
       return requestWithJsonData(`/members/${id}`, METHOD.DELETE())
     },
     login(data) {
-      return requestWithJsonData('/oauth/token', METHOD.POST(data))
+      return requestWithJsonData('/login', METHOD.POST(data))
+    },
+    myinfo() {
+      return requestWithJsonData('/myinfo', METHOD.AUTHORIZED_GET())
     }
   }
 
