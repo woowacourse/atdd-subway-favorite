@@ -98,7 +98,7 @@ export const mainMenuTemplate = (isLogin) => {
     return `
     <ul class="text-blue-700">
             <li class="inline-block p-1">
-              <a href="/login" id="log-out" class="underline">로그인</a>
+              <a href="/login" class="underline">로그인</a>
             </li>
             <li class="inline-block p-1">
               <a href="/join" class="underline">회원가입</a>
