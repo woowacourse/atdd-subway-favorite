@@ -1,14 +1,27 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import api from "../../api/index.js";
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')
-  const onLogin = event => {
+  const onLogin = async event => {
     event.preventDefault()
     const emailValue = document.querySelector('#email').value
     const passwordValue = document.querySelector('#password').value
-    if (!emailValue && !passwordValue) {
-      Snackbar.show({ text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000 })
+    if (!emailValue || !passwordValue) {
+      alert(ERROR_MESSAGE.LOGIN_FAIL)
       return
+    }
+
+    const loginData = {
+      email: emailValue,
+      password: passwordValue
+    }
+
+    try {
+      await api.member.login(loginData);
+      location.href = '/favorites'
+    } catch (e) {
+      alert(e)
     }
   }
 

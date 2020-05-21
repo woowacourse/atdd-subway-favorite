@@ -55,9 +55,12 @@ const api = (() => {
   }
 
   const member = {
-    join(params) {
-      return request(`/members`, METHOD.POST(params))
-    }
+      join(params) {
+          return request(`/members`, METHOD.POST(params))
+      },
+      login(params) {
+          return requestWithJsonData(`/oauth/token`, METHOD.POST(params))
+      }
   }
 
   return {
