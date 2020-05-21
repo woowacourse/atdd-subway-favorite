@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.NoSuchAccountException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -42,7 +43,7 @@ public class MemberService {
 	}
 
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		return memberRepository.findByEmail(email).orElseThrow(NoSuchAccountException::new);
 	}
 
 	public boolean loginWithForm(String email, String password) {

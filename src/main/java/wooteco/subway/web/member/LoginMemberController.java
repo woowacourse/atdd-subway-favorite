@@ -23,7 +23,7 @@ public class LoginMemberController {
 		this.memberService = memberService;
 	}
 
-	@PostMapping("/oauth/token")
+	@PostMapping("")
 	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
 		String token = memberService.createToken(param);
 		return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
@@ -35,7 +35,8 @@ public class LoginMemberController {
 	}
 
 	@PutMapping("/me")
-	public ResponseEntity<Void> editMemberOfMineBasic(@LoginMember Member member, @RequestBody UpdateMemberRequest request) {
+	public ResponseEntity<Void> editMemberOfMineBasic(@LoginMember Member member,
+		@RequestBody UpdateMemberRequest request) {
 		memberService.updateMember(member.getId(), request);
 		return ResponseEntity.noContent().build();
 	}
