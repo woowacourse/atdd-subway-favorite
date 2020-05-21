@@ -19,4 +19,12 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::abc[snippets='http-request,http-response,request-fields,response-headers']
+operation::members/create[snippets='http-request,http-response,request-fields,response-headers']
+
+[[resources-loginMembers]]
+== Login Member
+
+[[resources-loginMembers-login]]
+=== 로그인
+
+operation::oauth/token[snippets='http-request,http-response,request-fields,response-headers']

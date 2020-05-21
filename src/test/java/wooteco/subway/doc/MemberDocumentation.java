@@ -9,7 +9,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 public class MemberDocumentation {
 	public static RestDocumentationResultHandler createMember() {
-		return document("abc");
+		return document("members/create");
 	}
 
 	public static RestDocumentationResultHandler updateMember() {
