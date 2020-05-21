@@ -21,7 +21,13 @@ endif::[]
 
 operation::members/create[snippets='http-request,http-response,request-fields']
 
+[[resources-members-findByEmail]]
+=== 회원 정보 불러 오기
+
+operation::members/findByEmail[snippets='http-request,http-response,request-parameters']
+
 [[resources-members-update]]
 === 회원 정보 수정
 
 operation::members/update[snippets='http-request,http-response,request-fields']
+

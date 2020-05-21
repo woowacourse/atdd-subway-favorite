@@ -3,11 +3,13 @@ package wooteco.subway.doc;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.ResultHandler;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 
 public class MemberDocumentation {
 
@@ -20,6 +22,17 @@ public class MemberDocumentation {
                 ),
                 responseHeaders(
                         headerWithName("Location").description("The user's location who just created")
+                )
+        );
+    }
+
+    public static ResultHandler getMemberByEmail() {
+        return document("members/findByEmail",
+                requestParameters(
+                        parameterWithName("email").description("The user's email")
+                ),
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
                 )
         );
     }

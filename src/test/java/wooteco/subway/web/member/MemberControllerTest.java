@@ -1,5 +1,6 @@
 package wooteco.subway.web.member;
 
+import org.apache.coyote.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willReturn;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.AcceptanceTest.*;
@@ -66,6 +66,20 @@ public class MemberControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(MemberDocumentation.createMember());
+    }
+    @Test
+    public void getMemberByEmail() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+
+        this.mockMvc.perform(get("/members")
+                .header("Authorization", "Bearer TestToken")
+                .param("email", TEST_USER_EMAIL)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.getMemberByEmail());
     }
 
     @Test
