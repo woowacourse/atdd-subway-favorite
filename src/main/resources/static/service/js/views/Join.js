@@ -1,5 +1,5 @@
 import {EVENT_TYPE} from "../../utils/constants.js";
-import api from "../../api/Login.js"
+import api from "../../api/index.js"
 
 function Join() {
     const $joinButton = document.querySelector("#join-button")
@@ -21,7 +21,7 @@ function Join() {
             .then(res => console.log(res))
             .catch(err => console.log(err.message));
 
-        const accessToken = await api.loginMember
+        const accessToken = await api.member
             .login({
                 email: $newMemberEmail.value,
                 password: $newMemberPassword.value
@@ -29,7 +29,8 @@ function Join() {
             .then(res => res.accessToken)
             .catch(err => console.log(err.message));
 
-        localStorage["token"] = accessToken;
+
+        localStorage["token"] = "Bearer " + accessToken;
         window.location.href = "/map";
     }
 
