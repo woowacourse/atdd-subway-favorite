@@ -12,6 +12,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -53,5 +54,17 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void findMemberByEmail() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+
+        Member result = memberService.findMemberByEmail(TEST_USER_EMAIL);
+
+        assertThat(result.getEmail()).isEqualTo(member.getEmail());
+        assertThat(result.getName()).isEqualTo(member.getName());
+        assertThat(result.getPassword()).isEqualTo(member.getPassword());
     }
 }
