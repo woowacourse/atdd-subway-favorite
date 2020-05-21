@@ -81,7 +81,7 @@ const api = (() => {
       return request(`/me/bearer`, METHOD.PUT(updatedInfo));
     },
     delete() {
-      return request(`/me`, METHOD.DELETE());
+      return request(`/me/bearer`, METHOD.DELETE());
     }
   };
 

@@ -34,8 +34,8 @@
         - [x] name / password 만 수정 가능하다
    
     - 탈퇴
-        - [ ] jwt 토큰을 복호화한 email 로 member 를 찾는다
-        - [ ] 해당 member 를 삭제하고 jwt 값을 비운다
+        - [x] jwt 토큰을 복호화한 email 로 member 를 찾는다
+        - [x] 해당 member 를 삭제하고 jwt 값을 비운다
 
 4. 로그아웃
     - [ ] 클라이언트의 localStorage 의 jwt 값 비우고 메인 화면으로 이동

@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 public class LoginMemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public LoginMemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -45,6 +45,12 @@ public class LoginMemberController {
     public ResponseEntity<Void> updateMember(@LoginMember MemberResponse memberResponse,
                                              @RequestBody @Valid UpdateMemberRequest updateMemberRequest) {
         memberService.updateMember(memberResponse.getId(), updateMemberRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me/bearer")
+    public ResponseEntity<Void> deleteMember(@LoginMember MemberResponse memberResponse) {
+        memberService.deleteMember(memberResponse.getId());
         return ResponseEntity.ok().build();
     }
 }
