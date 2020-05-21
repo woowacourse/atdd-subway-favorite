@@ -44,8 +44,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        return given().auth()
-                .oauth2(tokenResponse.getAccessToken())
+        return given()
+                .header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
                 .when()
                 .get("/me/bearer")
                 .then()

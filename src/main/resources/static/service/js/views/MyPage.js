@@ -2,7 +2,7 @@ import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 import api from '../../api/index.js'
 import showSnackbar from '../../lib/snackbar/index.js';
 
-function MyPage() {
+function MyInfo() {
   const onShow = async () => {
     try {
       await api.loginMember.get().then(
@@ -21,5 +21,5 @@ function MyPage() {
   }
 }
 
-const myPage = new MyPage()
+const myPage = new MyInfo()
 myPage.init()

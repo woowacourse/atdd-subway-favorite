@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -39,8 +41,18 @@ public class LoginMemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
+    @GetMapping("/me/bearer")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMemberInformation(
+        @LoginMember Member member,
+        @RequestBody UpdateMemberRequest memberRequest
+    )
+    {
+        memberService.updateMember(member.getId(), memberRequest);
+        return ResponseEntity.ok().build();
     }
 }

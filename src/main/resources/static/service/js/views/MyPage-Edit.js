@@ -6,7 +6,7 @@ import {
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 
-function MyInfo() {
+function MyInfoEdit() {
   const $email = document.querySelector("#email");
   const $name = document.querySelector("#name");
   const $password = document.querySelector("#password");
@@ -62,5 +62,5 @@ function MyInfo() {
   };
 }
 
-const myInfo = new MyInfo();
+const myInfo = new MyInfoEdit();
 myInfo.init();
