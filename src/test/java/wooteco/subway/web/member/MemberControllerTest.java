@@ -23,8 +23,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.service.member.MemberServiceTest.*;
@@ -84,5 +83,31 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    void findMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+
+        this.mockMvc.perform(get("/members")
+                .param("email", TEST_USER_EMAIL))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.findMember());
+    }
+
+    @Test
+    void removeMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(memberService.createToken(any())).willReturn(new JwtTokenProvider("thisisSecreckey=twice love", 123L).createToken(TEST_USER_EMAIL));
+
+        this.mockMvc.perform(delete("/members/1")
+                .header("Authorization", memberService.createToken(request)))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.removeMember());
     }
 }
