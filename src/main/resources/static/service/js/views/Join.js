@@ -6,27 +6,27 @@ function Join() {
 
   const validate = ({ email, name, password, passwordCheck }) => {
     if (!email && !password && !name && !passwordCheck) {
-      throw new Error(ERROR_MESSAGE.JOIN_FORM_EMPTY)
+      throw new Error(ERROR_MESSAGE.FORM_EMPTY)
     }
 
     if (!email.match("^[a-z-A-z-0-9]+@[a-z-A-z-0-9]+.[a-z-A-z-0-9]+$")) {
-      throw new Error(ERROR_MESSAGE.JOIN_INVALID_EMAIL_FORMAT)
+      throw new Error(ERROR_MESSAGE.INVALID_EMAIL_FORMAT)
     }
 
     if (!name || name.includes(" ")) {
-      throw new Error(ERROR_MESSAGE.JOIN_INVALID_NAME)
+      throw new Error(ERROR_MESSAGE.INVALID_NAME)
     }
 
     if (!password || password.includes(" ")) {
-      throw new Error(ERROR_MESSAGE.JOIN_INVALID_PASSWORD)
+      throw new Error(ERROR_MESSAGE.INVALID_PASSWORD)
     }
 
     if (password !== passwordCheck) {
-      throw new Error(ERROR_MESSAGE.JOIN_PASSWORD_MISMATCH)
+      throw new Error(ERROR_MESSAGE.PASSWORD_MISMATCH)
     }
   }
 
-  const onJogin = async event => {
+  const onJoin = async event => {
     event.preventDefault()
 
     const email = document.querySelector('#email').value
@@ -56,7 +56,7 @@ function Join() {
   }
 
   this.init = () => {
-    $joinButton.addEventListener(EVENT_TYPE.CLICK, onJogin)
+    $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoin)
   }
 }
 
