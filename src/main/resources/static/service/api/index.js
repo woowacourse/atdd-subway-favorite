@@ -19,6 +19,15 @@ const METHOD = {
         ...data
       })
     }
+  },
+  GET(token) {
+    return {
+      method: 'GET',
+      headers: {
+        'authorization': 'bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    }
   }
 }
 
@@ -48,8 +57,8 @@ const api = (() => {
     login(data) {
       return fetch('/oauth/token', METHOD.POST(data));
     },
-    get() {
-
+    get(token) {
+      return requestWithJsonData('/members/me', METHOD.GET(token));
     }
   }
 

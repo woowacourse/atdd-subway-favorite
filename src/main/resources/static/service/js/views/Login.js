@@ -27,8 +27,9 @@ function Login() {
         })
       }
       const tokenResponse = await response.json();
-      localStorage.setItem(emailValue, tokenResponse.accessToken);
+      localStorage.setItem("token", tokenResponse.accessToken);
       Snackbar.show({text: SUCCESS.LOGIN, pos: 'bottom-center', showAction: false, duration: 2000})
+      location.href = "/"
     });
 
   }

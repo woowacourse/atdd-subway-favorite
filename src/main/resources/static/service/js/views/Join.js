@@ -35,7 +35,7 @@ function Join() {
         if (res.ok) {
           resetJoinForm();
           alert(SUCCESS.JOIN);
-          location.href = "/"
+          location.href = "/login"
           return
         }
         Snackbar.show({text: ERROR_MESSAGE.JOIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
