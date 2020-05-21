@@ -7,9 +7,16 @@ const METHOD = {
             }
         }
     },
-    PUT() {
+    PUT(token, data) {
         return {
-            method: 'PUT'
+            method: 'PUT',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ...data
+            })
         }
     },
     DELETE() {
@@ -58,6 +65,9 @@ const api = (() => {
         },
         getWithAuth(token) {
             return requestWithJsonData(`/members`, METHOD.GET_WITH_AUTH(token))
+        },
+        update(memberId, token, data) {
+            return request(`/members/${memberId}`, METHOD.PUT(token, data))
         }
     }
 

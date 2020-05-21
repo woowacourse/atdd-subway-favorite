@@ -1,4 +1,4 @@
-import {EVENT_TYPE, HTTP_HEADERS} from '../../utils/constants.js'
+import {HTTP_HEADERS} from '../../utils/constants.js'
 import api from '../../api/index.js'
 
 function MyPage() {
@@ -18,7 +18,7 @@ function MyPage() {
 
     this.init = () => {
         show()
-        $editButton.addEventListener(EVENT_TYPE.CLICK, onEdit)
+        // $editButton.addEventListener(EVENT_TYPE.CLICK, onEdit)
     }
 }
 
