@@ -1,46 +1,52 @@
-import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
-import api from '../../api/index.js'
-// import Snackbar from '/service/lib/snackbar/snackbar.js'
+import { EVENT_TYPE, ERROR_MESSAGE } from "../../utils/constants.js";
+import showSnackbar from "../../lib/snackbar/index.js";
+import api from "../../api/index.js";
 
 function Join() {
-  const $joinButton = document.querySelector('#join-button')
-  console.log($joinButton)
+  const $joinButton = document.querySelector("#join-button");
+  const $email = document.querySelector("#email");
+  const $name = document.querySelector("#name");
+  const $password = document.querySelector("#password");
+  const $passwordCheck = document.querySelector("#password-check");
 
-  const onJoin = async event => {
-    event.preventDefault()
-    const emailValue = document.querySelector('#email').value
-    const nameValue = document.querySelector("#name").value
-    const passwordValue = document.querySelector('#password').value
-    const passwordCheckValue = document.querySelector("#password-check").value
-    if (!emailValue || !nameValue || !passwordValue || !passwordCheckValue) {
-      // Snackbar.show({ text: ERROR_MESSAGE.JOIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000 })
-      alert(ERROR_MESSAGE.JOIN_FAIL)
-      return
+  const onJoinHandler = async event => {
+    event.preventDefault();
+    if (!isValid()) {
+      return;
     }
-    if (passwordValue !== passwordCheckValue) {
-      // Snackbar.show({ text: ERROR_MESSAGE.PASSWORD_NOT_EQUAL, pos: 'bottom-center', showAction: false, duration: 2000 })
-      alert(ERROR_MESSAGE.PASSWORD_NOT_EQUAL)
-      return
+    try {
+      const newMember = {
+        email: $email.value,
+        name: $name.value,
+        password: $password.value
+      };
+      await api.member.create(newMember);
+      location.href = "/login";
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
     }
+  };
 
-    const joinInput = {
-      email: emailValue,
-      name: nameValue,
-      password: passwordValue
+  const isValid = () => {
+    const email = $email.value;
+    const name = $name.value;
+    const password = $password.value;
+    const passwordCheck = $passwordCheck.value;
+    if (!email || !name || !password) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
+      return false;
     }
-
-    await api.member
-    .create(joinInput)
-    .catch(error => alert(ERROR_MESSAGE.COMMON))
-
-    window.location.replace("/login")
-  }
-
+    if (password !== passwordCheck) {
+      showSnackbar(ERROR_MESSAGE.PASSWORD_CHECK);
+      return false;
+    }
+    return true;
+  };
 
   this.init = () => {
-    $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoin)
-  }
+    $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoinHandler);
+  };
 }
 
-const join = new Join()
-join.init()
+const join = new Join();
+join.init();

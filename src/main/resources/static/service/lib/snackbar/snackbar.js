@@ -7,19 +7,7 @@
  * https://github.com/polonel/Snackbar/blob/master/LICENSE
  */
 
-(function(root, factory) {
-  "use strict";
-
-  if (typeof define === "function" && define.amd) {
-    define([], function() {
-      return (root.Snackbar = factory());
-    });
-  } else if (typeof module === "object" && module.exports) {
-    module.exports = root.Snackbar = factory();
-  } else {
-    root.Snackbar = factory();
-  }
-})(this, function() {
+var Snackbar = (function() {
   var Snackbar = {};
 
   Snackbar.current = null;
@@ -180,4 +168,6 @@
   };
 
   return Snackbar;
-});
+})();
+
+export default Snackbar;
