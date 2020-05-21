@@ -18,8 +18,9 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String subject) {
+        System.out.println("분기4");
         Claims claims = Jwts.claims().setSubject(subject);
-
+        System.out.println("확인하고 싶다구요!"+claims.getSubject());
         Date now = new Date();
         Date validity = new Date(now.getTime()
                 + validityInMilliseconds);

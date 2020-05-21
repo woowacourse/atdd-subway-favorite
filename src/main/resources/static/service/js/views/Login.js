@@ -10,6 +10,17 @@ function Login() {
       Snackbar.show({ text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000 })
       return
     }
+    fetch("/login", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+      , body: JSON.stringify({
+        email: emailValue,
+        password: passwordValue
+      })
+    }).then(data => console.log(data.json()))
+
   }
 
   this.init = () => {

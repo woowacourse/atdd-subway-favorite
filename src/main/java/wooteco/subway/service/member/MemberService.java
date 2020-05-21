@@ -33,10 +33,13 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        System.out.println("분기1 ");
         if (!member.checkPassword(param.getPassword())) {
+            System.out.println("분기2 ");
             throw new RuntimeException("잘못된 패스워드");
         }
 
+        System.out.println("분기 3");
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
