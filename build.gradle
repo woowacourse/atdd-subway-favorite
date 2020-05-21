@@ -22,7 +22,6 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

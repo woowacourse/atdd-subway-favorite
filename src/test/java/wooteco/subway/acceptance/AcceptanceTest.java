@@ -2,19 +2,18 @@ package wooteco.subway.acceptance;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,8 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -39,151 +36,139 @@ import wooteco.subway.service.station.dto.StationResponse;
 @Sql("/truncate.sql")
 public class AcceptanceTest {
 
-    public static final String STATION_NAME_KANGNAM = "강남역";
-    public static final String STATION_NAME_YEOKSAM = "역삼역";
-    public static final String STATION_NAME_SEOLLEUNG = "선릉역";
-    public static final String STATION_NAME_HANTI = "한티역";
-    public static final String STATION_NAME_DOGOK = "도곡역";
-    public static final String STATION_NAME_MAEBONG = "매봉역";
-    public static final String STATION_NAME_YANGJAE = "양재역";
-    public static final String LINE_NAME_2 = "2호선";
-    public static final String LINE_NAME_3 = "3호선";
-    public static final String LINE_NAME_BUNDANG = "분당선";
-    public static final String LINE_NAME_SINBUNDANG = "신분당선";
+    protected static final String STATION_NAME_KANGNAM = "강남역";
+    protected static final String STATION_NAME_YEOKSAM = "역삼역";
+    protected static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    protected static final String STATION_NAME_HANTI = "한티역";
+    protected static final String STATION_NAME_DOGOK = "도곡역";
+    protected static final String STATION_NAME_MAEBONG = "매봉역";
+    protected static final String STATION_NAME_YANGJAE = "양재역";
+    protected static final String LINE_NAME_2 = "2호선";
+    protected static final String LINE_NAME_3 = "3호선";
+    protected static final String LINE_NAME_BUNDANG = "분당선";
+    protected static final String LINE_NAME_SINBUNDANG = "신분당선";
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+    protected static final String TEST_USER_EMAIL2 = "turtle@gmail.com";
+    protected static final String TEST_USER_NAME2 = "turtle";
+    protected static final String TEST_USER_PASSWORD2 = "1111";
     protected static final String AUTHORIZATION = "authorization";
-    @LocalServerPort
-    public int port;
+
     @Autowired
     protected MockMvc mockMvc;
+
     @Autowired
     protected ObjectMapper objectMapper;
 
-    @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
+    public List<StationResponse> getStations() throws Exception {
+        String result = mockMvc.perform(get("/stations"))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+        return Arrays.asList(objectMapper.readValue(result, StationResponse[].class));
     }
 
-    public List<StationResponse> getStations() {
-        return
-            given().when().
-                get("/stations").
-                then().
-                log().all().
-                extract().
-                jsonPath().getList(".", StationResponse.class);
+    public void deleteStation(Long id) throws Exception {
+        mockMvc.perform(delete("/stations/" + id))
+            .andDo(print())
+            .andReturn();
     }
 
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
+    public LineDetailResponse getLine(Long id) throws Exception {
+        String result = mockMvc.perform(get("/lines/" + id))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+        return objectMapper.readValue(result, LineDetailResponse.class);
     }
 
-    public void deleteStation(Long id) {
-        given().when().
-            delete("/stations/" + id).
-            then().
-            log().all();
-    }
-
-    public LineDetailResponse getLine(Long id) {
-        return
-            given().when().
-                get("/lines/" + id).
-                then().
-                log().all().
-                extract().as(LineDetailResponse.class);
-    }
-
-    public void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
+    public void updateLine(Long id, LocalTime startTime, LocalTime endTime) throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        given().
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            put("/lines/" + id).
-            then().
-            log().all().
-            statusCode(HttpStatus.OK.value());
+        String body = objectMapper.writeValueAsString(params);
+
+        mockMvc.perform(put("/lines/" + id)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body)
+        )
+            .andDo(print())
+            .andReturn();
     }
 
-    public List<LineResponse> getLines() {
-        return
-            given().when().
-                get("/lines").
-                then().
-                log().all().
-                extract().
-                jsonPath().getList(".", LineResponse.class);
+    public List<LineResponse> getLines() throws Exception {
+        String result = mockMvc.perform(get("/lines"))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        return Arrays.asList(objectMapper.readValue(result, LineResponse[].class));
     }
 
-    public void deleteLine(Long id) {
-        given().when().
-            delete("/lines/" + id).
-            then().
-            log().all();
+    public void deleteLine(Long id) throws Exception {
+        mockMvc.perform(delete("/lines/" + id))
+            .andDo(print())
+            .andReturn();
     }
 
-    public void addLineStation(Long lineId, Long preStationId, Long stationId) {
+    public void addLineStation(Long lineId, Long preStationId, Long stationId) throws Exception {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    public void addLineStation(
+        Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration
+    ) throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
         params.put("distance", distance.toString());
         params.put("duration", duration.toString());
 
-        given().
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            post("/lines/" + lineId + "/stations").
-            then().
-            log().all().
-            statusCode(HttpStatus.OK.value());
+        String body = objectMapper.writeValueAsString(params);
+
+        mockMvc.perform(post("/lines/" + lineId + "/stations")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body))
+            .andDo(print())
+            .andReturn();
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
-        given().
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            delete("/lines/" + lineId + "/stations/" + stationId).
-            then().
-            log().all().
-            statusCode(HttpStatus.NO_CONTENT.value());
+    public void removeLineStation(Long lineId, Long stationId) throws Exception {
+        mockMvc.perform(delete("/lines/" + lineId + "/stations/" + stationId)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print());
     }
 
-    public WholeSubwayResponse retrieveWholeSubway() {
-        return
-            given().
-                when().
-                get("/lines/detail").
-                then().
-                log().all().
-                extract().as(WholeSubwayResponse.class);
+    public WholeSubwayResponse retrieveWholeSubway() throws Exception {
+        String result = mockMvc.perform(get("/lines/detail")
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        return objectMapper.readValue(result, WholeSubwayResponse.class);
     }
 
-    public PathResponse findPath(String source, String target, String type) {
-        return
-            given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().as(PathResponse.class);
+    public PathResponse findPath(String source, String target, String type) throws Exception {
+        String result = mockMvc.perform(get("/paths?source=" + source + "&target=" + target + "&type=" + type)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        return objectMapper.readValue(result, PathResponse.class);
     }
 
     /**
@@ -193,7 +178,7 @@ public class AcceptanceTest {
      * |           |
      * 양재 - 매봉 - 도곡
      */
-    public void initStation() {
+    public void initStation() throws Exception {
         // 역 등록
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
         StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
@@ -227,74 +212,80 @@ public class AcceptanceTest {
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
     }
 
-    public StationResponse createStation(String name) {
+    public StationResponse createStation(String name) throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
-        return
-            given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value()).
-                extract().as(StationResponse.class);
+        String body = objectMapper.writeValueAsString(params);
+
+        String result = mockMvc.perform(post("/stations")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        return objectMapper.readValue(result, StationResponse.class);
     }
 
-    public LineResponse createLine(String name) {
+    public LineResponse createLine(String name) throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        return
-            given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/lines").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value()).
-                extract().as(LineResponse.class);
+        String body = objectMapper.writeValueAsString(params);
+
+        String result = mockMvc.perform(post("/lines")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        return objectMapper.readValue(result, LineResponse.class);
     }
 
     public TokenResponse login(String email, String password) throws Exception {
         String body = objectMapper.writeValueAsString(new LoginRequest(email, password));
-        MvcResult login = mockMvc.perform(post("/oauth/token")
+
+        String result = mockMvc.perform(post("/oauth/token")
             .contentType(MediaType.APPLICATION_JSON)
             .content(body))
             .andDo(print())
-            .andReturn();
-        return objectMapper.readValue(login.getResponse().getContentAsString(), TokenResponse.class);
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        return objectMapper.readValue(result, TokenResponse.class);
     }
 
-    public String createMember(String email, String name, String password) {
+    public String createMember(String email, String name, String password) throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
         params.put("password", password);
 
-        return
-            given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/members").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value()).
-                extract().header("Location");
+        String body = objectMapper.writeValueAsString(params);
+
+        return mockMvc.perform(post("/members")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getHeader("Location");
     }
 
-    public MemberResponse getMember(TokenResponse tokenResponse) throws Exception {
+    public MemberResponse getMember(String email, TokenResponse tokenResponse) throws Exception {
         MvcResult result = mockMvc.perform(get("/members")
+            .param("email", email)
             .header(AUTHORIZATION, tokenResponse)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
@@ -303,6 +294,7 @@ public class AcceptanceTest {
         return mapToMemberResponse(result);
     }
 
+    // TODO: 2020/05/21 생각해보기
     private MemberResponse mapToMemberResponse(final MvcResult result) throws Exception {
         try {
             return objectMapper.readValue(result.getResponse().getContentAsString(), MemberResponse.class);
@@ -328,20 +320,15 @@ public class AcceptanceTest {
     public void updateMemberWithoutAuthentication(
         MemberResponse memberResponse,
         UpdateMemberRequest updateMemberRequest
-    ) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", updateMemberRequest.getName());
-        params.put("password", updateMemberRequest.getPassword());
+    ) throws Exception {
+        String body = objectMapper.writeValueAsString(updateMemberRequest);
 
-        given().
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            put("/members/" + memberResponse.getId()).
-            then().
-            log().all().
-            statusCode(HttpStatus.UNAUTHORIZED.value());
+        mockMvc.perform(put("/members/" + memberResponse.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body))
+            .andDo(print())
+            .andExpect(status().isUnauthorized());
     }
 
     public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) throws Exception {

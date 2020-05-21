@@ -11,9 +11,10 @@ import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.station.dto.StationResponse;
 
 public class StationAcceptanceTest extends AcceptanceTest {
+
     @DisplayName("지하철역을 관리한다")
     @Test
-    void manageStation() {
+    void manageStation() throws Exception {
         // when
         createStation(STATION_NAME_KANGNAM);
         createStation(STATION_NAME_YEOKSAM);

@@ -1,21 +1,21 @@
 package wooteco.subway.acceptance;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class PageAcceptanceTest extends AcceptanceTest {
 
     @Test
-    void linePage() {
+    void linePage() throws Exception {
         createLine("신분당선");
 
-        given().
-            accept(MediaType.TEXT_HTML_VALUE).
-            when().
-            get("/lines").
-            then().
-            log().all().
-            statusCode(HttpStatus.OK.value());
+        mockMvc.perform(get("/lines")
+            .accept(MediaType.TEXT_HTML_VALUE))
+            .andDo(print())
+            .andExpect(status().isOk());
     }
 }
