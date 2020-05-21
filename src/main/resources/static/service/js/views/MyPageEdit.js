@@ -39,7 +39,12 @@ function Edit() {
     }
 
     const onDelete = async event => {
-
+        await api.me.delete()
+        sessionStorage.clear()
+        Snackbar.show({text: "회원 탈퇴가 완료되었습니다 😭", pos: 'bottom-center', showAction: false, duration: 2000})
+        setTimeout(() => {
+            location.href = '/login'
+        }, 1000)
     }
 
     this.init = async () => {

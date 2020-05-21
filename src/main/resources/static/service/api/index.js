@@ -94,6 +94,9 @@ const api = (() => {
         },
         update(data) {
             return request(`/me`, METHOD.PUT(data, getToken()))
+        },
+        delete() {
+            return request(`/me`, METHOD.DELETE(getToken()))
         }
     }
 
