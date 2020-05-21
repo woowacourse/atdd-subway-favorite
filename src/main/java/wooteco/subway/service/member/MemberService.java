@@ -28,6 +28,7 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }

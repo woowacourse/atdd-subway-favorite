@@ -73,11 +73,22 @@ public class Member {
     }
 
     public void update(String name, String password) {
+        validate(name, password);
+
         if (StringUtils.isNotBlank(name)) {
             this.name = name;
         }
         if (StringUtils.isNotBlank(password)) {
             this.password = password;
+        }
+    }
+
+    private void validate(String name, String password) {
+        if (Objects.isNull(name) || name.isEmpty()) {
+            throw new IllegalArgumentException("이름이 비어있습니다.");
+        }
+        if (Objects.isNull(password) || password.isEmpty()) {
+            throw new IllegalArgumentException("비밀번호가 비어있습니다.");
         }
     }
 
