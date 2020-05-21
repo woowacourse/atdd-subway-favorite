@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +40,7 @@ import wooteco.subway.service.member.MemberService;
 @AutoConfigureMockMvc
 public class MemberControllerTest {
 
-	@MockBean
+	@InjectMocks
 	protected MemberService memberService;
 	@MockBean
 	protected MemberRepository memberRepository;
@@ -127,10 +128,9 @@ public class MemberControllerTest {
 
 		when(jwtTokenProvider.validateToken(any())).thenReturn(true);
 		when(jwtTokenProvider.getSubject(any())).thenReturn(TEST_USER_EMAIL);
-		when(memberService.findMemberByEmail(any())).thenReturn(member);
-		// TODO ?
+		when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-
+		
 		this.mockMvc.perform(put("/members/me")
 			.header("authorization", "Bearer 1q2w3e4r")
 			.content(updateRequest)

@@ -41,9 +41,19 @@ const api = (() => {
     }
   }
 
+  const member = {
+    create(data) {
+      return request('/members', METHOD.POST(data));
+    },
+    get() {
+
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member
   }
 })()
 
