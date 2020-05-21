@@ -95,4 +95,16 @@ public class MemberControllerTest {
 				.andDo(print())
 				.andDo(MemberDocumentation.updateMember());
 	}
+
+	@Test
+	public void deleteMember() throws Exception {
+		doNothing().when(memberService).deleteMember(any());
+
+		this.mockMvc.perform(delete("/members/{id}", 1L)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(MemberDocumentation.deleteMember());
+	}
 }

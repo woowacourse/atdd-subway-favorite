@@ -43,4 +43,12 @@ public class MemberDocumentation {
 				)
 		);
 	}
+
+	public static RestDocumentationResultHandler deleteMember() {
+		return document("members/delete",
+				pathParameters(
+						parameterWithName("id").description("탈퇴할 User id")
+				)
+		);
+	}
 }

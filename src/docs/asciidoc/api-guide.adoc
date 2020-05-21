@@ -33,3 +33,8 @@ operation::members/read[snippets='http-request,request-parameters,http-response'
 === 회원 정보 수정
 
 operation::members/update[snippets='http-request,request-fields,path-parameters,http-response']
+
+[[resources-members-delete]]
+=== 회원 정보 삭제
+
+operation::members/delete[snippets='http-request,path-parameters,http-response']
