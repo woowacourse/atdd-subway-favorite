@@ -36,10 +36,11 @@ public class MemberController {
     }
 
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(
-        @LoginMember Member member,
-        @Param("email") String email
-    ) {
+    public ResponseEntity<MemberResponse> getMemberByEmail
+        (
+            @LoginMember Member member,
+            @Param("email") String email
+        ) {
         if (!member.isAuthenticated(email)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

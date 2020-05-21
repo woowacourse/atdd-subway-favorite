@@ -47,9 +47,9 @@ public class AcceptanceTest {
     protected static final String LINE_NAME_3 = "3호선";
     protected static final String LINE_NAME_BUNDANG = "분당선";
     protected static final String LINE_NAME_SINBUNDANG = "신분당선";
-    public static final String TEST_USER_EMAIL = "brown@email.com";
-    public static final String TEST_USER_NAME = "브라운";
-    public static final String TEST_USER_PASSWORD = "brown";
+    protected static final String TEST_USER_EMAIL = "brown@email.com";
+    protected static final String TEST_USER_NAME = "브라운";
+    protected static final String TEST_USER_PASSWORD = "brown";
     protected static final String TEST_USER_EMAIL2 = "turtle@gmail.com";
     protected static final String TEST_USER_NAME2 = "turtle";
     protected static final String TEST_USER_PASSWORD2 = "1111";
@@ -96,8 +96,7 @@ public class AcceptanceTest {
         mockMvc.perform(put("/lines/" + id)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body)
-        )
+            .content(body))
             .andDo(print())
             .andReturn();
     }

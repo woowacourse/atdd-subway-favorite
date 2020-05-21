@@ -99,9 +99,9 @@ public class MemberServiceTest {
         // then
         verify(memberRepository).deleteById(member.getId());
     }
-    // TODO: 2020/05/20 API 문서 작성
     // TODO: 2020/05/20 컨트롤러에서의 인증 방식 고민해보기
     // TODO: 2020/05/20 Exception Handler 추가
-    // TODO: 2020/05/20 Dynamic Test 방식으로 변경 
+    // TODO: 2020/05/21 MockMvc 리팩토링
+    // TODO: 2020/05/20 Dynamic Test 방식으로 변경
     // TODO: 2020/05/20 페이지 연동
 }
