@@ -39,7 +39,7 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
 
         Member member = memberService.findMemberByEmail(email);
         if (!member.checkPassword(password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
+            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력입니다.");
         }
 
         request.setAttribute("loginMemberEmail", email);
