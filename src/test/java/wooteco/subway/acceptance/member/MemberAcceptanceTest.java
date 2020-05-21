@@ -16,130 +16,189 @@ import wooteco.subway.service.member.dto.TokenResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
-	@DisplayName("회원 정보 관리")
-	@Test
-	void memberInfo() {
-		String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		assertThat(location).isNotBlank();
+    @DisplayName("회원 정보 관리")
+    @Test
+    void memberInfo() {
+        /**
+         * Feature: 회원 정보 관리
+         *
+         * Scenario: 회원 정보를 관리한다.
+         * When 회원가입 요청을 한다.
+         * Then 회원가입이 된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있지 않다.
+         * When 로그인을 요청한다
+         * Then 로그인이 된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 조회 요청을 한다.
+         * Then 회원정보가 조회된다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 수정 요청을 한다.
+         * Then 회원정보가 수정된다.
+         *  And 변경된 사항을 확인한다.
+         *
+         * Given 회원가입이 되어있고, 로그인이 되어있다.
+         * When 회원정보 삭제 요청을 한다.
+         * Then 회원정보가 삭제된다.
+         *
+         */
+        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(location).isNotBlank();
 
-		TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		assertThat(tokenResponse.getAccessToken()).isNotBlank();
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        assertThat(tokenResponse.getAccessToken()).isNotBlank();
 
-		MemberResponse memberResponse = getMember(TEST_USER_EMAIL, tokenResponse);
-		updateMemberWhenLoggedIn(memberResponse, tokenResponse.getAccessToken(), "NEW_NAME", "NEW_PASSWORD");
+        MemberResponse memberResponse = getMember(TEST_USER_EMAIL, tokenResponse);
+        updateMemberWhenLoggedIn(memberResponse, tokenResponse.getAccessToken(), "NEW_NAME",
+            "NEW_PASSWORD");
 
-		MemberResponse memberResponseAfterEdit = getMember(TEST_USER_EMAIL, tokenResponse);
-		assertThat(memberResponseAfterEdit).isNotNull();
-		assertThat(memberResponseAfterEdit.getName()).isEqualTo("NEW_NAME");
-		assertThat(memberResponseAfterEdit.getId()).isNotNull();
-		assertThat(memberResponseAfterEdit.getEmail()).isEqualTo(TEST_USER_EMAIL);
+        MemberResponse memberResponseAfterEdit = getMember(TEST_USER_EMAIL, tokenResponse);
+        assertThat(memberResponseAfterEdit).isNotNull();
+        assertThat(memberResponseAfterEdit.getName()).isEqualTo("NEW_NAME");
+        assertThat(memberResponseAfterEdit.getId()).isNotNull();
+        assertThat(memberResponseAfterEdit.getEmail()).isEqualTo(TEST_USER_EMAIL);
 
-		deleteMember(memberResponseAfterEdit, tokenResponse);
+        deleteMember(memberResponseAfterEdit, tokenResponse);
+    }
 
-		/**
-		 * Feature: 회원 정보 관리
-		 *
-		 * Scenario: 회원 정보를 관리한다.
-		 * When 회원가입 요청을 한다.
-		 * Then 회원가입이 된다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있지 않다.
-		 * When 로그인을 요청한다
-		 * Then 로그인이 된다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있다.
-		 * When 회원정보 조회 요청을 한다.
-		 * Then 회원정보가 조회된다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있다.
-		 * When 회원정보 수정 요청을 한다.
-		 * Then 회원정보가 수정된다.
-		 *  And 변경된 사항을 확인한다.
-		 *
-		 * Given 회원가입이 되어있고, 로그인이 되어있다.
-		 * When 회원정보 삭제 요청을 한다.
-		 * Then 회원정보가 삭제된다.
-		 *
-		 */
-	}
+    @DisplayName("회원 정보 관리 중 없는 이메일 계정으로 로그인 시도 예외")
+    @Test
+    void memberInfoSideCases() {
+        /**
+         * When 없는 이메일로 로그인을 시도한다
+         * Then Exception이 발생한다
+         */
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("email", TEST_USER_EMAIL);
+        paramMap.put("password", TEST_USER_PASSWORD);
 
-	@DisplayName("회원 정보 관리 중 예외 테스트")
-	@Test
-	void memberInfoSideCases() {
-		final String string = loginWithStringOutput(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		System.out.println(string);
-		System.out.println("##");
-		// assertThat(string)
-		// assertThatThrownBy(() -> login(TEST_USER_EMAIL, TEST_USER_PASSWORD)).isInstanceOf(AssertionError.class);
+        String message = given()
+            .body(paramMap)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/oauth/token")
+            .then()
+            .log().all()
+            .extract()
+            .asString();
+        assertThat(message).contains("해당 이메일의 계정이 존재하지 않습니다.");
+    }
 
-		/**
-		 * When 없는 이메일로 로그인을 시도한다
-		 * Then Exception이 발생한다
-		 *
-		 * When 동일한 이메일로 회원가입을 요청한다
-		 * Then Exception이 발생한다
-		 *
-		 * When 맞지 않는 비밀번호로 로그인을 시도한다
-		 * Then Exception이 발생한다
-		 *
-		 * When 유효하지 않은 토큰으로 권한을 요하는 페이지를 요청한다
-		 * Then Exception이 발생한다
-		 */
-	}
+    @DisplayName("회원 정보 관리 중 동일 이메일로 회원가입 요청 예외")
+    @Test
+    void duplicateEmail() {
+        /**
+         * When 동일한 이메일로 회원가입을 요청한다
+         * Then Exception이 발생한다
+         */
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Map<String, String> params = new HashMap<>();
+        params.put("email", TEST_USER_EMAIL);
+        params.put("name", "Allen");
+        params.put("password", "1234");
 
-	private TokenResponse login(String email, String password) {
-		Map<String, String> paramMap = new HashMap<>();
-		paramMap.put("email", email);
-		paramMap.put("password", password);
+        String message =
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                extract().asString();
+        assertThat(message).contains("동일한 이메일의 계정이 이미 존재합니다.");
+    }
 
-		return
-			given()
-				.body(paramMap)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.when()
-				.post("/oauth/token")
-				.then()
-				.log().all()
-				.statusCode(HttpStatus.OK.value())
-				.extract().as(TokenResponse.class);
-	}
+    @DisplayName("회원 정보 관리 중 맞지 않는 비밀번호로 로그인 요청 예외")
+    @Test
+    void wrongPassword() {
+        /**
+         * When 맞지 않는 비밀번호로 로그인을 시도한다
+         * Then Exception이 발생한다
+         */
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-	private String loginWithStringOutput(String email, String password) {
-		Map<String, String> paramMap = new HashMap<>();
-		paramMap.put("email", email);
-		paramMap.put("password", password);
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("email", TEST_USER_EMAIL);
+        paramMap.put("password", "CU");
 
-		return
-			given()
-				.body(paramMap)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.when()
-				.post("/oauth/token")
-				.then()
-				.log().all()
-				.extract()
-				.asString();
-	}
+        String message =
+            given()
+                .body(paramMap)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/oauth/token")
+                .then()
+                .log().all()
+                .extract().asString();
+        assertThat(message).contains("잘못된 패스워드입니다.");
+    }
 
-	public void updateMemberWhenLoggedIn(MemberResponse memberResponse, String accessToken, String name,
-		String password) {
-		Map<String, String> params = new HashMap<>();
-		params.put("name", name);
-		params.put("password", password);
+    @DisplayName("회원 정보 관리 중 유효하지 않은 토큰으로 권한이 필요한 페이지 요청 예외")
+    @Test
+    void invalidToken() {
+        /**
+         * When 유효하지 않은 토큰으로 권한을 요하는 페이지를 요청한다
+         * Then Exception이 발생한다
+         */
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        TokenResponse tokenResponse = new TokenResponse("BrownToken", "Bearer");
 
-		given().header("Authorization", "Bearer " + accessToken);
+        String message = given()
+            .header("Authorization",
+                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/me/bearer")
+            .then()
+            .log().all()
+            .extract().asString();
+        assertThat(message).contains("유효하지 않은 토큰");
 
-		given()
-			.header("Authorization", "Bearer " + accessToken)
-			.body(params)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when()
-			.put("/members/" + memberResponse.getId())
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.OK.value());
-	}
+    }
+
+    private TokenResponse login(String email, String password) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("email", email);
+        paramMap.put("password", password);
+
+        return
+            given()
+                .body(paramMap)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/oauth/token")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+    }
+
+    public void updateMemberWhenLoggedIn(MemberResponse memberResponse, String accessToken,
+        String name,
+        String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("password", password);
+
+        given().header("Authorization", "Bearer " + accessToken);
+
+        given()
+            .header("Authorization", "Bearer " + accessToken)
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .put("/members/" + memberResponse.getId())
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value());
+    }
 }

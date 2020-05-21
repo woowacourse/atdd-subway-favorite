@@ -23,7 +23,7 @@ public class LoginMemberController {
 		this.memberService = memberService;
 	}
 
-	@PostMapping("")
+	@PostMapping("/oauth/token")
 	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
 		String token = memberService.createToken(param);
 		return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
