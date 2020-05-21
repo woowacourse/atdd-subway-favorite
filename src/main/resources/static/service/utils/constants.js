@@ -3,7 +3,7 @@ export const EVENT_TYPE = {
 };
 
 export const SUCCESS_MESSAGE = {
-  SAVE: "😁 정보가 반영되었습니다.."
+  SAVE: "😁 정보가 반영되었습니다."
 };
 
 export const ERROR_MESSAGE = {

@@ -2,11 +2,8 @@ package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -40,7 +37,14 @@ public class LoginMemberController {
     }
 
     @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
-        return ResponseEntity.ok().body(MemberResponse.of(member));
+    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember MemberResponse memberResponse) {
+        return ResponseEntity.ok().body(memberResponse);
+    }
+
+    @PutMapping("/me/bearer")
+    public ResponseEntity<Void> updateMember(@LoginMember MemberResponse memberResponse,
+                                             @RequestBody @Valid UpdateMemberRequest updateMemberRequest) {
+        memberService.updateMember(memberResponse.getId(), updateMemberRequest);
+        return ResponseEntity.ok().build();
     }
 }

@@ -78,7 +78,7 @@ const api = (() => {
       return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
     },
     update(updatedInfo) {
-      return request(`/me`, METHOD.PUT(updatedInfo));
+      return request(`/me/bearer`, METHOD.PUT(updatedInfo));
     },
     delete() {
       return request(`/me`, METHOD.DELETE());

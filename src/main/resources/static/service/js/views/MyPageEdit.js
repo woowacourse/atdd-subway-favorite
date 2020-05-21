@@ -30,13 +30,16 @@ function MyInfo() {
     event.preventDefault();
     const updatedInfo = {
       name: $name.value,
-      email: $email.value,
       password: $password.value
     };
     api.loginMember
       .update(updatedInfo)
-      .then(() => {
-        showSnackbar(SUCCESS_MESSAGE.SAVE);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error();
+        }
+        alert(SUCCESS_MESSAGE.SAVE);
+        location.href = "/mypage";
       })
       .catch(() => showSnackbar(ERROR_MESSAGE.COMMON));
   };
