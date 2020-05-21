@@ -36,3 +36,7 @@ operation::members/update[snippets='http-request,http-response,request-fields,re
 
 operation::members/delete[snippets='http-request,http-response,request-headers']
 
+[[resources-members-login]]
+=== 로그인
+
+operation::members/login[snippets='http-request,http-response']
