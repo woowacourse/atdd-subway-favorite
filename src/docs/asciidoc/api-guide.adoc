@@ -19,7 +19,12 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response,request-fields,response-headers']
+operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources-members-find]]
+=== 회원 정보 조회
+
+operation::members/find[snippets='http-request,http-response,request-fields,response-headers']
 
 [[resources-loginMembers]]
 == Login Member
