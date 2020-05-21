@@ -124,10 +124,31 @@ public class LoginMemberControllerTest {
                 header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
                 filter(document("me/delete",
                         requestHeaders(headerWithName("Authorization").description("Bearer auth credentials")))).
-                when().
+        when().
                 delete("/me").
-                then().
+        then().
                 log().all();
+        //@formatter:on
+    }
+
+    @Test
+    void login() {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", TEST_USER_EMAIL);
+        params.put("password", TEST_USER_PASSWORD);
+        //@formatter:off
+        given(this.spec).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                filter(document("login",
+                                requestFields(fieldWithPath("email").description("The user's email."),
+                                fieldWithPath("password").description("The user's password.")))).
+        when().
+                post("/login").
+        then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
         //@formatter:on
     }
 
