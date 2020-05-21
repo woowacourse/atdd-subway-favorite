@@ -22,7 +22,11 @@ const METHOD = {
   },
   DELETE() {
     return {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("auth") || ""
+      }
     }
   },
   POST(data) {
@@ -69,6 +73,9 @@ const api = (() => {
     },
     edit(data) {
       return request(`/members/${data.id}`, METHOD.PUT(data))
+    },
+    delete({id}) {
+      return request(`/members/${id}`, METHOD.DELETE())
     }
   }
 

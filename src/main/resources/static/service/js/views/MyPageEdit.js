@@ -9,6 +9,21 @@ function MypageEdit() {
   const $editButton = document.querySelector("#edit-button")
   const $resignButton = document.querySelector("#resign-button")
 
+  const onResignHandler = (event) => {
+    try {
+      event.preventDefault()
+
+      const data = {
+        id: event.target.dataset.id,
+      }
+
+      api.member.delete(data)
+        .then(() => location.href = '/')
+
+    } catch (e) {
+      showSnackbar(e.message)
+    }
+  }
 
   const validate = () => {
     if ($password.value !== $passwordCheck.value) {
@@ -41,7 +56,7 @@ function MypageEdit() {
 
   const initEventListeners = () => {
     $editButton.addEventListener("click", onEditHandler)
-    // todo $resignButton.addEventListener("click", onResignHandler)
+    $resignButton.addEventListener("click", onResignHandler)
   }
 
   const initMyPageEdit = () => {
