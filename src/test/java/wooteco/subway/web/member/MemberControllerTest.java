@@ -21,8 +21,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.MemberRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,15 +37,18 @@ public class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     @DisplayName("회원가입 성공")
     void register_success() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
 
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"name\":\"" + TEST_USER_NAME + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
+            TEST_USER_PASSWORD);
+        String inputJson = objectMapper.writeValueAsString(memberRequest);
 
         mockMvc.perform(post("/members")
             .content(inputJson)
@@ -58,9 +63,9 @@ public class MemberControllerTest {
     @MethodSource("provideInvalidMemberRequest")
     void register_failure_invalid_input(String email, String name, String password) throws
         Exception {
-        String inputJson = "{\"email\":\"" + email + "\"," +
-            "\"name\":\"" + name + "\"," +
-            "\"password\":\"" + password + "\"}";
+
+        MemberRequest memberRequest = new MemberRequest(email, name, password);
+        String inputJson = objectMapper.writeValueAsString(memberRequest);
 
         mockMvc.perform(post("/members")
             .content(inputJson)

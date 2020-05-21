@@ -19,6 +19,15 @@ public class MemberRequest {
     @Pattern(regexp = "^\\S+$", message = "비밀번호에 공백이 포함될 수 없습니다.")
     private String password;
 
+    public MemberRequest() {
+    }
+
+    public MemberRequest(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
