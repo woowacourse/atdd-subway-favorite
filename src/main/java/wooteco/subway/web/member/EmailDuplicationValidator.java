@@ -25,9 +25,9 @@ public class EmailDuplicationValidator implements ConstraintValidator<EmailMatch
     public boolean isValid(String value, ConstraintValidatorContext context) {
         try {
             memberService.findMemberByEmail(value);
+            return false;
         } catch (NoSuchMemberException exception) {
-            throw exception;
+            return true;
         }
-        return true;
     }
 }

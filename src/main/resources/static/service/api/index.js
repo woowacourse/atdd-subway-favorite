@@ -47,7 +47,7 @@ const api = (() => {
   const requestWithJsonData = (uri, config) =>
     fetch(uri, config).then(response => {
       if (!response.ok) {
-        return;
+        throw new Error();
       }
       return response.json();
     });

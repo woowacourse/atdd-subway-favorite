@@ -1,6 +1,6 @@
 import { EVENT_TYPE, ERROR_MESSAGE } from "../../utils/constants.js";
-import showSnackbar from "../../lib/snackbar";
-import api from "../../api";
+import api from "../../api/index.js";
+import Snackbar from '../../lib/snackbar/snackbar.js';
 
 function Join() {
   const $joinButton = document.querySelector("#join-button");
@@ -32,11 +32,11 @@ function Join() {
     const password = $password.value;
     const passwordCheck = $passwordCheck.value;
     if (!email || !name || !password) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`});
       return;
     }
     if (password !== passwordCheck) {
-      showSnackbar(ERROR_MESSAGE.PASSWORD_CHECK);
+      Snackbar.show({text: `${ERROR_MESSAGE.PASSWORD_CHECK}`})
       return;
     }
     return true;

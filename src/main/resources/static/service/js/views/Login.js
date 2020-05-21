@@ -1,6 +1,6 @@
 import { EVENT_TYPE, ERROR_MESSAGE } from "../../utils/constants.js";
-import showSnackbar from "../../lib/snackbar";
-import api from "../../api";
+import showSnackbar from "../../lib/snackbar/snackbar.js";
+import api from "../../api/index.js";
 
 function Login() {
   const $loginButton = document.querySelector("#login-button");

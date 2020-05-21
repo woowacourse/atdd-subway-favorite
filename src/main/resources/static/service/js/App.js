@@ -1,5 +1,5 @@
 import { initNavigation } from "../utils/templates.js";
-import api from "../api";
+import api from "../api/index.js";
 
 function SubwayApp() {
   const renderNavigation = () => {

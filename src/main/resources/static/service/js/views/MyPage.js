@@ -3,8 +3,8 @@ import {
   ERROR_MESSAGE,
   SUCCESS_MESSAGE
 } from "../../utils/constants.js";
-import api from "../../api";
-import showSnackbar from "../../lib/snackbar";
+import api from "../../api/index.js";
+import Snackbar from "../../lib/snackbar/snackbar.js";
 
 function MyInfo() {
   const $email = document.querySelector("#email");
@@ -16,13 +16,15 @@ function MyInfo() {
   const onSignOutHandler = event => {
     event.preventDefault();
     if (confirm("정말 탈퇴하시겠습니까?")) {
-      api.loginMember
-        .delete()
+      const $userId = document.querySelector(".dropdown-menu");
+      const id = $userId.dataset.id;
+      api.member
+        .delete(id)
         .then(() => {
           localStorage.setItem("jwt", "");
           location.href = "/";
         })
-        .catch(() => showSnackbar(ERROR_MESSAGE.COMMON));
+        .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
     }
   };
 
@@ -33,12 +35,15 @@ function MyInfo() {
       email: $email.value,
       password: $password.value
     };
-    api.loginMember
-      .update(updatedInfo)
+
+    const $userId = document.querySelector(".dropdown-menu");
+    const id = $userId.dataset.id;
+    api.member
+      .update(id, updatedInfo)
       .then(() => {
-        showSnackbar(SUCCESS_MESSAGE.SAVE);
+        Snackbar.show({text: `${SUCCESS_MESSAGE.SAVE}`});
       })
-      .catch(() => showSnackbar(ERROR_MESSAGE.COMMON));
+      .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
   };
 
   const initMyInfo = () => {
@@ -49,7 +54,7 @@ function MyInfo() {
         $name.value = member.name;
         $password.value = member.password;
       })
-      .catch(() => showSnackbar(ERROR_MESSAGE.COMMON));
+      .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
   };
 
   this.init = () => {

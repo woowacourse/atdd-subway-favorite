@@ -1,5 +1,5 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
-import api from '../../api'
+import api from '../../api/index.js'
 import { searchResultTemplate } from '../../utils/templates.js'
 import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 
