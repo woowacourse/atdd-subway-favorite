@@ -19,12 +19,12 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,57 +35,73 @@ import static wooteco.subway.AcceptanceTest.*;
 @AutoConfigureMockMvc
 public class MemberControllerTest {
 
-	@MockBean
-	protected MemberService memberService;
+    @MockBean
+    protected MemberService memberService;
 
-	@Autowired
-	protected MockMvc mockMvc;
+    @Autowired
+    protected MockMvc mockMvc;
 
-	private Gson gson;
+    private Gson gson;
 
-	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
-					  RestDocumentationContextProvider restDocumentation) {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-				.addFilter(new ShallowEtagHeaderFilter())
-				.apply(documentationConfiguration(restDocumentation))
-				.build();
-		gson = new Gson();
-	}
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext,
+                      RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .addFilter(new ShallowEtagHeaderFilter())
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
+        gson = new Gson();
+    }
 
-	@Test
-	public void createMember() throws Exception {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME,
-			TEST_USER_PASSWORD);
-		given(memberService.createMember(any())).willReturn(member);
+    @Test
+    public void createMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME,
+                TEST_USER_PASSWORD);
+        given(memberService.createMember(any())).willReturn(member);
 
-		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-			"\"name\":\"" + TEST_USER_NAME + "\"," +
-			"\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+                "\"name\":\"" + TEST_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-		this.mockMvc.perform(post("/members")
-			.content(inputJson)
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isCreated())
-			.andDo(print())
-			.andDo(MemberDocumentation.createMember());
-	}
+        this.mockMvc.perform(post("/members")
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(MemberDocumentation.createMember());
+    }
 
-	@Test
-	public void getMember() throws Exception {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME,
-				TEST_USER_PASSWORD);
-		MemberResponse memberResponse = MemberResponse.of(member);
-		given(memberService.findMemberByEmail(TEST_USER_EMAIL)).willReturn(member);
+    @Test
+    public void getMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME,
+                TEST_USER_PASSWORD);
+        MemberResponse memberResponse = MemberResponse.of(member);
+        given(memberService.findMemberByEmail(TEST_USER_EMAIL)).willReturn(member);
 
-		this.mockMvc.perform(get("/members")
-				.param("email", TEST_USER_EMAIL)
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().json(gson.toJson(memberResponse)))
-				.andDo(print())
-				.andDo(MemberDocumentation.findMember());
-	}
+        this.mockMvc.perform(get("/members")
+                .header("Authorization", "Bearer token")
+                .param("email", TEST_USER_EMAIL)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(gson.toJson(memberResponse)))
+                .andDo(print())
+                .andDo(MemberDocumentation.findMember());
+    }
+
+    @Test
+    public void updateMember() throws Exception {
+        UpdateMemberRequest updateMemberRequest
+                = new UpdateMemberRequest("NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD);
+
+        this.mockMvc.perform(put("/members/{id}", 1L)
+                .header("Authorization", "Bearer token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(updateMemberRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.updateMember());
+    }
 
 }
