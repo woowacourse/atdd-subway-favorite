@@ -21,7 +21,6 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.web.member.NotMatchPasswordException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -40,8 +39,10 @@ public class AcceptanceTest {
     public static final String LINE_NAME_SINBUNDANG = "신분당선";
 
     public static final String TEST_USER_EMAIL = "brown@email.com";
+    public static final String TEST_OTHER_USER_EMAIL = "pobi@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_OTHER_USER_PASSWORD = "pobi";
 
     @LocalServerPort
     public int port;
@@ -279,11 +280,12 @@ public class AcceptanceTest {
         }
     }
 
-    public String createMember(String email, String name, String password) {
+    public String createMember(String email, String name, String password, String passwordCheck) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
         params.put("password", password);
+        params.put("passwordCheck", passwordCheck);
 
         return
             given().

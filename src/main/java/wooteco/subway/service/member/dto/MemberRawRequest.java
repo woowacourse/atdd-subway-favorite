@@ -1,8 +1,16 @@
 package wooteco.subway.service.member.dto;
 
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.web.member.DuplicateCheck;
+import wooteco.subway.web.member.PasswordMatch;
 
+@PasswordMatch(
+    field = "password",
+    fieldMatch = "passwordCheck"
+)
 public class MemberRawRequest {
+
+    @DuplicateCheck
     private String email;
     private String name;
     private String password;
@@ -18,8 +26,8 @@ public class MemberRawRequest {
         this.passwordCheck = passwordCheck;
     }
 
-    public MemberRequest toMemberRequest() {
-        return new MemberRequest(email, name, password);
+    public Member toMember() {
+        return new Member(email, name, password);
     }
 
     public String getEmail() {

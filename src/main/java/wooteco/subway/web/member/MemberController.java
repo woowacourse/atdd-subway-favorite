@@ -1,19 +1,26 @@
 package wooteco.subway.web.member;
 
-import org.springframework.http.HttpStatus;
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberRawRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.error.ErrorResponse;
-
-import java.net.URI;
 
 @RestController
 public class MemberController {
@@ -24,8 +31,8 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RegisterMember @Validated MemberRequest view) {
-        Member member = memberService.createMember(view.toMember());
+    public ResponseEntity<Void> createMember(@Validated @RequestBody MemberRawRequest request) {
+        Member member = memberService.createMember(request.toMember());
         return ResponseEntity
             .created(URI.create("/members/" + member.getId()))
             .build();
@@ -50,8 +57,8 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(value = NotMatchPasswordException.class)
-    public ResponseEntity<ErrorResponse> exceptionHandle(NotMatchPasswordException e) {
-        throw new RuntimeException();
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> exceptionHandle(MethodArgumentNotValidException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 }
