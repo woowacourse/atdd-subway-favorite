@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.RestDocsAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = MemberController.class)
+@SpringBootTest
 public class MemberControllerTest {
     private static final Long TEST_ID = 1L;
     private static final String TEST_EMAIL = "abc@naver.com";
@@ -53,9 +54,6 @@ public class MemberControllerTest {
 
     private Gson gson = new Gson();
     private Member member;
-
-    @MockBean
-    private BearerAuthInterceptor bearerAuthInterceptor;
 
     @MockBean
     private MemberService memberService;
@@ -130,5 +128,10 @@ public class MemberControllerTest {
         mockMvc.perform(delete("/members/{id}", TEST_ID))
                 .andExpect(status().isNoContent())
                 .andDo(print());
+    }
+
+    @Test
+    void update_Without_Authorize() {
+
     }
 }
