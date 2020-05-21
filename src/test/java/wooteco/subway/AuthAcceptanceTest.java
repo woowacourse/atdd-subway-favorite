@@ -1,6 +1,7 @@
 package wooteco.subway;
 
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.acceptance.member.MemberAcceptanceTest.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,21 +14,9 @@ import org.springframework.http.MediaType;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
-public class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest {
 
-    @DisplayName("Bearer Auth")
-    @Test
-    void myInfoWithBearerAuth() {
-        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-
-        MemberResponse memberResponse = myInfoWithBearerAuth(tokenResponse);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
-        assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
-    }
-
-    public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
+    public static MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
         return given().auth()
             .oauth2(tokenResponse.getAccessToken())
             .when()
@@ -39,7 +28,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .as(MemberResponse.class);
     }
 
-    public TokenResponse login(String email, String password) {
+    public static void myInfoWithoutBearerAuth() {
+        given()
+            .when()
+            .get("/me/bearer")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static TokenResponse successLogin(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -55,5 +53,33 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract().as(TokenResponse.class);
+    }
+
+    public static void failLogin(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            post("/oauth/token").
+            then().
+            log().all().
+            statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @DisplayName("Bearer Auth")
+    @Test
+    void myInfoWithBearerAuth() {
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        TokenResponse tokenResponse = successLogin(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        MemberResponse memberResponse = myInfoWithBearerAuth(tokenResponse);
+        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
+        assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 
 @Component
@@ -23,20 +22,16 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginMember.class);
+        return parameter.hasParameterAnnotation(LoginMemberId.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String email = (String)webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
-        if (StringUtils.isBlank(email)) {
-            return new Member();
+        String id = (String)webRequest.getAttribute("loginMemberId", SCOPE_REQUEST);
+        if (StringUtils.isBlank(id)) {
+            return null;
         }
-        try {
-            return memberService.findMemberByEmail(email);
-        } catch (Exception e) {
-            throw new InvalidAuthenticationException("비정상적인 로그인");
-        }
+        return Long.valueOf(id);
     }
 }

@@ -33,7 +33,7 @@ public class MemberService {
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -46,18 +46,23 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
             .orElseThrow(RuntimeException::new);
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new IllegalArgumentException("잘못된 패스워드");
         }
 
-        return jwtTokenProvider.createToken(param.getEmail());
+        return jwtTokenProvider.createToken(String.valueOf(member.getId()));
     }
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+    public MemberResponse findMemberById(Long id) {
+        return MemberResponse.of(findById(id));
     }
+
+    private Member findById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다!"));
+    }
+
 }

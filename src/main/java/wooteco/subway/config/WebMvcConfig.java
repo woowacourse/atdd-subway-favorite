@@ -8,21 +8,27 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
+import wooteco.subway.web.member.interceptor.MemberAuthInterceptor;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     private final BearerAuthInterceptor bearerAuthInterceptor;
     private final LoginMemberMethodArgumentResolver loginMemberArgumentResolver;
+    private final MemberAuthInterceptor memberAuthInterceptor;
 
     public WebMvcConfig(BearerAuthInterceptor bearerAuthInterceptor,
-        LoginMemberMethodArgumentResolver loginMemberArgumentResolver) {
+        LoginMemberMethodArgumentResolver loginMemberArgumentResolver,
+        MemberAuthInterceptor memberAuthInterceptor) {
         this.bearerAuthInterceptor = bearerAuthInterceptor;
         this.loginMemberArgumentResolver = loginMemberArgumentResolver;
+        this.memberAuthInterceptor = memberAuthInterceptor;
+
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me/bearer");
+        registry.addInterceptor(memberAuthInterceptor).addPathPatterns("/me/bearer");
+        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members/{*id}");
     }
 
     @Override
