@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.AcceptanceTest.*;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,17 +39,20 @@ public class MemberControllerTest {
     @Autowired
     protected MockMvc mockMvc;
 
+    private Member member;
+
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .addFilter(new ShallowEtagHeaderFilter())
             .apply(documentationConfiguration(restDocumentation))
             .build();
+
+        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
     public void createMember() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
         given(memberService.isNotExistEmail(any())).willReturn(true);
 
@@ -75,8 +79,7 @@ public class MemberControllerTest {
 
     @Test
     void createDuplicateMember() throws Exception {
-        Member member1 = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member1);
+        given(memberService.createMember(any())).willReturn(member);
         given(memberService.isNotExistEmail(any())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -119,8 +122,7 @@ public class MemberControllerTest {
 
     @Test
     void createNotMatchPasswordMember() throws Exception {
-        Member member1 = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_OTHER_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member1);
+        given(memberService.createMember(any())).willReturn(member);
         given(memberService.isNotExistEmail(any())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -142,5 +144,27 @@ public class MemberControllerTest {
             .andExpect(status().isBadRequest())
             .andDo(print())
             .andDo(MemberDocumentation.createNotMatchPasswordMember());
+    }
+
+    @Test
+    void getMember() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+
+        this.mockMvc.perform(get("/members")
+            .param("email", TEST_USER_EMAIL)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.email", Matchers.is(TEST_USER_EMAIL)))
+            .andExpect(jsonPath("$.name", Matchers.is(TEST_USER_NAME)))
+            .andDo(print());
+
+        this.mockMvc.perform(get("/members")
+            .param("email", TEST_USER_EMAIL)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.email", Matchers.is(TEST_USER_EMAIL)))
+            .andExpect(jsonPath("$.name", Matchers.is(TEST_USER_NAME)))
+            .andDo(print())
+            .andDo(MemberDocumentation.getMember());
     }
 }

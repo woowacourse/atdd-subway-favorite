@@ -72,4 +72,14 @@ public class MemberDocumentation {
                )
        );
    }
+
+    public static RestDocumentationResultHandler getMember() {
+        return document("members/get",
+            responseFields(
+                fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
+                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
+            )
+        );
+    }
 }

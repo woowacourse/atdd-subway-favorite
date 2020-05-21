@@ -23,13 +23,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();
 
-        assertThat(createInvalidMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD,
-            TEST_USER_PASSWORD)).isInstanceOf(ErrorResponse.class);
-
-        assertThat(createInvalidMember(TEST_OTHER_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD,
-            TEST_OTHER_USER_PASSWORD)).isInstanceOf(ErrorResponse.class);
-
-
         MemberResponse memberResponse = getMember(TEST_USER_EMAIL);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);

@@ -1,30 +1,31 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
+    public static final String TEST_OTHER_USER_EMAIL = "pobi@email.com";
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
 
     private MemberService memberService;
-
+    private Member member;
     @Mock
     private MemberRepository memberRepository;
     @Mock
@@ -33,6 +34,7 @@ public class MemberServiceTest {
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
@@ -42,6 +44,22 @@ public class MemberServiceTest {
         memberService.createMember(member);
 
         verify(memberRepository).save(any());
+    }
+
+    @Test
+    void getMember() {
+        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
+
+        Member expect = memberService.findMemberByEmail(TEST_USER_EMAIL);
+        assertThat(expect).isEqualToComparingFieldByField(member);
+    }
+
+    @Test
+    void getNotExistMember() {
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.of(member));
+
+        assertThatThrownBy(() -> memberService.findMemberByEmail(TEST_OTHER_USER_EMAIL))
+            .isInstanceOf(RuntimeException.class);
     }
 
     @Test

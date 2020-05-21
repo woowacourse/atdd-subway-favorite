@@ -25,6 +25,10 @@ endif::[]
 [[resources-members-not-match-password-create]]
 ==== 회원 가입 패스워드 불일치
 
+[[resources-members-get]]
+=== 정보 조회
+
 operation::members/create[snippets='http-request,http-response,request-fields']
 operation::members/duplicate-create[snippets='http-request,http-response,request-fields']
 operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
+operation::members/get[snippets='http-request,http-response,request-fields']
