@@ -65,4 +65,22 @@ public class Member {
         return Objects.nonNull(this.email) && this.email.equals(email);
 
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final Member member = (Member)o;
+        return Objects.equals(id, member.id) &&
+            Objects.equals(email, member.email) &&
+            Objects.equals(name, member.name) &&
+            Objects.equals(password, member.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, name, password);
+    }
 }
