@@ -43,10 +43,17 @@ const api = (() => {
     }
   }
 
+  const session = {
+    login(params) {
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(params))
+    }
+  }
+
   return {
     line,
     path,
-    member
+    member,
+    session
   }
 })()
 

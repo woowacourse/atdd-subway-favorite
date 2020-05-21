@@ -1,11 +1,17 @@
 package wooteco.subway.service.member;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.InvalidAuthenticationException;
+import wooteco.subway.web.member.NotExistEmailException;
 
 @Service
 public class MemberService {
@@ -32,7 +38,21 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        System.out.println(param.getEmail());
+        Member member = memberRepository.findByEmail(param.getEmail())
+            .orElseThrow(NotExistEmailException::new);
+        //
+        // Member member;
+        // Optional<Member> memberOptional = memberRepository.findByEmail(param.getEmail());
+        // System.out.println(memberOptional);
+        // // if (memberOptional.isPresent()) {
+        // try {
+        //     member = memberOptional.get();
+        //     // } else {
+        // } catch(Exception e) {
+        //     throw new NoSuchElementException();
+        // }
+
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }

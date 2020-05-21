@@ -5,6 +5,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
                              HttpServletResponse response, Object handler) {
         String token = authExtractor.extract(request, "Bearer");
         if(!jwtTokenProvider.validateToken(token)) {
-            return false;
+            throw new InvalidAuthenticationException("이메일과 비밀번호를 확인해주세요.");
         };
 
         String email = jwtTokenProvider.getSubject(token);

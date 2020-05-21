@@ -9,13 +9,14 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.web.member.NotExistEmailException;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -45,7 +46,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    void createToken() {
+    void createTokenWithValidAttributes() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
@@ -53,5 +54,14 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void createTokenWithInvalidAttributes() {
+        when(memberRepository.findByEmail(anyString())).thenThrow(new NotExistEmailException());
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        assertThatThrownBy(() -> memberService.createToken(loginRequest))
+            .isInstanceOf(NotExistEmailException.class);
     }
 }

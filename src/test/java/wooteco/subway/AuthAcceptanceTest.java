@@ -1,5 +1,7 @@
 package wooteco.subway;
 
+import static org.assertj.core.api.Assertions.*;
+
 import io.restassured.authentication.FormAuthConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,33 +9,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.NoSuchElementException;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    @DisplayName("Basic Auth")
+    @DisplayName("Bearer Login")
     @Test
-    void myInfoWithBasicAuth() {
+    void validBearerLogin() {
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        MemberResponse memberResponse = myInfoWithBasicAuth(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
-        assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        assertThat(tokenResponse).isNotNull();
     }
 
-    @DisplayName("Session")
+    @DisplayName("invalid Bearer Login")
     @Test
-    void myInfoWithSession() {
-        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        MemberResponse memberResponse = myInfoWithSession(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
-        assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
+    void invalidBearerLogin() {
+        String result = loginWithInvalidAttributes(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        assertThat(result).contains("email이 존재하지 않습니다.");
     }
 
     @DisplayName("Bearer Auth")
@@ -46,32 +41,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
-    }
-
-    public MemberResponse myInfoWithBasicAuth(String email, String password) {
-        return given().auth()
-                .preemptive()
-                .basic(email, password)
-                .when()
-                .get("/me/basic")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(MemberResponse.class);
-    }
-
-    public MemberResponse myInfoWithSession(String email, String password) {
-        return given().auth()
-                .form(
-                        email,
-                        password,
-                        new FormAuthConfig("/login", "email", "password"))
-                .when()
-                .get("/me/session")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(MemberResponse.class);
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
@@ -101,5 +70,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(TokenResponse.class);
+    }
+
+    public String loginWithInvalidAttributes(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                        post("/oauth/token").
+                then().
+                        log().all().
+                        extract().asString();
     }
 }
