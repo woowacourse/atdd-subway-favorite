@@ -8,7 +8,7 @@ function Login() {
     const emailValue = document.querySelector('#email').value
     const passwordValue = document.querySelector('#password').value
     if (!emailValue || !passwordValue) {
-      alert(ERROR_MESSAGE.LOGIN_FAIL)
+      Snackbar.show({text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
       return
     }
 
@@ -18,10 +18,11 @@ function Login() {
     }
 
     try {
-      await api.member.login(loginData);
+      const tokenResponse = await api.member.login(loginData);
+      sessionStorage.setItem('token', tokenResponse.tokenType + ' ' + tokenResponse.accessToken)
       location.href = '/favorites'
     } catch (e) {
-      alert(e)
+      Snackbar.show({text: e, pos: 'bottom-center', showAction: false, duration: 2000})
     }
   }
 

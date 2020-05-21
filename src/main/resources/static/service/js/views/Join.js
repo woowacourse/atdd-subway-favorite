@@ -15,7 +15,7 @@ function Join() {
         const passwordValue = $passwordInput.value
         const passwordCheckValue = $passwordCheckInput.value
         if (!emailValue || !nameValue || !passwordValue || !passwordCheckValue) {
-            alert(ERROR_MESSAGE.JOIN_FAIL);
+            Snackbar.show({text: ERROR_MESSAGE.JOIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
             return
         }
 
@@ -28,10 +28,12 @@ function Join() {
 
         try {
             await api.member.join(joinData);
-            alert("회원가입이 성공하였습니다 👍🏻")
-            location.href = '/login'
+            Snackbar.show({text: "회원가입이 성공하였습니다 👍🏻", pos: 'bottom-center', showAction: false, duration: 2000})
+            setTimeout(() => {
+                location.href = '/login'
+            }, 1000)
         } catch (e) {
-            alert(e)
+            Snackbar.show({text: e, pos: 'bottom-center', showAction: false, duration: 2000})
         }
     }
 
