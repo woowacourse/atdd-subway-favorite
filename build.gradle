@@ -27,6 +27,7 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+	compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 }
 
 ext {

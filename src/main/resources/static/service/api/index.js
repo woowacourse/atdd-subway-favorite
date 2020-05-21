@@ -54,6 +54,9 @@ const api = (() => {
     delete(id) {
       return requestWithJsonData(`/members/${id}`, METHOD.DELETE())
     },
+    login(data) {
+      return requestWithJsonData('/oauth/token', METHOD.POST(data))
+    }
   }
 
   return {
