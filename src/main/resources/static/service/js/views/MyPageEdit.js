@@ -18,7 +18,10 @@ function MypageEdit() {
       }
 
       api.member.delete(data)
-        .then(() => location.href = '/')
+        .then(() => {
+          localStorage.clear()
+          location.href = '/'
+        })
 
     } catch (e) {
       showSnackbar(e.message)
