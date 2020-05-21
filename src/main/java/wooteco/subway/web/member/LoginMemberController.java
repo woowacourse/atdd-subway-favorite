@@ -20,6 +20,7 @@ public class LoginMemberController {
         this.memberService = memberService;
     }
 
+    // TODO : 유효하지 않은 처리 테스트 코드 작성
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest param) {
         String token = memberService.createToken(param);
