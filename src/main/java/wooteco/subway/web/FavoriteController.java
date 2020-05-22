@@ -1,7 +1,6 @@
 package wooteco.subway.web;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -30,13 +29,15 @@ public class FavoriteController {
     @PostMapping("/favorites")
     public ResponseEntity<Void> createFavorite(@LoginMember MemberResponse memberResponse,
         @RequestBody @Valid FavoriteRequest favoriteRequest) {
-        return ResponseEntity.created(URI.create("a")).build();
+        Long favoriteId = favoriteService.create(memberResponse.getId(), favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
     }
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> showFavorites(
         @LoginMember MemberResponse memberResponse) {
-        return ResponseEntity.ok(Collections.singletonList(new FavoriteResponse("a", "b")));
+        List<FavoriteResponse> responses = favoriteService.findAll(memberResponse.getId());
+        return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/favorites")
