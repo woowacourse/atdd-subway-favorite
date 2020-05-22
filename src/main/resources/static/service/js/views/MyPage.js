@@ -44,7 +44,7 @@ function MyInfo() {
       if (member) {
         $email.value = member.email;
         $name.value = member.name;
-        $password.value = member.password;
+        $password.value = "";
       }
     } catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);

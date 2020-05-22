@@ -23,7 +23,13 @@ function Join() {
       await api.member.create(newMember);
       location.href = "/login";
     } catch (e) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      e.then(data => {
+        if (data.errorMessage.includes("가입된")) {
+          showSnackbar(ERROR_MESSAGE.JOIN_FAIL)
+        } else {
+          showSnackbar(ERROR_MESSAGE.COMMON);
+        }
+      });
     }
   };
 

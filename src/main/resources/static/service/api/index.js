@@ -43,14 +43,20 @@ const METHOD = {
 };
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config);
+  const request = (uri, config) =>
+      fetch(uri, config).then(response => {
+        if (!response.ok) {
+          throw response.json();
+        }
+        return response;
+      });
   const requestWithJsonData = (uri, config) =>
-    fetch(uri, config).then(response => {
-      if (!response.ok) {
-        return;
-      }
-      return response.json();
-    });
+      fetch(uri, config).then(response => {
+        if (!response.ok) {
+          return;
+        }
+        return response.json();
+      });
 
   const member = {
     get(id) {
