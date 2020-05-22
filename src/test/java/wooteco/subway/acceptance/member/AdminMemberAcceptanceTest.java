@@ -7,9 +7,9 @@ import wooteco.subway.service.member.dto.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemberAcceptanceTest extends AcceptanceTest {
+public class AdminMemberAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("회원 관리 기능")
+    @DisplayName("회원 관리 기능 - ADMIN")
     @Test
     void manageMember() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

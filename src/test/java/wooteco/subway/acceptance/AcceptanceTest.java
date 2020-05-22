@@ -259,7 +259,7 @@ public class AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/members").
+                        post("/admin/members").
                         then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
@@ -271,7 +271,7 @@ public class AcceptanceTest {
                 given().
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/members?email=" + email).
+                        get("/admin/members?email=" + email).
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
@@ -288,7 +288,7 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                put("/admin/members/" + memberResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
@@ -296,7 +296,7 @@ public class AcceptanceTest {
 
     public void deleteMember(MemberResponse memberResponse) {
         given().when().
-                delete("/members/" + memberResponse.getId()).
+                delete("/admin/members/" + memberResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());

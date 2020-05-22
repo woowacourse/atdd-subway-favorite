@@ -10,16 +10,17 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.net.URI;
 
+@RequestMapping("/admin")
 @RestController
-public class MemberController {
+public class AdminMemberController {
     private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public AdminMemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))

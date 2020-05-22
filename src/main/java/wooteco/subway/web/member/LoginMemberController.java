@@ -4,12 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
-
-import javax.servlet.http.HttpSession;
-import java.util.Map;
+import wooteco.subway.service.member.dto.*;
 
 @RestController
 public class LoginMemberController {
@@ -19,28 +14,33 @@ public class LoginMemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/oauth/token")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
         return ResponseEntity.ok()
                 .body(new TokenResponse(token, "Bearer"));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestParam Map<String, String> paramMap, HttpSession session) {
-        String email = paramMap.get("email");
-        String password = paramMap.get("password");
-        if (!memberService.loginWithForm(email, password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-        }
-
-        session.setAttribute("loginMemberEmail", email);
-
-        return ResponseEntity.ok().build();
+    @PostMapping("/members")
+    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+        memberService.createMember(view.toMember());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
+    public ResponseEntity<MemberResponse> getMember(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest request) {
+        memberService.updateMember(member, request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -36,7 +36,7 @@ class LoginMemberControllerTest {
         String token = "this.is.token";
         given(memberService.createToken(any())).willReturn(token);
 
-        mockMvc.perform(post("/oauth/token")
+        mockMvc.perform(post("/login")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(GSON.toJson(request)))
