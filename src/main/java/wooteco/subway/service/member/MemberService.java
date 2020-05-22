@@ -28,8 +28,8 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-
         member.update(param.getName(), param.getPassword());
+
         memberRepository.save(member);
     }
 
@@ -39,10 +39,10 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }
-
         return jwtTokenProvider.createToken(param.getEmail());
     }
 

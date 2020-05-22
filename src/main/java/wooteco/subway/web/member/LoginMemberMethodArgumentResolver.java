@@ -1,5 +1,7 @@
 package wooteco.subway.web.member;
 
+import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -9,8 +11,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 @Component
 public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentResolver {
@@ -29,6 +29,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
+
         if (StringUtils.isBlank(email)) {
             return new Member();
         }
