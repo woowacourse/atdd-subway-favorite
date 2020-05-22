@@ -17,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -34,9 +35,11 @@ import static wooteco.subway.AcceptanceTest.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
-
     @MockBean
     protected MemberService memberService;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -58,6 +61,7 @@ public class MemberControllerTest {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME,
                 TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
                 "\"name\":\"" + TEST_USER_NAME + "\"," +
@@ -78,10 +82,11 @@ public class MemberControllerTest {
                 TEST_USER_PASSWORD);
         MemberResponse memberResponse = MemberResponse.of(member);
         given(memberService.findMemberByEmail(TEST_USER_EMAIL)).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         this.mockMvc.perform(get("/members")
-                .header("Authorization", "Bearer token")
-                .param("email", TEST_USER_EMAIL)
+                .header("Authorization", "Bearer Token")
+                .queryParam("email", TEST_USER_EMAIL)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(gson.toJson(memberResponse)))
@@ -94,11 +99,11 @@ public class MemberControllerTest {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         UpdateMemberRequest updateMemberRequest
                 = new UpdateMemberRequest("NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD);
-
         given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         this.mockMvc.perform(put("/members/{id}", 1L)
-                .header("Authorization", "Bearer token")
+                .header("Authorization", "Bearer Token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(updateMemberRequest))
                 .accept(MediaType.APPLICATION_JSON))
@@ -111,9 +116,10 @@ public class MemberControllerTest {
     public void deleteMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         this.mockMvc.perform(delete("/members/{id}", 1L)
-                .header("Authorization", "Bearer token"))
+                .header("Authorization", "Bearer Token"))
                 .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember());

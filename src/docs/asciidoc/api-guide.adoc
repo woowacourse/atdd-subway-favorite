@@ -19,7 +19,7 @@ endif::[]
 [[resources-loginMembers-login]]
 === 로그인
 
-operation::oauth/token[snippets='http-request,http-response,request-fields,response-headers']
+operation::oauth/token[snippets='http-request,http-response']
 
 [[resources-members]]
 == Member
@@ -27,12 +27,12 @@ operation::oauth/token[snippets='http-request,http-response,request-fields,respo
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response,request-fields']
+operation::members/create[snippets='http-request,http-response']
 
 [[resources-members-find]]
 === 회원 정보 조회
 
-operation::members/find[snippets='http-request,http-response,request-fields,response-headers']
+operation::members/find[snippets='http-request,http-response']
 
 [[resources-members-update]]
 === 회원 정보 수정

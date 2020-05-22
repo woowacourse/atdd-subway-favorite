@@ -1,12 +1,12 @@
 package wooteco.subway.domain.line;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.time.LocalTime;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+
+import java.time.LocalTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJdbcTest
 public class LineRepositoryTest {

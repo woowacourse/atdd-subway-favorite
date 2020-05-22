@@ -1,14 +1,13 @@
 package wooteco.subway.acceptance.line;
 
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
@@ -23,9 +22,9 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
 
         addLineStation(lineResponse.getId(), null, stationResponse1.getId());
         addLineStation(lineResponse.getId(), stationResponse1.getId(),
-            stationResponse2.getId());
+                stationResponse2.getId());
         addLineStation(lineResponse.getId(), stationResponse2.getId(),
-            stationResponse3.getId());
+                stationResponse3.getId());
 
         LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
@@ -33,7 +32,7 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         removeLineStation(lineResponse.getId(), stationResponse2.getId());
 
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(
-            lineResponse.getId());
+                lineResponse.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
 }
