@@ -2,16 +2,16 @@ package wooteco.subway.service.favorite.dto;
 
 import javax.validation.constraints.NotBlank;
 
-public class FavoriteCreateRequest {
+public class FavoriteRequest {
     @NotBlank
     private String departure;
     @NotBlank
     private String arrival;
 
-    private FavoriteCreateRequest() {
+    private FavoriteRequest() {
     }
 
-    public FavoriteCreateRequest(String departure, String arrival) {
+    public FavoriteRequest(String departure, String arrival) {
         this.departure = departure;
         this.arrival = arrival;
     }
