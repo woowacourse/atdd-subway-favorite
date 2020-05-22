@@ -13,11 +13,15 @@
 ## To-do list
 - Login 멤버의 회원 관리
     - [x] 인수 테스트 구현
+        - [ ] Side Case 테스트 구현
+            * 로그인하지 않고 회원정보 관리 시도
     - [x] Controller 테스트 구현
         - [ ] Controller 테스트 문서화
         - [ ] Side Case 테스트 구현
-    - [ ] Service 테스트 구현
+    - [x] Service 테스트 구현
         - [ ] Side Case 테스트 구현
-    - [ ] Domain 테스트 구현
+    - [x] Domain 테스트 구현
         - [ ] Side Case 테스트 구현
-- 중복되는 테스트 변수 (properties 에 추가 고려)        
+    - [ ] 중복되는 테스트 변수 (properties 에 추가 고려)        
+    - [ ] (추가 기능) Request하는 기기 정보로 검증 추가
+    - [ ] Front와 연동
