@@ -18,14 +18,14 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @RestController
 public class MemberController {
-	private MemberService memberService;
+	private final MemberService memberService;
 
 	public MemberController(MemberService memberService) {
 		this.memberService = memberService;
 	}
 
 	@PostMapping("/members")
-	public ResponseEntity createMember(@RequestBody MemberRequest view) {
+	public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
 		Member member = memberService.createMember(view.toMember());
 		return ResponseEntity
 			.created(URI.create("/members/me/" + member.getId()))
