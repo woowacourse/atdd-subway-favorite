@@ -63,4 +63,3 @@ public class LineControllerTest {
         return LineDetailResponse.of(Line.of(null, null, null, 0), stations);
     }
 }
-
