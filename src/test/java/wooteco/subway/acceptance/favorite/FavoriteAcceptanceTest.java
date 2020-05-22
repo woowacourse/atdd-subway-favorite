@@ -40,7 +40,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		createFavorite(tokenResponse);
 	}
 
-	public void createFavorite(TokenResponse tokenResponse) {
+	private void createFavorite(TokenResponse tokenResponse) {
 		Map<String, String> favoriteRequest = new HashMap<>();
 		favoriteRequest.put("source", "잠실");
 		favoriteRequest.put("target", "석촌고분");
