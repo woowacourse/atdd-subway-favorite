@@ -2,6 +2,7 @@ package wooteco.subway.doc;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.ResultHandler;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -39,5 +40,9 @@ public class MemberDocumentation {
                                 "The token for login which is Bearer Type")
                 )
         );
+    }
+
+    public static ResultHandler deleteMember() {
+        return document("members/delete");
     }
 }

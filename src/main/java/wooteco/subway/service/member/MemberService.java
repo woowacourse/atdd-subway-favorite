@@ -10,8 +10,8 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Service
 public class MemberService {
-	private MemberRepository memberRepository;
-	private JwtTokenProvider jwtTokenProvider;
+	private final MemberRepository memberRepository;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	public MemberService(MemberRepository memberRepository,
 						 JwtTokenProvider jwtTokenProvider) {
@@ -36,7 +36,7 @@ public class MemberService {
 		Member member = memberRepository.findByEmail(param.getEmail())
 			.orElseThrow(()-> new InvalidAuthenticationException("존재하지 않는 회원입니다."));
 		if (!member.checkPassword(param.getPassword())) {
-			throw new RuntimeException("잘못된 패스워드");
+			throw new RuntimeException("잘못된 패스워드입니다.");
 		}
 
 		return jwtTokenProvider.createToken(param.getEmail());

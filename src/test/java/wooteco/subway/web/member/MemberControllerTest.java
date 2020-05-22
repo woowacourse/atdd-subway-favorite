@@ -91,8 +91,11 @@ public class MemberControllerTest {
 
     @Test
     public void updateMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         UpdateMemberRequest updateMemberRequest
                 = new UpdateMemberRequest("NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD);
+
+        given(memberService.findMemberByEmail(any())).willReturn(member);
 
         this.mockMvc.perform(put("/members/{id}", 1L)
                 .header("Authorization", "Bearer token")
@@ -104,4 +107,15 @@ public class MemberControllerTest {
                 .andDo(MemberDocumentation.updateMember());
     }
 
+    @Test
+    public void deleteMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+
+        this.mockMvc.perform(delete("/members/{id}", 1L)
+                .header("Authorization", "Bearer token"))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteMember());
+    }
 }

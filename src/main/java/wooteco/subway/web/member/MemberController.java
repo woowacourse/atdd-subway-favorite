@@ -13,7 +13,7 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -37,18 +37,22 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
                                                        @RequestBody UpdateMemberRequest param, HttpServletRequest request) {
         Member member = memberService.findMemberByEmail((String) request.getAttribute("email"));
-//        validate(member, id);
+        validate(member, id);
         memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 
-//    private boolean validate(Member member, Long id) {
-////        return member.getId().equals(id);
-//    }
-
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id, HttpServletRequest request) {
+        Member member = memberService.findMemberByEmail((String) request.getAttribute("email"));
+        validate(member, id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private void validate(Member member, Long id) {
+        if (!member.getId().equals(id)) {
+            throw new IllegalArgumentException("허가되지 않은 접근입니다.");
+        }
     }
 }
