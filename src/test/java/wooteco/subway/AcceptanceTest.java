@@ -42,6 +42,10 @@ public class AcceptanceTest {
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
 
+    public static final String TEST_INVALID_USER_EMAIL = "brown.borwn";
+    public static final String TEST_INVALID_USER_NAME = "";
+
+
     @LocalServerPort
     public int port;
 

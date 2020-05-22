@@ -73,6 +73,34 @@ public class MemberControllerTest {
     }
 
     @Test
+    void createMember_Email_Exception() throws Exception {
+        String inputJson = "{\"email\":\"" + TEST_INVALID_USER_EMAIL + "\"," +
+                "\"name\":\"" + TEST_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/members")
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    void createMember_Blank_Exception() throws Exception {
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+                "\"name\":\"" + TEST_INVALID_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/members")
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
     public void findMemberByEmail() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
@@ -101,6 +129,22 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.updateMember());
+    }
+
+
+    @Test
+    void updateMember_Blank_Exception() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        String inputJson = "{\"name\":\"" + TEST_INVALID_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
+        this.mockMvc.perform(put("/members")
+                .header("Authorization", "bearer "+token)
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
     @Test
