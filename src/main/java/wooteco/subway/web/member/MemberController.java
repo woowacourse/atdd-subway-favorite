@@ -30,7 +30,7 @@ public class MemberController {
                 .build();
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/members")
     public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
         Member member = memberService.findMemberByEmail(email);
@@ -38,16 +38,16 @@ public class MemberController {
     }
 
     @IsAuth(isAuth = Auth.AUTH)
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody @Valid UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    @PutMapping("/members")
+    public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member, @RequestBody @Valid UpdateMemberRequest param) {
+        memberService.updateMember(member.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @IsAuth(isAuth = Auth.AUTH)
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    @DeleteMapping("/members")
+    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 }

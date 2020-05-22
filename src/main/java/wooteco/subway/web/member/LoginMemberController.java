@@ -28,7 +28,7 @@ public class LoginMemberController {
     }
 
     @IsAuth(isAuth = Auth.AUTH)
-    @GetMapping({"/me/bearer"})
+    @GetMapping("/me/bearer")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }

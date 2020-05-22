@@ -1,6 +1,5 @@
 package wooteco.subway;
 
-import io.restassured.authentication.FormAuthConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                     extract().as(MemberResponse.class);
     }
 
-    public TokenResponse login(String email, String password) {
+    public static TokenResponse login(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);

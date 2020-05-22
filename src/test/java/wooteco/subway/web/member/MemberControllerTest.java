@@ -88,7 +88,7 @@ public class MemberControllerTest {
         String inputJson =
                 "{\"name\":\"" + "NEW" + TEST_USER_NAME + "\"," +
                 "\"password\":\"" + "NEW" + TEST_USER_PASSWORD + "\"}";
-        this.mockMvc.perform(put("/members/1")
+        this.mockMvc.perform(put("/members")
                 .header("Authorization", "Bearer TestToken")
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
@@ -100,7 +100,7 @@ public class MemberControllerTest {
 
     @Test
     public void deleteMember() throws Exception {
-        this.mockMvc.perform(delete("/members/1")
+        this.mockMvc.perform(delete("/members")
                 .header("Authorization", "Bearer TestToken")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
