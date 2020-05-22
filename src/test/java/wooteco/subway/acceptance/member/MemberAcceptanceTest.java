@@ -159,6 +159,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .log().all()
             .extract().asString();
         assertThat(message).contains("유효하지 않은 토큰");
-
     }
 }
