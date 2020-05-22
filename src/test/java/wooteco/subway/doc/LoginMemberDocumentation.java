@@ -19,8 +19,8 @@ public class LoginMemberDocumentation {
                         fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
                 ),
                 responseFields(
-                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("값 없음").optional(),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("값 없음").optional(),
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("null").optional(),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("null").optional(),
                         fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("JWT value"),
                         fieldWithPath("data.tokenType").type(JsonFieldType.STRING).description("Authorization type")
                 )
@@ -33,8 +33,8 @@ public class LoginMemberDocumentation {
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
                 ),
                 responseFields(
-                        fieldWithPath("code").type(JsonFieldType.NULL).description("값 없음").optional(),
-                        fieldWithPath("message").type(JsonFieldType.NULL).description("값 없음").optional(),
+                        fieldWithPath("code").type(JsonFieldType.NULL).description("null").optional(),
+                        fieldWithPath("message").type(JsonFieldType.NULL).description("null").optional(),
                         fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("The user's id"),
                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("The user's name"),
                         fieldWithPath("data.email").type(JsonFieldType.STRING).description("The user's email")
@@ -50,10 +50,42 @@ public class LoginMemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler updataMyInfo() {
+    public static RestDocumentationResultHandler updateMyInfo() {
         return document("login/updateMyInfo",
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
+                ),
+                requestFields(
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler loginFailEmail() {
+        return document("login/loginFail/email",
+                requestFields(
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                ),
+                responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description(1100),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("등록되지 않은 이메일"),
+                        fieldWithPath("data").type(JsonFieldType.NULL).description("null").optional()
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler loginFailedPassword() {
+        return document("login/loginFail/password",
+                requestFields(
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                ),
+                responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description(1200),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("잘못된 패스워드"),
+                        fieldWithPath("data").type(JsonFieldType.NULL).description("null").optional()
                 )
         );
     }

@@ -20,3 +20,39 @@ endif::[]
 === 회원 가입
 
 operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources-login]]
+== Login
+
+[[resources-login-login]]
+=== 로그인
+
+operation::login/login[snippets='http-request,http-response,request-fields,request-body,response-fields']
+
+[[resources-login-getMyInfo]]
+=== 내 정보 조회
+
+operation::login/getMyInfo[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-login-updateMyInfo]]
+=== 내 정보 갱신
+
+operation::login/updateMyInfo[snippets='http-request,http-response,request-headers,request-fields,request-body']
+
+[[resources-login-deleteMyInfo]]
+=== 탈퇴
+
+operation::login/deleteMyInfo[snippets='http-request,http-response,request-headers']
+
+[[resources-login-loginFail]]
+=== 로그인 실패
+
+[[resources-login-loginFail-email]]
+==== 등록되지 않은 이메일
+
+operation::login/loginFail/email[snippets='http-response,response-fields']
+
+[[resources-login-loginFail-password]]
+==== 잘못된 패스워드
+
+operation::login/loginFail/password[snippets='http-response,response-fields']

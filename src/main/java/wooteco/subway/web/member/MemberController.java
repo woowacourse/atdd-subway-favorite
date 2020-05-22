@@ -8,6 +8,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.web.dto.DefaultResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -19,7 +20,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<DefaultResponse<Void>> createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<DefaultResponse<Void>> createMember(@Valid @RequestBody MemberRequest memberRequest) {
         Long memberId = memberService.createMember(memberRequest);
         return ResponseEntity
                 .created(URI.create("/members/" + memberId))

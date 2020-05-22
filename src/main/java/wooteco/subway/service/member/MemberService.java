@@ -11,6 +11,8 @@ import wooteco.subway.service.exception.DuplicatedEmailException;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.dto.ErrorCode;
+import wooteco.subway.web.member.exception.MemberException;
 
 @Service
 public class MemberService {
@@ -41,29 +43,35 @@ public class MemberService {
 
     @Transactional
     public void updateMember(UpdateMemberRequest param, LoginEmail loginEmail) {
-        Member member = memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = getMember(loginEmail.getEmail());
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
     @Transactional
     public String createToken(LoginRequest loginRequest) {
-        Member member = memberRepository.findByEmail(loginRequest.getEmail()).orElseThrow(RuntimeException::new);
+        String email = loginRequest.getEmail();
+        Member member = getMember(email);
         if (!member.checkPassword(loginRequest.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new MemberException(ErrorCode.WRONG_PASSWORD);
         }
 
         return jwtTokenProvider.createToken(loginRequest.getEmail());
     }
 
+    private Member getMember(final String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(String.format("%s : 가입하지 않은 이메일입니다.", email), ErrorCode.UNSIGNED_EMAIL));
+    }
+
     @Transactional
     public Member findMemberByEmail(LoginEmail loginEmail) {
-        return memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(RuntimeException::new);
+        return getMember(loginEmail.getEmail());
     }
 
     @Transactional
     public void deleteByEmail(final LoginEmail loginEmail) {
-        Member member = memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = getMember(loginEmail.getEmail());
         memberRepository.delete(member);
     }
 }

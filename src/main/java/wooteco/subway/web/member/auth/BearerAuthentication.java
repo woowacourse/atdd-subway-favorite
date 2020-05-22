@@ -13,23 +13,23 @@ import static org.springframework.web.context.request.RequestAttributes.SCOPE_RE
 @Component
 public class BearerAuthentication implements Authentication {
 
-    private final AuthorizationExtractor authExtractor;
+    private final HeaderExtractor headerExtractor;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public BearerAuthentication(final AuthorizationExtractor authExtractor, final JwtTokenProvider jwtTokenProvider) {
-        this.authExtractor = authExtractor;
+    public BearerAuthentication(final HeaderExtractor headerExtractor, final JwtTokenProvider jwtTokenProvider) {
+        this.headerExtractor = headerExtractor;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public void setAuthentication(final HttpServletRequest request) {
-        String token = authExtractor.extract(request, "bearer");
+        String token = headerExtractor.extract(request, "bearer");
         if (token.isEmpty()) {
             return;
         }
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthenticationException(ErrorCode.TONEN_NOT_AUTHORIZED);
+            throw new InvalidAuthenticationException("토큰이 유효하지 않습니다.", ErrorCode.INVALID_AUTHENTICATION);
         }
 
         String email = jwtTokenProvider.getSubject(token);
@@ -41,7 +41,7 @@ public class BearerAuthentication implements Authentication {
         Object rawAuth = request.getAttribute("loginMemberEmail", SCOPE_REQUEST);
         T auth = tClass.cast(rawAuth);
         if (Objects.isNull(auth)) {
-            throw new InvalidAuthenticationException(ErrorCode.TOKEN_NOT_FOUND);
+            throw new InvalidAuthenticationException("인증 정보가 비어있습니다.", ErrorCode.INVALID_AUTHENTICATION);
         }
         return auth;
     }

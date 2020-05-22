@@ -17,6 +17,8 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.dto.DefaultResponse;
 import wooteco.subway.web.member.auth.LoginMember;
 
+import javax.validation.Valid;
+
 @RestController
 public class LoginMemberController {
     private MemberService memberService;
@@ -26,7 +28,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<DefaultResponse<TokenResponse>> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<DefaultResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
         String token = memberService.createToken(loginRequest);
         return ResponseEntity.ok().body(DefaultResponse.of(new TokenResponse(token, "bearer")));
     }

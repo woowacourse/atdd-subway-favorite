@@ -74,6 +74,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract().as(new TypeRef<DefaultResponse<Void>>() {
                 }).getCode();
 
-        assertThat(code).isEqualTo(ErrorCode.TOKEN_NOT_FOUND.getCode());
+        assertThat(code).isEqualTo(ErrorCode.INVALID_AUTHENTICATION.getCode());
     }
 }

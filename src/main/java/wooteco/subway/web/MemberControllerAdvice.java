@@ -10,6 +10,7 @@ import wooteco.subway.service.exception.DuplicatedEmailException;
 import wooteco.subway.web.dto.DefaultResponse;
 import wooteco.subway.web.dto.ErrorCode;
 import wooteco.subway.web.member.auth.InvalidAuthenticationException;
+import wooteco.subway.web.member.exception.MemberException;
 
 @RestControllerAdvice
 public class MemberControllerAdvice {
@@ -26,5 +27,11 @@ public class MemberControllerAdvice {
     public ResponseEntity<DefaultResponse<Void>> handleInvalidAuthenticationException(InvalidAuthenticationException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(DefaultResponse.error(e.getErrorCode()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<DefaultResponse<Void>> handleMemberException(MemberException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(DefaultResponse.error(e.getErrorCode()), HttpStatus.BAD_REQUEST);
     }
 }

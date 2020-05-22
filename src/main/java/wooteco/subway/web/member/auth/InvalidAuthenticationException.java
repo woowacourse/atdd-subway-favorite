@@ -6,10 +6,10 @@ import wooteco.subway.web.dto.ErrorCode;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class InvalidAuthenticationException extends RuntimeException {
-    private ErrorCode errorCode;
+    private final ErrorCode errorCode;
 
-    public InvalidAuthenticationException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
+    public InvalidAuthenticationException(String message, ErrorCode errorCode) {
+        super(message);
         this.errorCode = errorCode;
     }
 
