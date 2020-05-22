@@ -18,13 +18,12 @@ function Login() {
     api.member
         .login(loginMember)
         .then(jwt => {
-          console.log(jwt);
           if (!!jwt) {
             localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
             location.href = "/";
           }
         })
-        .catch(error => console.log(error));
+        .catch(error => alert(ERROR_MESSAGE[error.message]));
   };
 
   this.init = () => {

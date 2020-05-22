@@ -3,6 +3,7 @@ package wooteco.subway.service.member;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exceptions.LoginFailException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -32,9 +33,9 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(() -> new LoginFailException("WRONG_EMAIL"));
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new LoginFailException("WRONG_PASSWORD");
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
