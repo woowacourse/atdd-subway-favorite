@@ -32,10 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class MemberControllerTest {
 
-    private static final String EMAIL = "pci2676@gmail.com";
-    private static final String NAME = "박찬인";
-    private static final String PASSWORD = "1234";
-
     @MockBean
     protected MemberService memberService;
 
@@ -67,6 +63,5 @@ public class MemberControllerTest {
                 .andDo(print())
                 .andDo(MemberDocumentation.createMember());
     }
-
 
 }
