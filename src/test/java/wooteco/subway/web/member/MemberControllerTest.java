@@ -19,11 +19,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willReturn;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wooteco.subway.AcceptanceTest.*;
 
 @ExtendWith(RestDocumentationExtension.class)
-//@WebMvcTest(controllers = MemberController.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
@@ -40,10 +39,16 @@ public class MemberControllerTest {
     protected MemberService memberService;
 
     @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
     protected MockMvc mockMvc;
+
+    private Member member;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
@@ -52,7 +57,6 @@ public class MemberControllerTest {
 
     @Test
     public void createMember() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -70,7 +74,6 @@ public class MemberControllerTest {
 
     @Test
     public void findMemberByEmail() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         this.mockMvc.perform(get("/members")
@@ -85,11 +88,13 @@ public class MemberControllerTest {
 
     @Test
     public void updateMember() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         String inputJson =
                 "{\"name\":\"" + "NEW" + TEST_USER_NAME + "\"," +
                 "\"password\":\"" + "NEW" + TEST_USER_PASSWORD + "\"}";
+        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
         this.mockMvc.perform(put("/members")
-                .header("Authorization", "Bearer TestToken")
+                .header("Authorization", "bearer "+token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -100,8 +105,10 @@ public class MemberControllerTest {
 
     @Test
     public void deleteMember() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
         this.mockMvc.perform(delete("/members")
-                .header("Authorization", "Bearer TestToken")
+                .header("Authorization", "bearer "+token)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())

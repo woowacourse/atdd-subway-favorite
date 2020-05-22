@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IsAuth {
-    Auth isAuth() default Auth.NONE;
+public @interface RequiredAuth {
+    Auth isAuth() default Auth.AUTH;
 }
 

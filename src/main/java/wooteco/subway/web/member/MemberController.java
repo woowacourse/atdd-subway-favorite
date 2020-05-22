@@ -2,8 +2,7 @@ package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.web.auth.Auth;
-import wooteco.subway.web.auth.IsAuth;
+import wooteco.subway.web.auth.RequiredAuth;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
@@ -21,7 +20,6 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @IsAuth
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
@@ -30,21 +28,20 @@ public class MemberController {
                 .build();
     }
 
-    @IsAuth
     @GetMapping("/members")
     public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
         Member member = memberService.findMemberByEmail(email);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @RequiredAuth
     @PutMapping("/members")
     public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member, @RequestBody @Valid UpdateMemberRequest param) {
         memberService.updateMember(member.getId(), param);
         return ResponseEntity.ok().build();
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @RequiredAuth
     @DeleteMapping("/members")
     public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
         memberService.deleteMember(member.getId());
