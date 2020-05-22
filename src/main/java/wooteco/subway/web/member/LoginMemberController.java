@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.LoginResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
 
 import javax.validation.Valid;
 
@@ -22,9 +22,9 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest param) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest param) {
         String token = memberService.createToken(param);
-        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+        return ResponseEntity.ok().body(new LoginResponse(token, "bearer", param.getEmail()));
     }
 
 //    @PostMapping("/login")

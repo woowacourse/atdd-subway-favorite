@@ -15,7 +15,8 @@ public class LoginMemberDocumentation {
                 ),
                 responseFields(
                         fieldWithPath("accessToken").type(JsonFieldType.STRING).description("The user's accessToken"),
-                        fieldWithPath("tokenType").type(JsonFieldType.STRING).description("The user's tokenType")
+                        fieldWithPath("tokenType").type(JsonFieldType.STRING).description("The user's tokenType"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email")
                 )
         );
     }
