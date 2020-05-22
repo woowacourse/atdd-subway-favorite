@@ -24,7 +24,8 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.service.member.MemberServiceTest.*;
@@ -32,7 +33,7 @@ import static wooteco.subway.service.member.MemberServiceTest.*;
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MemberControllerTest {
+public class LoginMemberControllerTest {
 
     @MockBean
     protected MemberService memberService;
@@ -55,71 +56,35 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void createMember() throws Exception {
+    public void login() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
+        given(memberService.createToken(any())).willReturn(new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL));
+
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-                "\"name\":\"" + TEST_USER_NAME + "\"," +
                 "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-        this.mockMvc.perform(post("/members")
+        this.mockMvc.perform(post("/login")
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print())
-                .andDo(MemberDocumentation.createMember());
-    }
-
-    @Test
-    void updateMember() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-        given(memberService.findMemberByEmail(any())).willReturn(member);
-        given(memberService.createToken(any())).willReturn(new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL));
-
-        String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
-                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
-
-        this.mockMvc.perform(put("/members")
-                .header("Authorization", "bearer " + memberService.createToken(request))
-                .content(inputJson)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(MemberDocumentation.updateMember());
+                .andDo(MemberDocumentation.login());
     }
 
     @Test
-    void findMember() throws Exception {
+    public void myInfo() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(memberService.createToken(any())).willReturn(new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL));
 
-
-        this.mockMvc.perform(get("/members")
-                .param("email", TEST_USER_EMAIL)
+        this.mockMvc.perform(get("/myinfo")
                 .header("Authorization", "bearer " + memberService.createToken(request)))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(MemberDocumentation.findMember());
-    }
-
-    @Test
-    void removeMember() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-        given(memberService.findMemberByEmail(any())).willReturn(member);
-        given(memberService.createToken(any())).willReturn(new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL));
-
-
-        this.mockMvc.perform(delete("/members")
-                .header("Authorization", "bearer " + memberService.createToken(request)))
-                .andExpect(status().isNoContent())
-                .andDo(print())
-                .andDo(MemberDocumentation.removeMember());
+                .andDo(MemberDocumentation.myInfo());
     }
 }
