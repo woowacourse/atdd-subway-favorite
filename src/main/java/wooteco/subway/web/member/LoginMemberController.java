@@ -22,7 +22,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
         memberService.createMember(view.toMember());
         return ResponseEntity.noContent().build();
     }

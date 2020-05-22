@@ -12,11 +12,12 @@
 
 ## To-do list
 - Login 멤버의 회원 관리
-    - [x] 인수테스트 작성
-    - [ ] Controller 테스트 작성
+    - [x] 인수 테스트 구현
+    - [x] Controller 테스트 구현
         - [ ] Controller 테스트 문서화
-        - [ ] Side Case 테스트 
-    - [ ] Service 테스트
-        - [ ] Side Case 테스트 
-    - [ ] Domain 테스트
-        - [ ] Side Case 테스트 
+        - [ ] Side Case 테스트 구현
+    - [ ] Service 테스트 구현
+        - [ ] Side Case 테스트 구현
+    - [ ] Domain 테스트 구현
+        - [ ] Side Case 테스트 구현
+- 중복되는 테스트 변수 (properties 에 추가 고려)        
