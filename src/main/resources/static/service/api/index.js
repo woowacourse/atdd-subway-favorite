@@ -49,7 +49,7 @@ const api = (() => {
       return request('/oauth/token', METHOD.POST(params));
     },
     get(){
-      return request('/me/bearer', {
+      return request('/members', {
           method : 'get',
           headers : {
               'content-type': 'application/json',

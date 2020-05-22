@@ -21,6 +21,8 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.interceptor.Auth;
+import wooteco.subway.web.member.interceptor.IsAuth;
 
 @RestController
 public class MemberController {
@@ -30,6 +32,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @IsAuth
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = memberService.createMember(memberRequest);
@@ -38,11 +41,11 @@ public class MemberController {
                 .build();
     }
 
+    @IsAuth(isAuth = Auth.AUTH)
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(HttpServletRequest request) {
-        Member member = memberService.findMemberByEmail((String)request.getAttribute("email"));
-        return ResponseEntity.ok()
-            .body(MemberResponse.of(member));
+    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestAttribute String email) {
+        Member member = memberService.findMemberByEmail(email);
+        return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @PutMapping("/members/{id}")
@@ -50,6 +53,7 @@ public class MemberController {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
+
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
