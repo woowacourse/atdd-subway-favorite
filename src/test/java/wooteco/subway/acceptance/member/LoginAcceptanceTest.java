@@ -13,6 +13,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoginAcceptanceTest extends AcceptanceTest {
+    // TODO: 2020/05/21 로그인, 수정, 삭제에 대한 다이나믹 인수테스트 작성하기
     @DisplayName("로그인 기능")
     @Test
     void manageMember() {
