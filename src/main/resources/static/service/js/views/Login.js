@@ -7,9 +7,18 @@ function Login() {
     event.preventDefault()
     const $email = document.querySelector('#email')
     const $password = document.querySelector('#password')
-    if (!$email.value && !$password.value) {
-      Snackbar.show({text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
-      return
+    if (!$email.value) {
+      alert(ERROR_MESSAGE.EMAIL_EMPTY)
+      return false;
+    }
+    if (!$password.value) {
+      alert(ERROR_MESSAGE.PASSWORD_EMPTY)
+      return false;
+    }
+    const regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    if ($email.value.match(regExp) === null) {
+      alert(ERROR_MESSAGE.EMAIL_INVALID)
+      return;
     }
     const loginMember = {
       email: $email.value,

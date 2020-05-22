@@ -1,4 +1,5 @@
 import api from '../../api/index.js'
+import {ERROR_MESSAGE} from "../../utils/constants.js";
 
 function MyPage() {
     const $email = document.querySelector("#email-field");
@@ -9,9 +10,7 @@ function MyPage() {
             $email.innerHTML = data.email;
             $name.innerHTML = data.name;
         })
-            .catch(error => {
-                console.log(error);
-            })
+            .catch(error => alert(ERROR_MESSAGE[error.message]));
     }
 }
 

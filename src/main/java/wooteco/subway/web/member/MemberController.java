@@ -8,6 +8,7 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -19,7 +20,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
@@ -33,7 +34,7 @@ public class MemberController {
     }
 
     @PutMapping("/members")
-    public ResponseEntity<Void> updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest param) {
+    public ResponseEntity<Void> updateMember(@LoginMember Member member, @RequestBody @Valid UpdateMemberRequest param) {
         memberService.updateMember(member.getId(), param);
         return ResponseEntity.ok().build();
     }

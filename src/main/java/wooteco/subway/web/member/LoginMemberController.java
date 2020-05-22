@@ -11,6 +11,8 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
+import javax.validation.Valid;
+
 @RestController
 public class LoginMemberController {
     private MemberService memberService;
@@ -20,23 +22,10 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest param) {
         String token = memberService.createToken(param);
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
-
-
-//    public ResponseEntity login(@RequestParam Map<String, String> paramMap, HttpSession session) {
-//        String email = paramMap.get("email");
-//        String password = paramMap.get("password");
-//        if (!memberService.loginWithForm(email, password)) {
-//            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-//        }
-//
-//        session.setAttribute("loginMemberEmail", email);
-//
-//        return ResponseEntity.ok().build();
-//    }
 
     @GetMapping("/myinfo")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
