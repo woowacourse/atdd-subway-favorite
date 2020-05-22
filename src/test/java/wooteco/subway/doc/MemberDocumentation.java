@@ -41,6 +41,11 @@ public class MemberDocumentation {
         return document("members/find",
                 requestParameters(
                         parameterWithName("email").description("The user's email address")
+                ),
+                responseFields(
+                        fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's unique ID"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
                 )
         );
     }
