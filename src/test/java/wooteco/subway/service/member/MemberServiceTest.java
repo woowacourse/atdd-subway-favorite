@@ -9,6 +9,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.Optional;
 
@@ -53,5 +54,22 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void updateMember() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+
+        memberService.updateMember(1L, new UpdateMemberRequest("New_" + TEST_USER_NAME, "New_" + TEST_USER_PASSWORD));
+
+        verify(memberRepository).save(any());
+    }
+
+    @Test
+    void deleteMember() {
+        memberService.deleteMember(1L);
+
+        verify(memberRepository).deleteById(any());
     }
 }
