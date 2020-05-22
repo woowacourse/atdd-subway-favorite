@@ -1,5 +1,8 @@
 package wooteco.subway.acceptance.favorite;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -10,6 +13,7 @@ import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -33,9 +37,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        // path -> (source, target) => pathResponse != null
-
         addFavoritePath(tokenResponse, stationResponse1, stationResponse2);
+
+        List<FavoriteResponse> responses = getFavoritePath(tokenResponse);
+        assertThat(responses.get(0).getMemberId()).isEqualTo(2L);
+        assertThat(responses.get(0).getSourceStationId()).isEqualTo(stationResponse1.getId());
+        assertThat(responses.get(0).getTargetStationId()).isEqualTo(stationResponse2.getId());
+
     }
 
     private void addFavoritePath(
@@ -54,6 +62,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         then().
             log().all().
             statusCode(HttpStatus.CREATED.value());
+    }
+
+    private List<FavoriteResponse> getFavoritePath(TokenResponse tokenResponse) {
+        return given().
+                    header("Authorization",tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+                when().
+                    get("/favorites").
+                then().
+                    log().all().
+                    extract().
+                    jsonPath().getList(".", FavoriteResponse.class);
     }
 
 }

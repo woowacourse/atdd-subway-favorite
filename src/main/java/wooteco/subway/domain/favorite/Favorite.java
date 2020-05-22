@@ -5,9 +5,12 @@ import org.springframework.data.annotation.Id;
 public class Favorite {
     @Id
     private Long id;
-    private final Long memberId;
-    private final Long sourceStationId;
-    private final Long targetStationId;
+    private Long memberId;
+    private Long sourceStationId;
+    private Long targetStationId;
+
+    public Favorite() {
+    }
 
     public Favorite(Long id, Long memberId, Long sourceStationId, Long targetStationId) {
         this.id = id;
