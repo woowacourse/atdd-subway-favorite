@@ -47,6 +47,15 @@ const api = (() => {
     },
     login(params){
       return request('/oauth/token', METHOD.POST(params));
+    },
+    get(){
+      return request('/me/bearer', {
+          method : 'get',
+          headers : {
+              'content-type': 'application/json',
+              'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+          }
+      });
     }
   }
 

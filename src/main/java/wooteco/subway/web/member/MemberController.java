@@ -2,6 +2,7 @@ package wooteco.subway.web.member;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,9 +39,10 @@ public class MemberController {
     }
 
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
-        Member member = memberService.findMemberByEmail(email);
-        return ResponseEntity.ok().body(MemberResponse.of(member));
+    public ResponseEntity<MemberResponse> getMemberByEmail(HttpServletRequest request) {
+        Member member = memberService.findMemberByEmail((String)request.getAttribute("email"));
+        return ResponseEntity.ok()
+            .body(MemberResponse.of(member));
     }
 
     @PutMapping("/members/{id}")
