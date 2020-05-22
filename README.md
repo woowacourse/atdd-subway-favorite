@@ -58,18 +58,17 @@
 - 회원정보 조회
  - [x] 뷰 연결
  - [x] Controller 테스트 작성
- - [ ] Controller 기능 구현 
- - [ ] Service 테스트 작성
- - [ ] Service 기능 구현
- - [ ] API 연결
+ - [x] Controller 기능 구현 
+ - [x] Service 테스트 작성
+ - [x] Service 기능 구현
+ - [x] API 연결
  
 - 회원정보 수정
  - [x] 뷰 연결
- - [ ] 인수 테스트 작성
- - [ ] Controller 테스트 작성
- - [ ] Controller 기능 구현 
- - [ ] Service 테스트 작성
- - [ ] Service 기능 구현
+ - [x] Controller 테스트 작성
+ - [x] Controller 기능 구현 
+ - [x] Service 테스트 작성
+ - [x] Service 기능 구현
  - [ ] API 연결
  
 - 회원정보 삭제

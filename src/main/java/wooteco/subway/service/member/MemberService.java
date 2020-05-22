@@ -53,4 +53,10 @@ public class MemberService {
         Member member = findMemberByEmail(email);
         return member.checkPassword(password);
     }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NotExistMemberDataException(String.valueOf(id)));
+
+    }
 }
