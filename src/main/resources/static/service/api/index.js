@@ -56,11 +56,14 @@ const METHOD = {
 const api = (() => {
   const request = (uri, config) => fetch(uri, config)
   const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => {
-    console.log(data);
+    if (data.status === 401) {
+      window.location.href = "/login";
+    }
     if (!data.ok) {
       throw new Error();
     }
-    return data.json()})
+    return data.json()
+  });
 
   const line = {
     getAll() {
@@ -79,7 +82,7 @@ const api = (() => {
 
   const user = {
     join(params) {
-      return request(`/members`, METHOD.POST(params))
+      return request(`/join`, METHOD.POST(params))
     },
     login(params) {
       return requestWithJsonData(`/oauth/token`, METHOD.POST(params))

@@ -13,6 +13,7 @@ import wooteco.subway.domain.member.MemberConstructException;
 import wooteco.subway.service.member.CreateMemberException;
 import wooteco.subway.service.member.dto.MemberErrorResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
@@ -73,21 +74,42 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             assertThat(response.getErrorMessage()).isEqualTo(MemberConstructException.EMPTY_NAME_MESSAGE);
     }
 
-    @DisplayName("회원 관리 기능")
+    @DisplayName("내 정보 확인에 필요한 내 정보 가져오기")
     @Test
     void manageMember() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();
 
-        MemberResponse memberResponse = getMember(TEST_USER_EMAIL);
+        TokenResponse response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        // Read
+        MemberResponse memberResponse = getMember(response.getAccessToken(), TEST_USER_EMAIL);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMember(memberResponse);
-        MemberResponse updatedMember = getMember(TEST_USER_EMAIL);
+        // Update
+        updateMember(response.getAccessToken(), memberResponse);
+        MemberResponse updatedMember = getMember(response.getAccessToken(), TEST_USER_EMAIL);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(memberResponse);
+        // Delete
+        deleteMember(response.getAccessToken(), memberResponse);
+    }
+
+    @DisplayName("로그인 없이 내 정보 가져오기")
+    @Test
+    //todo: csv로 다양한 케이스
+    void retrieveMyInfoWithoutLogin() {
+        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(location).isNotBlank();
+
+        given().
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            get("/members?email=" + TEST_USER_EMAIL).
+        then().
+            log().all().
+            statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }

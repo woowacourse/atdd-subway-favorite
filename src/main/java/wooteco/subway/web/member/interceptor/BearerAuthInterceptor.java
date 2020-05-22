@@ -2,6 +2,7 @@ package wooteco.subway.web.member.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +26,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         String bearer = authExtractor.extract(request, "BEARER");
         // TODO: 추출한 토큰값의 유효성 검사 (jwtTokenProvider.validateToken() 메서드 활용)
         if (!jwtTokenProvider.validateToken(bearer)) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
         // TODO: 추출한 토큰값에서 email 정보 추출 (jwtTokenProvider.getSubject() 메서드 활용)

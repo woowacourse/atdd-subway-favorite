@@ -50,6 +50,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
     }
 
+    @DisplayName("Bearer Auth token 없이 내정보 요청")
+    @Test
+    void myInfoWithoutBearerAuthToken() {
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/me/bearer")
+            .then()
+            .log().all()
+            .assertThat()
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private MemberResponse myInfoWithBasicAuth(String email, String password) {
         return
             given()
@@ -85,35 +101,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
         // TODO: oauth2 auth(bearer)를 활용하여 /me/bearer 요청하여 내 정보 조회
         return given()
-            .auth()
-            .oauth2(tokenResponse.getAccessToken())
+            .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
         .when()
+            .log().all()
             .get("/me/bearer")
         .then()
             .log().all()
             .assertThat()
             .statusCode(HttpStatus.OK.value())
             .extract().as(MemberResponse.class);
-    }
-
-    public TokenResponse login(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/oauth/token").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(TokenResponse.class);
     }
 
     public String sessionLogin(String email, String password) {
