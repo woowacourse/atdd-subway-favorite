@@ -7,9 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -32,7 +28,6 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.TokenResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -90,7 +85,7 @@ public class MemberControllerTest {
                 "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
         this.mockMvc.perform(put("/members/1")
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " +token)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
             .content(inputJson)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
@@ -107,10 +102,11 @@ public class MemberControllerTest {
 
         final String token = tokenProvider.createToken(TEST_USER_EMAIL);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/members?email="+TEST_USER_EMAIL)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " +token)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/members?email=" + TEST_USER_EMAIL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(MemberDocumentation.readMember());
@@ -124,7 +120,7 @@ public class MemberControllerTest {
         final String token = tokenProvider.createToken(TEST_USER_EMAIL);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", 1)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " +token)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
