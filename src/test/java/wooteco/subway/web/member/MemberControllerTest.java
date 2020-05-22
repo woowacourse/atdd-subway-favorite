@@ -156,7 +156,7 @@ public class MemberControllerTest {
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
         given(memberService.findMemberByEmail(email)).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
-
+        given(jwtTokenProvider.getSubject(any())).willReturn(email);
         String uri = "/members?email=ramen@gmail.com";
 
         MvcResult mvcResult = mockMvc.perform(get(uri)
@@ -171,6 +171,23 @@ public class MemberControllerTest {
 
         assertThat(memberResponse.getName()).isEqualTo("ramen");
         assertThat(memberResponse.getEmail()).isEqualTo("ramen@gmail.com");
+    }
+
+    @DisplayName("정보 조회 실패 테스트 (JWT Token이 없을 경우)")
+    @Test
+    void getMemberByEmailFailTest() throws Exception {
+        String email = "ramen@gmail.com";
+        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+        given(memberService.findMemberByEmail(email)).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+
+        String uri = "/members?email=ramen@gmail.com";
+
+        mockMvc.perform(get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
 }
