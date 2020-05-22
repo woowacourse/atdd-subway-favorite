@@ -24,13 +24,13 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -190,4 +190,38 @@ public class MemberControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @DisplayName("인증 정보 없는 수정하기 시 예외가 발생한다.")
+    @Test
+    void updateInfoTestFail() throws Exception {
+        given(memberService.updateMember(any(), any())).willReturn(1L);
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
+        String updateData = gson.toJson(updateMemberRequest);
+        String uri = "/members/1";
+
+        mockMvc.perform(put(uri)
+                .content(updateData)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("수정하기 성공")
+    @Test
+    void updateInfoTestSuccess() throws Exception {
+        given(memberService.updateMember(any(), any())).willReturn(1L);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
+        String updateData = gson.toJson(updateMemberRequest);
+        String uri = "/members/1";
+
+        mockMvc.perform(put(uri)
+                .header("Authorization", "Bearer 아무토큰값")
+                .content(updateData)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
