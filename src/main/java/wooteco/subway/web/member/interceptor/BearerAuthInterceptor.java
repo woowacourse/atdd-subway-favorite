@@ -32,7 +32,6 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         }
 
         String bearer = authExtractor.extract(request, "Bearer");
-        System.out.println(bearer + "베어러 입니다");
         validateToken(bearer);
         String email = jwtTokenProvider.getSubject(bearer);
         request.setAttribute("loginMemberEmail", email);
@@ -44,7 +43,6 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
     private void validateEmailEquals(HttpServletRequest request, String email) {
         if(request.getParameter("email").equals(email) == false) {
-            System.out.println(request.getParameter("email") + "여기라구요123123" + email);
             throw new NotMatchedEmailIExistInJwtException(email);
         }
     }
