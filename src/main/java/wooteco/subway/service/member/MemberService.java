@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.dto.JoinRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -23,6 +22,20 @@ public class MemberService {
         return MemberResponse.of(memberRepository.save(member));
     }
 
+    public String createToken(LoginRequest request) {
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(RuntimeException::new);
+        if (!member.checkPassword(request.getPassword())) {
+            throw new RuntimeException("잘못된 패스워드");
+        }
+
+        return jwtTokenProvider.createToken(request.getEmail());
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.getName(), param.getPassword());
@@ -31,23 +44,5 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
-    }
-
-    public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(RuntimeException::new);
-        if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
-        }
-
-        return jwtTokenProvider.createToken(param.getEmail());
-    }
-
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public MemberResponse join(JoinRequest request) {
-        return null;
     }
 }

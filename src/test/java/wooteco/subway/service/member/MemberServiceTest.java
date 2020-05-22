@@ -9,13 +9,17 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.BEARER;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -24,6 +28,7 @@ public class MemberServiceTest {
     public static final String TEST_USER_PASSWORD = "brown";
 
     private MemberService memberService;
+    private Member member;
 
     @Mock
     private MemberRepository memberRepository;
@@ -33,25 +38,61 @@ public class MemberServiceTest {
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.save(any())).thenReturn(member);
 
-        memberService.createMember(member);
+        MemberResponse response = memberService.createMember(member);
 
         verify(memberRepository).save(any());
+        assertThat(response.getId()).isEqualTo(member.getId());
     }
 
     @Test
     void createToken() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        String mockToken = BEARER + "secret";
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        memberService.createToken(loginRequest);
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        when(jwtTokenProvider.createToken(TEST_USER_EMAIL)).thenReturn(mockToken);
+
+        String token = memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+        assertThat(token).isEqualTo(mockToken);
+    }
+
+    @Test
+    void findMemberByEmail() {
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.of(member));
+
+        Member actualMember = memberService.findMemberByEmail(TEST_USER_EMAIL);
+
+        verify(memberRepository).findByEmail(TEST_USER_EMAIL);
+        assertThat(actualMember).isEqualTo(member);
+    }
+
+    @Test
+    void updateMember() {
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("NEW_RYAN", "NEW_RYAN_PASSWORD");
+        Member updatedMember = new Member(member.getId(), member.getEmail(), updateMemberRequest.getName(), updateMemberRequest.getPassword());
+
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+        when(memberRepository.save(any())).thenReturn(updatedMember);
+
+        memberService.updateMember(member.getId(), updateMemberRequest);
+
+        assertThat(member.getName()).isEqualTo(updatedMember.getName());
+        assertThat(member.getPassword()).isEqualTo(updatedMember.getPassword());
+    }
+
+    @Test
+    void deleteMember() {
+        memberService.deleteMember(member.getId());
+        verify(memberRepository).deleteById(member.getId());
     }
 }
