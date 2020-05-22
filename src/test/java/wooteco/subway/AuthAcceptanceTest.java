@@ -35,22 +35,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(MemberResponse.class);
     }
-
-    public TokenResponse login(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/oauth/token").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(TokenResponse.class);
-    }
 }

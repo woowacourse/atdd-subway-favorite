@@ -12,6 +12,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -266,12 +267,12 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(String email) {
+    public MemberResponse getMember(TokenResponse token) {
         return
-                given().
-                        accept(MediaType.APPLICATION_JSON_VALUE).
+                given().header("Authorization",
+                        token.getTokenType()+" "+token.getAccessToken()).
                         when().
-                        get("/members?email=" + email).
+                        get("/members").
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
@@ -300,6 +301,24 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/oauth/token").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(TokenResponse.class);
     }
 }
 
