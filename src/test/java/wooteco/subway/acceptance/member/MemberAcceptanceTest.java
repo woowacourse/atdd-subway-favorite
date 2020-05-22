@@ -2,13 +2,8 @@ package wooteco.subway.acceptance.member;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -69,107 +64,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		getMemberWithoutLogin();
 		updateMemberWithoutLogin();
 		deleteMemberWithoutLogin();
-	}
-
-	private void deleteMemberWithoutLogin() {
-		given()
-			.when()
-			.delete("/members/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.UNAUTHORIZED.value());
-	}
-
-	private void updateMemberWithoutLogin() {
-		given()
-			.when()
-			.put("/members/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.UNAUTHORIZED.value());
-	}
-
-	private void getMemberWithoutLogin() {
-		given()
-			.when()
-			.get("/members/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.UNAUTHORIZED.value());
-	}
-
-	private void deleteMemberWithBearerAuth(TokenResponse tokenResponse) {
-		given()
-			.auth()
-			.oauth2(tokenResponse.getAccessToken())
-			.when()
-			.delete("/members/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.OK.value());
-	}
-
-	private void updateInfoBearerAuth(TokenResponse tokenResponse) {
-		HashMap<String, String> params = new HashMap<>();
-		params.put("name", "NEW_" + TEST_USER_NAME);
-		params.put("password", "NEW_" + TEST_USER_PASSWORD);
-
-		given()
-			.body(params)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.auth()
-			.oauth2(tokenResponse.getAccessToken())
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when()
-			.put("/members/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.OK.value());
-	}
-
-	private TokenResponse login(String email, String password) {
-		Map<String, String> params = new HashMap<>();
-		params.put("email", email);
-		params.put("password", password);
-
-		return
-			given().
-				body(params).
-				contentType(MediaType.APPLICATION_JSON_VALUE).
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				post("/oauth/token").
-				then().
-				log().all().
-				statusCode(HttpStatus.OK.value()).
-				extract().as(TokenResponse.class);
-	}
-
-	private void badLogin(String email, String password) {
-		Map<String, String> params = new HashMap<>();
-		params.put("email", email);
-		params.put("password", password);
-
-		given().
-			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			post("/oauth/token").
-			then().
-			log().all().
-			statusCode(HttpStatus.BAD_REQUEST.value());
-	}
-
-	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-		return given().auth()
-			.oauth2(tokenResponse.getAccessToken())
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when()
-			.get("/members/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.OK.value())
-			.extract().as(MemberResponse.class);
 	}
 }
