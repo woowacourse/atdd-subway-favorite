@@ -1,5 +1,6 @@
 package wooteco.subway.acceptance.line;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.service.line.dto.LineDetailResponse;
@@ -10,7 +11,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+@Disabled
 public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 관리한다")
     @Test

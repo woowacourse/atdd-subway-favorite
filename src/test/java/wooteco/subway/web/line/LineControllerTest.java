@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -25,7 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = LineController.class)
+@WebMvcTest(controllers = LineController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"wooteco.subway.web.member.login.*"}))
 @Import(ETagHeaderFilter.class)
 public class LineControllerTest {
     @MockBean
@@ -42,6 +45,7 @@ public class LineControllerTest {
 
         String uri = "/lines/detail";
 
+        //
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())
                 .andExpect(status().isOk())
