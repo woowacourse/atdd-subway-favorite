@@ -7,7 +7,7 @@ function MyPage() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer" + token
+                'Authorization': "Bearer " + token
             }
         })
             .then(data => data.json())

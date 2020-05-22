@@ -39,10 +39,10 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         request.setAttribute("requestMemberEmail", email);
 
         if (isGet(request)) {
-
             validateEmailEquals(request, email);
             return true;
         }
+
         if (isPut(request)) {
             final Map<String, String> pathVariables = (Map<String, String>) request
                     .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
