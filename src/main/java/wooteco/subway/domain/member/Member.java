@@ -54,4 +54,18 @@ public class Member {
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
+
+    public boolean isNotEqualEmail(String email) {
+        return this.email.equals(email) == false;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
