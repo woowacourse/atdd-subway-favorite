@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
@@ -26,8 +27,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        // TODO: oauth2 auth(bearer)를 활용하여 /me/bearer 요청하여 내 정보 조회
-        return null;
+        return given().header("Authorization",
+                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
+                .when()
+                .get("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
     }
 
     public TokenResponse login(String email, String password) {
@@ -40,9 +46,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+                        when().
                         post("/oauth/token").
-                then().
+                        then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(TokenResponse.class);
