@@ -5,9 +5,11 @@ import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
@@ -17,36 +19,37 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @RestController
-public class MemberController {
+public class AdminMemberController {
 	private MemberService memberService;
 
-	public MemberController(MemberService memberService) {
+	public AdminMemberController(MemberService memberService) {
 		this.memberService = memberService;
 	}
 
-	@PostMapping("/members")
-	public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
+	@PostMapping("/admin/members")
+	public ResponseEntity createMember(@RequestBody MemberRequest view) {
 		Member member = memberService.createMember(view.toMember());
 		return ResponseEntity
 			.created(URI.create("/members/" + member.getId()))
 			.build();
 	}
 
-	@GetMapping("/members")
-	public ResponseEntity<MemberResponse> getMember(@LoginMember Member member) {
+	@GetMapping("/admin/members")
+	public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
+		Member member = memberService.findMemberByEmail(email);
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}
 
-	@PutMapping("/members")
-	public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member,
+	@PutMapping("/admin/members/{id}")
+	public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
 		@RequestBody UpdateMemberRequest updateMemberRequest) {
-		Member updatedMember = memberService.updateMemberByUser(member, updateMemberRequest);
+		Member updatedMember = memberService.updateMemberByAdmin(id, updateMemberRequest);
 		return ResponseEntity.ok().body(MemberResponse.of(updatedMember));
 	}
 
-	@DeleteMapping("/members")
-	public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
-		memberService.deleteMemberByUser(member);
+	@DeleteMapping("/admin/members/{id}")
+	public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+		memberService.deleteMemberByAdmin(id);
 		return ResponseEntity.noContent().build();
 	}
 }

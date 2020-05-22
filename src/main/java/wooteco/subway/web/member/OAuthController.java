@@ -1,22 +1,19 @@
 package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 @RestController
-public class LoginMemberController {
+public class OAuthController {
 	private MemberService memberService;
 
-	public LoginMemberController(MemberService memberService) {
+	public OAuthController(MemberService memberService) {
 		this.memberService = memberService;
 	}
 
@@ -24,10 +21,5 @@ public class LoginMemberController {
 	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
 		String token = memberService.createToken(param);
 		return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
-	}
-
-	@GetMapping("/oauth/member")
-	public ResponseEntity<MemberResponse> getAuthorizedMember(@LoginMember Member member) {
-		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}
 }

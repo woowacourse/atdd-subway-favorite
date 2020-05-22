@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class LoginMemberControllerAdvice {
+public class MemberControllerAdvice {
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity handleLoginException(RuntimeException e) {

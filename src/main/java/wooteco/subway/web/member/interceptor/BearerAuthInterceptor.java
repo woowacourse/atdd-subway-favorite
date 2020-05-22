@@ -23,6 +23,10 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
+		if (request.getMethod().equals("POST")) {
+			return true;
+		}
+
         String extractedAuth = authExtractor.extract(request, "Bearer");
         jwtTokenProvider.validateToken(extractedAuth);
         String email = jwtTokenProvider.getSubject(extractedAuth);

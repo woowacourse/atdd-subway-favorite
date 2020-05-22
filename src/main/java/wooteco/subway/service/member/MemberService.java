@@ -22,13 +22,29 @@ public class MemberService {
 		return memberRepository.save(member);
 	}
 
-	public void updateMember(Long id, UpdateMemberRequest param) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-		member.update(param.getName(), param.getPassword());
-		memberRepository.save(member);
+	public Member updateMemberByUser(Member member, UpdateMemberRequest param) {
+		return updateMember(member, param);
 	}
 
-	public void deleteMember(Long id) {
+	public Member updateMemberByAdmin(Long id, UpdateMemberRequest updateMemberRequest) {
+		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		return updateMember(member, updateMemberRequest);
+	}
+
+	private Member updateMember(Member member, UpdateMemberRequest param) {
+		member.update(param.getName(), param.getPassword());
+		return memberRepository.save(member);
+	}
+
+	public void deleteMemberByUser(Member member) {
+		deleteMember(member.getId());
+	}
+
+	public void deleteMemberByAdmin(Long id) {
+		deleteMember(id);
+	}
+
+	private void deleteMember(Long id) {
 		memberRepository.deleteById(id);
 	}
 
