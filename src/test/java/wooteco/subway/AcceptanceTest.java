@@ -283,39 +283,45 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                put("/members/" + memberResponse.getId()).
-                then().
+            header("Authorization", getToken(tokenResponse)).
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            put("/members").
+            then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
+    public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         given().when().
-                delete("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+            header("Authorization", getToken(tokenResponse)).
+            delete("/members").
+            then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    private String getToken(TokenResponse tokenResponse) {
+        return tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
         return
-                given()
-                        .auth()
-                        .oauth2(tokenResponse.getAccessToken())
-                        .when()
-                        .get("/me/bearer")
-                        .then()
-                        .log().all()
+            given()
+                .auth()
+                .oauth2(tokenResponse.getAccessToken())
+                .when()
+                .get("/me/bearer")
+                .then()
+                .log().all()
                         .statusCode(HttpStatus.OK.value())
                         .extract().as(MemberResponse.class);
     }
@@ -334,4 +340,3 @@ public class AcceptanceTest {
                         extract().as(TokenResponse.class);
     }
 }
-

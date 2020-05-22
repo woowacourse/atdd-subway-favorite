@@ -62,8 +62,8 @@ const api = (() => {
                 return response.json();
             })
         },
-        update(id, token, data) {
-            return fetch(`/members/${id}`, {
+        update(token, data) {
+            return fetch(`/members`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,
@@ -72,8 +72,8 @@ const api = (() => {
                 body: JSON.stringify(data)
             })
         },
-        signOut(id, token) {
-            return fetch(`/members/${id}`, {
+        signOut(token) {
+            return fetch(`/members`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': token

@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -34,8 +33,8 @@ public class MemberController {
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = memberService.createMember(memberRequest.toMember());
         return ResponseEntity
-                .created(URI.create("/members/" + member.getId()))
-                .build();
+            .created(URI.create("/members/" + member.getId()))
+            .build();
     }
 
     @GetMapping
@@ -44,18 +43,18 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
-            @RequestBody UpdateMemberRequest updateMemberRequest) {
-        memberService.updateMember(id, updateMemberRequest);
+    @PutMapping
+    public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member,
+        @RequestBody UpdateMemberRequest updateMemberRequest) {
+        memberService.updateMember(member, updateMemberRequest);
         return ResponseEntity.ok()
-                .build();
+            .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    @DeleteMapping
+    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
         return ResponseEntity.noContent()
-                .build();
+            .build();
     }
 }

@@ -22,20 +22,18 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void updateMember(Long id, UpdateMemberRequest updateMemberRequest) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+    public void updateMember(Member member, UpdateMemberRequest updateMemberRequest) {
         member.update(updateMemberRequest.getName(), updateMemberRequest.getPassword());
         memberRepository.save(member);
     }
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
     }
 
     public String createToken(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(RuntimeException::new);
+            .orElseThrow(RuntimeException::new);
         if (!member.checkPassword(loginRequest.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }

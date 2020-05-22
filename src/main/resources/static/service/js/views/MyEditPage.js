@@ -25,7 +25,6 @@ function MyEditPage() {
             .then(data => {
                 $emailValue.textContent = data.email;
                 $nameValue.value = data.name;
-                $form.dataset.id = data.id;
             })
     };
 
@@ -64,9 +63,8 @@ function MyEditPage() {
             return;
         }
 
-        const id = $form.dataset.id;
         api.member
-            .update(id, headers, data)
+            .update(headers, data)
             .then(() => {
                 Snackbar.show({
                     text: SUCCESS_MESSAGE.UPDATE_SUCCESS,
@@ -79,11 +77,10 @@ function MyEditPage() {
     }
 
     function onSignOut() {
-        const id = $form.dataset.id;
         const headers = createHeader();
 
         api.member
-            .signOut(id, headers)
+            .signOut(headers)
             .then(response => {
                 if (response.ok) {
                     Snackbar.show({

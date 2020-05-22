@@ -19,9 +19,19 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='curl-request,http-request,http-response']
 
 [[resources-members-get]]
 === 내 정보 조회
 
-operation::members/get[snippets='http-request,http-response']
+operation::members/get[snippets='curl-request,http-request,http-response']
+
+[[resources-members-update]]
+=== 내 정보 수정
+
+operation::members/update[snippets='curl-request,http-request,http-response']
+
+[[resources-members-delete]]
+=== 회원 탈퇴
+
+operation::members/delete[snippets='curl-request,http-request,http-response']

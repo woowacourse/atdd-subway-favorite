@@ -1,6 +1,6 @@
 package wooteco.subway.acceptance.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,10 +23,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMember(memberResponse);
+        updateMember(memberResponse, tokenResponse);
         MemberResponse updatedMember = getMember(TEST_USER_EMAIL, tokenResponse);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(memberResponse);
+        deleteMember(memberResponse, tokenResponse);
     }
 }
