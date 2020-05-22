@@ -1,7 +1,13 @@
 const METHOD = {
-  PUT() {
+  PUT(data) {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
@@ -50,6 +56,9 @@ const api = (() => {
     },
     myPage(){
       return requestWithJsonData(`/me`);
+    },
+    update(id, updateForm){
+      return request(`/members/`+id, METHOD.PUT(updateForm));
     }
   }
 

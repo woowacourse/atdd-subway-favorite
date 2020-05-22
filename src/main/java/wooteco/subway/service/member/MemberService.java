@@ -10,6 +10,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.NotFoundMemberException;
+import wooteco.subway.web.member.NotMatchPasswordException;
 
 @Service
 public class MemberService {
@@ -27,6 +28,9 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        if (!member.checkPassword(param.getOldPassword())) {
+            throw new NotMatchPasswordException("패스워드가 일치하지 않습니다");
+        }
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -39,7 +43,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
             .orElseThrow(() -> new NotFoundMemberException(param.getEmail()));
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new RuntimeException("잘못된 패스워드 입니다.");
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
@@ -47,11 +51,6 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
     }
 
     public boolean isNotExistEmail(String email) {

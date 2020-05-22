@@ -2,11 +2,14 @@ import { ERROR_MESSAGE, EVENT_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js';
 
 function Login() {
-  const $loginButton = document.querySelector('#login-button')
+  const $loginButton = document.querySelector('#login-button');
+  const $email = document.querySelector('#email');
+  const $password = document.querySelector('#password');
+
   const onLogin = event => {
     event.preventDefault();
-    const emailValue = document.querySelector('#email').value;
-    const passwordValue = document.querySelector('#password').value;
+    const emailValue = $email.value;
+    const passwordValue = $password.value;
     const data = {
       email: emailValue,
       password: passwordValue,
@@ -29,7 +32,6 @@ function Login() {
     }).then(tokenResponse => {
       setCookie(tokenResponse.accessToken);
       window.location = "/my-page";
-
     }).catch(error => error.json())
     .then(errorResponse => {
       if (errorResponse) {
@@ -43,7 +45,6 @@ function Login() {
     date.setTime(date.getTime() + 5 * 60 * 1000);
     document.cookie = "token=" + value + ';expires=' + date.toUTCString();
   };
-
 
 
   const deleteCookie = function () {

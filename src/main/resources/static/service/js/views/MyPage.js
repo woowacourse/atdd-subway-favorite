@@ -2,6 +2,7 @@ import api from '../../api/index.js';
 
 function MyPage() {
 
+
   const getCookie = function () {
     const value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
     return value ? value[2] : null;

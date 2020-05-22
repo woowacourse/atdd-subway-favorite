@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -50,7 +52,7 @@ public class MemberController {
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
-        @RequestBody UpdateMemberRequest param) {
+        @Valid @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
