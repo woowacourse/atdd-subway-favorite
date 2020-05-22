@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Favorites {
 
-    @MappedCollection
+    @MappedCollection(idColumn = "member", keyColumn = "member_key")
     private List<Favorite> favorites;
 
     public Favorites(final List<Favorite> favorites) {

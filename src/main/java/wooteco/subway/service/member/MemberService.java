@@ -6,23 +6,36 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.exception.DuplicatedEmailException;
+import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.member.favorite.FavoriteService;
 import wooteco.subway.web.dto.ErrorCode;
 import wooteco.subway.web.member.exception.MemberException;
+
+import java.util.Arrays;
 
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
+    private StationRepository stationRepository;
+    private FavoriteService favoriteService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(final MemberRepository memberRepository, final StationRepository stationRepository,
+                         final FavoriteService favoriteService, final JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.stationRepository = stationRepository;
+        this.favoriteService = favoriteService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
+
 
     @Transactional
     public Long createMember(MemberRequest memberRequest) {
@@ -73,5 +86,16 @@ public class MemberService {
     public void deleteByEmail(final LoginEmail loginEmail) {
         Member member = getMember(loginEmail.getEmail());
         memberRepository.delete(member);
+    }
+
+    @Transactional
+    public void addFavorite(final FavoriteRequest favoriteRequest, LoginEmail loginEmail) {
+        Member member = getMember(loginEmail.getEmail());
+        Stations stations = new Stations(stationRepository.findAllById(Arrays.asList(favoriteRequest.getSourceStationId(),
+                favoriteRequest.getTargetStationId())));
+        Station source = stations.extractStationById(favoriteRequest.getSourceStationId());
+        Station target = stations.extractStationById(favoriteRequest.getTargetStationId());
+        favoriteService.addFavoriteToMember(member, source, target);
+        memberRepository.save(member);
     }
 }

@@ -12,7 +12,7 @@ import wooteco.subway.web.member.resolver.LoginMemberMethodArgumentResolver;
 import java.util.List;
 
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig {
 
     @Profile("prod")
     @Configuration
@@ -29,7 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
-            registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members**").addPathPatterns("/me");
+            registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members/favorite**").addPathPatterns("/me");
         }
 
         @Override
@@ -39,7 +39,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     }
 
-    @Profile("local")
+    @Profile(value = {"local", "test"})
     @Configuration
     public static class LocalWebMvcConfig implements WebMvcConfigurer {
         private final BearerAuthInterceptor bearerAuthInterceptor;

@@ -7,12 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -21,13 +20,13 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.LoginMemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.member.auth.Authentication;
-import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,23 +35,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles(value = {"test"})
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
-@AutoConfigureMockMvc
 class LoginMemberControllerTest {
 
     private static final String EMAIL = "pci2676@gmail.com";
     private static final String NAME = "박찬인";
     private static final String PASSWORD = "1234";
 
-    @MockBean
-    private Authentication authentication;
-
-    @MockBean
-    private BearerAuthInterceptor bearerAuthInterceptor;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private StationRepository stationRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -71,6 +70,7 @@ class LoginMemberControllerTest {
     @AfterEach
     void tearDown() {
         memberRepository.deleteAll();
+        stationRepository.deleteAll();
     }
 
     @DisplayName("로그인")
@@ -135,9 +135,6 @@ class LoginMemberControllerTest {
 
         String token = "bearer asdf.zxcv.qewr";
 
-        when(bearerAuthInterceptor.preHandle(any(), any(), any())).thenReturn(true);
-        when(authentication.getAuthentication(any(), any())).thenReturn(EMAIL);
-
         mockMvc.perform(get("/me")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -154,9 +151,6 @@ class LoginMemberControllerTest {
         memberRepository.save(new Member(EMAIL, NAME, PASSWORD));
 
         String token = "bearer asdf.zxcv.qewr";
-
-        when(bearerAuthInterceptor.preHandle(any(), any(), any())).thenReturn(true);
-        when(authentication.getAuthentication(any(), any())).thenReturn(EMAIL);
 
         mockMvc.perform(delete("/me")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -177,9 +171,6 @@ class LoginMemberControllerTest {
         UpdateMemberRequest request = new UpdateMemberRequest(NAME, PASSWORD);
         String updateRequestContent = objectMapper.writeValueAsString(request);
 
-        when(bearerAuthInterceptor.preHandle(any(), any(), any())).thenReturn(true);
-        when(authentication.getAuthentication(any(), any())).thenReturn(EMAIL);
-
         mockMvc.perform(put("/me")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -191,5 +182,28 @@ class LoginMemberControllerTest {
                 .andDo(LoginMemberDocumentation.updateMyInfo());
     }
 
+    @DisplayName("회원의 즐겨찾는 경로를 추가한다.")
+    @Test
+    void getMemberFavorite() throws Exception {
+        //given
+        Member member = memberRepository.save(new Member(EMAIL, NAME, PASSWORD));
+        Station source = stationRepository.save(new Station("잠실"));
+        Station target = stationRepository.save(new Station("역삼"));
+
+        String token = jwtTokenProvider.createToken(member.getEmail());
+
+        FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
+        String favoriteRequestContent = objectMapper.writeValueAsString(favoriteRequest);
+
+        this.mockMvc.perform(post("/me/favorites")
+                .content(favoriteRequestContent)
+                .header("Authorization", "bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andDo(LoginMemberDocumentation.createFavorite());
+    }
 
 }

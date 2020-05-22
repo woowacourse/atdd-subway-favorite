@@ -7,9 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.favorite.FavoriteService;
 
 import java.util.Optional;
 
@@ -29,11 +31,16 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
+    private StationRepository stationRepository;
+    @Mock
+    private FavoriteService favoriteService;
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
+
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, stationRepository, favoriteService, jwtTokenProvider);
     }
 
     @Test

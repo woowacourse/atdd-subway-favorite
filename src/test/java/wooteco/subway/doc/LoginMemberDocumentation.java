@@ -27,41 +27,6 @@ public class LoginMemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler getMyInfo() {
-        return document("login/getMyInfo",
-                requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
-                ),
-                responseFields(
-                        fieldWithPath("code").type(JsonFieldType.NULL).description("null").optional(),
-                        fieldWithPath("message").type(JsonFieldType.NULL).description("null").optional(),
-                        fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("The user's id"),
-                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("The user's name"),
-                        fieldWithPath("data.email").type(JsonFieldType.STRING).description("The user's email")
-                )
-        );
-    }
-
-    public static RestDocumentationResultHandler deleteMyInfo() {
-        return document("login/deleteMyInfo",
-                requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
-                )
-        );
-    }
-
-    public static RestDocumentationResultHandler updateMyInfo() {
-        return document("login/updateMyInfo",
-                requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
-                ),
-                requestFields(
-                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
-                )
-        );
-    }
-
     public static RestDocumentationResultHandler loginFailEmail() {
         return document("login/loginFail/email",
                 requestFields(
@@ -86,6 +51,53 @@ public class LoginMemberDocumentation {
                         fieldWithPath("code").type(JsonFieldType.NUMBER).description(1200),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("잘못된 패스워드"),
                         fieldWithPath("data").type(JsonFieldType.NULL).description("null").optional()
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler getMyInfo() {
+        return document("me/getMyInfo",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                ),
+                responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NULL).description("null").optional(),
+                        fieldWithPath("message").type(JsonFieldType.NULL).description("null").optional(),
+                        fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("The user's id"),
+                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("The user's name"),
+                        fieldWithPath("data.email").type(JsonFieldType.STRING).description("The user's email")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteMyInfo() {
+        return document("me/deleteMyInfo",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler updateMyInfo() {
+        return document("me/updateMyInfo",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                ),
+                requestFields(
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler createFavorite() {
+        return document("me/favorites/create",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                ),
+                requestFields(
+                        fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER).description("시작역 ID"),
+                        fieldWithPath("targetStationId").type(JsonFieldType.NUMBER).description("종착역 ID")
                 )
         );
     }

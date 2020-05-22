@@ -1,5 +1,6 @@
 package wooteco.subway.web.member;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
@@ -49,5 +51,11 @@ public class LoginMemberController {
     public ResponseEntity<Void> updateMyInfo(@RequestBody UpdateMemberRequest updateMemberRequest, @LoginMember LoginEmail loginEmail) {
         memberService.updateMember(updateMemberRequest, loginEmail);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/favorites")
+    public ResponseEntity<DefaultResponse<Void>> addFavorite(@RequestBody FavoriteRequest favoriteRequest, @LoginMember LoginEmail loginEmail) {
+        memberService.addFavorite(favoriteRequest, loginEmail);
+        return new ResponseEntity<>(DefaultResponse.empty(), HttpStatus.CREATED);
     }
 }

@@ -29,21 +29,6 @@ operation::members/create[snippets='http-request,http-response,request-fields']
 
 operation::login/login[snippets='http-request,http-response,request-fields,request-body,response-fields']
 
-[[resources-login-getMyInfo]]
-=== 내 정보 조회
-
-operation::login/getMyInfo[snippets='http-request,http-response,request-headers,response-fields']
-
-[[resources-login-updateMyInfo]]
-=== 내 정보 갱신
-
-operation::login/updateMyInfo[snippets='http-request,http-response,request-headers,request-fields,request-body']
-
-[[resources-login-deleteMyInfo]]
-=== 탈퇴
-
-operation::login/deleteMyInfo[snippets='http-request,http-response,request-headers']
-
 [[resources-login-loginFail]]
 === 로그인 실패
 
@@ -56,3 +41,31 @@ operation::login/loginFail/email[snippets='http-response,response-fields']
 ==== 잘못된 패스워드
 
 operation::login/loginFail/password[snippets='http-response,response-fields']
+
+[[resources-me]]
+== Login-Member
+
+[[resources-me-getMyInfo]]
+=== 내 정보 조회
+
+operation::me/getMyInfo[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-me-updateMyInfo]]
+=== 내 정보 갱신
+
+operation::me/updateMyInfo[snippets='http-request,http-response,request-headers,request-fields,request-body']
+
+[[resources-me-deleteMyInfo]]
+=== 탈퇴
+
+operation::me/deleteMyInfo[snippets='http-request,http-response,request-headers']
+
+[[resources-me-favorites-create]]
+=== 즐겨찾기 추가
+
+operation::me/favorites/create[snippets='http-request,http-response,request-headers,request-fields,request-body']
+
+
+
+
+
