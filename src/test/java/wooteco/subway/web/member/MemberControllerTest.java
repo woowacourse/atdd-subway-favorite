@@ -99,4 +99,18 @@ public class MemberControllerTest {
             .andDo(print())
             .andDo(MemberDocumentation.updateMember());
     }
+
+    @Test
+    void deleteMember() throws Exception {
+        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+
+        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
+
+        this.mockMvc.perform(delete("/members/1")
+                .header("Authorization", token))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteMember());
+    }
 }

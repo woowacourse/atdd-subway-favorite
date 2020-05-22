@@ -3,7 +3,8 @@ const METHOD = {
     return {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization' : 'bearer ' + localStorage.getItem("jwt")
       },
       body: JSON.stringify({
         ...data
@@ -12,7 +13,11 @@ const METHOD = {
   },
   DELETE() {
     return {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers : {
+        'content-type': 'application/json',
+        'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+      }
     }
   },
   POST(data) {

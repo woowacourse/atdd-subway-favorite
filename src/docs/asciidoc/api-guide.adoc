@@ -30,3 +30,9 @@ operation::members/get[snippets='http-request,request-headers,response-fields']
 === 회원 정보 수정
 
 operation::members/update[snippets='http-request,request-headers,request-fields']
+
+
+[[resources-members-delete]]
+=== 회원 탈퇴
+
+operation::members/delete[snippets='http-request,request-headers']
