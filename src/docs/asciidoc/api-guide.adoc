@@ -13,6 +13,14 @@ endif::[]
 [[resources]]
 = Resources
 
+[[resources-loginMembers]]
+== Login Member
+
+[[resources-loginMembers-login]]
+=== 로그인
+
+operation::oauth/token[snippets='http-request,http-response,request-fields,response-headers']
+
 [[resources-members]]
 == Member
 
@@ -26,10 +34,12 @@ operation::members/create[snippets='http-request,http-response,request-fields']
 
 operation::members/find[snippets='http-request,http-response,request-fields,response-headers']
 
-[[resources-loginMembers]]
-== Login Member
+[[resources-members-update]]
+=== 회원 정보 수정
 
-[[resources-loginMembers-login]]
-=== 로그인
+operation::members/update[snippets='http-request,http-response']
 
-operation::oauth/token[snippets='http-request,http-response,request-fields,response-headers']
+[[resources-members-delete]]
+=== 회원 정보 삭제
+
+operation::members/delete[snippets='http-request,http-response']
