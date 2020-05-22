@@ -2,6 +2,7 @@ package wooteco.subway.service.member;
 
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -53,12 +54,9 @@ public class MemberService {
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(InvalidMemberEmailException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+    public MemberResponse findMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(InvalidMemberEmailException::new);
+        return MemberResponse.of(member);
     }
 }
