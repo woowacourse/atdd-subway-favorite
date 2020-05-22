@@ -11,10 +11,10 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import java.net.URI;
 
 @RestController
-public class MemberController {
+public class AdminMemberController {
     private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public AdminMemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
