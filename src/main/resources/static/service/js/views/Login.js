@@ -47,9 +47,7 @@ function Login() {
   };
 
 
-  const deleteCookie = function () {
-    document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-  }
+
 
   this.init = () => {
     $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin);

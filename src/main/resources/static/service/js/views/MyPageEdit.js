@@ -9,7 +9,7 @@ function MyPageEdit() {
   const $password = document.querySelector('#password');
   const $passwordCheck = document.querySelector('#password-check');
   const $updateButton = document.querySelector('#update-button');
-  const $deleteButton = document.querySelector('#delete-button');
+  const $signOutButton = document.querySelector('#sign-out-button');
 
   const onClickUpdateButton = event => {
     event.preventDefault();
@@ -36,14 +36,42 @@ function MyPageEdit() {
     });
   }
 
+  const onClickSignOutButton = event => {
+    event.preventDefault();
+
+    if (!confirm("정말로 회원 탈퇴를 하실겁니까? 😳")) {
+      window.location = "/my-page"
+      return;
+    }
+    api.member.delete($id.dataset.id, $oldPassword.value)
+    .then(response => {
+      if(!response.ok){
+        throw response;
+      }
+      alert("실망이야..😢");
+      deleteCookie();
+      window.location = "/login"
+    }).catch(response => response.json())
+    .then(error => {
+      if (error) {
+        alert(error.message);
+      }
+    });
+  }
+
   const initEventListener = () => {
-    $updateButton.addEventListener(EVENT_TYPE.CLICK, onClickUpdateButton)
+    $updateButton.addEventListener(EVENT_TYPE.CLICK, onClickUpdateButton);
+    $signOutButton.addEventListener(EVENT_TYPE.CLICK, onClickSignOutButton);
   }
 
   const getCookie = function () {
     const value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
     return value ? value[2] : null;
   };
+
+  const deleteCookie = function () {
+    document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+  }
 
   this.init = () => {
     if(getCookie()) {

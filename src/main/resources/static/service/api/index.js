@@ -59,6 +59,9 @@ const api = (() => {
     },
     update(id, updateForm){
       return request(`/members/`+id, METHOD.PUT(updateForm));
+    },
+    delete(id){
+      return request(`/members/`+id, METHOD.DELETE());
     }
   }
 
