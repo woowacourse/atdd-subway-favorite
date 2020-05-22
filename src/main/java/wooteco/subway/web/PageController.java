@@ -55,6 +55,11 @@ public class PageController {
 		return "service/join";
 	}
 
+	@GetMapping(value = "/logout", produces = MediaType.TEXT_HTML_VALUE)
+	public String logout() {
+		return "service/index";
+	}
+
 	@GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
 	public String loginPage() {
 		return "service/login";
