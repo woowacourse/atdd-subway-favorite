@@ -42,49 +42,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
     }
-
-    public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        return given()
-                .header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
-                .when()
-                .get("/me/bearer")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(MemberResponse.class);
-    }
-
-    public TokenResponse login(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/oauth/token").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(TokenResponse.class);
-    }
-
-    public String loginWithInvalidAttributes(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/oauth/token").
-                then().
-                        log().all().
-                        extract().asString();
-    }
 }

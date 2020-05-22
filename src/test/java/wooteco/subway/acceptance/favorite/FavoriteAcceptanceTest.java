@@ -1,0 +1,59 @@
+package wooteco.subway.acceptance.favorite;
+
+import java.util.Map;
+import java.util.Objects;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import wooteco.subway.AcceptanceTest;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.line.dto.LineResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.station.dto.StationResponse;
+
+public class FavoriteAcceptanceTest extends AcceptanceTest {
+
+    @DisplayName("즐겨찾기 관리(추가, 조회, 삭제) 인수테스트")
+    @Test
+    public void manageFavorite() {
+        //given
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
+        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
+        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+
+        LineResponse lineResponse = createLine("2호선");
+
+        addLineStation(lineResponse.getId(), null, stationResponse1.getId());
+        addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
+        addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
+
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        // path -> (source, target) => pathResponse != null
+
+        addFavoritePath(tokenResponse, stationResponse1, stationResponse2);
+    }
+
+    private void addFavoritePath(
+        TokenResponse tokenResponse,
+        StationResponse source,
+        StationResponse target
+    ) {
+        FavoriteRequest request = new FavoriteRequest(source.getName(), target.getName());
+        given().
+            body(request).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            header("Authorization",tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+        when().
+            post("/favorites").
+        then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value());
+    }
+
+}
