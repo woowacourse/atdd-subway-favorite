@@ -7,12 +7,16 @@ const METHOD = {
       },
     }
   },
-  PUT() {
+  PUT(data) {
     return {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         "Authorization": localStorage.getItem("Authorization"),
       },
+      body: JSON.stringify({
+        ...data
+      }),
     }
   },
   DELETE() {
@@ -56,6 +60,18 @@ const api = (() => {
     }
   }
 
+  const me = {
+    find() {
+      return request(`/me`, METHOD.GET())
+    },
+    update(updateMemberRequest) {
+      return request(`/me`, METHOD.PUT(updateMemberRequest))
+    },
+    delete() {
+      return request(`/me`, METHOD.DELETE())
+    }
+  }
+
   const member = {
     join(joinRequest) {
       return request("/members", METHOD.POST(joinRequest));
@@ -69,6 +85,7 @@ const api = (() => {
     line,
     path,
     member,
+    me
   }
 })()
 

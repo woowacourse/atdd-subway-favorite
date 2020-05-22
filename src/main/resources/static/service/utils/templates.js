@@ -76,3 +76,14 @@ export const pathStationTemplate = (name, index, lastIndex) => {
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
+
+export const myInformationTemplate = myInfo => `
+  <div class="mb-4">
+    <div class="block text-gray-600 font-bold text-sm">email</div>
+    <div class="block text-gray-700 font-bold text-sm mb-2">${myInfo.email}</div>
+  </div>
+  <div class="mb-4">
+    <div class="block text-gray-600 font-bold text-sm">name</div>
+    <div class="block text-gray-700 font-bold text-sm mb-2">${myInfo.name}</div>
+  </div>
+`
