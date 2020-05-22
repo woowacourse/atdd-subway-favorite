@@ -1,7 +1,6 @@
 import {EVENT_TYPE, ERROR_MESSAGE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 
-
 function Login() {
     const $loginButton = document.querySelector('#login-button')
 

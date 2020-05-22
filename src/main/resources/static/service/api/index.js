@@ -1,7 +1,13 @@
 const METHOD = {
-  PUT() {
+  PUT(data) {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
@@ -56,6 +62,9 @@ const api = (() => {
               'Authorization' : 'bearer ' + localStorage.getItem("jwt")
           }
       });
+    },
+    update(id, param){
+      return request(`/members/${id}`, METHOD.PUT(param))
     }
   }
 

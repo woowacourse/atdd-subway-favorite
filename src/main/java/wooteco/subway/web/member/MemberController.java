@@ -48,6 +48,7 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
+    @IsAuth
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(id, param);
