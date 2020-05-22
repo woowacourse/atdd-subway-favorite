@@ -1,34 +1,40 @@
-package wooteco.subway;
+package wooteco.subway.web.member;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
-import java.net.URI;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.config.ETagHeaderFilter;
+import wooteco.subway.doc.LoginMemberDocumentation;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
 @Import(ETagHeaderFilter.class)
+@ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LoginMemberControllerTest {
@@ -37,52 +43,51 @@ public class LoginMemberControllerTest {
     @MockBean
     private MemberService memberService;
     @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-    @MockBean
     private BearerAuthInterceptor bearerAuthInterceptor;
     @MockBean
     private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
 
     @BeforeEach
-    void setUp() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
+    void setUp(WebApplicationContext webApplicationContext,
+        RestDocumentationContextProvider restDocumentation) {
+        Member member = new Member(1L,TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(loginMemberMethodArgumentResolver.resolveArgument(any(), any(), any(),
             any())).willReturn(member);
         given(loginMemberMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .addFilter(new ShallowEtagHeaderFilter())
+            .apply(documentationConfiguration(restDocumentation))
+            .build();
     }
 
     @DisplayName("로그인을 시도하여 토큰을 얻는다.")
     @Test
     void tokenLogin() throws Exception {
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"name\":\"" + TEST_USER_NAME + "\"," +
             "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
         given(memberService.createToken(any())).willReturn("brown");
 
-        final MvcResult mvcResult = this.mockMvc.perform(post("/oauth/token")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me/login")
             .content(inputJson)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(print())
-            .andReturn();
-
-        assertThat(mvcResult.getResponse().getContentAsString()).contains("brown");
+            .andDo(LoginMemberDocumentation.login());
     }
 
-    @DisplayName("이메일을 통해 MemberResponse를 받는다.")
+    @DisplayName("회원 정보 조회")
     @Test
     void meBearer() throws Exception {
-        final MvcResult mvcResult = this.mockMvc.perform(get("/me/bearer")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/me")
             .sessionAttr("loginMemberEmail", TEST_USER_EMAIL)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
-            .andReturn();
-        assertThat(mvcResult.getResponse().getContentAsString()).contains(TEST_USER_EMAIL);
+            .andDo(LoginMemberDocumentation.getMember());
     }
 
     @DisplayName("회원 정보 수정")
@@ -91,25 +96,25 @@ public class LoginMemberControllerTest {
         String inputJson = "{\"name\":\"" + "CU" + "\"," +
             "\"password\":\"" + "1234" + "\"}";
 
-        final MvcResult mvcResult = this.mockMvc.perform(put("/me")
+        this.mockMvc.perform(put("/me")
             .sessionAttr("loginMemberEmail", TEST_USER_EMAIL)
             .accept(MediaType.APPLICATION_JSON)
             .content(inputJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNoContent())
-            .andReturn();
+            .andDo(LoginMemberDocumentation.editMember());
     }
 
     @DisplayName("회원 정보 삭제")
     @Test
     void deleteMember() throws Exception {
-        this.mockMvc.perform(delete("/me")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
             .sessionAttr("loginMemberEmail", TEST_USER_EMAIL)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNoContent())
-            .andReturn();
+            .andDo(LoginMemberDocumentation.deleteMember());
     }
 }

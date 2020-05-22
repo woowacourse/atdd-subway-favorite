@@ -9,11 +9,13 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,9 +40,7 @@ public class MemberServiceTest {
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
         memberService.createMember(member);
-
         verify(memberRepository).save(any());
     }
 
@@ -53,5 +53,21 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void updateMember() {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberRepository.findById(any())).willReturn(Optional.of(member));
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("CU", "1234");
+        memberService.updateMember(1L, updateMemberRequest);
+        verify(memberRepository).save(any());
+    }
+
+    @Test
+    void deleteMember() {
+        doNothing().when(memberRepository).deleteById(any());
+        memberService.deleteMember(1L);
+        verify(memberRepository).deleteById(any());
     }
 }

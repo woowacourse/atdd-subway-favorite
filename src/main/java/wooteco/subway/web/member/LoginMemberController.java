@@ -23,13 +23,13 @@ public class LoginMemberController {
 		this.memberService = memberService;
 	}
 
-	@PostMapping("/oauth/token")
+	@PostMapping("/me/login")
 	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
 		String token = memberService.createToken(param);
 		return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
 	}
 
-	@GetMapping("/me/bearer")
+	@GetMapping("/me")
 	public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}

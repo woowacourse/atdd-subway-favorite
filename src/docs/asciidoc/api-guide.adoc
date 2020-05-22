@@ -29,7 +29,7 @@ operation::members/update[snippets='http-request,http-response,request-fields']
 [[resources-members-read]]
 === 회원 정보 조회
 
-operation::members/read[snippets='http-request,http-response,response-body']
+operation::members/read[snippets='http-request,http-response,request-body,response-body']
 
 [[resources-members-delete]]
 === 회원 정보 삭제
