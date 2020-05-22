@@ -36,6 +36,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.DuplicateEmailException;
+import wooteco.subway.exception.NoSuchMemberException;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -67,6 +68,7 @@ public class MemberControllerTest extends AcceptanceTest {
     @Test
     void createMember() throws Exception {
         when(memberService.createMember(any())).thenReturn(member);
+        when(memberService.findMemberByEmail(any())).thenThrow(NoSuchMemberException.class);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +

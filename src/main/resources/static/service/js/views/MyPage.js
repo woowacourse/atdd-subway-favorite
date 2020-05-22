@@ -52,7 +52,6 @@ function MyInfo() {
       .then(member => {
         $email.value = member.email;
         $name.value = member.name;
-        $password.value = member.password;
       })
       .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
   };
