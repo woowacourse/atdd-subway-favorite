@@ -8,9 +8,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -32,27 +29,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 	}
 
-	public Response login(String email, String password) {
-		Map<String, String> params = new HashMap<>();
-		params.put("email", email);
-		params.put("password", password);
 
-		return given().
-				body(params).
-				contentType(MediaType.APPLICATION_JSON_VALUE).
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				post("/login");
-	}
-
-	private TokenResponse getTokenResponse(Response response) {
-		return response.
-				then().
-				log().all().
-				statusCode(HttpStatus.OK.value()).
-				and().
-				extract().as(TokenResponse.class);
-	}
 
 	public MemberResponse myInfoAuth(TokenResponse tokenResponse, String sessionId) {
 

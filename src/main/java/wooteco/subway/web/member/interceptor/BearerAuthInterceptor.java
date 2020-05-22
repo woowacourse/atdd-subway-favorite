@@ -24,6 +24,12 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
+
+        InterceptorValidator interceptorValidator = new InterceptorValidator();
+        if (!interceptorValidator.isValid(handler)) {
+            return true;
+        }
+
         String token = authExtractor.extract(request, "Bearer");
 
         if (StringUtils.isEmpty(token)) {

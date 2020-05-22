@@ -1,6 +1,7 @@
 package wooteco.subway;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -266,9 +268,11 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(String email) {
+    public MemberResponse getMember(String email, String sessionId, TokenResponse tokenResponse) {
         return
                 given().
+                        cookie("JSESSIONID", sessionId).
+                        header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
                         get("/members?email=" + email).
@@ -278,12 +282,14 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember(MemberResponse memberResponse, String sessionId, TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         given().
+                cookie("JSESSIONID", sessionId).
+                header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -294,12 +300,37 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
+    public void deleteMember(MemberResponse memberResponse, String sessionId, TokenResponse tokenResponse) {
+        given().
+                cookie("JSESSIONID", sessionId).
+                header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+                when().
                 delete("/members/" + memberResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public Response login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/login");
+    }
+
+    public TokenResponse getTokenResponse(Response response) {
+        return response.
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                and().
+                extract().as(TokenResponse.class);
     }
 }
 

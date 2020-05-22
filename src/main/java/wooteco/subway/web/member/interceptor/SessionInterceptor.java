@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 public class SessionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        InterceptorValidator interceptorValidator = new InterceptorValidator();
+        if (!interceptorValidator.isValid(handler)) {
+            return true;
+        }
+
         String email = (String) request.getSession().getAttribute("loginMemberEmail");
         if (Strings.isNotBlank(email)) {
             request.setAttribute("loginMemberEmailSession", email);

@@ -7,6 +7,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.aspect.NoValidate;
 
 import java.net.URI;
 
@@ -18,6 +19,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @NoValidate
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
@@ -27,19 +29,30 @@ public class MemberController {
     }
 
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
+    public ResponseEntity<MemberResponse> getMemberByEmail(
+            @RequestParam String email,
+            @RequestAttribute("loginMemberEmailSession") String sessionEmail,
+            @RequestAttribute("loginMemberEmailJwt") String tokenEmail
+    ) {
         Member member = memberService.findMemberByEmail(email);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMember(
+            @PathVariable Long id,
+            @RequestBody UpdateMemberRequest param,
+            @RequestAttribute("loginMemberEmailSession") String sessionEmail,
+            @RequestAttribute("loginMemberEmailJwt") String tokenEmail) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<MemberResponse> deleteMember(
+            @PathVariable Long id,
+            @RequestAttribute("loginMemberEmailSession") String sessionEmail,
+            @RequestAttribute("loginMemberEmailJwt") String tokenEmail) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }

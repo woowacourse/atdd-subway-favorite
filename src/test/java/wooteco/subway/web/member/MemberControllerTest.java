@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,20 +31,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
 @ExtendWith(RestDocumentationExtension.class)
+//@WebMvcTest(controllers = {MemberController.class, LoginMemberController.class})
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
-
+	public static final String TEST_USER_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTAwNTA1NjMsImV4cCI6MTU5MDA1NDE2M30.bPh4VZcEj7aYlXDBP_o-1IqZw5AoKCIetrHvI7OcB_k";
 	@MockBean
 	protected MemberService memberService;
-
+	@MockBean
+	protected JwtTokenProvider jwtTokenProvider;
+	@MockBean
+	protected AuthorizationExtractor authorizationExtractor;
 	@Autowired
 	protected MockMvc mockMvc;
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-				.addFilter(new ShallowEtagHeaderFilter())
+		this.mockMvc = MockMvcBuilders
+				.webAppContextSetup(webApplicationContext)
+				.addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print()) // TODO: 2020/05/21 개꿀
 				.apply(documentationConfiguration(restDocumentation))
 				.build();
 	}
@@ -69,8 +76,16 @@ public class MemberControllerTest {
 	public void readMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		given(memberService.findMemberByEmail(any())).willReturn(member);
+		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+		given(jwtTokenProvider.validateToken(any())).willReturn(true);
+		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
 		this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL)
+				.session(session)
+				.header("authorization", "Bearer " + TEST_USER_TOKEN)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -82,12 +97,20 @@ public class MemberControllerTest {
 	@Test
 	public void updateMember() throws Exception {
 		doNothing().when(memberService).updateMember(any(), any());
+		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+		given(jwtTokenProvider.validateToken(any())).willReturn(true);
+		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
 		String inputJson = "{" +
 				"\"name\":\"" + TEST_USER_NAME + "\"," +
 				"\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(put("/members/{id}", 1L)
+				.session(session)
+				.header("authorization", "Bearer " + TEST_USER_TOKEN)
 				.content(inputJson)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -99,8 +122,16 @@ public class MemberControllerTest {
 	@Test
 	public void deleteMember() throws Exception {
 		doNothing().when(memberService).deleteMember(any());
+		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+		given(jwtTokenProvider.validateToken(any())).willReturn(true);
+		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
 		this.mockMvc.perform(delete("/members/{id}", 1L)
+				.session(session)
+				.header("authorization", "Bearer " + TEST_USER_TOKEN)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNoContent())
