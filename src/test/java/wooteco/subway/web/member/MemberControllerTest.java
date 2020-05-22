@@ -23,14 +23,21 @@ import org.springframework.web.context.WebApplicationContext;
 
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.TokenResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
+    private Member member;
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,11 +47,12 @@ public class MemberControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .apply(documentationConfiguration(restDocumentation))
             .build();
+
+        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
     void create() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -58,5 +66,20 @@ public class MemberControllerTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
+    }
+
+    @Test
+    void getMember() throws Exception{
+        given(memberService.findMemberByEmail(anyString())).willReturn(member);
+        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+
+        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
+
+        this.mockMvc.perform(get("/members")
+                .header("Authorization",token))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.getMember());
     }
 }

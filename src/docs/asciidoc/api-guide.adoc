@@ -19,4 +19,10 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources-members-get]]
+=== 회원 조회
+
+operation::members/get[snippets='http-request,request-headers,response-fields']
+
