@@ -52,6 +52,10 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(()-> new NoSuchMemberException("존재하지 않는 유저입니다."));
     }
 
+    public boolean isExistMember(String email) {
+        return memberRepository.findByEmail(email).isPresent();
+    }
+
     public boolean loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
         return member.checkPassword(password);

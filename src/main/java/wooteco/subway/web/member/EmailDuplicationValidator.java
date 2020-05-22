@@ -5,7 +5,6 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.stereotype.Component;
 
-import wooteco.subway.exception.NoSuchMemberException;
 import wooteco.subway.service.member.MemberService;
 
 @Component
@@ -23,11 +22,6 @@ public class EmailDuplicationValidator implements ConstraintValidator<EmailMatch
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        try {
-            memberService.findMemberByEmail(value);
-            return false;
-        } catch (NoSuchMemberException exception) {
-            return true;
-        }
+        return !memberService.isExistMember(value);
     }
 }
