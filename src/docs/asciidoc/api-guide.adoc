@@ -20,3 +20,41 @@ endif::[]
 === 회원 가입
 
 operation::members/create[snippets='http-request,http-response']
+
+[[resources-members-read]]
+=== 회원 조회
+
+operation::members/read[snippets='http-request,http-response,request-parameters,response-fields']
+
+[[resources-members-update]]
+=== 회원 정보 수정
+
+operation::members/update[snippets='http-request,http-response,path-parameters,request-fields']
+
+[[resources-members-delete]]
+=== 회원 삭제
+
+operation::members/delete[snippets='http-request,http-response,path-parameters']
+
+[[resources-me]]
+== LoginMember
+
+[[resources-me-login]]
+=== 로그인
+
+operation::me/login[snippets='http-request,http-response,request-fields,response-fields']
+
+[[resources-me-read]]
+=== 내 정보 조회
+
+operation::me/read[snippets='http-request,http-response,response-fields']
+
+[[resources-me-update]]
+=== 내 정보 수정
+
+operation::me/update[snippets='http-request,http-response,request-fields']
+
+[[resources-me-delete]]
+=== 내 정보 삭제
+
+operation::me/delete[snippets='http-request,http-response']
