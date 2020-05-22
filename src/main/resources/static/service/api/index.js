@@ -41,9 +41,16 @@ const api = (() => {
     }
   }
 
+    const oauth = {
+        login(data) {
+            return requestWithJsonData(`/oauth/token`, METHOD.POST(data))
+        }
+    }
+
   return {
     line,
-    path
+      path,
+      oauth
   }
 })()
 

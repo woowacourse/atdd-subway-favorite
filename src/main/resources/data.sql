@@ -1,0 +1,1 @@
+insert into MEMBER (EMAIL, NAME, PASSWORD) values ('test', 'chomily', '1234');
