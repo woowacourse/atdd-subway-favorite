@@ -36,12 +36,12 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites/{source}/{target}")
-    public ResponseEntity<Boolean> hasFavorite(@LoginMemberId Long memberId,
+    public ResponseEntity<FavoriteResponse> getFavorite(@LoginMemberId Long memberId,
         @PathVariable Long source,
         @PathVariable Long target) {
-        Boolean has = favoriteService.hasFavorite(memberId, source, target);
+        FavoriteResponse favoriteResponse = favoriteService.getFavorite(memberId, source, target);
 
-        return ResponseEntity.ok(has);
+        return ResponseEntity.ok(favoriteResponse);
     }
 
     @GetMapping("/favorites")
@@ -52,11 +52,17 @@ public class FavoriteController {
             .ok(favoriteResponses);
     }
 
-    @DeleteMapping("/favorites/{favoriteId}")
+    @DeleteMapping("/favorites/{source}/{target}")
     public ResponseEntity<Void> deleteFavorite(@LoginMemberId Long memberId,
-        @PathVariable Long favoriteId) {
-        favoriteService.removeFavorite(memberId, favoriteId);
+        @PathVariable Long source, @PathVariable Long target) {
+        favoriteService.removeFavorite(memberId, source, target);
+        return ResponseEntity.noContent().build();
+    }
 
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity<Void> deleteFavoriteById(@LoginMemberId Long memberId,
+        @PathVariable Long favoriteId) {
+        favoriteService.removeFavoriteById(memberId, favoriteId);
         return ResponseEntity.noContent().build();
     }
 }

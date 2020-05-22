@@ -56,7 +56,7 @@ const api = (() => {
 
   const path = {
     find(params) {
-      return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      return request(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
     }
   }
 
@@ -81,11 +81,31 @@ const api = (() => {
     }
   }
 
+  const favorite = {
+    add(addFavoriteRequest) {
+      return request("/favorites", METHOD.POST(addFavoriteRequest))
+    },
+    remove(removeFavoriteRequest) {
+      return request(`/favorites/${removeFavoriteRequest.source}/${removeFavoriteRequest.target}`,
+        METHOD.DELETE());
+    },
+    removeById(favoriteId) {
+      return request(`/favorites/${favoriteId}`, METHOD.DELETE());
+    },
+    get(source, target) {
+      return request(`/favorites/${source}/${target}`, METHOD.GET());
+    },
+    getAll() {
+      return requestWithJsonData("/favorites", METHOD.GET());
+    }
+  }
+
   return {
     line,
     path,
     member,
-    me
+    me,
+    favorite,
   }
 })()
 

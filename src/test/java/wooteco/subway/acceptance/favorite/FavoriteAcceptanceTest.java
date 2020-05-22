@@ -35,15 +35,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String location = addFavorite(tokenResponse, stationResponse1.getId(),
             stationResponse2.getId());
 
-        Boolean has = hasFavorite(tokenResponse, stationResponse1.getId(),
+        FavoriteResponse favoriteResponse = getFavorite(tokenResponse, stationResponse1.getId(),
             stationResponse2.getId());
 
-        assertThat(has).isTrue();
+        assertThat(favoriteResponse).isNotNull();
 
         List<FavoriteResponse> favorites = getFavorites(tokenResponse);
         assertThat(favorites).size().isEqualTo(1);
 
-        removeFavorite(tokenResponse, location);
+        removeFavorite(tokenResponse, stationResponse1.getId(), stationResponse2.getId());
     }
 
     private String addFavorite(TokenResponse tokenResponse, Long source, Long target) {
@@ -63,14 +63,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             extract().header("Location");
     }
 
-    private Boolean hasFavorite(TokenResponse tokenResponse, Long source, Long target) {
+    private FavoriteResponse getFavorite(TokenResponse tokenResponse, Long source, Long target) {
         return given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
             get("/favorites/" + source + "/" + target).
             then().
             statusCode(HttpStatus.OK.value()).
-            extract().as(Boolean.class);
+            extract().as(FavoriteResponse.class);
     }
 
     private List<FavoriteResponse> getFavorites(TokenResponse tokenResponse) {
@@ -86,11 +86,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private void removeFavorite(TokenResponse tokenResponse, String location) {
+    private void removeFavorite(TokenResponse tokenResponse, Long source, Long target) {
         given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
-            delete(location).
+            delete("/favorites/" + source + "/" + target).
             then().
             statusCode(HttpStatus.NO_CONTENT.value());
     }

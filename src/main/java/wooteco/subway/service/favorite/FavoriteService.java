@@ -28,8 +28,11 @@ public class FavoriteService {
         return favoriteRepository.save(favoriteRequest.toFavorite(memberId)).getId();
     }
 
-    public Boolean hasFavorite(Long memberId, Long source, Long target) {
-        return favoriteRepository.hasFavorite(memberId, source, target);
+    public FavoriteResponse getFavorite(Long memberId, Long source, Long target) {
+        Favorite favorite = favoriteRepository.findBySourceAndTargetAndMember(memberId, source,
+            target)
+            .orElseThrow(() -> new IllegalArgumentException("해당 즐겨찾기가 없습니다."));
+        return toFavoriteResponse(favorite);
     }
 
     public List<FavoriteResponse> getFavorites(Long memberId) {
@@ -52,10 +55,18 @@ public class FavoriteService {
             stationMatcher.get(favorite.getTarget()));
     }
 
-    public void removeFavorite(Long memberId, Long favoriteId) {
-        Boolean ok = favoriteRepository.deleteByIdWithMemberId(favoriteId, memberId);
+    public void removeFavorite(Long memberId, Long source, Long target) {
+        boolean ok = favoriteRepository.deleteByMemberIdAndSourceAndTarget(memberId, source,
+            target);
         if (!ok) {
-            throw new IllegalArgumentException(favoriteId + "삭제 실패했습니다!");
+            throw new IllegalArgumentException("삭제 실패했습니다!");
+        }
+    }
+
+    public void removeFavoriteById(Long memberId, Long favoriteId) {
+        boolean ok = favoriteRepository.deleteByIdWithMemberId(memberId, favoriteId);
+        if (!ok) {
+            throw new IllegalArgumentException("삭제 실패했습니다!");
         }
     }
 }

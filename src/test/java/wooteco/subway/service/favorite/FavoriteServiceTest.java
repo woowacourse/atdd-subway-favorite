@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,12 +48,13 @@ public class FavoriteServiceTest {
 
     @Test
     void hasFavoriteTest() {
-        when(favoriteRepository.hasFavorite(anyLong(), anyLong(), anyLong())).thenReturn(
-            Boolean.TRUE);
+        when(favoriteRepository.findBySourceAndTargetAndMember(anyLong(), anyLong(),
+            anyLong())).thenReturn(
+            Optional.of(new Favorite(1L, 2L, 3L, 4L)));
 
-        Boolean has = favoriteService.hasFavorite(MEMBER_ID, SOURCE, TARGET);
-        assertThat(has).isTrue();
-        verify(favoriteRepository).hasFavorite(MEMBER_ID, SOURCE, TARGET);
+        FavoriteResponse favoriteResponse = favoriteService.getFavorite(MEMBER_ID, SOURCE, TARGET);
+        assertThat(favoriteResponse).isNotNull();
+        verify(favoriteRepository).findBySourceAndTargetAndMember(MEMBER_ID, SOURCE, TARGET);
     }
 
     @Test
@@ -66,8 +68,9 @@ public class FavoriteServiceTest {
 
     @Test
     void removeFavoriteTest() {
-        when(favoriteRepository.deleteByIdWithMemberId(anyLong(), anyLong())).thenReturn(true);
-        favoriteService.removeFavorite(1L, MEMBER_ID);
-        verify(favoriteRepository).deleteByIdWithMemberId(1L, MEMBER_ID);
+        when(favoriteRepository.deleteByMemberIdAndSourceAndTarget(anyLong(), anyLong(), anyLong()))
+            .thenReturn(true);
+        favoriteService.removeFavorite(MEMBER_ID, 1L, 2L);
+        verify(favoriteRepository).deleteByMemberIdAndSourceAndTarget(MEMBER_ID, 1L, 2L);
     }
 }

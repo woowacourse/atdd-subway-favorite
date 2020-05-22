@@ -66,3 +66,7 @@ body.modal-active {
 .max-width-md {
   max-width: 960px;
 }
+
+a.w-full {
+  display: inline-block;
+}

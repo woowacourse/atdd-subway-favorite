@@ -15,7 +15,7 @@ function MyPage() {
       $myInformationContainer.innerHTML = myInformationTemplate(meResponse);
     }).catch(error => {
       alert(error.message);
-      return location.href="/login";
+      return location.href = "/login";
     });
   }
 
