@@ -12,9 +12,12 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
+import javax.print.attribute.standard.Media;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -301,5 +304,77 @@ public class AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
-}
 
+    protected TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/oauth/token").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(TokenResponse.class);
+
+    }
+
+    public MemberResponse getOwnMember(TokenResponse tokenResponse) {
+        return
+                given().
+                        auth().oauth2(tokenResponse.getAccessToken()).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/me").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(MemberResponse.class);
+    }
+
+    public void updateOwnMember(TokenResponse tokenResponse, UpdateMemberRequest request) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", request.getName());
+        params.put("password", request.getPassword());
+
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public void deleteOwnMember(TokenResponse tokenResponse) {
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                delete("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public void verifyEmpty(TokenResponse tokenResponse) {
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+}
