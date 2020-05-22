@@ -3,15 +3,27 @@ package wooteco.subway.doc;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 public class LoginMemberDocumentation {
 
+    public static RestDocumentationResultHandler createMember() {
+        return document("members/create",
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING)
+                    .description("The user's name"),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            )
+        );
+    }
+
     public static RestDocumentationResultHandler login() {
-        return document("loginMembers/login",
+        return document("members/login",
             requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING)
                     .description("The user's email address"),
@@ -28,11 +40,11 @@ public class LoginMemberDocumentation {
     }
 
     public static RestDocumentationResultHandler getMember() {
-        return document("loginMembers/getMember",
-            // TODO request에 attribute가 어디 있는지 확인
-            // requestFields(
-            //     fieldWithPath("loginMemberEmail").description("The user's email address")
-            // ),
+        return document("members/read",
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            ),
             responseFields(
                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
                 fieldWithPath("email").type(JsonFieldType.STRING)
@@ -43,18 +55,25 @@ public class LoginMemberDocumentation {
     }
 
     public static RestDocumentationResultHandler editMember() {
-        return document("loginMembers/editMember",
-            // TODO
+        return document("members/update",
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            ),
             requestFields(
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
             )
         );
     }
 
     public static RestDocumentationResultHandler deleteMember() {
-        return document("loginMembers/deleteMember",
-            // TODO
+        return document("members/delete",
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            ),
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login which is Bearer Type")

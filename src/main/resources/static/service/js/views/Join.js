@@ -20,7 +20,7 @@ function Join() {
         name: $name.value,
         password: $password.value
       };
-      await api.member.create(newMember);
+      await api.loginMember.create(newMember);
       location.href = "/login";
     } catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);

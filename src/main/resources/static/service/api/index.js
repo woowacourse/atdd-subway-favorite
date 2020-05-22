@@ -52,25 +52,13 @@ const api = (() => {
       return response.json();
     });
 
-  const member = {
-    get(id) {
-      return requestWithJsonData(`/members/${id}`);
-    },
+  const loginMember = {
     create(newMember) {
-      return request(`/members`, METHOD.POST(newMember));
-    },
-    update(id, updatedData) {
-      return request(`/members/${id}`, METHOD.PUT(updatedData));
-    },
-    delete(id) {
-      return request(`/members/${id}`, METHOD.DELETE());
+      return request(`/me`, METHOD.POST(newMember));
     },
     login(loginInfo) {
       return requestWithJsonData(`/me/login`, METHOD.POST(loginInfo));
-    }
-  };
-
-  const loginMember = {
+    },
     get() {
       return requestWithJsonData(`/me`, METHOD.GET_WITH_AUTH());
     },
@@ -115,7 +103,6 @@ const api = (() => {
   };
 
   return {
-    member,
     loginMember,
     line,
     path,

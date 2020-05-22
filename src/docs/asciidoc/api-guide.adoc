@@ -21,18 +21,23 @@ endif::[]
 
 operation::members/create[snippets='http-request,http-response,request-fields']
 
+[[resources-members-login]]
+=== 회원 로그인
+
+operation::members/login[snippets='http-request,request-fields,http-response']
+
 [[resources-members-update]]
 === 회원 정보 수정
 
-operation::members/update[snippets='http-request,http-response,request-fields']
+operation::members/update[snippets='http-request,request-headers,request-fields,http-response']
 
 [[resources-members-read]]
 === 회원 정보 조회
 
-operation::members/read[snippets='http-request,http-response,request-body,response-body']
+operation::members/read[snippets='http-request,request-headers,http-response,response-body']
 
 [[resources-members-delete]]
 === 회원 정보 삭제
 
-operation::members/delete[snippets='http-request,path-parameters,http-response']
+operation::members/delete[snippets='http-request,request-headers,http-response']
 

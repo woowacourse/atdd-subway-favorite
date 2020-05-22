@@ -257,23 +257,22 @@ public class AcceptanceTest {
             40, 3);
     }
 
-    public String createMember(String email, String name, String password) {
+    public int createMember(String email, String name, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
         params.put("password", password);
 
-        return
-            given().
+         return   given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/members").
+                post("/me").
                 then().
                 log().all().
-                statusCode(HttpStatus.CREATED.value()).
-                extract().header("Location");
+                statusCode(HttpStatus.NO_CONTENT.value()).
+                extract().statusCode();
     }
 
     public MemberResponse getMember(String email) {
@@ -296,7 +295,8 @@ public class AcceptanceTest {
                     tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .get("/members?email=" + email)
+                // .sessionId("loginMemberEmail", email)
+                .get("/me")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -313,25 +313,56 @@ public class AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            put("/members/" + memberResponse.getId()).
+            put("/me").
             then().
             log().all().
             statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-            delete("/members/" + memberResponse.getId()).
-            then().
-            log().all().
-            statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
+    public void deleteMember(TokenResponse tokenResponse) {
         given().
             header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
             .when()
-            .delete("/members/" + memberResponse.getId())
+            .delete("/me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public TokenResponse login(String email, String password) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("email", email);
+        paramMap.put("password", password);
+
+        return
+            given()
+                .body(paramMap)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/me/login")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+    }
+
+    public void updateMemberWhenLoggedIn(String accessToken,
+        String name,
+        String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("password", password);
+
+        given().header("Authorization", "Bearer " + accessToken);
+
+        given()
+            .header("Authorization", "Bearer " + accessToken)
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .put("/me")
             .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());

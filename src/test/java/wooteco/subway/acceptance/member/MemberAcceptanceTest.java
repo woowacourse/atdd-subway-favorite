@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
@@ -44,14 +43,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
          * Then 회원정보가 삭제된다.
          *
          */
-        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        assertThat(location).isNotBlank();
+        final int statusCode = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(statusCode).isEqualTo(204);
 
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
 
         MemberResponse memberResponse = getMember(TEST_USER_EMAIL, tokenResponse);
-        updateMemberWhenLoggedIn(memberResponse, tokenResponse.getAccessToken(), "NEW_NAME",
+        updateMemberWhenLoggedIn(tokenResponse.getAccessToken(), "NEW_NAME",
             "NEW_PASSWORD");
 
         MemberResponse memberResponseAfterEdit = getMember(TEST_USER_EMAIL, tokenResponse);
@@ -60,7 +59,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponseAfterEdit.getId()).isNotNull();
         assertThat(memberResponseAfterEdit.getEmail()).isEqualTo(TEST_USER_EMAIL);
 
-        deleteMember(memberResponseAfterEdit, tokenResponse);
+        deleteMember(tokenResponse);
     }
 
     @DisplayName("회원 정보 관리 중 없는 이메일 계정으로 로그인 시도 예외")
@@ -106,7 +105,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/members").
+                post("/me").
                 then().
                 log().all().
                 extract().asString();
@@ -161,44 +160,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract().asString();
         assertThat(message).contains("유효하지 않은 토큰");
 
-    }
-
-    private TokenResponse login(String email, String password) {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("email", email);
-        paramMap.put("password", password);
-
-        return
-            given()
-                .body(paramMap)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/me/login")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class);
-    }
-
-    public void updateMemberWhenLoggedIn(MemberResponse memberResponse, String accessToken,
-        String name,
-        String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("password", password);
-
-        given().header("Authorization", "Bearer " + accessToken);
-
-        given()
-            .header("Authorization", "Bearer " + accessToken)
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .put("/members/" + memberResponse.getId())
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value());
     }
 }
