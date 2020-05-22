@@ -4,13 +4,11 @@ public class JoinRequest {
     private String email;
     private String name;
     private String password;
-    private String passwordCheck;
 
-    public JoinRequest(String email, String name, String password, String passwordCheck) {
+    public JoinRequest(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.passwordCheck = passwordCheck;
     }
 
     public String getEmail() {
@@ -23,9 +21,5 @@ public class JoinRequest {
 
     public String getPassword() {
         return password;
-    }
-
-    public String getPasswordCheck() {
-        return passwordCheck;
     }
 }

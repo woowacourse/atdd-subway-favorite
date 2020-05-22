@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+    public static final String BEARER = "bearer";
+
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -26,10 +28,12 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         if (request.getMethod().equals("POST")) {
             return true;
         }
-        String credential = authExtractor.extract(request, "bearer");
-        jwtTokenProvider.validateToken(credential);
-        String email = jwtTokenProvider.getSubject(credential);
+        String credential = authExtractor.extract(request, BEARER);
+        if (!jwtTokenProvider.validateToken(credential)) {
+            throw new IllegalArgumentException("로그인 실패");
+        }
 
+        String email = jwtTokenProvider.getSubject(credential);
         request.setAttribute("loginMemberEmail", email);
         return true;
     }
