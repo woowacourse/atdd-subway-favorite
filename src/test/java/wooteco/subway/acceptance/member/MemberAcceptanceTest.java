@@ -2,7 +2,7 @@ package wooteco.subway.acceptance.member;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.AcceptanceTest;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;

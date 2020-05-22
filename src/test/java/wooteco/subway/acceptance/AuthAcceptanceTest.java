@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(tokenResponse.getAccessToken())
 //                .accept(MediaType.APPLICATION_JSON_VALUE) // Todo : 붙이는 의미
                 .when()
-                .get("/me/bearer")
+                .get("/me")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
