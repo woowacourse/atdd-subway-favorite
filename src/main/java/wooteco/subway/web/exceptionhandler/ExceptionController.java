@@ -6,6 +6,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.jsonwebtoken.JwtException;
+import wooteco.subway.exception.NotFoundUserException;
+
 @RestControllerAdvice
 public class ExceptionController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -15,5 +18,23 @@ public class ExceptionController {
 
         return ResponseEntity.badRequest()
             .body(exceptionResponse);
+    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    public ResponseEntity<ExceptionResponse> notFoundUserException(NotFoundUserException e){
+        return ResponseEntity.badRequest()
+            .body(new ExceptionResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> illegalArgumentException(IllegalArgumentException e){
+        return ResponseEntity.badRequest()
+            .body(new ExceptionResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ExceptionResponse> jwtException(JwtException e){
+        return ResponseEntity.badRequest()
+            .body(new ExceptionResponse(e.getMessage()));
     }
 }
