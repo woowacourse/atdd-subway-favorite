@@ -35,8 +35,7 @@ public class LoginMemberController {
 	}
 
 	@PutMapping("/me")
-	public ResponseEntity<Void> editMemberOfMineBasic(@LoginMember Member member,
-		@RequestBody UpdateMemberRequest request) {
+	public ResponseEntity<Void> editMemberOfMineBasic(@LoginMember Member member, @RequestBody UpdateMemberRequest request) {
 		memberService.updateMember(member.getId(), request);
 		return ResponseEntity.noContent().build();
 	}
