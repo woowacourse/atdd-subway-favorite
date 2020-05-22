@@ -65,6 +65,9 @@ const api = (() => {
     },
     update(id, param){
       return request(`/members/${id}`, METHOD.PUT(param))
+    },
+    delete(id){
+      return request(`members/${id}`,METHOD.DELETE())
     }
   }
 
