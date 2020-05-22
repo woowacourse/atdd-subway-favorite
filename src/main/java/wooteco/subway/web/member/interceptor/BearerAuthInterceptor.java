@@ -1,13 +1,14 @@
 package wooteco.subway.web.member.interceptor;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
@@ -22,7 +23,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        String bearer = authExtractor.extract(request, "bearer");
+        String bearer = authExtractor.extract(request);
         jwtTokenProvider.validateToken(bearer);
         String email = jwtTokenProvider.getSubject(bearer);
 

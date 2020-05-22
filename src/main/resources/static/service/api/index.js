@@ -44,6 +44,12 @@ const api = (() => {
   const member = {
     join(joinForm) {
       return request(`/members`, METHOD.POST(joinForm));
+    },
+    login(loginForm) {
+      return request(`/login`, METHOD.POST(loginForm));
+    },
+    myPage(){
+      return requestWithJsonData(`/me`);
     }
   }
 

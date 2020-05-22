@@ -19,8 +19,48 @@ export const navTemplate = `<nav class="flex items-center justify-between flex-w
           경로 조회
           </a>
       </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/login" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          로그인
+          </a>
+      </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/join" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          회원 가입
+          </a>
+      </div>
     </div>
 </nav>`
+
+export const navLoginTemplate = `<nav class="flex items-center justify-between flex-wrap bg-yellow-500 p-4 relative">
+  <div class="flex items-center flex-shrink-0 text-gray-800 w-full">
+      <a href="/" class="mr-2">
+        <img src="/service/images/logo_small.png" class="w-6">
+      </a>
+    <div class="flex justify-start">
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/map" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          노선도
+          </a>
+      </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/search" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          경로 조회
+          </a>
+      </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/my-page" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          마이 페이지
+          </a>
+      </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/mypage-edit" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          회원정보 수정
+          </a>
+      </div>
+    </div>
+</nav>`
+
 
 export const subwayLinesItemTemplate = line => {
   const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
@@ -72,4 +112,8 @@ export const pathStationTemplate = (name, index, lastIndex) => {
 
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
+}
+
+export const initLoginNavigation = () => {
+  document.querySelector('body').insertAdjacentHTML('afterBegin', navLoginTemplate)
 }

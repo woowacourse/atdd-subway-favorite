@@ -27,7 +27,6 @@ function Join() {
     }).catch(response => response.json())
     .then(errorResponse => {
       if (errorResponse) {
-        console.log(errorResponse);
         alert(errorResponse.message);
       }
     });

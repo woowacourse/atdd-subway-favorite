@@ -11,6 +11,6 @@ public class GlobalMemberExceptionHandler {
 
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<ErrorResponse> temporalExceptionHandler(RuntimeException e) {
-        throw new NotFoundMemberException("멤버를 찾을 수 없습니다.");
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 }

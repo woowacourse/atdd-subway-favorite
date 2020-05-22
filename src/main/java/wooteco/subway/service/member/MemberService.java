@@ -9,6 +9,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.NotFoundMemberException;
 
 @Service
 public class MemberService {
@@ -35,7 +36,8 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(param.getEmail())
+            .orElseThrow(() -> new NotFoundMemberException(param.getEmail()));
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }
