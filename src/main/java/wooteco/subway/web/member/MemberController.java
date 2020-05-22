@@ -46,12 +46,15 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
+    @IsAuth(isAuth = Auth.AUTH)
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    public ResponseEntity<MemberResponse> updateMember(@RequestAttribute String email, @PathVariable Long id,
+        @RequestBody UpdateMemberRequest param) {
+        memberService.updateMember(email, id, param);
         return ResponseEntity.ok().build();
     }
 
+    @IsAuth(isAuth = Auth.AUTH)
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);

@@ -26,3 +26,7 @@ operation::members/create[snippets='http-request,http-response,request-fields']
 
 operation::members/get[snippets='http-request,request-headers,response-fields']
 
+[[resources-members-update]]
+=== 회원 정보 수정
+
+operation::members/update[snippets='http-request,request-headers,request-fields']

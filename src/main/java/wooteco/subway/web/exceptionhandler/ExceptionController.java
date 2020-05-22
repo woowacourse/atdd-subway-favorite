@@ -37,4 +37,10 @@ public class ExceptionController {
         return ResponseEntity.badRequest()
             .body(new ExceptionResponse(e.getMessage()));
     }
+
+    @ExceptionHandler(IllegalAccessError.class)
+    public ResponseEntity<ExceptionResponse> illegalAccessError(IllegalAccessError e){
+        return ResponseEntity.badRequest()
+            .body(new ExceptionResponse(e.getMessage()));
+    }
 }

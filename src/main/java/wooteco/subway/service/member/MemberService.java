@@ -1,8 +1,7 @@
 package wooteco.subway.service.member;
 
-import java.util.NoSuchElementException;
-
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.NotFoundUserException;
@@ -13,8 +12,8 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -25,8 +24,12 @@ public class MemberService {
         return memberRepository.save(memberRequest.toMember());
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    public void updateMember(String email, Long id, UpdateMemberRequest param) {
+        Member member = memberRepository.findById(id)
+            .orElseThrow(RuntimeException::new);
+        if (!email.equals(member.getEmail())) {
+            throw new IllegalAccessError("잘못된 접근입니다.");
+        }
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }

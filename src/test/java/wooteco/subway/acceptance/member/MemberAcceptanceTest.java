@@ -23,10 +23,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMember(memberResponse);
+        updateMember(memberResponse, token);
         MemberResponse updatedMember = getMember(token);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(memberResponse);
+        deleteMember(memberResponse, token);
     }
 }

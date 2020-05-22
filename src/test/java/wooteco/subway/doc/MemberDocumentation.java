@@ -6,7 +6,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.ResultHandler;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
@@ -22,6 +21,19 @@ public class MemberDocumentation {
         );
     }
 
+    public static RestDocumentationResultHandler getMember() {
+        return document("members/get",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                ),
+                responseFields(
+                        fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
+                )
+        );
+    }
+
     public static RestDocumentationResultHandler updateMember() {
         return document("members/update",
                 requestFields(
@@ -30,19 +42,6 @@ public class MemberDocumentation {
                 ),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
-                )
-        );
-    }
-
-    public static RestDocumentationResultHandler getMember() {
-        return document("members/get",
-                requestHeaders(
-                        headerWithName("Authorization").description("사용자 토큰")
-                ),
-                responseFields(
-                        fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
-                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
-                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
                 )
         );
     }

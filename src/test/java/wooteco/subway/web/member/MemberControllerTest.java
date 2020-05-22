@@ -25,8 +25,6 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.TokenResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -69,7 +67,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    void getMember() throws Exception{
+    void getMember() throws Exception {
         given(memberService.findMemberByEmail(anyString())).willReturn(member);
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
@@ -77,9 +75,28 @@ public class MemberControllerTest {
         String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
 
         this.mockMvc.perform(get("/members")
-                .header("Authorization",token))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(MemberDocumentation.getMember());
+            .header("Authorization", token))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.getMember());
+    }
+
+    @Test
+    void update() throws Exception {
+        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+        String inputJson = "{\"name\":\"" + "brown2" + "\"," +
+            "\"password\":\"" + "1234" + "\"" + "}";
+
+        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
+
+        this.mockMvc.perform(put("/members/1")
+            .header("Authorization", token)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.updateMember());
     }
 }

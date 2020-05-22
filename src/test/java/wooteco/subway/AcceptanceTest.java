@@ -279,12 +279,14 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        String token = tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
 
         given().
+                header("Authorization", token).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -295,8 +297,11 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
+    public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
+        String token = tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
+
         given().when().
+                header("Authorization", token).
                 delete("/members/" + memberResponse.getId()).
                 then().
                 log().all().
