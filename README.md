@@ -9,3 +9,14 @@
 - side case에 대한 예외처리
 - API 문서를 작성하고 문서화를 위한 테스트 작성
 - 페이지 연동
+
+## To-do list
+- Login 멤버의 회원 관리
+    - [x] 인수테스트 작성
+    - [ ] Controller 테스트 작성
+        - [ ] Controller 테스트 문서화
+        - [ ] Side Case 테스트 
+    - [ ] Service 테스트
+        - [ ] Side Case 테스트 
+    - [ ] Domain 테스트
+        - [ ] Side Case 테스트 
