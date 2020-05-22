@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +28,6 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -155,7 +153,7 @@ public class MemberControllerTest {
     @Test
     void getMemberByEmailTest() throws Exception {
         String email = "ramen@gmail.com";
-        Member member = new Member(3000L, DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME ,DummyTestUserInfo.PASSWORD);
+        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
         given(memberService.findMemberByEmail(email)).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
@@ -171,7 +169,6 @@ public class MemberControllerTest {
 
         MemberResponse memberResponse = gson.fromJson(mvcResult.getResponse().getContentAsString(), MemberResponse.class);
 
-        assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getName()).isEqualTo("ramen");
         assertThat(memberResponse.getEmail()).isEqualTo("ramen@gmail.com");
     }

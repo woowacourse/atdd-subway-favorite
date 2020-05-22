@@ -10,6 +10,8 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.springframework.http.HttpMethod.POST;
+
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
     private AuthorizationExtractor authExtractor;
@@ -23,13 +25,26 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        String bearer = authExtractor.extract(request, "Bearer");
-        if(!jwtTokenProvider.validateToken(bearer)) {
-            throw new InvalidAuthenticationException();
+        if (isPost(request)) {
+            return true;
         }
-        String email =  jwtTokenProvider.getSubject(bearer);
+
+        String bearer = authExtractor.extract(request, "Bearer");
+        validateToken(bearer);
+
+        String email = jwtTokenProvider.getSubject(bearer);
         request.setAttribute("loginMemberEmail", email);
         return true;
+    }
+
+    private boolean isPost(HttpServletRequest request) {
+        return POST.matches(request.getMethod());
+    }
+
+    private void validateToken(String bearer) {
+        if (!jwtTokenProvider.validateToken(bearer)) {
+            throw new InvalidAuthenticationException();
+        }
     }
 
     @Override
