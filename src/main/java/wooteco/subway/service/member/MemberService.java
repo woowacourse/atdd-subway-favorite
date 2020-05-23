@@ -1,24 +1,36 @@
 package wooteco.subway.service.member;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.NoSuchAccountException;
 import wooteco.subway.exception.WrongPasswordException;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
 	private MemberRepository memberRepository;
+	private StationRepository stationRepository;
 	private JwtTokenProvider jwtTokenProvider;
 
-	public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+	public MemberService(MemberRepository memberRepository,
+		StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
 		this.memberRepository = memberRepository;
+		this.stationRepository = stationRepository;
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
@@ -56,5 +68,29 @@ public class MemberService {
 	public boolean loginWithForm(String email, String password) {
 		Member member = findMemberByEmail(email);
 		return member.checkPassword(password);
+	}
+
+	public List<FavoriteResponse> findAllFavoritesByMemberId(Long memberId) {
+		Member member = memberRepository.findById(memberId).orElseThrow(NoSuchAccountException::new);
+
+		Map<Long, String> stationNameById = stationRepository.findAll().stream()
+			.collect(Collectors.toMap(Station::getId, Station::getName));
+
+		return member.getFavorites().stream()
+			.map(favorite ->
+				new FavoriteResponse(favorite.getId(),
+					stationNameById.get(favorite.getSourceStationId()),
+					stationNameById.get(favorite.getTargetStationId()))
+			).collect(Collectors.toList());
+	}
+
+	public Member saveFavorite(Long id, FavoriteCreateRequest favoriteCreateRequest) {
+		Member member = memberRepository.findById(id).orElseThrow(NoSuchAccountException::new);
+		member.addFavorite(Favorite.of(favoriteCreateRequest));
+		return memberRepository.save(member);
+	}
+
+	public void deleteFavorite(Long favoriteId) {
+		memberRepository.deleteFavoriteById(favoriteId);
 	}
 }
