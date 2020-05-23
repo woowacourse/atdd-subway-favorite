@@ -1,17 +1,17 @@
-import { edgeItemTemplate } from '../../utils/templates.js'
-import { defaultFavorites } from '../../utils/subwayMockData.js'
-
 function Favorite() {
-  const $favoriteList = document.querySelector('#favorite-list')
+    const $favoriteList = document.querySelector('#favorite-list')
 
-  const loadFavoriteList = () => {
-    const template = defaultFavorites.map(edge => edgeItemTemplate(edge)).join('')
-    $favoriteList.insertAdjacentHTML('beforeend', template)
-  }
+    const loadFavoriteList = async () => {
+        const favoriteItems = await api.favorite.get(localStorage.getItem("token"));
+        console.log(favoriteItems);
 
-  this.init = () => {
-    loadFavoriteList()
-  }
+        const template = favoriteItems.map(favorite => favoriteItemTemplate(favorite)).join('');
+        $favoriteList.insertAdjacentHTML('beforeend', template)
+    }
+
+    this.init = () => {
+        loadFavoriteList()
+    }
 }
 
 const favorite = new Favorite()
