@@ -1,36 +1,62 @@
-function MyPage() {
-    const $emailValue = document.querySelector('#email-value');
-    const $nameValue = document.querySelector('#name-value');
+import {ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE} from "../../utils/constants.js";
+import api from "../../api/index.js";
+import showSnackbar from "../../lib/snackbar/index.js";
 
-    function requestMyPageData(email, token) {
-        fetch("/members?email=" + email, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " + token
-            }
-        })
-            .then(data => data.json())
-            .then(data => {
-                    $emailValue.innerHTML = data.email;
-                    $nameValue.innerHTML = data.name;
-                }
-            )
+function MyInfo() {
+  const $email = document.querySelector("#email");
+  const $name = document.querySelector("#name");
+  const $password = document.querySelector("#password");
+  const $signOutButton = document.querySelector("#sign-out-button");
+  const $updateButton = document.querySelector("#update-button");
+
+  const onSignOutHandler = async event => {
+    event.preventDefault();
+    if (!confirm("정말 탈퇴하시겠습니까?")) {
+      return;
     }
-
-    this.loadMyPage = () => {
-        const token = sessionStorage.getItem("token");
-        if (token === null) {
-            $emailValue.value = "로그인하고 돌아오세요!";
-            $nameValue.value = "로그인하고 돌아오세요!";
-            alert("로그인되지 않았습니다. 로그인하고 돌아오세요~");
-            return;
-        }
-        const email = sessionStorage.getItem("email");
-
-        requestMyPageData(email, token);
+    try {
+      await api.loginMember.delete();
+      localStorage.setItem("jwt", "");
+      location.href = "/";
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
     }
+  };
+
+  const onUpdateHandler = async event => {
+    event.preventDefault();
+    try {
+      const updatedInfo = {
+        name: $name.value,
+        email: $email.value,
+        password: $password.value
+      };
+      await api.loginMember.update(updatedInfo);
+      showSnackbar(SUCCESS_MESSAGE.SAVE);
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
+    }
+  };
+
+  const initMyInfo = async () => {
+    try {
+      const member = await api.loginMember.get();
+      if (member) {
+        $email.value = member.email;
+        $name.value = member.name;
+        $password.value = member.password;
+      }
+    } catch (e) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
+    }
+  };
+
+  this.init = () => {
+    initMyInfo();
+    $signOutButton.addEventListener(EVENT_TYPE.CLICK, onSignOutHandler);
+    $updateButton.addEventListener(EVENT_TYPE.CLICK, onUpdateHandler);
+  };
 }
 
-const myPage = new MyPage();
-myPage.loadMyPage();
+const myInfo = new MyInfo();
+myInfo.init();
