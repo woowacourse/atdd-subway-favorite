@@ -35,7 +35,6 @@ public class LoginMemberController {
 
     @PutMapping("/me")
     public ResponseEntity<Void> updateOwnMember(@LoginMember Member member, @RequestBody UpdateMemberRequest request) {
-        System.out.println(member.getId() + "에게 " + request.toString() + "으로 수정하려고 함");
         memberService.updateMember(member.getId(), request);
         return ResponseEntity.ok().build();
     }
