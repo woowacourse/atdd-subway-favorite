@@ -9,17 +9,21 @@ import wooteco.subway.domain.favorite.FavoriteRepository;
 
 @Service
 public class FavoriteService {
-    private final FavoriteRepository favoriteRepository;
+	private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
-        this.favoriteRepository = favoriteRepository;
-    }
+	public FavoriteService(FavoriteRepository favoriteRepository) {
+		this.favoriteRepository = favoriteRepository;
+	}
 
-    public Favorite createFavorite(Favorite favorite) {
-        return favoriteRepository.save(favorite);
-    }
+	public Favorite createFavorite(Favorite favorite) {
+		return favoriteRepository.save(favorite);
+	}
 
-    public List<Favorite> getFavorites(Long id) {
-        return favoriteRepository.findByMemberId(id);
-    }
+	public List<Favorite> getFavorites(Long id) {
+		return favoriteRepository.findByMemberId(id);
+	}
+
+	public void deleteFavorite(Long favoriteId) {
+		favoriteRepository.deleteById(favoriteId);
+	}
 }
