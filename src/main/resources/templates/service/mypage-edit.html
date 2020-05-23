@@ -22,6 +22,7 @@
               id="email"
               type="text"
               placeholder="email"
+              readonly
             />
           </div>
           <div class="mb-4">
@@ -58,18 +59,19 @@
             />
           </div>
           <a
-            href="/index.html"
+            id="edit-button"
             class="w-full text-sm text-center bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
             type="button"
           >
             저장
           </a>
-          <button class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+          <button id="delete-member-button" class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
             탈퇴
           </button>
         </form>
       </div>
     </div>
     <script type="module" src="/service/js/App.js"></script>
+    <script type="module" src="/service/js/views/MyPageEdit.js"></script>
   </body>
 </html>
