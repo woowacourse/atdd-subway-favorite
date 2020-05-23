@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -47,7 +46,7 @@ function Search() {
       .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
-  const onToggleFavorite = event => {
+  const onToggleFavorite = async event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
@@ -58,12 +57,20 @@ function Search() {
       classList.add('bg-yellow-500')
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
+      //delete
+      // api.favorite.delete(localStorage.getItem("token"), a);
     } else {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
+      const favoriteRequest = {
+        source: $departureStationName.value,
+        target: $arrivalStationName.value
+      }
+      const response = await api.favorite.create(localStorage.getItem("token"), favoriteRequest);
+      console.log(response)
     }
   }
 
