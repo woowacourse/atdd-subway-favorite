@@ -56,13 +56,13 @@ public class MemberControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @DisplayName("유저 정보 수정 시 이메일이 맞지 않을경우 익셉션이 발생한다")
     @Test
     void unAuthorizationUpdateRequestTest() throws Exception {
-        memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
+        memberService.createMember(new Member(1L, "email@gmail.com", "ramen", "6315"));
         String anotherEmail = "anotherEmail@gmail.com";
 
         String token = jwtTokenProvider.createToken(anotherEmail);
@@ -77,16 +77,14 @@ public class MemberControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("유저 정보 삭제가 성공한다")
     @Test
     void deleteMemberDateSuccessTest() throws Exception {
         Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
-
         Long deleteId = member.getId();
-        memberService.deleteMember(deleteId);
 
         String token = jwtTokenProvider.createToken(member.getEmail());
         String uri = "/members/" + deleteId;
