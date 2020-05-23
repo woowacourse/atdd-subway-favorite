@@ -40,7 +40,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-                post("/members").
+                post("/join").
             then().
                 log().all().
                 statusCode(HttpStatus.BAD_REQUEST.value()).
@@ -65,7 +65,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/members").
+                post("/join").
                 then().
                 log().all().
                 statusCode(HttpStatus.BAD_REQUEST.value()).
@@ -108,6 +108,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             accept(MediaType.APPLICATION_JSON_VALUE).
         when().
             get("/members?email=" + TEST_USER_EMAIL).
+        then().
+            log().all().
+            statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("로그인 없이 회원정보 수정하기")
+    @Test
+        //todo: csv로 다양한 케이스
+    void updateMyInfoWithoutLogin() {
+        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(location).isNotBlank();
+
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        MemberResponse memberResponse = getMember(tokenResponse.getAccessToken(), TEST_USER_EMAIL);
+
+        given().
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            put("/members/" + memberResponse.getId()).
         then().
             log().all().
             statusCode(HttpStatus.UNAUTHORIZED.value());

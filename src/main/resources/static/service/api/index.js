@@ -54,10 +54,21 @@ const METHOD = {
 };
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
+  const request = (uri, config) => fetch(uri, config).then(data => {
+    if (data.status === 401) {
+      window.location.href = "/login";
+    }
+
+    if (!data.ok) {
+      throw new Error();
+    }
+
+    return data;
+  });
   const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => {
     if (data.status === 401) {
       window.location.href = "/login";
+      return;
     }
     if (!data.ok) {
       throw new Error();

@@ -45,9 +45,12 @@ function MyPageEdit() {
     const token = cookieApi.getCookie("token");
     const id = cookieApi.getCookie("id");
 
-    api.user.delete(token, id).then(data =>
+    api.user.delete(token, id).then(response => {
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
       window.location.href = "/"
-    ).catch(e => alert("삭제 실패.."));
+    }).catch(e => alert("삭제 실패.."));
   };
 
   this.init = () => {
