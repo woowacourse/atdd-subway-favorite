@@ -41,16 +41,22 @@ const api = (() => {
     }
   }
 
-  const member = {
-    create(params){
+  const memberWithoutToken = {
+    create(params) {
       return request(`/members`, METHOD.POST(params))
+    },
+    login(params){
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(params))
     }
   }
+
+  const memberWithToken = {}
 
   return {
     line,
     path,
-    member
+    memberWithoutToken,
+    memberWithToken
   }
 })()
 

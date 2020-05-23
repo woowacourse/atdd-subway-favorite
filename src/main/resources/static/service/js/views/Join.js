@@ -22,7 +22,7 @@ function Join() {
             name: nameValue,
             password: passwordValue
         }
-        api.member.create(newMember)
+        api.memberWithoutToken.create(newMember)
             .then(() => {
                 alert("회원가입 성공!")
                 location.href = "/login"
