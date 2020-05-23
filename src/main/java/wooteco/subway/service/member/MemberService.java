@@ -89,6 +89,9 @@ public class MemberService {
 
     public Member saveFavorite(Long id, FavoriteRequest favoriteRequest) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchAccountException::new);
+        System.out.println(favoriteRequest);
+        System.out.println("##");
+        System.out.println(Favorite.of(favoriteRequest));
         member.addFavorite(Favorite.of(favoriteRequest));
         return memberRepository.save(member);
     }

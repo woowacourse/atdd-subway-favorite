@@ -3,13 +3,13 @@ package wooteco.subway.domain.favorite;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 
 public class Favorite {
 	@Id
 	private Long id;
-
 	private Long sourceStationId;
 	private Long targetStationId;
 

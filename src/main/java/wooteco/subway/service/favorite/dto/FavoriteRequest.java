@@ -19,4 +19,12 @@ public class FavoriteRequest {
     public Long getTargetStationId() {
         return targetStationId;
     }
+
+    @Override
+    public String toString() {
+        return "FavoriteRequest{" +
+            "sourceStationId=" + sourceStationId +
+            ", targetStationId=" + targetStationId +
+            '}';
+    }
 }

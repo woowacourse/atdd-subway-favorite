@@ -64,9 +64,10 @@ function Search() {
     event.preventDefault();
     try {
       const path = {
-        source: searchTargetStations[0].id,
-        target: searchTargetStations[1].id
+        source_station_id: searchTargetStations[0].id,
+        target_station_id: searchTargetStations[1].id
       };
+      console.log(path);
       await api.favorite.create(path);
       showSnackbar(SUCCESS_MESSAGE.FAVORITE);
     } catch (e) {

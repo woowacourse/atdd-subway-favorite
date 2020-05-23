@@ -14,8 +14,10 @@ function Favorite() {
     try {
       const template = await api.favorite
         .getAll()
-        .then(favorites =>
-          favorites.map(edge => edgeItemTemplate(edge)).join("")
+        .then(favorites =>{
+          console.log(favorites)
+          return favorites.map(edge => edgeItemTemplate(edge)).join("")
+          }
         );
       $favoriteList.innerHTML = template;
     } catch (e) {

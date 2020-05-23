@@ -20,14 +20,18 @@ const METHOD = {
       })
     };
   },
-  DELETE() {
+  DELETE(data = {}) {
     return {
       method: "DELETE",
       headers: {
         Authorization: localStorage.getItem("jwt") || ""
-      }
+      },
+      body: JSON.stringify(( {
+        ...data
+      }))
     };
   },
+
   POST(data) {
     return {
       method: "POST",
@@ -89,16 +93,13 @@ const api = (() => {
 
   const favorite = {
     create(favoritePath) {
-      return request(`/favorites`, METHOD.POST(favoritePath));
-    },
-    get(id) {
-      return requestWithJsonData(`/favorites/${id}`);
+      return request(`/me/favorites`, METHOD.POST(favoritePath));
     },
     getAll() {
-      return requestWithJsonData(`/favorites`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonData(`/me/favorites`, METHOD.GET_WITH_AUTH());
     },
-    delete(id) {
-      return request(`/favorites/${id}`, METHOD.DELETE());
+    delete(data) {
+      return request(`/me/favorites`, METHOD.DELETE(data));
     }
   };
 
