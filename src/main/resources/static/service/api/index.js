@@ -66,6 +66,9 @@ const api = (() => {
     }
 
     const member = {
+        create(data) {
+            return request(`/members`, METHOD.POST(data))
+        },
         get(token) {
             return requestWithJsonData(`/members`, METHOD.GET(token))
         },

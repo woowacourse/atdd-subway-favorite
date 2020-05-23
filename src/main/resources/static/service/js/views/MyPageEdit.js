@@ -1,5 +1,5 @@
 import api from '../../api/index.js'
-import {EVENT_TYPE} from "../../../admin/utils/constants.js";
+import {ERROR_MESSAGE, EVENT_TYPE} from "../../utils/constants.js";
 
 const $saveButton = document.querySelector("#save-button");
 
@@ -7,13 +7,13 @@ const $dropoutButton = document.querySelector("#dropout-button");
 
 function MyPageEdit() {
 
-    function onUpdateMyInfo() {
+    function onUpdateMember() {
         const $name = document.querySelector("#name");
         const $password = document.querySelector("#password");
         const $passwordCheck = document.querySelector("#password-check");
 
         if ($password.value !== $passwordCheck.value) {
-            alert("입력하신 비밀번호가 일치하지 않습니다.")
+            alert(ERROR_MESSAGE.PASSWORD_CHECK_FAIL)
             return
         }
 
@@ -31,7 +31,7 @@ function MyPageEdit() {
             .catch(error => console.log(error))
     }
 
-    function onDeleteMyInfo() {
+    function onDeleteMember() {
         const token = localStorage.getItem("token")
 
         api.member.delete(token)
@@ -43,8 +43,8 @@ function MyPageEdit() {
     }
 
     function initEventListener() {
-        $saveButton.addEventListener(EVENT_TYPE.CLICK, onUpdateMyInfo)
-        $dropoutButton.addEventListener(EVENT_TYPE.CLICK, onDeleteMyInfo)
+        $saveButton.addEventListener(EVENT_TYPE.CLICK, onUpdateMember)
+        $dropoutButton.addEventListener(EVENT_TYPE.CLICK, onDeleteMember)
     }
 
     this.init = () => {
