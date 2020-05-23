@@ -17,8 +17,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,8 +62,7 @@ public class MemberControllerIntegrationTest {
     @DisplayName("유저 정보 수정 시 이메일이 맞지 않을경우 익셉션이 발생한다")
     @Test
     void unAuthorizationUpdateRequestTest() throws Exception {
-        Member ramen = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
-        System.out.println(ramen.getId());
+        memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
         String anotherEmail = "anotherEmail@gmail.com";
 
         String token = jwtTokenProvider.createToken(anotherEmail);
@@ -78,6 +76,55 @@ public class MemberControllerIntegrationTest {
                 .content(updateData)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("유저 정보 삭제가 성공한다")
+    @Test
+    void deleteMemberDateSuccessTest() throws Exception {
+        Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
+
+        Long deleteId = member.getId();
+        memberService.deleteMember(deleteId);
+
+        String token = jwtTokenProvider.createToken(member.getEmail());
+        String uri = "/members/" + deleteId;
+
+        mockMvc.perform(delete(uri)
+                .header("Authorization", "Bearer" + token))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @DisplayName("토큰 값이 없을 경우 익셉션이 발생한다")
+    @Test
+    void deleteMemberDateFailTest() throws Exception {
+        Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
+
+        Long deleteId = member.getId();
+        memberService.deleteMember(deleteId);
+
+
+        String uri = "/members/" + deleteId;
+
+        mockMvc.perform(delete(uri))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("삭제 하려는 id 가 일치 하지 않을경우 익셉션이 발생한다")
+    @Test
+    void deleteMemberDateFailTest2() throws Exception {
+        Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
+
+        Long wrongDeleteId = member.getId() + 10L;
+
+        String memberEmailToken = jwtTokenProvider.createToken(String.valueOf(wrongDeleteId));
+        String uri = "/members/" + member.getId();
+
+        mockMvc.perform(delete(uri)
+                .header("Authorization", "Bearer " + memberEmailToken))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }

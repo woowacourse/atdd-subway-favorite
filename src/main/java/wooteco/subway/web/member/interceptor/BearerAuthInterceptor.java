@@ -34,6 +34,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         }
 
         String bearer = authExtractor.extract(request, "Bearer");
+        System.out.println("이게 널일까요? " + bearer);
         validateToken(bearer);
         String email = jwtTokenProvider.getSubject(bearer);
         request.setAttribute("requestMemberEmail", email);
@@ -43,14 +44,18 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (isPut(request)) {
+        if (isPut(request) || isDelete(request)) {
             final Map<String, String> pathVariables = (Map<String, String>) request
                     .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
             String id = pathVariables.get("id");
-            request.setAttribute("updateMemberId", id);
+            request.setAttribute("requestId", id);
         }
         return true;
+    }
+
+    private boolean isDelete(HttpServletRequest request) {
+        return DELETE.matches(request.getMethod());
     }
 
     private boolean isPut(HttpServletRequest request) {
