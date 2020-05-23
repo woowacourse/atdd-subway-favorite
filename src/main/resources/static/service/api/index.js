@@ -1,12 +1,11 @@
 const METHOD = {
-  PUT() {
+  GET_WITH_TOKEN() {
     return {
-      method: 'PUT'
-    }
-  },
-  DELETE() {
-    return {
-      method: 'DELETE'
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("tokenType") + " " + localStorage.getItem("accessToken")
+      }
     }
   },
   POST(data) {
@@ -18,6 +17,16 @@ const METHOD = {
       body: JSON.stringify({
         ...data
       })
+    }
+  },
+  PUT() {
+    return {
+      method: 'PUT'
+    }
+  },
+  DELETE() {
+    return {
+      method: 'DELETE'
     }
   }
 }
@@ -45,12 +54,16 @@ const api = (() => {
     create(params) {
       return request(`/members`, METHOD.POST(params))
     },
-    login(params){
+    login(params) {
       return requestWithJsonData(`/oauth/token`, METHOD.POST(params))
     }
   }
 
-  const memberWithToken = {}
+  const memberWithToken = {
+    getMyInformation() {
+      return requestWithJsonData(`/me`, METHOD.GET_WITH_TOKEN())
+    }
+  }
 
   return {
     line,
