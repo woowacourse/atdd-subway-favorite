@@ -27,7 +27,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -211,6 +211,9 @@ public class MemberControllerTest {
     void updateInfoTestSuccess() throws Exception {
         given(memberService.updateMember(any(), any())).willReturn(1L);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn("ramen6315@gmail.com");
+        given(memberService.findMemberById(anyLong()))
+                .willReturn(new Member(1L, "ramen6315@gmail.com", "6315", "6315"));
 
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
         String updateData = gson.toJson(updateMemberRequest);
