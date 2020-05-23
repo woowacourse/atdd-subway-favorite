@@ -5,6 +5,8 @@ function MyPageEdit() {
     const $passwordValue = document.querySelector('#password');
     const $nameValue = document.querySelector('#name');
     const $updateButton = document.querySelector('#update-my-info-button');
+    const $deleteButton = document.querySelector('#delete-my-info-button');
+
 
     const editButtonEventHandler = event => {
         event.preventDefault();
@@ -19,11 +21,16 @@ function MyPageEdit() {
                 password: $passwordValue.value
             })
         })
-            .then(data => data.json())
-            .then(data => {
-                    alert(data);
-                }
-            )
+    }
+
+    const deleteButtonEventHandler = event => {
+        event.preventDefault();
+        fetch("/members/" + $emailValue.dataset.id, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': "Bearer " + sessionStorage.getItem("token")
+            }
+        })
     }
 
     function requestMyPageData(email, token) {
@@ -57,6 +64,7 @@ function MyPageEdit() {
 
     this.init = () => {
         $updateButton.addEventListener(EVENT_TYPE.CLICK, editButtonEventHandler)
+        $deleteButton.addEventListener(EVENT_TYPE.CLICK, deleteButtonEventHandler)
     }
 }
 
