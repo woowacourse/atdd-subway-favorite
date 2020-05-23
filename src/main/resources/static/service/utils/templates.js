@@ -19,6 +19,11 @@ export const navTemplate = `<nav class="flex items-center justify-between flex-w
           경로 조회
           </a>
       </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/favorites" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          즐겨찾기
+         </a>
+      </div>
     </div>
 </nav>`
 
