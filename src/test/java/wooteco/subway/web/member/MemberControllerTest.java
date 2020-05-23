@@ -83,7 +83,7 @@ public class MemberControllerTest {
                 "\"password\":\"" + "de" + "\"}";
 
         this.mockMvc.perform(put("/members/1")
-                .header("Authorization", token)
+                .header("Authorization", "bearer " + token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))

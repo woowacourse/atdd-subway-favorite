@@ -19,8 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -85,14 +84,13 @@ public class MemberServiceTest {
     void updateOtherAccount() {
         Member member1 = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         Member member2 = new Member("jason@woowahan.com", "제이슨", "jason");
-        String token = jwtTokenProvider.createToken(member2.getEmail());
 
         UpdateMemberRequest updateData = new UpdateMemberRequest("가나다", "1234");
 
         when(memberRepository.findById(any())).thenReturn(Optional.of(member1));
-        when(jwtTokenProvider.getSubject(any())).thenReturn(member2.getEmail());
+        lenient().when(jwtTokenProvider.getSubject(any())).thenReturn(member2.getEmail());
 
-        assertThatThrownBy(() -> memberService.updateMember(token, member1.getId(), updateData))
+        assertThatThrownBy(() -> memberService.updateMember(member2, member1.getId(), updateData))
                 .isInstanceOf(InvalidUpdateException.class);
 
     }

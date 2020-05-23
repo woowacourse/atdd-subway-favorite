@@ -40,9 +40,9 @@ public class MemberService {
         }
     }
 
-    public void updateMember(String token, Long id, UpdateMemberRequest param) {
+    public void updateMember(Member member, Long id, UpdateMemberRequest param) {
         Member targetMember = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        String email = jwtTokenProvider.getSubject(token);
+        String email = member.getEmail();
         if (!email.equals(targetMember.getEmail())) {
             throw new InvalidUpdateException();
         }
@@ -50,7 +50,11 @@ public class MemberService {
         memberRepository.save(targetMember);
     }
 
-    public void deleteMember(Long id) {
+    public void deleteMember(Member member, Long id) {
+        Member targetMember = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        if (!member.getEmail().equals(targetMember.getEmail())) {
+            throw new InvalidUpdateException();
+        }
         memberRepository.deleteById(id);
     }
 

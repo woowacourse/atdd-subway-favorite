@@ -26,6 +26,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberResponse updatedMember = getMember(TEST_USER_EMAIL);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_UPDATED_USER_NAME);
 
-        deleteMember(memberResponse);
+        deleteMember(tokenResponse, memberResponse);
     }
 }

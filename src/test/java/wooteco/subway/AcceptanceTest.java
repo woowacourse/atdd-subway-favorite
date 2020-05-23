@@ -288,7 +288,8 @@ public class AcceptanceTest {
         params.put("password", "NEW_" + TEST_UPDATED_USER_PASSWORD);
 
         given().
-                header("Authorization", tokenResponse.getAccessToken()).
+                auth().
+                oauth2(tokenResponse.getAccessToken()).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -296,12 +297,15 @@ public class AcceptanceTest {
                 put("/members/" + memberResponse.getId()).
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().header("Authorization");
+                statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
+
+    public void deleteMember(TokenResponse tokenResponse, MemberResponse memberResponse) {
+        given().
+                auth().
+                oauth2(tokenResponse.getAccessToken()).
+                when().
                 delete("/members/" + memberResponse.getId()).
                 then().
                 log().all().

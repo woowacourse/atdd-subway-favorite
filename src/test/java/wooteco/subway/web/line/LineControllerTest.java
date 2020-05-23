@@ -23,8 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@WebMvcTest(controllers = LineController.class)
-//@Import(ETagHeaderFilter.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LineControllerTest {

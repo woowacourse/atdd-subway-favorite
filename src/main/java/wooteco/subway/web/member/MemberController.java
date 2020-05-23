@@ -8,7 +8,6 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -35,15 +34,14 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(HttpServletRequest request, @PathVariable Long id, @Valid @RequestBody UpdateMemberRequest param) {
-        String token = request.getParameter("Authorization");
-        memberService.updateMember(token, id, param);
+    public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member, @PathVariable Long id, @Valid @RequestBody UpdateMemberRequest param) {
+        memberService.updateMember(member, id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member, @PathVariable Long id) {
+        memberService.deleteMember(member, id);
         return ResponseEntity.noContent().build();
     }
 }
