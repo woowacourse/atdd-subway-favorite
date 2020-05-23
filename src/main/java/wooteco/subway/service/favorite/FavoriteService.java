@@ -23,7 +23,7 @@ public class FavoriteService {
 		return favoriteRepository.findByMemberId(id);
 	}
 
-	public void deleteFavorite(Long favoriteId) {
-		favoriteRepository.deleteById(favoriteId);
+	public void deleteFavorite(Long memberId, Long favoriteId) {
+		favoriteRepository.deleteByMemberIdAndId(memberId, favoriteId);
 	}
 }

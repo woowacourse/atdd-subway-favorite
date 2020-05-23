@@ -29,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -83,7 +84,8 @@ public class FavoriteControllerTest {
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
-			.andDo(print());
+			.andDo(print())
+			.andDo(FavoriteDocumentation.createFavorite());
 	}
 
 	@Test
@@ -101,7 +103,8 @@ public class FavoriteControllerTest {
 			.header("authorization", "Bearer 1q2w3e4r")
 		)
 			.andExpect(status().isOk())
-			.andDo(print());
+			.andDo(print())
+			.andDo(FavoriteDocumentation.getFavorite());
 	}
 
 	@Test
@@ -112,12 +115,13 @@ public class FavoriteControllerTest {
 		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 
-		doNothing().when(favoriteService).deleteFavorite(anyLong());
+		doNothing().when(favoriteService).deleteFavorite(anyLong(), anyLong());
 
 		this.mockMvc.perform(delete("/favorite/me/{id}", 1L)
 			.header("authorization", "Bearer 1q2w3e4r")
 		)
 			.andExpect(status().isOk())
-			.andDo(print());
+			.andDo(print())
+			.andDo(FavoriteDocumentation.deleteFavorite());
 	}
 }

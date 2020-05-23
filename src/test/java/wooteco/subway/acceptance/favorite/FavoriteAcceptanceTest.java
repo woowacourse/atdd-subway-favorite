@@ -43,12 +43,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		List<Favorite> favorites = getFavorites(tokenResponse);
 
-		int memberIdIndex = member.lastIndexOf("/") + 1;
-		String memberId = member.substring(memberIdIndex);
-
 		assertThat(favorites).hasSize(1);
 		assertThat(favorites.get(0).getId()).isNotNull();
-		assertThat(favorites.get(0).getMemberId()).isEqualTo(Long.valueOf(memberId));
 		assertThat(favorites.get(0).getSource()).isEqualTo("잠실");
 		assertThat(favorites.get(0).getTarget()).isEqualTo("석촌고분");
 
