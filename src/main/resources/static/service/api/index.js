@@ -1,19 +1,37 @@
 const METHOD = {
-  PUT() {
+    GET(token) {
+        return {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }
+    },
+    PUT(token, data) {
     return {
-      method: 'PUT'
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            ...data
+        })
     }
   },
-  DELETE() {
+    DELETE(token) {
     return {
-      method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
     }
   },
   POST(data) {
     return {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         ...data
@@ -36,8 +54,8 @@ const api = (() => {
   }
 
   const path = {
-    find(params) {
-      return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+      find(data) {
+          return requestWithJsonData(`/paths?source=${data.source}&target=${data.target}&type=${data.type}`)
     }
   }
 
@@ -47,10 +65,23 @@ const api = (() => {
         }
     }
 
+    const member = {
+        get(token) {
+            return requestWithJsonData(`/members`, METHOD.GET(token))
+        },
+        update(token, data) {
+            return requestWithJsonData(`/members`, METHOD.PUT(token, data))
+        },
+        delete(token) {
+            return request(`/members`, METHOD.DELETE(token))
+        }
+    }
+
   return {
     line,
       path,
-      oauth
+      oauth,
+      member
   }
 })()
 
