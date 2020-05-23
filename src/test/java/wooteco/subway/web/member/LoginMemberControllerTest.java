@@ -29,6 +29,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.doc.LoginMemberDocumentation;
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
@@ -101,7 +102,7 @@ public class LoginMemberControllerTest {
     @Test
     void meBearer() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/me")
-            .header("Authorization", "Bearer brownToken")
+            .header("Authorization", "bearer brownToken")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -115,7 +116,7 @@ public class LoginMemberControllerTest {
             "\"password\":\"" + "1234" + "\"}";
 
         this.mockMvc.perform(put("/me")
-            .header("Authorization", "Bearer brownToken")
+            .header("Authorization", "bearer brownToken")
             .accept(MediaType.APPLICATION_JSON)
             .content(inputJson)
             .contentType(MediaType.APPLICATION_JSON))
@@ -127,14 +128,57 @@ public class LoginMemberControllerTest {
     @DisplayName("회원 정보 삭제")
     @Test
     void deleteMember() throws Exception {
-        given(memberService.createToken(any())).willReturn("brown");
-
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
-            .header("Authorization", "Bearer brownToken")
+            .header("Authorization", "bearer brownToken")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNoContent())
             .andDo(LoginMemberDocumentation.deleteMember());
     }
+
+    @DisplayName("즐겨찾기에 경로를 추가한다")
+    @Test
+    void addFavorites() throws Exception {
+        String inputJson = "{\"sourceStationId\":\"" + "1" + "\"," +
+            "\"targetStationId\":\"" + "2" + "\"}";
+
+        this.mockMvc.perform(post("/me/favorites")
+            .header("Authorization", "bearer brownToken")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isCreated());
+    }
+
+    @DisplayName("즐겨찾기에 있는 경로를 삭제한다")
+    @Test
+    void deleteFavorites() throws Exception {
+        String inputJson = "{\"sourceStationId\":\"" + "1" + "\"," +
+            "\"targetStationId\":\"" + "2" + "\"}";
+
+        this.mockMvc.perform(post("/me/favorites")
+            .header("Authorization", "bearer brownToken")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isCreated());
+
+        String deleteInputJson = "{\"sourceStationId\":\"" + "1" + "\"," +
+            "\"targetStationId\":\"" + "2" + "\"}";
+
+        this.mockMvc.perform(delete("/me/favorites")
+        .header("Authorization", "bearer brownToken")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(deleteInputJson)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
+
+
+
+
 }

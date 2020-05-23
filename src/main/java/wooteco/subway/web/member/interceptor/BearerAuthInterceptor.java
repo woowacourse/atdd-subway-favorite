@@ -31,7 +31,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String token = authExtractor.extract(request, "Bearer");
+        String token = authExtractor.extract(request, "bearer");
         if (StringUtils.isEmpty(token)) {
             throw new InvalidAuthenticationException("존재하지 않는 토큰");
         }
@@ -44,6 +44,8 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         // TODO: 추출한 토큰값에서 email 정보 추출 (jwtTokenProvider.getSubject() 메서드 활용)
         String email = jwtTokenProvider.getSubject(token);
         request.setAttribute("loginMemberEmail", email);
+
+
         return true;
     }
 

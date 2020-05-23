@@ -354,10 +354,10 @@ public class AcceptanceTest {
         params.put("name", name);
         params.put("password", password);
 
-        given().header("Authorization", "Bearer " + accessToken);
+        given().header("Authorization", "bearer " + accessToken);
 
         given()
-            .header("Authorization", "Bearer " + accessToken)
+            .header("Authorization", "bearer " + accessToken)
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)

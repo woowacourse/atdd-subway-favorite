@@ -13,6 +13,11 @@ public class FavoriteResponse {
     public FavoriteResponse() {
     }
 
+    public FavoriteResponse(final String sourceStation, final String targetStation) {
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
+    }
+
     public FavoriteResponse(final Long id, final String sourceStation, final String targetStation) {
         this.id = id;
         this.sourceStation = sourceStation;

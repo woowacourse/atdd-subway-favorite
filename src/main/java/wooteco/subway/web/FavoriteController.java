@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.LoginMember;
@@ -34,8 +34,8 @@ public class FavoriteController {
 
 	@PostMapping
 	public ResponseEntity<Void> create(@LoginMember Member member,
-		@RequestBody FavoriteCreateRequest favoriteCreateRequest) {
-		memberService.saveFavorite(member.getId(), favoriteCreateRequest);
+		@RequestBody FavoriteRequest favoriteRequest) {
+		memberService.saveFavorite(member.getId(), favoriteRequest);
 		return
 			ResponseEntity
 				.created(URI.create("/favorite/" + 1))

@@ -9,10 +9,12 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
-import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -23,7 +25,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
          * Feature: 지하철 노선 즐겨찾기 기능
          * Scenario: 지하철 노선 즐겨찾기 기능을 사용한다
          *
-         * Given 로그인이 되어있다
+         * Given 역이 등록되어 있다
+         *  And 로그인이 되어있다
          * When 경로에 즐겨찾기 추가를 한다
          * Then 즐겨찾기에 경로가 추가된다
          *
@@ -35,50 +38,65 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
          * When 즐겨찾기에 등록되어있는 경로의 삭제 요청을 한다
          * Then 등록된 즐겨찾기 경로가 삭제된다
          */
+
+        StationResponse stationOne = createStation("일원역");
+        StationResponse stationTwo = createStation("이대역");
+
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         final TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(1L, 5L);
-        addFavorite(tokenResponse, favoriteCreateRequest);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(stationOne.getId(), stationTwo.getId());
+        addFavorite(tokenResponse, favoriteRequest);
 
         final List<FavoriteResponse> favorite = getFavorite(tokenResponse);
         assertThat(favorite.size()).isEqualTo(1);
         assertThat(favorite.get(0)).isNotNull();
 
-        deleteFavorite(tokenResponse, favorite.get(0).getId());
+        deleteFavorite(tokenResponse, favoriteRequest.getSourceStationId(), favoriteRequest.getTargetStationId());
         assertThat(getFavorite(tokenResponse).size()).isEqualTo(0);
     }
 
-    void addFavorite(TokenResponse token, FavoriteCreateRequest favoriteCreateRequest) {
+    void addFavorite(TokenResponse token, FavoriteRequest favoriteRequest) {
         Map<String, String> params = new HashMap<>();
-        params.put("sourceStationId", String.valueOf(favoriteCreateRequest.getSourceStationId()));
-        params.put("targetStationId", String.valueOf(favoriteCreateRequest.getTargetStationId()));
+        params.put("sourceStationId", String.valueOf(favoriteRequest.getSourceStationId()));
+        params.put("targetStationId", String.valueOf(favoriteRequest.getTargetStationId()));
 
         given()
             .header("Authorization", token.getTokenType() + " " + token.getAccessToken())
             .body(params)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .post("/favorites")
+            .post("/me/favorites")
             .then()
             .log().all()
             .statusCode(HttpStatus.CREATED.value());
     }
 
-    void deleteFavorite(TokenResponse token, Long id) {
+    void deleteFavorite(TokenResponse token, Long sourceStationId, Long targetStationId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceStationId", String.valueOf(sourceStationId));
+        params.put("targetStationId", String.valueOf(targetStationId));
+
         given()
             .header("Authorization", token.getTokenType() + " " + token.getAccessToken())
+            .body(params)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .delete("/favorites/" + id)
+            .delete("/me/favorites")
             .then()
             .log().all()
-            .statusCode(HttpStatus.CREATED.value());
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     List<FavoriteResponse> getFavorite(TokenResponse token) {
         return given()
             .header("Authorization", token.getTokenType() + " " + token.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/favorites")
+            .get("/me/favorites")
             .then()
             .log().all()
             .extract().jsonPath().getList(".", FavoriteResponse.class);

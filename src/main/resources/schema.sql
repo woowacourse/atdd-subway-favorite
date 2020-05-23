@@ -42,7 +42,6 @@ create table if not exists FAVORITE
 (
     member bigint not null,
     id bigint auto_increment not null,
-    member_id bigint not null,
     source_station_id bigint not null,
     target_station_id bigint not null,
     primary key(id)

@@ -1,13 +1,13 @@
 package wooteco.subway.service.favorite.dto;
 
-public class FavoriteCreateRequest {
+public class FavoriteRequest {
     private Long sourceStationId;
     private Long targetStationId;
 
-    public FavoriteCreateRequest() {
+    public FavoriteRequest() {
     }
 
-    public FavoriteCreateRequest(final Long sourceStationId, final Long targetStationId) {
+    public FavoriteRequest(final Long sourceStationId, final Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
     }
