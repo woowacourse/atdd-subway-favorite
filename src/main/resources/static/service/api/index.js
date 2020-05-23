@@ -1,76 +1,91 @@
 const METHOD = {
-  PUT() {
+  GET_WITH_AUTH() {
     return {
-      method: 'PUT'
-    }
-  },
-  DELETE() {
-    return {
-      method: 'DELETE'
-    }
-  },
-  POST(data) {
-    return {
-      method: 'POST',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
+      }
+    };
+  },
+  PUT(data) {
+    return {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
       },
       body: JSON.stringify({
         ...data
       })
-    }
+    };
+  },
+  DELETE() {
+    return {
+      method: "DELETE",
+      headers: {
+        Authorization: localStorage.getItem("jwt") || ""
+      }
+    };
+  },
+  POST(data) {
+    return {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    };
   }
-}
+};
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
-
-  const line = {
-    getAll() {
-      return request(`/lines/detail`)
-    },
-    getAllDetail() {
-      return requestWithJsonData(`/lines/detail`)
-    }
-  }
-
-  const path = {
-    find(params) {
-      return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
-    }
-  }
+  const request = (uri, config) => fetch(uri, config);
+  const requestWithJsonData = (uri, config) =>
+      fetch(uri, config).then(response => {
+        if (!response.ok) {
+          return;
+        }
+        return response.json();
+      });
 
   const member = {
-    create(data) {
-      return requestWithJsonData(`/members`, METHOD.POST(data));
+    get(id) {
+      return requestWithJsonData(`/members/${id}`);
     },
-    getMemberByEmail() {
-      return request(`/members`)
+    create(newMember) {
+      return request(`/members`, METHOD.POST(newMember));
     },
-    update(data, id) {
-      return requestWithJsonData(`/members/${id}`, METHOD.PUT(data));
+    update(id, updatedData) {
+      return request(`/members/${id}`, METHOD.PUT(updatedData));
     },
     delete(id) {
-      return request(`/members/${id}`);
-    }
-  }
-
-  const login = {
-    loginWithToken(data) {
-        return requestWithJsonData(`/oauth/token`, METHOD.POST(data));
+      return request(`/members/${id}`, METHOD.DELETE());
     },
-    getMemberOfMine(data) {
-      return requestWithJsonData(`/me/bearer`, METHOD.GET(data));
+    login(loginInfo) {
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(loginInfo));
     }
-  }
+  };
+
+  const loginMember = {
+    get() {
+      return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
+    },
+    update(updatedInfo) {
+      return request(`/me`, METHOD.PUT(updatedInfo));
+    },
+    delete() {
+      return request(`/me`, METHOD.DELETE());
+    }
+  };
 
   return {
-    line,
-    path,
     member,
-    login
-  }
-})()
+    loginMember
+  };
+})();
 
-export default api
+export default api;

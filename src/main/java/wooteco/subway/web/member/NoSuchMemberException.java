@@ -6,4 +6,8 @@ public class NoSuchMemberException extends RuntimeException {
     public NoSuchMemberException() {
         super(NO_SUCH_MEMBER_MSG);
     }
+
+    public NoSuchMemberException(String message) {
+        super(message);
+    }
 }

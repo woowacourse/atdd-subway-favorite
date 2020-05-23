@@ -41,27 +41,35 @@ public class MemberService {
     }
 
     public void updateMember(Member member, Long id, UpdateMemberRequest param) {
-        Member targetMember = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        String email = member.getEmail();
-        if (!email.equals(targetMember.getEmail())) {
+        Member targetMember = memberRepository.findById(id).orElseThrow(NoSuchMemberException::new);
+        if (!member.getEmail().equals(targetMember.getEmail())) {
             throw new InvalidUpdateException();
         }
         targetMember.update(param.getName(), param.getPassword());
         memberRepository.save(targetMember);
     }
 
+    public void updateMember(Member member, UpdateMemberRequest param) {
+        member.update(param.getName(), param.getPassword());
+        memberRepository.save(member);
+    }
+
     public void deleteMember(Member member, Long id) {
-        Member targetMember = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member targetMember = memberRepository.findById(id).orElseThrow(NoSuchMemberException::new);
         if (!member.getEmail().equals(targetMember.getEmail())) {
             throw new InvalidUpdateException();
         }
         memberRepository.deleteById(id);
     }
 
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
+    }
+
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(NoSuchMemberException::new);
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new NoSuchMemberException("잘못된 패스워드");
         }
 
         return jwtTokenProvider.createToken(param.getEmail());

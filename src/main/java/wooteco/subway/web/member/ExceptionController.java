@@ -10,4 +10,9 @@ public class ExceptionController {
     public ResponseEntity<String> InvalidUpdateExceptionHandler(InvalidUpdateException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(NoSuchMemberException.class)
+    public ResponseEntity<String> NoSuchMemberExceptionHandler(NoSuchMemberException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }

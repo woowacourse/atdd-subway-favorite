@@ -1,5 +1,5 @@
-import { edgeItemTemplate } from '../../utils/templates.js'
-import { defaultFavorites } from '../../utils/subwayMockData.js'
+import {edgeItemTemplate} from '../../utils/templates.js'
+import {defaultFavorites} from '../../utils/subwayMockData.js'
 
 function Favorite() {
   const $favoriteList = document.querySelector('#favorite-list')

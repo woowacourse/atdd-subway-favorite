@@ -1,15 +1,13 @@
 package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import javax.validation.Valid;
 
@@ -31,4 +29,18 @@ public class LoginMemberController {
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
+
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest param) {
+        memberService.updateMember(member, param);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
+        return ResponseEntity.ok().build();
+    }
+
+
 }
