@@ -12,7 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.favorite.dto.FavoriteResponses;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -32,63 +33,64 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	then 즐겨찾기 목록에 이전에 삭제한 즐겨찾기가 없다.
 	*/
 
-	@DisplayName("사용자가 자신의 즐겨찾기 관리한다.")
-	@Test
-	public void favoriteScenario() {
-		String member = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		assertThat(member).isNotBlank();
+    @DisplayName("사용자가 자신의 즐겨찾기 관리한다.")
+    @Test
+    public void favoriteScenario() {
+        String member = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(member).isNotBlank();
 
-		TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		createFavorite(tokenResponse);
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        createFavorite(tokenResponse);
 
-		List<Favorite> favorites = getFavorites(tokenResponse);
+        FavoriteResponses favorites = getFavorites(tokenResponse);
+        List<FavoriteResponse> favoriteResponses = favorites.getFavoriteResponses();
 
-		assertThat(favorites).hasSize(1);
-		assertThat(favorites.get(0).getId()).isNotNull();
-		assertThat(favorites.get(0).getSource()).isEqualTo("잠실");
-		assertThat(favorites.get(0).getTarget()).isEqualTo("석촌고분");
+        assertThat(favoriteResponses).hasSize(1);
+        assertThat(favoriteResponses.get(0).getId()).isNotNull();
+        assertThat(favoriteResponses.get(0).getSource()).isEqualTo("잠실");
+        assertThat(favoriteResponses.get(0).getTarget()).isEqualTo("석촌고분");
 
-		deleteFavorite(tokenResponse, favorites.get(0).getId());
+        deleteFavorite(tokenResponse, favoriteResponses.get(0).getId());
 
-		favorites = getFavorites(tokenResponse);
-		assertThat(favorites).hasSize(0);
-	}
+        favorites = getFavorites(tokenResponse);
+        assertThat(favorites.getFavoriteResponses()).hasSize(0);
+    }
 
-	private void deleteFavorite(TokenResponse tokenResponse, long id) {
-		given().auth()
-			.oauth2(tokenResponse.getAccessToken())
-			.when()
-			.delete("/favorite/me/" + id)
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.OK.value());
-	}
+    private void deleteFavorite(TokenResponse tokenResponse, long id) {
+        given().auth()
+            .oauth2(tokenResponse.getAccessToken())
+            .when()
+            .delete("/favorite/me/" + id)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value());
+    }
 
-	private List<Favorite> getFavorites(TokenResponse tokenResponse) {
-		return given().auth()
-			.oauth2(tokenResponse.getAccessToken())
-			.when()
-			.get("/favorite/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.OK.value())
-			.extract().jsonPath().getList(".", Favorite.class);
-	}
+    private FavoriteResponses getFavorites(TokenResponse tokenResponse) {
+        return given().auth()
+            .oauth2(tokenResponse.getAccessToken())
+            .when()
+            .get("/favorite/me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(FavoriteResponses.class);
+    }
 
-	private void createFavorite(TokenResponse tokenResponse) {
-		Map<String, String> favoriteRequest = new HashMap<>();
-		favoriteRequest.put("source", "잠실");
-		favoriteRequest.put("target", "석촌고분");
+    private void createFavorite(TokenResponse tokenResponse) {
+        Map<String, String> favoriteRequest = new HashMap<>();
+        favoriteRequest.put("source", "잠실");
+        favoriteRequest.put("target", "석촌고분");
 
-		given().auth()
-			.oauth2(tokenResponse.getAccessToken())
-			.body(favoriteRequest)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when()
-			.post("/favorite/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.CREATED.value());
-	}
+        given().auth()
+            .oauth2(tokenResponse.getAccessToken())
+            .body(favoriteRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/favorite/me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.CREATED.value());
+    }
 }
