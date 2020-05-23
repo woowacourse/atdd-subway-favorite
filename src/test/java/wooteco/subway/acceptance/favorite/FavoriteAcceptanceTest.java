@@ -3,6 +3,7 @@ package wooteco.subway.acceptance.favorite;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -30,30 +32,52 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	then 즐겨찾기 목록에 이전에 삭제한 즐겨찾기가 없다.
 	*/
 
-	@DisplayName("사용자가 자신의 즐겨찾기 관리한다.")
-	@Test
-	public void favoriteScenario() {
-		String member = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		assertThat(member).isNotBlank();
+    @DisplayName("사용자가 자신의 즐겨찾기 관리한다.")
+    @Test
+    public void favoriteScenario() {
+        String member = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(member).isNotBlank();
 
-		TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		createFavorite(tokenResponse);
-	}
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        createFavorite(tokenResponse);
 
-	private void createFavorite(TokenResponse tokenResponse) {
-		Map<String, String> favoriteRequest = new HashMap<>();
-		favoriteRequest.put("source", "잠실");
-		favoriteRequest.put("target", "석촌고분");
+        List<Favorite> favorites = getFavorites(tokenResponse);
 
-		given().auth()
-			.oauth2(tokenResponse.getAccessToken())
-			.body(favoriteRequest)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when()
-			.post("/favorite/me")
-			.then()
-			.log().all()
-			.statusCode(HttpStatus.CREATED.value());
-	}
+        int memberIdIndex = member.lastIndexOf("/") + 1;
+        String memberId = member.substring(memberIdIndex);
+
+        assertThat(favorites).hasSize(1);
+        assertThat(favorites.get(0).getId()).isNotNull();
+        assertThat(favorites.get(0).getMemberId()).isEqualTo(Long.valueOf(memberId));
+        assertThat(favorites.get(0).getSource()).isEqualTo("잠실");
+        assertThat(favorites.get(0).getTarget()).isEqualTo("석촌고분");
+    }
+
+    private List<Favorite> getFavorites(TokenResponse tokenResponse) {
+        return given().auth()
+            .oauth2(tokenResponse.getAccessToken())
+            .when()
+            .get("/favorite/me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().jsonPath().getList(".", Favorite.class);
+    }
+
+    private void createFavorite(TokenResponse tokenResponse) {
+        Map<String, String> favoriteRequest = new HashMap<>();
+        favoriteRequest.put("source", "잠실");
+        favoriteRequest.put("target", "석촌고분");
+
+        given().auth()
+            .oauth2(tokenResponse.getAccessToken())
+            .body(favoriteRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/favorite/me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.CREATED.value());
+    }
 }

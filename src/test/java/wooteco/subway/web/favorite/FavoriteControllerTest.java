@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.AcceptanceTest.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,49 +39,67 @@ import wooteco.subway.service.member.MemberService;
 @AutoConfigureMockMvc
 public class FavoriteControllerTest {
 
-	@MockBean
-	protected MemberService memberService;
-	@MockBean
-	protected FavoriteService favoriteService;
+    @MockBean
+    protected MemberService memberService;
+    @MockBean
+    protected FavoriteService favoriteService;
 
-	@MockBean
-	protected JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    protected JwtTokenProvider jwtTokenProvider;
 
-	@Autowired
-	protected MockMvc mockMvc;
+    @Autowired
+    protected MockMvc mockMvc;
 
-	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-			.addFilter(new ShallowEtagHeaderFilter())
-			.apply(documentationConfiguration(restDocumentation))
-			.build();
-	}
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .addFilter(new ShallowEtagHeaderFilter())
+            .apply(documentationConfiguration(restDocumentation))
+            .build();
+    }
 
-	@Test
-	public void createFavorite() throws Exception {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		Favorite favorite = new Favorite(1L, "잠실", "석촌고분");
+    @Test
+    public void createFavorite() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Favorite favorite = new Favorite(1L, "잠실", "석촌고분");
 
-		given(jwtTokenProvider.validateToken(any())).willReturn(true);
-		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
-		given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
 
-		given(favoriteService.createFavorite(any())).willReturn(favorite);
+        given(favoriteService.createFavorite(any())).willReturn(favorite);
 
-		Map<String, String> favoriteRequest = new HashMap<>();
-		favoriteRequest.put("source", "잠실");
-		favoriteRequest.put("target", "석촌고분");
+        Map<String, String> favoriteRequest = new HashMap<>();
+        favoriteRequest.put("source", "잠실");
+        favoriteRequest.put("target", "석촌고분");
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		String requestDto = objectMapper.writeValueAsString(favoriteRequest);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestDto = objectMapper.writeValueAsString(favoriteRequest);
 
-		this.mockMvc.perform(post("/favorite/me")
-			.header("authorization", "Bearer 1q2w3e4r")
-			.content(requestDto)
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isCreated())
-			.andDo(print());
-	}
+        this.mockMvc.perform(post("/favorite/me")
+            .header("authorization", "Bearer 1q2w3e4r")
+            .content(requestDto)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andDo(print());
+    }
+
+    @Test
+    public void getFavorites() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Favorite favorite = new Favorite(1L, "잠실", "석촌고분");
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+
+        given(favoriteService.getFavorites(any())).willReturn(Arrays.asList(favorite));
+
+        this.mockMvc.perform(get("/favorite/me")
+            .header("authorization", "Bearer 1q2w3e4r")
+        )
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
 }
