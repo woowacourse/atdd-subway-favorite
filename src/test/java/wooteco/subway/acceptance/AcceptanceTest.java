@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -332,6 +333,42 @@ public class AcceptanceTest {
 			extract().as(TokenResponse.class);
 	}
 
+	public void createFavorite(TokenResponse tokenResponse, String preStationName, String stationName) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("preStationName", preStationName);
+		params.put("stationName", stationName);
+
+		given()
+			.auth().oauth2(tokenResponse.getAccessToken())
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(params)
+			.when()
+			.post("/favorites")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.CREATED.value());
+	}
+
+	public List<FavoriteResponse> getFavorites(TokenResponse tokenResponse) {
+		return given()
+			.auth().oauth2(tokenResponse.getAccessToken())
+			.when()
+			.get("/favorites")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.OK.value())
+			.extract().jsonPath().getList(".", FavoriteResponse.class);
+	}
+
+	public void deleteFavorite(TokenResponse tokenResponse) {
+		given()
+			.auth().oauth2(tokenResponse.getAccessToken())
+			.when()
+			.delete("/favorites")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
 	//@formatter:on
 }
 
