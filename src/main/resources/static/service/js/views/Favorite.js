@@ -15,7 +15,6 @@ function Favorite() {
       const template = await api.favorite
         .getAll()
         .then(favorites =>{
-          console.log(favorites)
           return favorites.map(edge => edgeItemTemplate(edge)).join("")
           }
         );
@@ -33,7 +32,7 @@ function Favorite() {
     }
     try {
       const edgeId = $target.closest(".edge-item").dataset.edgeId;
-      await api.favorite.delete(edgeId);
+      await api.favorite.delete('/' + edgeId);
       await initFavoriteList();
       showSnackbar(SUCCESS_MESSAGE.COMMON);
     } catch (e) {

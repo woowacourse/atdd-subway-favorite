@@ -33,10 +33,6 @@ function Login() {
     const isValid = () => {
         const email = $email.value;
         const password = $password.value;
-
-        console.log(email)
-        console.log(password);
-
         return email && password;
     };
 

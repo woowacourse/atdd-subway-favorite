@@ -89,26 +89,12 @@ public class MemberService {
 
     public Member saveFavorite(Long id, FavoriteRequest favoriteRequest) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchAccountException::new);
-        System.out.println(favoriteRequest);
-        System.out.println("##");
-        System.out.println(Favorite.of(favoriteRequest));
         member.addFavorite(Favorite.of(favoriteRequest));
         return memberRepository.save(member);
     }
 
     public void deleteFavorite(Long favoriteId) {
         memberRepository.deleteFavoriteById(favoriteId);
-    }
-
-    public void deleteFavorite(Long memberId, Long sourceStationId, Long targetStationId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchAccountException::new);
-        Favorite favoriteToBeDeleted = member.getFavorites().stream()
-            .filter(favorite -> favorite.getSourceStationId().equals(sourceStationId))
-            .filter(favorite -> favorite.getTargetStationId().equals(targetStationId))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("해당 경로가 없습니다."));
-        member.deleteFavorite(favoriteToBeDeleted);
-        memberRepository.save(member);
     }
 
     public String findStationNameById(final Long stationId) {

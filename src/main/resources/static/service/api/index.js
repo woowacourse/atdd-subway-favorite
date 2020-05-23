@@ -20,15 +20,12 @@ const METHOD = {
       })
     };
   },
-  DELETE(data = {}) {
+  DELETE() {
     return {
       method: "DELETE",
       headers: {
         Authorization: localStorage.getItem("jwt") || ""
       },
-      body: JSON.stringify(( {
-        ...data
-      }))
     };
   },
 
@@ -98,8 +95,8 @@ const api = (() => {
     getAll() {
       return requestWithJsonData(`/me/favorites`, METHOD.GET_WITH_AUTH());
     },
-    delete(data) {
-      return request(`/me/favorites`, METHOD.DELETE(data));
+    delete(url="") {
+      return request(`/me/favorites${url}`, METHOD.DELETE());
     }
   };
 

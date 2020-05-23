@@ -158,21 +158,18 @@ public class LoginMemberControllerTest {
         String inputJson = "{\"sourceStationId\":\"" + "1" + "\"," +
             "\"targetStationId\":\"" + "2" + "\"}";
 
-        this.mockMvc.perform(post("/me/favorites")
+        final MvcResult mvcResult = this.mockMvc.perform(post("/me/favorites")
             .header("Authorization", "bearer brownToken")
             .accept(MediaType.APPLICATION_JSON)
             .content(inputJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andReturn();
 
-        String deleteInputJson = "{\"sourceStationId\":\"" + "1" + "\"," +
-            "\"targetStationId\":\"" + "2" + "\"}";
-
-        this.mockMvc.perform(delete("/me/favorites")
+        this.mockMvc.perform(delete("/me/favorites/"+1)
         .header("Authorization", "bearer brownToken")
             .accept(MediaType.APPLICATION_JSON)
-            .content(deleteInputJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNoContent());

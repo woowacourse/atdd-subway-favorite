@@ -52,7 +52,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favorite.size()).isEqualTo(1);
         assertThat(favorite.get(0)).isNotNull();
 
-        deleteFavorite(tokenResponse, favoriteRequest.getSourceStationId(), favoriteRequest.getTargetStationId());
+        deleteFavorite(tokenResponse, favorite.get(0).getId());
         assertThat(getFavorite(tokenResponse).size()).isEqualTo(0);
     }
 
@@ -73,18 +73,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.CREATED.value());
     }
 
-    void deleteFavorite(TokenResponse token, Long sourceStationId, Long targetStationId) {
-        Map<String, String> params = new HashMap<>();
-        params.put("sourceStationId", String.valueOf(sourceStationId));
-        params.put("targetStationId", String.valueOf(targetStationId));
-
+    void deleteFavorite(TokenResponse token, Long favoriteId) {
         given()
             .header("Authorization", token.getTokenType() + " " + token.getAccessToken())
-            .body(params)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .delete("/me/favorites")
+            .delete("/me/favorites/"+favoriteId)
             .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());

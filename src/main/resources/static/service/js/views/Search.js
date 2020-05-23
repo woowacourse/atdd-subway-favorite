@@ -1,17 +1,10 @@
-import {
-  EVENT_TYPE,
-  SUCCESS_MESSAGE,
-  PATH_TYPE,
-  ERROR_MESSAGE
-} from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE, SUCCESS_MESSAGE } from "../../utils/constants.js";
 import api from "../../api/index.js";
 import { searchResultTemplate } from "../../utils/templates.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 
 function Search() {
-  const $departureStationName = document.querySelector(
-    "#departure-station-name"
-  );
+  const $departureStationName = document.querySelector("#departure-station-name");
   const $arrivalStationName = document.querySelector("#arrival-station-name");
   const $searchButton = document.querySelector("#search-button");
   const $searchResultContainer = document.querySelector(
@@ -55,7 +48,8 @@ function Search() {
       const data = await api.path.find(searchInput);
       searchTargetStations = data.stations;
       showSearchResult(data);
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
@@ -64,13 +58,13 @@ function Search() {
     event.preventDefault();
     try {
       const path = {
-        source_station_id: searchTargetStations[0].id,
-        target_station_id: searchTargetStations[1].id
+        sourceStationId: searchTargetStations[0].id,
+        targetStationId: searchTargetStations[searchTargetStations.length-1].id,
       };
-      console.log(path);
-      await api.favorite.create(path);
+      await api.favorite.create(path).then().catch(err => console.log(err));
       showSnackbar(SUCCESS_MESSAGE.FAVORITE);
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };

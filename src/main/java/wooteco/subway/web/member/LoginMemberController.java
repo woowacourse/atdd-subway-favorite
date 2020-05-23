@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,9 +72,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity addFavorite(@LoginMember Member member,
-        @RequestBody FavoriteRequest favoriteRequest) {
-
+    public ResponseEntity addFavorite(@LoginMember Member member, @RequestBody FavoriteRequest favoriteRequest) {
         memberService.saveFavorite(member.getId(), favoriteRequest);
         String sourceStationName = memberService.findStationNameById(
             favoriteRequest.getSourceStationId());
@@ -88,10 +87,10 @@ public class LoginMemberController {
                 .build();
     }
 
-    @DeleteMapping("/favorites")
-    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @RequestBody FavoriteRequest favoriteRequest) {
-        memberService.deleteFavorite(member.getId(), favoriteRequest.getSourceStationId(), favoriteRequest
-            .getTargetStationId());
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member,
+        @PathVariable final Long favoriteId) {
+        memberService.deleteFavorite(favoriteId);
         return ResponseEntity.noContent().build();
     }
 }
