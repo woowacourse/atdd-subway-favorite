@@ -38,4 +38,14 @@ create table if not exists MEMBER
     primary key(id)
 );
 
--- // TODO 즐겨찾기 테이블 스키마 추가
+create table if not exists FAVORITE
+(
+    id bigint auto_increment not null,
+    member_id bigint not null,
+    start_station_name varchar(255) not null,
+    end_station_name varchar(255) not null,
+    primary key(id),
+    foreign key(member_id) REFERENCES MEMBER (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    foreign key(start_station_name) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE,
+    foreign key(end_station_name) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE
+);
