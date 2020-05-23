@@ -14,7 +14,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -57,7 +56,6 @@ public class FavoriteControllerTest {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andDo(MemberDocumentation.createMember())
                 .andDo(print())
                 .andExpect(status().isCreated());
     }

@@ -101,10 +101,10 @@
 1. 즐겨찾기 추가
 
     - [x] 인수 테스트 작성
-    - [ ] Controller 테스트 작성
+    - [x] Controller 테스트 작성
     - [ ] Controller 구현
-    - [ ] Service 테스트 작성
-    - [ ] Service 구현
+    - [x] Service 테스트 작성
+    - [x] Service 구현
     - [ ] Repository 테스트 작성
     - [ ] Repository 구현
     
