@@ -7,6 +7,8 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
+import wooteco.subway.web.member.argumentresolver.annotation.UpdateMember;
 
 import javax.validation.Valid;
 import java.net.URI;

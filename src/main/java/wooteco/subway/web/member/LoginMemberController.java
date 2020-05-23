@@ -10,6 +10,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.LoginResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
 
 import javax.validation.Valid;
 

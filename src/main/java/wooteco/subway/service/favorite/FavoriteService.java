@@ -15,4 +15,8 @@ public class FavoriteService {
     public Favorite createFavorite(String source, String target, String memberEmail) {
         return favoriteRepository.save(new Favorite(source, target, memberEmail));
     }
+
+    public Favorite findFavoriteBySourceAndTarget(String source, String target) {
+        return favoriteRepository.findBySourceAndTarget(source, target);
+    }
 }

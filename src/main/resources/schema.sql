@@ -42,10 +42,10 @@ create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
     member_email varchar(255) not null,
-    start_station_name varchar(255) not null,
-    end_station_name varchar(255) not null,
-    primary key(id),
-    foreign key(member_email) REFERENCES MEMBER (email) ON DELETE CASCADE ON UPDATE CASCADE,
-    foreign key(start_station_name) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE,
-    foreign key(end_station_name) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE
+    source varchar(255) not null,
+    target varchar(255) not null,
+    primary key(id)
+--     foreign key(member_email) REFERENCES MEMBER (email) ON DELETE CASCADE ON UPDATE CASCADE,
+--     foreign key(source) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE,
+--     foreign key(target) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE
 );

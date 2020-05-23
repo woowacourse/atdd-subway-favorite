@@ -11,7 +11,6 @@ public class Favorite {
     private String target;
 
     public Favorite() {
-
     }
 
     public Favorite(Long id, String source, String target, String memberEmail) {
@@ -41,5 +40,19 @@ public class Favorite {
 
     public String getTarget() {
         return target;
+    }
+
+    public boolean isNotEqualEmail(String email) {
+        return !this.memberEmail.equals(email);
+    }
+
+    @Override
+    public String toString() {
+        return "Favorite{" +
+                "id=" + id +
+                ", memberEmail='" + memberEmail + '\'' +
+                ", source='" + source + '\'' +
+                ", target='" + target + '\'' +
+                '}';
     }
 }

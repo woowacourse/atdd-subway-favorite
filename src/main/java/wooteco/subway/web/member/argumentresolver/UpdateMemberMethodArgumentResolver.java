@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.argumentresolver;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -8,6 +8,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.web.member.argumentresolver.annotation.UpdateMember;
 import wooteco.subway.web.member.exception.UnAuthorizationException;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;

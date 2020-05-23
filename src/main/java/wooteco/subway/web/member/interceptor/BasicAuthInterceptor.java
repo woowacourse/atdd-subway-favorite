@@ -4,8 +4,8 @@
 //import org.springframework.web.servlet.HandlerInterceptor;
 //import wooteco.subway.domain.member.Member;
 //import wooteco.subway.service.member.MemberService;
-//import wooteco.subway.web.member.AuthorizationExtractor;
-//import wooteco.subway.web.member.InvalidAuthenticationException;
+//import wooteco.subway.web.member.util.AuthorizationExtractor;
+//import wooteco.subway.web.member.exception.InvalidAuthenticationException;
 //
 //import javax.servlet.http.HttpServletRequest;
 //import javax.servlet.http.HttpServletResponse;
