@@ -31,7 +31,6 @@ import static wooteco.subway.service.member.MemberServiceTest.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
-    // TODO: 회원가입 API 테스트
 
     @Autowired
     private MockMvc mvc;

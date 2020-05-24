@@ -13,7 +13,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        assertThat(location).isNotBlank();
+        assertThat(location).isNotEmpty();
 
         MemberResponse memberResponse = getMember(TEST_USER_EMAIL);
         assertThat(memberResponse.getId()).isNotNull();

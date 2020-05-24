@@ -8,10 +8,14 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -300,6 +304,49 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public TokenResponse loginMember(final String email, final String password) {
+        final LoginRequest request = new LoginRequest(email, password);
+
+        return
+                given().
+                        body(request).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                        post("/me/login").
+                then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(TokenResponse.class);
+    }
+
+    public void addMyFavorite(final TokenResponse token, final String source, final String target) {
+        FavoriteRequest request = new FavoriteRequest(source, target);
+
+        given().
+                header("Authorization", token.getTokenType() + " " + token.getAccessToken()).
+                body(request).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                post("/favorites").
+        then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value());
+    }
+
+    public List<FavoriteResponse> getMyFavorites(final TokenResponse token) {
+
+        return given().
+                        header("Authorization", token.getTokenType() + " " + token.getAccessToken()).
+                when().
+                        get("/favorites").
+                then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", FavoriteResponse.class);
     }
 }
 

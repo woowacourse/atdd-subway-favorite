@@ -58,11 +58,11 @@ public class MemberServiceTest {
     @Test
     void updateMember() {
         Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
 
         final UpdateMemberRequest updateParam = new UpdateMemberRequest("수정된 보스독", "수정된 비밀번호");
         memberService.updateMember(member.getId(), updateParam);
 
-        verify(memberRepository).findByEmail(eq(TEST_USER_EMAIL));
+        verify(memberRepository).findById(eq(member.getId()));
     }
 }
