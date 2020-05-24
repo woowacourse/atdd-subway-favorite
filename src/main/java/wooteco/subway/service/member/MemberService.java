@@ -1,12 +1,16 @@
 package wooteco.subway.service.member;
 
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.DuplicateMemberException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -19,6 +23,9 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
+        if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
+            throw new DuplicateMemberException();
+        }
         return memberRepository.save(member);
     }
 

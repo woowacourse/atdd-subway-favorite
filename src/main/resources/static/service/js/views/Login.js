@@ -17,14 +17,14 @@ function Login() {
       password: passwordValue
     }
 
-    api.memberWithoutToken.login(loginInformation)
+    await api.memberWithoutToken.login(loginInformation)
         .then((data) => {
-          if (data.accessToken !== null) {
+          if (data.accessToken !== undefined) {
             alert("로그인 성공!")
             localStorage.setItem("accessToken", data.accessToken)
             localStorage.setItem("tokenType", data.tokenType)
             location.href = "/"
-          } else if (data.status === 401) {
+          } else {
             alert(ERROR_MESSAGE.LOGIN_FAIL)
             return
           }
@@ -32,6 +32,12 @@ function Login() {
   }
 
   this.init = () => {
+    if (localStorage.getItem("accessToken") !== null) {
+      alert("이미 로그인된 상태입니다.")
+      location.href = "/"
+      return
+    }
+
     $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin)
   }
 }
