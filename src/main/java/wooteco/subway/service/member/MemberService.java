@@ -27,7 +27,7 @@ public class MemberService {
             memberRepository.save(member);
         } catch (DbActionExecutionException e) {
             if (e.getCause() instanceof DuplicateKeyException) {
-                throw new MemberCreationException("이미 가입된 이메일 주소입니다.");
+                throw new MemberCreationException(MemberCreationException.DUPLICATED_EMAIL);
             }
         }
         return MemberResponse.of(member);

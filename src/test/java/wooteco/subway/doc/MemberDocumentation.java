@@ -82,4 +82,51 @@ public class MemberDocumentation {
             )
         );
     }
+
+    public static RestDocumentationResultHandler failedCreateMemberByBlank() {
+        return document("members/create/fail/blank",
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler failedCreateMemberByDuplication() {
+        return document("members/create/fail/duplication",
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+           responseFields(
+               fieldWithPath("message").type(JsonFieldType.STRING)
+               .description("The error message")
+           )
+        );
+    }
+
+    public static RestDocumentationResultHandler failedUpdateMemberByBlank() {
+        return document("members/update/fail/blank",
+            requestFields(
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+           responseFields(
+               fieldWithPath("message").type(JsonFieldType.STRING)
+               .description("The error message")
+           )
+        );
+    }
+
 }

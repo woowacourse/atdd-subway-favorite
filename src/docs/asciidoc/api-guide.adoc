@@ -5,7 +5,7 @@ endif::[]
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 3
+:toclevels: 2
 :sectlinks:
 :operation-http-request-title: Example Request
 :operation-http-response-title: Example Response
@@ -31,7 +31,6 @@ operation::members/login[snippets='http-request,http-response,request-fields,res
 
 operation::members/getMemberByEmail[snippets='http-request,http-response,request-headers,response-fields']
 
-
 [[resources-members-update]]
 === 정보 수정
 
@@ -41,3 +40,20 @@ operation::members/update[snippets='http-request,http-response,path-parameters,r
 === 회원 탈퇴
 
 operation::members/delete[snippets='http-request,http-response,path-parameters,request-headers']
+
+[[resources-members-create-fail-blank]]
+=== [예외] 회원 가입 실패 : 빈 문자열
+
+operation::members/create/fail/blank[snippets='http-request,http-response,request-fields,response-body']
+
+[[resources-members-create-fail-duplication]]
+=== [예외] 회원 가입 실패 : 이메일 중복
+
+operation::members/create/fail/duplication[snippets='http-request,http-response,request-fields,response-body']
+
+
+[[resources-members-update-fail-blank]]
+
+=== [예외] 회원 정보 수정 실패 : 빈 문자열
+
+operation::members/update/fail/blank[snippets='http-request,http-response,request-fields,response-body']
