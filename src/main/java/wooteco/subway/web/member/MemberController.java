@@ -23,7 +23,7 @@ public class MemberController {
 
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
-        MemberResponse response = memberService.createMember(request.toMember());
+        MemberResponse response = memberService.createMember(request);
         return ResponseEntity
             .created(URI.create("/members/" + response.getId()))
             .build();

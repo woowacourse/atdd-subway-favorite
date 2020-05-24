@@ -1,13 +1,17 @@
 package wooteco.subway.service.member;
 
+import javax.validation.Valid;
+
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.exception.MemberCreationException;
@@ -22,7 +26,8 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public MemberResponse createMember(Member member) {
+    public MemberResponse createMember(@Valid MemberRequest request) {
+        Member member = request.toMember();
         try {
             memberRepository.save(member);
         } catch (DbActionExecutionException e) {

@@ -8,17 +8,27 @@ import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.exception.MemberCreationException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -42,13 +52,15 @@ public class MemberServiceTest {
 
     @Test
     void createMember() {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
+            TEST_USER_PASSWORD);
+        Member member = memberRequest.toMember();
         when(memberRepository.save(any())).thenReturn(member);
 
-        MemberResponse response = memberService.createMember(member);
+        MemberResponse response = memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
-        assertThat(response.getId()).isEqualTo(member.getId());
+        assertThat(response.getEmail()).isEqualTo(member.getEmail());
     }
 
     @Test
@@ -95,5 +107,15 @@ public class MemberServiceTest {
     void deleteMember() {
         memberService.deleteMember(member.getId());
         verify(memberRepository).deleteById(member.getId());
+    }
+
+    @DisplayName("(예외) 회원가입 시 빈 문자열 입력")
+    @Test
+    void failedCreateMemberByBlank() {
+        MemberRequest memberRequest = new MemberRequest("", "", "");
+        when(memberRepository.save(any())).thenThrow(MemberCreationException.class);
+
+        assertThatThrownBy(() -> memberService.createMember(memberRequest))
+            .isInstanceOf(MemberCreationException.class);
     }
 }

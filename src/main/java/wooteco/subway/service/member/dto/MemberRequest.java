@@ -13,6 +13,12 @@ public class MemberRequest {
     @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 
+    public MemberRequest(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
