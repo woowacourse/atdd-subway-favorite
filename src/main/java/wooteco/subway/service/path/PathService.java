@@ -47,8 +47,8 @@ public class PathService {
                 .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+        int duration = paths.stream().mapToInt(LineStation::getDuration).sum();
+        int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
 
         List<Station> pathStation = path.stream()
                 .map(it -> extractStation(it, stations))

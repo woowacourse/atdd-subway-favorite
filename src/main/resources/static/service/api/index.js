@@ -101,6 +101,7 @@ const api = (() => {
 
   const favorite = {
     create(favoritePath) {
+      console.log(favoritePath)
       return request(`/favorites`, METHOD.POST(favoritePath));
     },
     get(id) {
