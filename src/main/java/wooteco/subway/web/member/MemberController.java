@@ -12,15 +12,15 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
-        Member member = memberService.createMember(view.toMember());
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+        Member member = memberService.createMember(request.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
                 .build();

@@ -19,9 +19,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
-    public static final String TEST_USER_EMAIL = "brown@email.com";
-    public static final String TEST_USER_NAME = "브라운";
-    public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_USER_EMAIL = "bossdog@email.com";
+    public static final String TEST_USER_NAME = "boss";
+    public static final String TEST_USER_PASSWORD = "dog";
 
     private MemberService memberService;
 

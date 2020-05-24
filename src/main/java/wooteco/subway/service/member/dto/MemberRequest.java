@@ -7,6 +7,9 @@ public class MemberRequest {
     private String name;
     private String password;
 
+    private MemberRequest() {
+    }
+
     public String getEmail() {
         return email;
     }

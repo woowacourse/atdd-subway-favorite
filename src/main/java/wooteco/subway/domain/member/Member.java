@@ -3,6 +3,8 @@ package wooteco.subway.domain.member;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
+import java.util.Objects;
+
 public class Member {
     @Id
     private Long id;
@@ -53,5 +55,18 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Member member = (Member) o;
+        return id.equals(member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
