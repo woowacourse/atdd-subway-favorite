@@ -51,9 +51,4 @@ public class MemberService {
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
-    }
 }

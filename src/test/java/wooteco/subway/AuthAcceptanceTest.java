@@ -31,7 +31,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                         auth().oauth2(tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                        get("/me/bearer").
+                        get("/me").
                 then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
