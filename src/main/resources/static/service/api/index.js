@@ -19,9 +19,9 @@ const METHOD = {
       })
     }
   },
-  POST_WITH_TOKEN(data) {
+  PUT_WITH_TOKEN(data) {
     return {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': localStorage.getItem("tokenType") + " " + localStorage.getItem("accessToken")
@@ -31,7 +31,6 @@ const METHOD = {
       })
     }
   },
-
   PUT() {
     return {
       method: 'PUT'
@@ -77,7 +76,7 @@ const api = (() => {
       return requestWithJsonData(`/me`, METHOD.GET_WITH_TOKEN())
     },
     updateMyInformation(params) {
-      return request(`/me`, METHOD.POST_WITH_TOKEN(params))
+      return request(`/me`, METHOD.PUT_WITH_TOKEN(params))
     }
   }
 

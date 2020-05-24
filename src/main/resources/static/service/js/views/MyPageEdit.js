@@ -35,8 +35,12 @@ function MyPageEdit() {
       name: $name.value,
       password: $password.value
     }
-    api.memberWithToken.updateMyInformation(editInfo).then(() => {
+    api.memberWithToken.updateMyInformation(editInfo).then((data) => {
+      if (!data.ok) {
+        throw new Error(data.status)
+      }
       alert("정상적으로 수정되었습니다.")
+      location.href = "/"
     }).catch(error => {
       alert(ERROR_MESSAGE.EDIT_FAIL)
     })
