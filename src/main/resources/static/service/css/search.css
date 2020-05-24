@@ -1,24 +1,24 @@
 .favorite-button {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
 }
 
 @media (max-width: 640px) {
-    .app-container {
-        top: 45px;
-    }
+  .app-container {
+    top: 45px;
+  }
 }
 
 .tab-menu a {
-    background-color: #e2e8f0;
-    color: #a0aec0;
+  background-color: #e2e8f0;
+  color: #a0aec0;
 }
 
 .tab-menu.active-tab a {
-    background-color: white;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    color: #4a5568;
+  background-color: white;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-top-width: 1px;
+  color: #4a5568;
 }

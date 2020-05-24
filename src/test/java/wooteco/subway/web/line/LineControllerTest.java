@@ -1,5 +1,13 @@
 package wooteco.subway.web.line;
 
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -9,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
@@ -16,18 +25,7 @@ import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-// @WebMvcTest(controllers = LineController.class)
 @SpringBootTest
-//@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @Import(ETagHeaderFilter.class)
 public class LineControllerTest {
@@ -41,24 +39,24 @@ public class LineControllerTest {
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(
-                Arrays.asList(createMockResponse(), createMockResponse()));
+            Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.findLinesWithStations()).willReturn(response);
 
         String uri = "/lines/detail";
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(header().exists("ETag"))
-                .andReturn();
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
 
         String eTag = mvcResult.getResponse().getHeader("ETag");
 
         mockMvc.perform(get(uri).header("If-None-Match", eTag))
-                .andDo(print())
-                .andExpect(status().isNotModified())
-                .andExpect(header().exists("ETag"))
-                .andReturn();
+            .andDo(print())
+            .andExpect(status().isNotModified())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
     }
 
     private LineDetailResponse createMockResponse() {

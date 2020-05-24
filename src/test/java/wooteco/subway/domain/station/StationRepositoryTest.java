@@ -1,11 +1,11 @@
 package wooteco.subway.domain.station;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJdbcTest
 public class StationRepositoryTest {
@@ -18,6 +18,6 @@ public class StationRepositoryTest {
         stationRepository.save(new Station(stationName));
 
         assertThrows(DbActionExecutionException.class,
-                () -> stationRepository.save(new Station(stationName)));
+            () -> stationRepository.save(new Station(stationName)));
     }
 }

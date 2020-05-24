@@ -1,7 +1,11 @@
 package wooteco.subway.acceptance.member;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import static io.restassured.RestAssured.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,14 +15,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -61,16 +62,16 @@ public class MemberAcceptanceTest {
         params.put("password", password);
 
         return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/members").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().header("Location");
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value()).
+                extract().header("Location");
     }
 
     private TokenResponse login(String email, String password) {
@@ -79,30 +80,30 @@ public class MemberAcceptanceTest {
         params.put("password", password);
 
         Response response = given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/login").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value())
-                .extract()
-                .response();
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            post("/login").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value())
+            .extract()
+            .response();
         String token = response.getHeader(HttpHeaders.AUTHORIZATION);
         return TokenResponse.of(token);
     }
 
     private MemberResponse getMember(TokenResponse tokenResponse) {
         return given()
-                .auth()
-                .oauth2(tokenResponse.getAccessToken())
-                .when()
-                .get("/members")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(MemberResponse.class);
+            .auth()
+            .oauth2(tokenResponse.getAccessToken())
+            .when()
+            .get("/members")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(MemberResponse.class);
     }
 
     public void updateMember(TokenResponse tokenResponse, MemberResponse memberResponse) {
@@ -111,25 +112,25 @@ public class MemberAcceptanceTest {
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         given().
-                auth().
-                oauth2(tokenResponse.getAccessToken()).
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                put("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+            auth().
+            oauth2(tokenResponse.getAccessToken()).
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            put("/members/" + memberResponse.getId()).
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value());
     }
 
     public void deleteMember(TokenResponse tokenResponse, MemberResponse memberResponse) {
         given().
-                auth().
-                oauth2(tokenResponse.getAccessToken()).when().
-                delete("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+            auth().
+            oauth2(tokenResponse.getAccessToken()).when().
+            delete("/members/" + memberResponse.getId()).
+            then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -5,7 +5,7 @@ endif::[]
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 2
+:toclevels: 3
 :sectlinks:
 :operation-http-request-title: Example Request
 :operation-http-response-title: Example Response
@@ -19,4 +19,25 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,http-response,request-fields,response-headers']
+
+[[resources-members-login]]
+=== 로그인
+
+operation::members/login[snippets='http-request,http-response,request-fields,response-headers']
+
+[[resources-members-get]]
+=== 정보 조회
+
+operation::members/getMemberByEmail[snippets='http-request,http-response,request-headers,response-fields']
+
+
+[[resources-members-update]]
+=== 정보 수정
+
+operation::members/update[snippets='http-request,http-response,path-parameters,request-headers,request-fields']
+
+[[resources-members-delete]]
+=== 회원 탈퇴
+
+operation::members/delete[snippets='http-request,http-response,path-parameters,request-headers']

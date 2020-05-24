@@ -1,27 +1,27 @@
 package wooteco.subway.service.line;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.service.line.dto.LineDetailResponse;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.dto.LineDetailResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class LineStationServiceTest {
@@ -77,14 +77,14 @@ public class LineStationServiceTest {
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
 
         List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"),
-                new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
-                new Station(6L, "청계산입구역"));
+            new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"),
+            new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
         List<LineDetailResponse> lineDetails = lineStationService.findLinesWithStations()
-                .getLineDetailResponse();
+            .getLineDetailResponse();
 
         assertThat(lineDetails).isNotNull();
         assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);
