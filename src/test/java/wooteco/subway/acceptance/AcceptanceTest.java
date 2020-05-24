@@ -337,16 +337,27 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.CREATED.value());
     }
 
-    public List<FavoriteResponse> getMyFavorites(final TokenResponse token) {
-
+    public List<FavoriteResponse> getAllMyFavorites(final TokenResponse token) {
         return given().
                         header("Authorization", token.getTokenType() + " " + token.getAccessToken()).
                 when().
                         get("/favorites").
                 then().
                         log().all().
+                        statusCode(HttpStatus.OK.value()).
                         extract().
                         jsonPath().getList(".", FavoriteResponse.class);
+    }
+
+    public void removeFavorite(final TokenResponse token, final Long id) {
+            given().
+                    header("Authorization", token.getTokenType() + " " + token.getAccessToken()).
+            when().
+                    delete("/favorites/" + id).
+            then().
+                    log().all().
+                    statusCode(HttpStatus.NO_CONTENT.value());
+
     }
 }
 

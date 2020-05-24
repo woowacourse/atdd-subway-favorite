@@ -62,8 +62,12 @@ class FavoriteServiceTest {
         assertThat(responses.get(0).getMemberId()).isEqualTo(63L);
         assertThat(responses.get(0).getSourceStationId()).isEqualTo(1L);
         assertThat(responses.get(0).getTargetStationId()).isEqualTo(3L);
+    }
 
-
+    @Test
+    public void removeMyFavorite() {
+        favoriteService.removeFavorite(10L);
+        verify(favoriteRepository).deleteById(eq(10L));
     }
 
 }

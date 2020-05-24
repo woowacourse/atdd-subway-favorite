@@ -33,4 +33,8 @@ public class FavoriteService {
     public List<FavoriteResponse> showMyAllFavorites(final Long memberId) {
         return FavoriteResponse.listFrom(favoriteRepository.findAllByMemberId(memberId));
     }
+
+    public void removeFavorite(final Long id) {
+        favoriteRepository.deleteById(id);
+    }
 }

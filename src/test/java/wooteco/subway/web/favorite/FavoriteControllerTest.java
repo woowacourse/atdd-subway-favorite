@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
@@ -22,8 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -78,9 +78,21 @@ class FavoriteControllerTest {
         when(favoriteService.showMyAllFavorites(any())).thenReturn(responses);
 
         mvc.perform(get("/favorites")
-        .header("Authorization", "Bearer mockToken"))
+                .header("Authorization", "Bearer mockToken"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"id\":10,\"memberId\":63,\"sourceStationId\":1,\"targetStationId\":3}]"));
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    public void removeFavorites() throws Exception {
+        Favorite favorite = new Favorite(10L, 63L, 1L, 3L);
+        mvc.perform(delete("/favorites/" + favorite.getId())
+                .header("Authorization", "Bearer mockToken"))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        verify(favoriteService).removeFavorite(eq(10L));
     }
 }
