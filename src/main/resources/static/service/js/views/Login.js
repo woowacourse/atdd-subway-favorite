@@ -21,7 +21,7 @@ function Login() {
       const jwt = await api.member.login(loginMember);
       if (jwt) {
         localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
-        location.href = "/";
+        location.href = "/search";
         return;
       }
       showSnackbar(ERROR_MESSAGE.COMMON);
@@ -33,7 +33,9 @@ function Login() {
   const isValid = () => {
     const email = $email.value;
     const password = $password.value;
-    return !email || !password;
+    console.log(email)
+    console.log(password)
+    return email && password;
   };
 
   this.init = () => {
