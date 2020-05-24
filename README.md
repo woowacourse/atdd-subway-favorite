@@ -1,5 +1,5 @@
 ## 1. 회원 관리
-- [ ] email, name, password로 회원가입
+- [x] email, name, password로 회원가입
 - [ ] 로그인 (email, password)
 - [ ] 로그아웃
 - [ ] 로그인 성공시 내 정보 페이지(MyPage)로 이동
