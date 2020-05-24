@@ -1,5 +1,7 @@
 package wooteco.subway.service.member;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
@@ -8,6 +10,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.exception.MemberCreationException;
 
 @Service
 public class MemberService {
@@ -20,7 +23,14 @@ public class MemberService {
     }
 
     public MemberResponse createMember(Member member) {
-        return MemberResponse.of(memberRepository.save(member));
+        try {
+            memberRepository.save(member);
+        } catch (DbActionExecutionException e) {
+            if (e.getCause() instanceof DuplicateKeyException) {
+                throw new MemberCreationException("이미 가입된 이메일 주소입니다.");
+            }
+        }
+        return MemberResponse.of(member);
     }
 
     public String createToken(LoginRequest request) {

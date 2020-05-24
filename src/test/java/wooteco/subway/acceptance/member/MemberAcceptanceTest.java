@@ -2,6 +2,7 @@ package wooteco.subway.acceptance.member;
 
 import static io.restassured.RestAssured.*;
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,23 +40,58 @@ public class MemberAcceptanceTest {
     @DisplayName("회원 관리 기능")
     @Test
     void manageMember() {
-        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        assertThat(location).isNotBlank();
+        //When : 회원가입
+        Response createResponse = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        //Then : 회원 정보 생성
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createResponse.getHeader("Location")).isNotNull();
 
+        //When : 로그인
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        //Then : 토큰 발급
+        assertThat(tokenResponse.getTokenType()).isEqualTo(BEARER);
+        assertThat(tokenResponse.getAccessToken()).isNotNull();
+
+        //When : 회원 조회
         MemberResponse memberResponse = getMember(tokenResponse);
+        //Then : 회원 정보 반환
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMember(tokenResponse, memberResponse);
+        //When : 회원 정보 수정
+        Response updateResponse = updateMember(tokenResponse, memberResponse,
+            "NEW " + TEST_USER_NAME, "NEW " + TEST_USER_PASSWORD);
         MemberResponse persistMember = getMember(tokenResponse);
-        assertThat(persistMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
+        //Then : 수정 완료
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(persistMember.getName()).isEqualTo("NEW " + TEST_USER_NAME);
 
+        //When : 회원 탈퇴
+        //Then : 탈퇴 완료
         deleteMember(tokenResponse, persistMember);
+
+        //When : (예외) 회원가입 시 빈 문자열 입력
+        Response failedCreateResponse = createMember("", "", "");
+        //Then : 400 에러 발생
+        assertThat(failedCreateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(failedCreateResponse.getHeader("Location")).isNull();
+
+        //When : (예외) 회원가입 시 중복된 이메일 입력
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Response failedCreateResponseByDuplicatedEmail = createMember(TEST_USER_EMAIL, "라이언",
+            "1234");
+        assertThat(failedCreateResponseByDuplicatedEmail.statusCode()).isEqualTo(
+            HttpStatus.BAD_REQUEST.value());
+        assertThat(failedCreateResponseByDuplicatedEmail.getHeader("Location")).isNull();
+
+        //When : (예외) 회원 정보 수정 시 빈 문자열 입력
+        Response failedUpdateResponse = updateMember(tokenResponse, memberResponse, "", "");
+        //Then : 400 에러 발생
+        assertThat(failedUpdateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private String createMember(String email, String name, String password) {
+    private Response createMember(String email, String name, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
@@ -70,8 +106,7 @@ public class MemberAcceptanceTest {
                 post("/members").
                 then().
                 log().all().
-                statusCode(HttpStatus.CREATED.value()).
-                extract().header("Location");
+                extract().response();
     }
 
     private TokenResponse login(String email, String password) {
@@ -106,12 +141,13 @@ public class MemberAcceptanceTest {
             .extract().as(MemberResponse.class);
     }
 
-    public void updateMember(TokenResponse tokenResponse, MemberResponse memberResponse) {
+    public Response updateMember(TokenResponse tokenResponse, MemberResponse memberResponse,
+        String name, String password) {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("name", name);
+        params.put("password", password);
 
-        given().
+        return given().
             auth().
             oauth2(tokenResponse.getAccessToken()).
             body(params).
@@ -121,7 +157,7 @@ public class MemberAcceptanceTest {
             put("/members/" + memberResponse.getId()).
             then().
             log().all().
-            statusCode(HttpStatus.OK.value());
+            extract().response();
     }
 
     public void deleteMember(TokenResponse tokenResponse, MemberResponse memberResponse) {
