@@ -44,4 +44,10 @@ public class LoginMemberController {
         memberService.updateMember(member.getId(), request);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> delete(@LoginMember Member member) {
+        memberService.deleteMember(member.getId());
+        return ResponseEntity.noContent().build();
+    }
 }

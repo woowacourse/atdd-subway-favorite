@@ -21,7 +21,7 @@ function MyInfo() {
     try {
       await api.loginMember.delete();
       localStorage.setItem("jwt", "");
-      location.href = "/";
+      location.href = "/login";
     } catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
