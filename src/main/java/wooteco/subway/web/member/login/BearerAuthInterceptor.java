@@ -33,10 +33,10 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
     private void validateToken(String token) {
         if (StringUtils.isEmpty(token)) {
-            throw new InvalidAuthenticationException("비정상적인 접근입니다.");
+            throw new InvalidAuthenticationException("토큰이 비어있습니다.");
         }
         if(!jwtTokenProvider.validateToken(token)){
-            throw new InvalidAuthenticationException("비정상적인 접근입니다.");
+            throw new InvalidAuthenticationException("비정상적인 토큰입니다.");
         }
     }
 
