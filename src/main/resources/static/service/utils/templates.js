@@ -30,7 +30,7 @@ export const memberInfo = member => {
           </a>
         </li>
         <li>
-          <a href="/logout" 
+          <a href="/me/logout" 
           id="logout-button" 
           class="rounded-b hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap"
           onclick="return localStorage.removeItem('jwt')"

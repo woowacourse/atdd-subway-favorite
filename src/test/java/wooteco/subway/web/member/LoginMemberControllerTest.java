@@ -38,7 +38,7 @@ class LoginMemberControllerTest {
     public void login() throws Exception {
         given(memberService.createToken(any())).willReturn("this is accessToken");
 
-        mvc.perform(post("/oauth/token")
+        mvc.perform(post("/me/login")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"bossdog@email.com\",\"password\":\"dog\"}"))
@@ -56,7 +56,7 @@ class LoginMemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(member.getEmail());
 
-        mvc.perform(get("/me/bearer")
+        mvc.perform(get("/me")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer mockToken"))

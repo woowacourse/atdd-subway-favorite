@@ -9,11 +9,11 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,5 +53,16 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void updateMember() {
+        Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
+
+        final UpdateMemberRequest updateParam = new UpdateMemberRequest("수정된 보스독", "수정된 비밀번호");
+        memberService.updateMember(member.getId(), updateParam);
+
+        verify(memberRepository).findByEmail(eq(TEST_USER_EMAIL));
     }
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("/me")
 public class LoginMemberController {
     private final MemberService memberService;
 
@@ -20,7 +21,7 @@ public class LoginMemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/oauth/token")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
         return ResponseEntity.ok().body(new TokenResponse(token, "Bearer"));
@@ -32,12 +33,12 @@ public class LoginMemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/me/bearer")
+    @GetMapping
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/me")
+    @PutMapping
     public ResponseEntity<Void> update(
             @LoginMember Member member,
             @RequestBody UpdateMemberRequest request) {
@@ -45,7 +46,7 @@ public class LoginMemberController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/me")
+    @DeleteMapping
     public ResponseEntity<Void> delete(@LoginMember Member member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
