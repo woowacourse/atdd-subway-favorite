@@ -11,6 +11,9 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @RestController
 public class LoginMemberController {
     private final MemberService memberService;
@@ -28,5 +31,11 @@ public class LoginMemberController {
     @GetMapping("/me/bearer")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @GetMapping("logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/login");
+        return ResponseEntity.ok().build();
     }
 }

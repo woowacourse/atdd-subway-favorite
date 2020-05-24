@@ -1,17 +1,17 @@
 export const listItemTemplate = data =>
-  `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
+    `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
     ${data.name}
   </div>`;
 
 export const memberInfo = member => {
-  if (!member) {
-    return ` <a href="/login" class="inline-block login-button absolute text-sm px-4 py-2 leading-none border rounded text-gray-800 border-gray-800 hover:border-transparent hover:bg-yellow-400">로그인</a>`;
-  }
-  return `<div class="dropdown inline-block absolute right-10px">
+    if (!member) {
+        return ` <a href="/login" class="inline-block login-button absolute text-sm px-4 py-2 leading-none border rounded text-gray-800 border-gray-800 hover:border-transparent hover:bg-yellow-400">로그인</a>`;
+    }
+    return `<div class="dropdown inline-block absolute right-10px">
       <button class="text-gray-800 border-gray-800 hover:border-transparent hover:bg-yellow-400 font-semibold py-2 px-5 rounded inline-flex items-center">
         <span class="mr-1">${
-          member && member.name ? member.name : "이름 없음"
-        }</span>
+        member && member.name ? member.name : "이름 없음"
+    }</span>
         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
           <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> 
         </svg>
@@ -30,7 +30,11 @@ export const memberInfo = member => {
           </a>
         </li>
         <li>
-          <a href="/logout" class="rounded-b hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
+          <a href="/logout" 
+          id="logout-button" 
+          class="rounded-b hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap"
+          onclick="return localStorage.removeItem('jwt')"
+          >
           <span class="mdi mdi-logout mr-1"></span>
           로그아웃
           </a>
@@ -63,14 +67,14 @@ export const navTemplate = member => `<nav class="flex items-center justify-betw
 </nav>`;
 
 export const subwayLinesItemTemplate = line => {
-  const stations = line.stations
-    ? line.stations.map(station => listItemTemplate(station)).join("")
-    : null;
-  return `<div class="inline-block w-1/2 px-2">
+    const stations = line.stations
+        ? line.stations.map(station => listItemTemplate(station)).join("")
+        : null;
+    return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
               <div class="border ${
-                line.bgColor ? line.bgColor : ""
-              } lint-name px-4 py-1">${line.name}</div>
+        line.bgColor ? line.bgColor : ""
+    } lint-name px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">
               ${stations}
               </div>
@@ -79,13 +83,13 @@ export const subwayLinesItemTemplate = line => {
 };
 
 export const searchResultTemplate = result => {
-  const lastIndex = result.stations.length - 1;
-  const pathResultTemplate = result.stations
-    .map((station, index) =>
-      pathStationTemplate(station.name, index, lastIndex)
-    )
-    .join("");
-  return `<div class="px-2 py-4 border-b">
+    const lastIndex = result.stations.length - 1;
+    const pathResultTemplate = result.stations
+        .map((station, index) =>
+            pathStationTemplate(station.name, index, lastIndex)
+        )
+        .join("");
+    return `<div class="px-2 py-4 border-b">
       <div class="w-full flex mb-3">
         <div class="inline-block w-1/2 border-r text-center">
           <div class="text-gray-600 text-sm">소요시간</div>
@@ -107,39 +111,39 @@ export const searchResultTemplate = result => {
 };
 
 export const pathStationTemplate = (name, index, lastIndex) => {
-  return `
+    return `
   ${
-    index === 0 || index === lastIndex
-      ? `${
-          index === lastIndex
-            ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>`
-            : ``
-        }
+        index === 0 || index === lastIndex
+            ? `${
+                index === lastIndex
+                    ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>`
+                    : ``
+            }
         <span class="font-bold">${name}</span>`
-      : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+            : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
          <span class="text-gray-600">${name}</span>
         `
-  }`;
+    }`;
 };
 
 export const initNavigation = member => {
-  document
-    .querySelector("body")
-    .insertAdjacentHTML("afterBegin", navTemplate(member));
+    document
+        .querySelector("body")
+        .insertAdjacentHTML("afterBegin", navTemplate(member));
 };
 
 export const edgeItemTemplate = edge => {
-  return `<li data-edge-id="${
-    edge.id
-  }" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+    return `<li data-edge-id="${
+        edge.id
+    }" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
             <span class="mdi mdi-subway-variant mr-2"></span>
             <span data-source-station-id="${edge.sourceStationId}">${
-    edge.sourceStationName ? edge.sourceStationName : "출발역"
-  }</span>
+        edge.sourceStationName ? edge.sourceStationName : "출발역"
+    }</span>
             <span class="mdi mdi-arrow-right text-gray-500"></span>
             <span data-target-station-id="${edge.targetStationId}">${
-    edge.sourceStationName ? edge.sourceStationName : "도착역"
-  }</span>
+        edge.sourceStationName ? edge.sourceStationName : "도착역"
+    }</span>
             <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
               <span class="mdi mdi-delete"></span>
             </button>
