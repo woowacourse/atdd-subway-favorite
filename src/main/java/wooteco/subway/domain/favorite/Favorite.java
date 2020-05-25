@@ -26,7 +26,7 @@ public class Favorite {
     }
 
     public boolean isDuplicate(Favorite favorite) {
-        return false;
+        return this.memberId.equals(favorite.memberId) && this.departure.equals(favorite.departure) && this.arrival.equals(favorite.arrival);
     }
 
     public Long getId() {

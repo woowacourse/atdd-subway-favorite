@@ -1,8 +1,5 @@
 package wooteco.subway.service.favorite;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +12,15 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.favorite.exception.DuplicateFavoriteException;
 
 import java.util.Collections;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
@@ -54,5 +57,20 @@ class FavoriteServiceTest {
         favoriteService.create(1L, favoriteRequest);
 
         verify(favoriteRepository).save(any());
+    }
+
+    @Test
+    void createWhenDuplicatedInput() {
+        Long duplicatedMemberId = 1L;
+        FavoriteRequest duplicatedFavoriteRequest = new FavoriteRequest("잠실", "강남");
+
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member("a@a", "a", "a")));
+        when(stationRepository.findByName(duplicatedFavoriteRequest.getDeparture())).thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getDeparture())));
+        when(stationRepository.findByName(duplicatedFavoriteRequest.getArrival())).thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getArrival())));
+        when(favoriteRepository.findAllByMemberId(duplicatedMemberId))
+                .thenReturn(Collections.singletonList(new Favorite(duplicatedMemberId, duplicatedFavoriteRequest.getDeparture(), duplicatedFavoriteRequest.getArrival())));
+
+        assertThatThrownBy(() -> favoriteService.create(duplicatedMemberId, duplicatedFavoriteRequest))
+                .isInstanceOf(DuplicateFavoriteException.class);
     }
 }
