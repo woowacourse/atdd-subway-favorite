@@ -3,10 +3,10 @@ package wooteco.subway.domain.line;
 import java.util.Objects;
 
 public class LineStation {
+    private Long preStationId;
     private final Long stationId;
     private final int distance;
     private final int duration;
-    private Long preStationId;
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
