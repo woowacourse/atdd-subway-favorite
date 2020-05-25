@@ -4,7 +4,7 @@ export const EVENT_TYPE = {
 
 export const ERROR_MESSAGE = {
   LOGIN_FAIL: '😭 로그인이 실패했습니다. 다시 시도해주세요.',
-  JOIN_FAIL: '😭 $s. 다시 시도해주세요.',
+  JOIN_FAIL: '😭 다시 시도해주세요.',
   JOIN_INPUT_FAIL: '😭 필드 값을 입력해주세요. 다시 시도해주세요.',
   EMAIL_FAIL: '😭 이메일형식이 아닙니다. 다시 시도해주세요.',
   EMPTY_SPACE_FAIL: '😭 공백은 입력 할 수 없습니다. 다시 시도해주세요.',

@@ -1,5 +1,7 @@
 package wooteco.subway.service.member;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
@@ -19,7 +21,14 @@ public class MemberService {
 	}
 
 	public Member createMember(Member member) {
-		return memberRepository.save(member);
+		try {
+			return memberRepository.save(member);
+		} catch (DbActionExecutionException e) {
+			if (e.getCause() instanceof DuplicateKeyException) {
+				throw new DuplicatedEmailException(member.getEmail());
+			}
+			throw e;
+		}
 	}
 
 	public void updateMember(Long id, UpdateMemberRequest param) {

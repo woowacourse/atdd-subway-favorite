@@ -31,14 +31,19 @@ function Join() {
       email: $email.value,
       name: $name.value,
       password: $password.value
-    }).then(res => {
+    }).then(async res => {
         if (res.ok) {
           resetJoinForm();
           alert(SUCCESS.JOIN);
           location.href = "/login"
           return
         }
-        Snackbar.show({text: ERROR_MESSAGE.JOIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
+        Snackbar.show({
+          text: await res.text() + ERROR_MESSAGE.JOIN_FAIL,
+          pos: 'bottom-center',
+          showAction: false,
+          duration: 2000
+        })
       }
     )
   }

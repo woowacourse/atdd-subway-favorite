@@ -7,8 +7,6 @@ function MyPage() {
   this.init = async () => {
     const memberDetails = await api.member.get(localStorage.getItem("token"));
 
-    console.log(memberDetails);
-
     $name.textContent = memberDetails.name;
     $email.textContent = memberDetails.email;
   }
