@@ -1,5 +1,8 @@
 package wooteco.subway.domain.member;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
@@ -9,6 +12,7 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    private Set<Favorite> favorits;
 
     public Member() {
     }
@@ -17,6 +21,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorits = new LinkedHashSet<>();
     }
 
     public Member(Long id, String email, String name, String password) {
@@ -53,5 +58,9 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorits.add(favorite);
     }
 }

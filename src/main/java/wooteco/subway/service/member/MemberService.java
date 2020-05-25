@@ -1,11 +1,17 @@
 package wooteco.subway.service.member;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.NotFoundUserException;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -13,10 +19,13 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final StationRepository stationRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository,
+        StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.stationRepository = stationRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -56,5 +65,17 @@ public class MemberService {
     public boolean loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
         return member.checkPassword(password);
+    }
+
+    public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
+        Station source = stationRepository.findByName(favoriteRequest.getSource())
+            .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
+        Station target = stationRepository.findByName(favoriteRequest.getTarget())
+            .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
+        Favorite favorite = new Favorite(source.getId(), target.getId());
+
+        member.addFavorite(favorite);
+
+        memberRepository.save(member);
     }
 }
