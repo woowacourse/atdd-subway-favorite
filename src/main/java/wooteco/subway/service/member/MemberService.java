@@ -1,10 +1,13 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberFavoriteResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
@@ -47,5 +50,15 @@ public class MemberService {
     public boolean loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
         return member.checkPassword(password);
+    }
+
+    public MemberFavoriteResponse findFavorites(Member member) {
+        return MemberFavoriteResponse.of(member);
+    }
+
+    public void addFavorite(Member member, FavoriteCreateRequest favoriteCreateRequest) {
+        member.addFavorite(new Favorite(favoriteCreateRequest.getStartStationId(),
+                        favoriteCreateRequest.getEndStationId()));
+        memberRepository.save(member);
     }
 }

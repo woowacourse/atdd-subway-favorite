@@ -2,6 +2,9 @@ package wooteco.subway.service.favorite.dto;
 
 import wooteco.subway.domain.favorite.Favorite;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class FavoriteResponse {
     private Long id;
     private Long startStationId;
@@ -15,6 +18,12 @@ public class FavoriteResponse {
 
     public static FavoriteResponse of(Favorite favorite) {
         return new FavoriteResponse(favorite.getId(), favorite.getStartStationId(), favorite.getEndStationId());
+    }
+
+    public static Set<FavoriteResponse> setOf(Set<Favorite> favorites) {
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toSet());
     }
 
     public Long getId() {

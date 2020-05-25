@@ -5,10 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberFavoriteResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.Optional;
@@ -69,7 +72,16 @@ public class MemberServiceTest {
     @Test
     void deleteMember() {
         memberService.deleteMember(1L);
-
         verify(memberRepository).deleteById(any());
+    }
+
+    @Test
+    void findFavoriteByMemberId() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(1L, 2L);
+        memberService.addFavorite(member, favoriteCreateRequest);
+        MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member);
+
+        System.out.println(memberFavoriteResponse.getFavorites().size());
     }
 }
