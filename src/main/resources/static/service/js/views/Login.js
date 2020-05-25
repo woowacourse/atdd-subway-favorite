@@ -25,7 +25,7 @@ function Login() {
             alert("로그인 되었습니다.");
             const tokenResponse = await response.json();
             setAccessTokenCookie(tokenResponse.accessToken);
-            location.href = "/";
+            location.href = "/mypage";
         }).catch(error => {
             console.log(error);
         });
