@@ -41,16 +41,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(tokenResponse.getAccessToken()).isNotNull();
         assertThat(tokenResponse.getTokenType()).isEqualTo("bearer");
 
-        MemberResponse memberResponse = getMember(TEST_USER_EMAIL, tokenResponse);
+        MemberResponse memberResponse = getMember(tokenResponse);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        updateMember(memberResponse, tokenResponse);
-        MemberResponse updatedMember = getMember(TEST_USER_EMAIL, tokenResponse);
+        updateMember(tokenResponse);
+        MemberResponse updatedMember = getMember(tokenResponse);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(memberResponse, tokenResponse);
+        deleteMember(tokenResponse);
 
         loginForNotExistMember(TEST_USER_EMAIL, TEST_USER_PASSWORD);
     }
