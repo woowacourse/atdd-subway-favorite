@@ -1,5 +1,5 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
-import api from '../../api/index.js'
+import api, {setAccessTokenCookie} from '../../api/index.js'
 
 function Login() {
     const $loginButton = document.querySelector('#login-button');
@@ -21,8 +21,10 @@ function Login() {
             password: passwordValue
         };
 
-        api.member.login(data).then(() => {
+        api.member.login(data).then(async (response) => {
             alert("로그인 되었습니다.");
+            const tokenResponse = await response.json();
+            setAccessTokenCookie(tokenResponse.accessToken);
             location.href = "/";
         }).catch(error => {
             console.log(error);

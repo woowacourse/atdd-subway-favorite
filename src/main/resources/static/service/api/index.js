@@ -1,4 +1,4 @@
-const setAccessTokenCookie = (accessToken) => {
+export const setAccessTokenCookie = (accessToken) => {
     document.cookie = 'accessToken=' + accessToken + ';path=/';
 };
 
