@@ -1,5 +1,6 @@
 package wooteco.subway.acceptance.member;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -27,6 +28,7 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
     private final String NEW_TEST_USER_NAME = "new브라운";
     private final String NEW_TEST_USER_PASSWORD = "newbrown";
 
+    @DisplayName("로그인 관련 인수테스트")
     @Test
     void loginMemberTest() {
         //when 회원을 생성한다.

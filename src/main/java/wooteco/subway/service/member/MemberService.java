@@ -1,6 +1,5 @@
 package wooteco.subway.service.member;
 
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -10,12 +9,12 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.DuplicateMemberException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -36,6 +35,9 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
+        if (!memberRepository.findById(id).isPresent()) {
+            throw new NoSuchElementException("멤버 데이터를 찾을 수 없습니다.");
+        }
         memberRepository.deleteById(id);
     }
 

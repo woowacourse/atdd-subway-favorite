@@ -10,8 +10,10 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.DuplicateMemberException;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,7 +40,7 @@ public class MemberServiceTest {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
     }
 
-    @DisplayName("멤버 생성이 잘 되는지 테스트")
+    @DisplayName("멤버 생성 테스트")
     @Test
     void createMemberTest() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -56,6 +58,40 @@ public class MemberServiceTest {
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(new Member()));
         assertThatThrownBy(() -> memberService.createMember(member))
                 .isInstanceOf(DuplicateMemberException.class);
+    }
+
+
+    @DisplayName("멤버 업데이트 테스트")
+    @Test
+    void updateMemberTest() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+
+        UpdateMemberRequest request = new UpdateMemberRequest("NEW브라운", "NEWbrown");
+        memberService.updateMember(1L, request);
+
+        verify(memberRepository).save(any());
+    }
+
+    @DisplayName("멤버 삭제 테스트")
+    @Test
+    void deleteMemberTest() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+        memberService.deleteMember(1L);
+
+        verify(memberRepository).deleteById(any());
+    }
+
+    @DisplayName("멤버 삭제 시, 삭제하고자 하는 멤버를 찾을 수 없을 때 예외가 발생하는지 테스트")
+    @Test
+    void cannotFoundDeleteMemberTest() {
+        when(memberRepository.findById(any())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> memberService.deleteMember(1L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("멤버 데이터를 찾을 수 없습니다.");
+
     }
 
     @DisplayName("로그인했을때 토큰을 잘 생성하는지 테스트")
