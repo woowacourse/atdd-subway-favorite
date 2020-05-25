@@ -108,10 +108,10 @@ public class MemberDocumentation {
                 fieldWithPath("password").type(JsonFieldType.STRING)
                     .description("The user's password")
             ),
-           responseFields(
-               fieldWithPath("message").type(JsonFieldType.STRING)
-               .description("The error message")
-           )
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            )
         );
     }
 
@@ -122,10 +122,10 @@ public class MemberDocumentation {
                 fieldWithPath("password").type(JsonFieldType.STRING)
                     .description("The user's password")
             ),
-           responseFields(
-               fieldWithPath("message").type(JsonFieldType.STRING)
-               .description("The error message")
-           )
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            )
         );
     }
 

@@ -9,15 +9,19 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -36,6 +40,10 @@ public class AcceptanceTest {
     public static final String LINE_NAME_3 = "3호선";
     public static final String LINE_NAME_BUNDANG = "분당선";
     public static final String LINE_NAME_SINBUNDANG = "신분당선";
+
+    public static final String TEST_USER_EMAIL = "brown@email.com";
+    public static final String TEST_USER_NAME = "브라운";
+    public static final String TEST_USER_PASSWORD = "brown";
 
     @LocalServerPort
     public int port;
@@ -249,6 +257,56 @@ public class AcceptanceTest {
         addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(),
             40, 3);
+    }
+
+    public Response createMember(String email, String name, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        params.put("password", password);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                extract().response();
+    }
+
+    public MemberResponse getMember(TokenResponse tokenResponse) {
+        return given()
+            .auth()
+            .oauth2(tokenResponse.getAccessToken())
+            .when()
+            .get("/members")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(MemberResponse.class);
+    }
+
+    public TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        Response response = given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            post("/login").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value())
+            .extract()
+            .response();
+        String token = response.getHeader(HttpHeaders.AUTHORIZATION);
+        return TokenResponse.of(token);
     }
 }
 

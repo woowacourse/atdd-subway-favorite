@@ -2,7 +2,7 @@ package wooteco.subway.web.member;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -47,17 +47,19 @@ import wooteco.subway.web.exception.MemberCreationException;
 @AutoConfigureRestDocs
 public class MemberControllerTest {
     private static final Gson GSON = new Gson();
+
     @MockBean
     protected MemberService memberService;
     @Autowired
     protected MockMvc mockMvc;
-    private Member member;
-    private String credential = " secret";
-    private String mockToken = BEARER + credential;
     @MockBean
     private AuthorizationExtractor authExtractor;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
+
+    private Member member;
+    private String credential = " secret";
+    private String mockToken = BEARER + credential;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
@@ -113,7 +115,6 @@ public class MemberControllerTest {
             .andDo(MemberDocumentation.getMemberByEmail())
             .andReturn();
 
-        result.getResponse().getContentAsString();
         ObjectMapper mapper = new ObjectMapper();
         mapper.readValue(result.getResponse().getContentAsString(), MemberResponse.class);
     }
@@ -146,7 +147,7 @@ public class MemberControllerTest {
             .andDo(MemberDocumentation.deleteMember());
     }
 
-    private void setMockToken() {
+    public void setMockToken() {
         given(authExtractor.extract(any(), eq(BEARER))).willReturn(credential);
         given(jwtTokenProvider.validateToken(credential)).willReturn(true);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);

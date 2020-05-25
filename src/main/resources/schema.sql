@@ -38,6 +38,15 @@ create table if not exists MEMBER
     primary key(id)
 );
 
+create table if not exists FAVORITE
+(
+    id bigint auto_increment not null,
+    member bigint not null,
+    departure_id bigint not null,
+    destination_id bigint not null,
+    primary key(id)
+)
+;
 -- INSERT INTO MEMBER(EMAIL, NAME, PASSWORD) VALUES ('aa@aa.com', 'a', 'a');
 -- INSERT INTO MEMBER(EMAIL, NAME, PASSWORD) VALUES ('bb@bb.com', 'b', 'b');
 
