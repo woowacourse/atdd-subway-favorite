@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -27,17 +26,17 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
-        Member member = memberService.createMember(view.toMember());
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+        MemberResponse memberResponse = memberService.createMember(request);
         return ResponseEntity
-            .created(URI.create("/members/" + member.getId()))
+            .created(URI.create("/members/" + memberResponse.getId()))
             .build();
     }
 
     @GetMapping("/members")
     public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
-        Member member = memberService.findMemberByEmail(email);
-        return ResponseEntity.ok().body(MemberResponse.of(member));
+        MemberResponse memberResponse = memberService.findMemberResponseByEmail(email);
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     @PutMapping("/members/{id}")

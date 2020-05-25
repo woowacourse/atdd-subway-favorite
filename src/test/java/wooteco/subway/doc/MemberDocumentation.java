@@ -13,25 +13,38 @@ public class MemberDocumentation {
 	public static RestDocumentationResultHandler createMember() {
 		return document("members/create",
 			requestFields(
-				fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
-				fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-				fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
-			),
-			responseHeaders(
-				headerWithName("Location").description("The user's location who just created")
-			)
-		);
-	}
+                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+            ),
+            responseHeaders(
+                headerWithName("Location").description("The user's location who just created")
+            )
+        );
+    }
 
-	public static RestDocumentationResultHandler getMember() {
-		return document("members/view",
-			requestParameters(
-				parameterWithName("email").description("email to find member")
-			),
-			responseFields(
-				fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
-				fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
-				fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
+    public static RestDocumentationResultHandler createMemberException() {
+        return document("members/createException",
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("errorMessage").type(JsonFieldType.STRING).description("It's Error Message")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler getMember() {
+        return document("members/view",
+            requestParameters(
+                parameterWithName("email").description("email to find member")
+            ),
+            responseFields(
+                fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
+                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
 			)
 		);
 	}

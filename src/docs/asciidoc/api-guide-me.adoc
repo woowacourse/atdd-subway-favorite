@@ -1,0 +1,58 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[resources]]
+= Resources
+
+[[resources-me]]
+== Me
+
+[[resources-me-view]]
+=== 내 정보 조회
+
+operation::me/view[snippets='curl-request,http-request,http-response']
+
+
+'''
+
+[[resources-me-viewException]]
+=== 내 정보 조회 예외
+
+operation::me/viewException[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-update]]
+=== 내 정보 수정
+
+operation::me/update[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-updateException]]
+=== 내 정보 수정 예외
+
+operation::me/updateException[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-delete]]
+=== 내 정보 삭제
+
+operation::me/delete[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-deleteException]]
+=== 내 정보 삭제 예외
+
+operation::me/deleteException[snippets='curl-request,http-request,http-response']

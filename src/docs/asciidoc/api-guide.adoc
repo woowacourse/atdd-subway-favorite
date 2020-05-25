@@ -24,6 +24,15 @@ operation::members/create[snippets='curl-request,http-request,http-response,requ
 
 '''
 
+[[resources-members-createException]]
+
+=== 중복된 이메일로 회원 가입
+
+operation::members/createException[snippets='curl-request,http-request,http-response,request-fields']
+
+
+'''
+
 [[resources-members-view]]
 === 회원 조회
 
