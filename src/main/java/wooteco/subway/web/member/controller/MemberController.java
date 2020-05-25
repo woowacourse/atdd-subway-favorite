@@ -40,7 +40,7 @@ public class MemberController {
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@Validated @RequestBody MemberRequest request) {
-        Member member = memberService.createMember(request.toMember());
+        Member member = memberService.save(request.toMember());
         return ResponseEntity
             .created(URI.create("/members/" + member.getId()))
             .build();

@@ -42,7 +42,7 @@ public class MemberServiceTest {
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        memberService.createMember(member);
+        memberService.save(member);
 
         verify(memberRepository).save(any());
     }

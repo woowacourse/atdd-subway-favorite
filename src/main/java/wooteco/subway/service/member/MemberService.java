@@ -22,7 +22,7 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Member createMember(Member member) {
+    public Member save(Member member) {
         return memberRepository.save(member);
     }
 

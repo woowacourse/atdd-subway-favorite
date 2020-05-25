@@ -64,7 +64,7 @@ public class MemberControllerTest {
 
     @Test
     public void createMember() throws Exception {
-        given(memberService.createMember(any())).willReturn(member);
+        given(memberService.save(any())).willReturn(member);
         given(memberService.isNotExistEmail(any())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -83,7 +83,7 @@ public class MemberControllerTest {
 
     @Test
     void createDuplicateMember() throws Exception {
-        given(memberService.createMember(any())).willReturn(member);
+        given(memberService.save(any())).willReturn(member);
         given(memberService.isNotExistEmail(any())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -112,7 +112,7 @@ public class MemberControllerTest {
 
     @Test
     void createNotMatchPasswordMember() throws Exception {
-        given(memberService.createMember(any())).willReturn(member);
+        given(memberService.save(any())).willReturn(member);
         given(memberService.isNotExistEmail(any())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
