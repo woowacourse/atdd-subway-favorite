@@ -1,6 +1,5 @@
 package wooteco.subway.web;
 
-import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,12 +16,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.FavoriteService;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 
@@ -65,6 +65,8 @@ class FavoriteControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated());
+
+        verify(favoriteService).createFavorite(eq(1L), any());
     }
 
     @Test
@@ -78,5 +80,14 @@ class FavoriteControllerTest {
         mockMvc.perform(get("/favorites")
             .header("Authorization", token))
             .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteFavorites() throws Exception {
+        mockMvc.perform(delete("/favorites/" + 10L)
+            .header("Authorization", token))
+            .andExpect(status().isNoContent());
+
+        verify(favoriteService).deleteFavorite(10L);
     }
 }

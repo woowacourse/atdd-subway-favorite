@@ -40,7 +40,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         addFavoritePath(tokenResponse, stationResponse1, stationResponse2);
 
         List<FavoriteResponse> responses = getFavoritePath(tokenResponse);
-        assertThat(responses.get(0).getMemberId()).isEqualTo(2L);
+        assertThat(responses.get(0).getMemberId()).isEqualTo(1L);
         assertThat(responses.get(0).getSourceStationId()).isEqualTo(stationResponse1.getId());
         assertThat(responses.get(0).getTargetStationId()).isEqualTo(stationResponse2.getId());
 
@@ -54,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         StationResponse source,
         StationResponse target
     ) {
-        FavoriteRequest request = new FavoriteRequest(source.getName(), target.getName());
+        FavoriteRequest request = new FavoriteRequest(source.getId(), target.getId());
         given().
             body(request).
             contentType(MediaType.APPLICATION_JSON_VALUE).

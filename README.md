@@ -21,6 +21,6 @@
 1. 즐겨찾기 관리(추가, 삭제, 조회)
     - [x] 즐겨찾기 페이지 연동
     - [x] 인수테스트 작성
-    - [ ] FavoriteController/Service 작성 및 테스트
+    - [x] FavoriteController/Service 작성 및 테스트
     - [ ] 즐겨찾기 추가 버튼 클릭 시 DB 반영
     - [ ] 즐겨찾기 삭제 시 DB 반영
