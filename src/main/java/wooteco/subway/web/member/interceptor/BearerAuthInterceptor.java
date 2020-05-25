@@ -23,7 +23,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        String token = authExtractor.extract(request, "Bearer");
+        String token = authExtractor.extract(request, "bearer");
         if(!jwtTokenProvider.validateToken(token)) {
             throw new InvalidAuthenticationException("만료된 세션입니다.");
         };

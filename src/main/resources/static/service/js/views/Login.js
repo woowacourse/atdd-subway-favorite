@@ -23,7 +23,7 @@ function Login() {
       const jwt = await api.member.login(loginMember);
       if (jwt) {
         localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
-        location.href = "/";
+        location.href = "/search";
         return;
       }
       showSnackbar(ERROR_MESSAGE.COMMON);

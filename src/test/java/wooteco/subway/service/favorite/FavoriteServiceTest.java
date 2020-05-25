@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
@@ -21,13 +22,16 @@ public class FavoriteServiceTest {
     @Mock
     FavoriteRepository favoriteRepository;
 
+    @Mock
+    StationRepository stationRepository;
+
     FavoriteService favoriteService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        favoriteService = new FavoriteService(favoriteRepository);
+        favoriteService = new FavoriteService(favoriteRepository, stationRepository);
     }
 
     @DisplayName("즐겨찾기 생성 테스트")
