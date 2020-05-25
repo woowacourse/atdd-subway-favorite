@@ -1,6 +1,8 @@
 package wooteco.subway.web.member;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -12,10 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -35,21 +40,20 @@ public class MemberController {
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = memberService.createMember(memberRequest);
         return ResponseEntity
-            .created(URI.create("/members/" + member.getId()))
-            .build();
+                .created(URI.create("/members/" + member.getId()))
+                .build();
     }
 
     @IsAuth(isAuth = Auth.AUTH)
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestAttribute String email) {
-        Member member = memberService.findMemberByEmail(email);
+    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @IsAuth(isAuth = Auth.AUTH)
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@RequestAttribute String email, @PathVariable Long id,
-        @RequestBody UpdateMemberRequest param) {
+                                                       @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(email, id, param);
         return ResponseEntity.ok().build();
     }
@@ -58,6 +62,28 @@ public class MemberController {
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @IsAuth(isAuth = Auth.AUTH)
+    @PostMapping("/members/favorites")
+    public ResponseEntity<Void> addFavorites(@RequestBody FavoriteRequest favoriteRequest,
+                                             @LoginMember Member member) {
+
+        return ResponseEntity.ok().build();
+    }
+
+    @IsAuth(isAuth = Auth.AUTH)
+    @GetMapping("/members/favorites")
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
+        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+
+        return ResponseEntity.ok().body(favoriteResponses);
+    }
+
+    @IsAuth(isAuth = Auth.AUTH)
+    @DeleteMapping("/members/favorites/{id}")
+    public ResponseEntity<Void> deleteFavorites(@PathVariable Long id, @LoginMember Member member) {
         return ResponseEntity.noContent().build();
     }
 }

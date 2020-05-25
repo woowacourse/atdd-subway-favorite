@@ -2,6 +2,8 @@ package wooteco.subway.service.member.dto;
 
 import wooteco.subway.domain.member.Member;
 
+import java.util.Set;
+
 public class MemberResponse {
     private Long id;
     private String email;
