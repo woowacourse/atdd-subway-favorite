@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +11,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.web.member.resolver.LoginMember;
 
 @RestController
 public class LoginMemberController {

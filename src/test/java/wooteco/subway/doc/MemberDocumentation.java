@@ -3,6 +3,8 @@ package wooteco.subway.doc;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static wooteco.subway.doc.ApiDocumentUtils.*;
+import static wooteco.subway.doc.DocumentFormatGenerator.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -10,9 +12,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
         return document("members/create",
+            getDocumentRequest(),
+            getDocumentResponse(),
             requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING)
-                    .description("The user's email address"),
+                    .description("The user's email address").attributes(getEmailFormat()),
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                 fieldWithPath("password").type(JsonFieldType.STRING)
                     .description("The user's password"),
@@ -27,27 +31,11 @@ public class MemberDocumentation {
 
     public static RestDocumentationResultHandler createDuplicateMember() {
         return document("members/duplicate-create",
+            getDocumentRequest(),
+            getDocumentResponse(),
             requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING)
-                    .description("The user's email address"),
-                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                fieldWithPath("password").type(JsonFieldType.STRING)
-                    .description("The user's password"),
-                fieldWithPath("passwordCheck").type(JsonFieldType.STRING)
-                    .description("The user's passwordCheck")
-            ),
-            responseFields(
-                fieldWithPath("message").type(JsonFieldType.STRING)
-                .description("The error message")
-            )
-        );
-    }
-
-    public static RestDocumentationResultHandler createNotMatchPasswordMember() {
-        return document("members/not-match-password-create",
-            requestFields(
-                fieldWithPath("email").type(JsonFieldType.STRING)
-                    .description("The user's email address"),
+                    .description("The user's email address").attributes(getEmailFormat()),
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                 fieldWithPath("password").type(JsonFieldType.STRING)
                     .description("The user's password"),
@@ -61,29 +49,73 @@ public class MemberDocumentation {
         );
     }
 
-   public static RestDocumentationResultHandler updateMember() {
-       return document("members/update",
-               requestFields(
-                       fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                       fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
-               ),
-               requestHeaders(
-                       headerWithName("Authorization").description("The token for login which is Bearer Type")
-               )
-       );
-   }
+    public static RestDocumentationResultHandler createNotMatchPasswordMember() {
+        return document("members/not-match-password-create",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email address").attributes(getEmailFormat()),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password"),
+                fieldWithPath("passwordCheck").type(JsonFieldType.STRING)
+                    .description("The user's passwordCheck")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler updateMember() {
+        return document("members/update",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("oldPassword").type(JsonFieldType.STRING)
+                    .description("The user's old password"),
+                fieldWithPath("newPassword").type(JsonFieldType.STRING)
+                    .description("The user's new password")
+            ),
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            )
+        );
+    }
 
     public static RestDocumentationResultHandler getMember() {
         return document("members/get",
+            getDocumentRequest(),
+            getDocumentResponse(),
             responseFields(
                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
-                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email")
+                    .attributes(getEmailFormat()),
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
             )
         );
     }
 
+    public static RestDocumentationResultHandler getNotExistMember() {
+        return document("members/not-exist-get",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+                )
+        );
+    }
+
     public static RestDocumentationResultHandler deleteMember() {
-        return document("members/delete");
+        return document("members/delete",
+            getDocumentRequest(),
+            getDocumentResponse()
+        );
     }
 }

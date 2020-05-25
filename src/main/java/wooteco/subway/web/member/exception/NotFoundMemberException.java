@@ -1,8 +1,8 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.exception;
 
 public class NotFoundMemberException extends RuntimeException {
 
-    public static final String ERROR_MESSAGE = " 를 찾을 수 없습니다.";
+    public static final String ERROR_MESSAGE = " 회원님을 찾을 수 없습니다.";
 
     public NotFoundMemberException() {
     }

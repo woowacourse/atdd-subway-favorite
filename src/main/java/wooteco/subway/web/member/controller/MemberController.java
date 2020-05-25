@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -23,21 +23,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.MemberRawRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.error.ErrorResponse;
+import wooteco.subway.web.member.exception.ErrorResponse;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@Validated @RequestBody MemberRawRequest request) {
+    public ResponseEntity<Void> createMember(@Validated @RequestBody MemberRequest request) {
         Member member = memberService.createMember(request.toMember());
         return ResponseEntity
             .created(URI.create("/members/" + member.getId()))

@@ -5,7 +5,7 @@ endif::[]
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 2
+:toclevels: 4
 :sectlinks:
 :operation-http-request-title: Example Request
 :operation-http-response-title: Example Response
@@ -19,26 +19,51 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-[[resources-members-duplicate-create]]
-==== 회원 가입 이메일 중복
+[[resources-members-create-success]]
+==== 성공
 
-[[resources-members-not-match-password-create]]
-==== 회원 가입 패스워드 불일치
+===== 올바른 가입
+operation::members/create[snippets='http-request,http-response,request-fields']
 
-[[resources-members-get]]
-=== 정보 조회
+
+[[resources-members-create-fail]]
+==== 실패
+
+[[resources-members-create-fail-duplicated-email]]
+===== 이메일 중복
+operation::members/duplicate-create[snippets='http-request,http-response,request-fields']
+
+
+[[resources-members-create-fail-not-match-password]]
+===== 패스워드 불일치
+operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
+
+[[resources-members-create]]
+=== 회원 정보 조회
+
+==== 성공
+
+===== 로그인 후 조회
+operation::members/get[snippets='http-request,http-response,response-fields']
+
+==== 실패
+
+=====
 
 [[resources-members-update]]
-=== 정보 수정
+=== 회원 정보 수정
+
+==== 성공
+
+===== 로그인 후 올바른 패스워드로 수정
+operation::members/update[snippets='http-request,http-response,request-fields']
 
 [[resources-members-delete]]
-=== 정보 삭제
+=== 회원 탈퇴
+
+==== 성공
+
+===== 로그인 후 탈퇴
+operation::members/delete[snippets='http-request,http-response']
 
 
-
-operation::members/create[snippets='http-request,http-response,request-fields']
-operation::members/duplicate-create[snippets='http-request,http-response,request-fields']
-operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
-operation::members/get[snippets='http-request,http-response']
-operation::members/update[snippets='http-request,http-response,request-fields']
-operation::members/delete[snippets='http-request,http-response]

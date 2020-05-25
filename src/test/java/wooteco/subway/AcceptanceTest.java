@@ -294,7 +294,8 @@ public class AcceptanceTest {
     public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("oldPassword", TEST_USER_PASSWORD);
+        params.put("newPassword", "NEW_" + TEST_USER_PASSWORD);
 
         given().
             header("Authorization",

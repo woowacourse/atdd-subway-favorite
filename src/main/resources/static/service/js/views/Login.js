@@ -1,5 +1,6 @@
 import { ERROR_MESSAGE, EVENT_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js';
+import { setCookie } from '../../utils/loginUtils.js';
 
 function Login() {
   const $loginButton = document.querySelector('#login-button');
@@ -39,15 +40,6 @@ function Login() {
       }
     });
   }
-
-  const setCookie = function (value) {
-    const date = new Date();
-    date.setTime(date.getTime() + 5 * 60 * 1000);
-    document.cookie = "token=" + value + ';expires=' + date.toUTCString();
-  };
-
-
-
 
   this.init = () => {
     $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin);

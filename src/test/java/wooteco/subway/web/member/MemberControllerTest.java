@@ -28,6 +28,7 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.web.member.exception.NotFoundMemberException;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -46,7 +47,8 @@ public class MemberControllerTest {
     private Member member;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+    public void setUp(WebApplicationContext webApplicationContext,
+        RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .addFilter(new ShallowEtagHeaderFilter())
             .apply(documentationConfiguration(restDocumentation))
@@ -64,13 +66,6 @@ public class MemberControllerTest {
             "\"name\":\"" + TEST_USER_NAME + "\"," +
             "\"password\":\"" + TEST_USER_PASSWORD + "\"," +
             "\"passwordCheck\":\"" + TEST_USER_PASSWORD + "\"}";
-
-        this.mockMvc.perform(post("/members")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
-            .andDo(print());
 
         this.mockMvc.perform(post("/members")
             .content(inputJson)
@@ -96,24 +91,10 @@ public class MemberControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
-            .andDo(print());
-
-        this.mockMvc.perform(post("/members")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
 
         given(memberService.isNotExistEmail(any())).willReturn(false);
-
-        this.mockMvc.perform(post("/members")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andDo(print());
 
         this.mockMvc.perform(post("/members")
             .content(inputJson)
@@ -139,13 +120,6 @@ public class MemberControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andDo(print());
-
-        this.mockMvc.perform(post("/members")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
             .andDo(print())
             .andDo(MemberDocumentation.createNotMatchPasswordMember());
     }
@@ -160,32 +134,28 @@ public class MemberControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email", Matchers.is(TEST_USER_EMAIL)))
             .andExpect(jsonPath("$.name", Matchers.is(TEST_USER_NAME)))
-            .andDo(print());
-
-        this.mockMvc.perform(get("/members")
-            .param("email", TEST_USER_EMAIL)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.email", Matchers.is(TEST_USER_EMAIL)))
-            .andExpect(jsonPath("$.name", Matchers.is(TEST_USER_NAME)))
             .andDo(print())
             .andDo(MemberDocumentation.getMember());
     }
 
     @Test
-    void updateMember() throws Exception {
+    void getNotExistMember() throws Exception {
+        given(memberService.findMemberByEmail(any())).willThrow(new NotFoundMemberException(any()));
 
+        this.mockMvc.perform(get("/members")
+            .param("email", TEST_USER_EMAIL)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(MemberDocumentation.getNotExistMember());
+    }
+
+    @Test
+    void updateMember() throws Exception {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
-
-        this.mockMvc.perform(put("/members/" + 1L)
-            .header("Authorization", "tmp")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(print());
+            "\"oldPassword\":\"" + TEST_USER_PASSWORD + "\"," +
+            "\"newPassword\":\"" + "NEW_" + TEST_USER_PASSWORD + "\"}";
 
         this.mockMvc.perform(put("/members/" + 1L)
             .contentType(MediaType.APPLICATION_JSON)
@@ -199,11 +169,9 @@ public class MemberControllerTest {
 
     @Test
     void deleteMember() throws Exception {
-        this.mockMvc.perform(delete("/members/" + 1L))
-            .andExpect(status().isNoContent())
-            .andDo(print());
-
-        this.mockMvc.perform(delete("/members/" + 1L))
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        this.mockMvc.perform(delete("/members/" + 1L)
+            .header("Authorization", "tmp"))
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(MemberDocumentation.deleteMember());

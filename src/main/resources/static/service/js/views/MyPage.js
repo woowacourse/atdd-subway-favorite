@@ -1,12 +1,7 @@
 import api from '../../api/index.js';
+import { getCookie } from '../../utils/loginUtils.js';
 
 function MyPage() {
-
-
-  const getCookie = function () {
-    const value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-    return value ? value[2] : null;
-  };
 
   this.init = () => {
     const $email = document.querySelector("#email");

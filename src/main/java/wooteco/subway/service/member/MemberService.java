@@ -9,13 +9,13 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.member.NotFoundMemberException;
-import wooteco.subway.web.member.NotMatchPasswordException;
+import wooteco.subway.web.member.exception.NotFoundMemberException;
+import wooteco.subway.web.member.exception.NotMatchPasswordException;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -27,11 +27,12 @@ public class MemberService {
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new NotFoundMemberException(param.getName()));
         if (!member.checkPassword(param.getOldPassword())) {
-            throw new NotMatchPasswordException("패스워드가 일치하지 않습니다");
+            throw new NotMatchPasswordException("잘못된 패스워드 입니다.");
         }
-        member.update(param.getName(), param.getPassword());
+        member.update(param.getName(), param.getNewPassword());
         memberRepository.save(member);
     }
 
@@ -43,14 +44,15 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
             .orElseThrow(() -> new NotFoundMemberException(param.getEmail()));
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드 입니다.");
+            throw new NotMatchPasswordException("잘못된 패스워드 입니다.");
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new NotFoundMemberException(email));
     }
 
     public boolean isNotExistEmail(String email) {

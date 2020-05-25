@@ -1,5 +1,6 @@
 import { EVENT_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js'
+import { deleteCookie, getCookie } from '../../utils/loginUtils.js';
 
 function MyPageEdit() {
   const $id = document.querySelector('#id');
@@ -15,12 +16,15 @@ function MyPageEdit() {
     event.preventDefault();
 
     const updateForm = {
-      email: $email.value,
       name: $name.value,
       oldPassword: $oldPassword.value,
-      password: $password.value,
-      passwordCheck: $passwordCheck.value,
+      newPassword: $password.value,
     };
+
+    if ($password.value !== $passwordCheck.value) {
+      alert("패스워드가 일치하지 않습니다. 😡");
+      return;
+    }
 
     api.member.update($id.dataset.id, updateForm)
     .then(response => {
@@ -62,15 +66,6 @@ function MyPageEdit() {
   const initEventListener = () => {
     $updateButton.addEventListener(EVENT_TYPE.CLICK, onClickUpdateButton);
     $signOutButton.addEventListener(EVENT_TYPE.CLICK, onClickSignOutButton);
-  }
-
-  const getCookie = function () {
-    const value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-    return value ? value[2] : null;
-  };
-
-  const deleteCookie = function () {
-    document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
   }
 
   this.init = () => {

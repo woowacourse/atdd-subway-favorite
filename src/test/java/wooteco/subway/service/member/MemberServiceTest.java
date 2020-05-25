@@ -79,7 +79,7 @@ public class MemberServiceTest {
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(memberRepository.save(any())).thenReturn(member);
         memberService.updateMember(member.getId(), new UpdateMemberRequest(
-            "NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD));
+            "NEW_" + TEST_USER_NAME, TEST_USER_PASSWORD, "NEW_" + TEST_USER_PASSWORD));
         assertThat(member).extracting(Member::getName).isEqualTo("NEW_" + TEST_USER_NAME);
         assertThat(member).extracting(Member::getPassword).isEqualTo("NEW_" + TEST_USER_PASSWORD);
     }

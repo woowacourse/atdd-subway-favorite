@@ -1,4 +1,4 @@
-package wooteco.subway.web.error;
+package wooteco.subway.web.member.exception;
 
 public class ErrorResponse {
 
