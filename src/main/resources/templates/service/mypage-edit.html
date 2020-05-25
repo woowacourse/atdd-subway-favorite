@@ -25,6 +25,7 @@
                         id="email"
                         placeholder="email"
                         type="text"
+                        disabled
                 />
             </div>
             <div class="mb-4">
@@ -62,13 +63,14 @@
                 />
             </div>
             <a
+                    id="save-button"
                     class="w-full text-sm text-center bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
-                    href="/index.html"
                     type="button"
             >
                 저장
             </a>
             <button class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    id="delete-button"
                     type="button">
                 탈퇴
             </button>
@@ -76,5 +78,6 @@
     </div>
 </div>
 <script src="/service/js/App.js" type="module"></script>
+<script src="/service/js/views/MyPageEdit.js" type="module"></script>
 </body>
 </html>

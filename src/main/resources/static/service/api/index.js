@@ -95,7 +95,7 @@ const api = (() => {
             return request("/members/me", METHOD.PUT(data));
         },
         delete() {
-            return request("/members/me", METHOD.DELETE);
+            return request("/members/me", METHOD.DELETE());
         }
     };
 
