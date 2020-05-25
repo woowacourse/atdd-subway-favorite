@@ -29,7 +29,7 @@ public class WebMvcConfig {
 
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
-            registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members/favorite**").addPathPatterns("/me");
+            registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me**");
         }
 
         @Override
@@ -54,7 +54,7 @@ public class WebMvcConfig {
 
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
-            registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members**").addPathPatterns("/me");
+            registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me**");
         }
 
         @Override

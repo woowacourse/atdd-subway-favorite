@@ -9,11 +9,15 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static wooteco.subway.doc.ApiDocumentUtils.getDocumentRequest;
+import static wooteco.subway.doc.ApiDocumentUtils.getDocumentResponse;
 
 public class LoginMemberDocumentation {
 
     public static RestDocumentationResultHandler loginMember() {
         return document("login/login",
+                getDocumentRequest(),
+                getDocumentResponse(),
                 requestFields(
                         fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
                         fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
@@ -29,6 +33,8 @@ public class LoginMemberDocumentation {
 
     public static RestDocumentationResultHandler loginFailEmail() {
         return document("login/loginFail/email",
+                getDocumentRequest(),
+                getDocumentResponse(),
                 requestFields(
                         fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
                         fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
@@ -57,6 +63,8 @@ public class LoginMemberDocumentation {
 
     public static RestDocumentationResultHandler getMyInfo() {
         return document("me/getMyInfo",
+                getDocumentRequest(),
+                getDocumentResponse(),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
                 ),
@@ -72,6 +80,8 @@ public class LoginMemberDocumentation {
 
     public static RestDocumentationResultHandler deleteMyInfo() {
         return document("me/deleteMyInfo",
+                getDocumentRequest(),
+                getDocumentResponse(),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
                 )
@@ -92,12 +102,46 @@ public class LoginMemberDocumentation {
 
     public static RestDocumentationResultHandler createFavorite() {
         return document("me/favorites/create",
+                getDocumentRequest(),
+                getDocumentResponse(),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
                 ),
                 requestFields(
                         fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER).description("시작역 ID"),
                         fieldWithPath("targetStationId").type(JsonFieldType.NUMBER).description("종착역 ID")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteFavorite() {
+        return document("me/favorites/delete",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                ),
+                requestFields(
+                        fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER).description("시작역 ID"),
+                        fieldWithPath("targetStationId").type(JsonFieldType.NUMBER).description("종착역 ID")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler getFavorites() {
+        return document("me/favorites/getAll",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                ),
+                responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NULL).description("null").optional(),
+                        fieldWithPath("message").type(JsonFieldType.NULL).description("null").optional(),
+                        fieldWithPath("data.favoriteResponses[0].sourceStationId").type(JsonFieldType.NUMBER).description("시작역 ID"),
+                        fieldWithPath("data.favoriteResponses[0].sourceStationName").type(JsonFieldType.STRING).description("시작역 이름"),
+                        fieldWithPath("data.favoriteResponses[0].targetStationId").type(JsonFieldType.NUMBER).description("도착역 ID"),
+                        fieldWithPath("data.favoriteResponses[0].targetStationName").type(JsonFieldType.STRING).description("도착역 이름")
                 )
         );
     }

@@ -11,4 +11,8 @@ public class FavoriteService {
         Favorite favorite = Favorite.of(source, target);
         member.addFavorite(favorite);
     }
+
+    public void removeFavoriteToMember(final Member member, final Favorite favorite) {
+        member.removeFavorite(favorite);
+    }
 }

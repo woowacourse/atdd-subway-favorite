@@ -5,7 +5,10 @@ import wooteco.subway.web.dto.ErrorCode;
 import wooteco.subway.web.member.exception.MemberException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Favorites {
 
@@ -34,6 +37,14 @@ public class Favorites {
                     favorite.getSourceStationId(), favorite.getTargetStationId()), ErrorCode.FAVORITE_NOT_FOUND);
         }
         favorites.remove(favorite);
+    }
+
+    public Set<Long> getStationIds() {
+        return favorites.stream()
+                .map(Favorite::getStationIds)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+
     }
 
     public List<Favorite> getFavorites() {

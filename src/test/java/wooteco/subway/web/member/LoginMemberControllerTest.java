@@ -20,9 +20,11 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.LoginMemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.member.favorite.Favorite;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -201,9 +203,54 @@ class LoginMemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         )
-                .andDo(print())
                 .andExpect(status().isCreated())
+                .andDo(print())
                 .andDo(LoginMemberDocumentation.createFavorite());
     }
 
+    @DisplayName("회원의 즐겨찾기 경로를 제거한다.")
+    @Test
+    void deleteFavorites() throws Exception {
+        Station source = stationRepository.save(new Station("잠실"));
+        Station target = stationRepository.save(new Station("역삼"));
+        Member member = new Member(EMAIL, NAME, PASSWORD);
+        member.addFavorite(new Favorite(source.getId(), target.getId()));
+        memberRepository.save(member);
+
+        String token = jwtTokenProvider.createToken(member.getEmail());
+
+        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(source.getId(), target.getId());
+        String favoriteDeleteContent = objectMapper.writeValueAsString(favoriteDeleteRequest);
+
+        this.mockMvc.perform(delete("/me/favorites")
+                .content(favoriteDeleteContent)
+                .header("Authorization", "bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(LoginMemberDocumentation.deleteFavorite());
+    }
+
+    @DisplayName("희원의 모든 즐겨찾기 경로를 조회한다.")
+    @Test
+    void getAllFavorites() throws Exception {
+        //given
+        Station station1 = stationRepository.save(new Station("잠실"));
+        Station station2 = stationRepository.save(new Station("역삼"));
+        Member member = new Member(EMAIL, NAME, PASSWORD);
+        member.addFavorite(new Favorite(station1.getId(), station2.getId()));
+        memberRepository.save(member);
+
+        String token = jwtTokenProvider.createToken(member.getEmail());
+        //when
+        this.mockMvc.perform(get("/me/favorites")
+                .header("Authorization", "bearer " + token)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(LoginMemberDocumentation.getFavorites());
+    }
 }

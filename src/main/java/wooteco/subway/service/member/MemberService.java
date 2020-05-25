@@ -6,12 +6,16 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.member.favorite.Favorite;
+import wooteco.subway.domain.member.favorite.Favorites;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.exception.DuplicatedEmailException;
+import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponses;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -97,5 +101,22 @@ public class MemberService {
         Station target = stations.extractStationById(favoriteRequest.getTargetStationId());
         favoriteService.addFavoriteToMember(member, source, target);
         memberRepository.save(member);
+    }
+
+    @Transactional
+    public void deleteFavorite(final FavoriteDeleteRequest deleteRequest, final LoginEmail loginEmail) {
+        Favorite favorite = new Favorite(deleteRequest.getSourceStationId(), deleteRequest.getTargetStationId());
+        Member member = getMember(loginEmail.getEmail());
+        favoriteService.removeFavoriteToMember(member, favorite);
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public FavoriteResponses getAllFavorites(final LoginEmail loginEmail) {
+        Member member = getMember(loginEmail.getEmail());
+        Favorites favorites = member.getFavorites();
+        Stations stations = new Stations(stationRepository.findAllById(favorites.getStationIds()));
+
+        return FavoriteResponses.of(favorites, stations.toMap());
     }
 }
