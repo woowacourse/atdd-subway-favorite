@@ -2175,8 +2175,8 @@ p {
                 <h3 id="resources-members-create"><a class="link" href="#resources-members-create">회원 가입</a></h3>
                 <div class="sect3">
                     <h4 id="resources-members-create_http_request"><a class="link"
-                                                                      href="#resources-members-create_http_request">Example
-                        Request</a></h4>
+                                                                      href="#resources-members-create_http_request">요청
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">POST /members HTTP/1.1
@@ -2190,7 +2190,8 @@ Host: localhost:8080
                     </div>
                 </div>
 <div class="sect3">
-<h4 id="resources-members-create_http_response"><a class="link" href="#resources-members-create_http_response">Example Response</a></h4>
+    <h4 id="resources-members-create_http_response"><a class="link" href="#resources-members-create_http_response">응답
+        예시</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 201 Created
@@ -2246,8 +2247,8 @@ Content-Length: 40
                 <h3 id="resources-login-login"><a class="link" href="#resources-login-login">로그인</a></h3>
                 <div class="sect3">
                     <h4 id="resources-login-login_http_request"><a class="link"
-                                                                   href="#resources-login-login_http_request">Example
-                        Request</a></h4>
+                                                                   href="#resources-login-login_http_request">요청 예시</a>
+                    </h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">POST /login HTTP/1.1
@@ -2265,8 +2266,8 @@ Host: localhost:8080
                 </div>
                 <div class="sect3">
                     <h4 id="resources-login-login_http_response"><a class="link"
-                                                                    href="#resources-login-login_http_response">Example
-                        Response</a></h4>
+                                                                    href="#resources-login-login_http_response">응답
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
@@ -2275,7 +2276,7 @@ Content-Length: 255
 
 {
   &quot;data&quot; : {
-    &quot;accessToken&quot; : &quot;eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM4ODI1MCwiZXhwIjoxNTkwMzkxODUwfQ.yJrnqXrfkB_HHBxKRjuCn3vGOvKyKnU_Ljlr_qPVcJI&quot;,
+    &quot;accessToken&quot; : &quot;eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM5NTIyNSwiZXhwIjoxNTkwMzk4ODI1fQ.mNM5vG2eO53KfcfoGSymfExpeEcUmK5CZ6rviOj_H2o&quot;,
     &quot;tokenType&quot; : &quot;bearer&quot;
   },
   &quot;code&quot; : null,
@@ -2392,8 +2393,8 @@ Content-Length: 255
                         않은 이메일</a></h4>
                     <div class="sect4">
                         <h5 id="resources-login-loginFail-email_http_response"><a class="link"
-                                                                                  href="#resources-login-loginFail-email_http_response">Example
-                            Response</a></h5>
+                                                                                  href="#resources-login-loginFail-email_http_response">응답
+                            예시</a></h5>
                         <div class="listingblock">
                             <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 400 Bad Request
@@ -2457,8 +2458,8 @@ Content-Length: 83
                         패스워드</a></h4>
                     <div class="sect4">
                         <h5 id="resources-login-loginFail-password_http_response"><a class="link"
-                                                                                     href="#resources-login-loginFail-password_http_response">Example
-                            Response</a></h5>
+                                                                                     href="#resources-login-loginFail-password_http_response">응답
+                            예시</a></h5>
                         <div class="listingblock">
                             <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 400 Bad Request
@@ -2522,8 +2523,8 @@ Content-Length: 60
                 <h3 id="resources-me-getMyInfo"><a class="link" href="#resources-me-getMyInfo">내 정보 조회</a></h3>
                 <div class="sect3">
                     <h4 id="resources-me-getMyInfo_http_request"><a class="link"
-                                                                    href="#resources-me-getMyInfo_http_request">Example
-                        Request</a></h4>
+                                                                    href="#resources-me-getMyInfo_http_request">요청
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">GET /me HTTP/1.1
@@ -2536,8 +2537,8 @@ Host: localhost:8080</code></pre>
                 </div>
                 <div class="sect3">
                     <h4 id="resources-me-getMyInfo_http_response"><a class="link"
-                                                                     href="#resources-me-getMyInfo_http_response">Example
-                        Response</a></h4>
+                                                                     href="#resources-me-getMyInfo_http_response">응답
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
@@ -2646,8 +2647,8 @@ Content-Length: 131
                 <h3 id="resources-me-updateMyInfo"><a class="link" href="#resources-me-updateMyInfo">내 정보 갱신</a></h3>
                 <div class="sect3">
                     <h4 id="resources-me-updateMyInfo_http_request"><a class="link"
-                                                                       href="#resources-me-updateMyInfo_http_request">Example
-                        Request</a></h4>
+                                                                       href="#resources-me-updateMyInfo_http_request">요청
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">PUT /me HTTP/1.1
@@ -2663,8 +2664,8 @@ Host: localhost:8080
                 </div>
                 <div class="sect3">
                     <h4 id="resources-me-updateMyInfo_http_response"><a class="link"
-                                                                        href="#resources-me-updateMyInfo_http_response">Example
-                        Response</a></h4>
+                                                                        href="#resources-me-updateMyInfo_http_response">응답
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
                             <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 204 No Content</code></pre>
@@ -2748,8 +2749,8 @@ Host: localhost:8080
                 <h3 id="resources-me-deleteMyInfo"><a class="link" href="#resources-me-deleteMyInfo">탈퇴</a></h3>
                 <div class="sect3">
                     <h4 id="resources-me-deleteMyInfo_http_request"><a class="link"
-                                                                       href="#resources-me-deleteMyInfo_http_request">Example
-                        Request</a></h4>
+                                                                       href="#resources-me-deleteMyInfo_http_request">요청
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">DELETE /me HTTP/1.1
@@ -2762,8 +2763,8 @@ Host: localhost:8080</code></pre>
                 </div>
                 <div class="sect3">
                     <h4 id="resources-me-deleteMyInfo_http_response"><a class="link"
-                                                                        href="#resources-me-deleteMyInfo_http_response">Example
-                        Response</a></h4>
+                                                                        href="#resources-me-deleteMyInfo_http_response">응답
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
                             <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 204 No Content</code></pre>
@@ -2801,12 +2802,12 @@ Host: localhost:8080</code></pre>
                     조회</a></h3>
                 <div class="sect3">
                     <h4 id="resources-me-favorites-getAll_http_request"><a class="link"
-                                                                           href="#resources-me-favorites-getAll_http_request">Example
-                        Request</a></h4>
+                                                                           href="#resources-me-favorites-getAll_http_request">요청
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">GET /me/favorites HTTP/1.1
-Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM4ODI1MCwiZXhwIjoxNTkwMzkxODUwfQ.yJrnqXrfkB_HHBxKRjuCn3vGOvKyKnU_Ljlr_qPVcJI
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM5NTIyNSwiZXhwIjoxNTkwMzk4ODI1fQ.mNM5vG2eO53KfcfoGSymfExpeEcUmK5CZ6rviOj_H2o
 Accept: application/json
 Host: localhost:8080</code></pre>
                         </div>
@@ -2814,8 +2815,8 @@ Host: localhost:8080</code></pre>
                 </div>
                 <div class="sect3">
                     <h4 id="resources-me-favorites-getAll_http_response"><a class="link"
-                                                                            href="#resources-me-favorites-getAll_http_response">Example
-                        Response</a></h4>
+                                                                            href="#resources-me-favorites-getAll_http_response">응답
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
@@ -2953,13 +2954,13 @@ Content-Length: 230
                 </h3>
                 <div class="sect3">
                     <h4 id="resources-me-favorites-create_http_request"><a class="link"
-                                                                           href="#resources-me-favorites-create_http_request">Example
-                        Request</a></h4>
+                                                                           href="#resources-me-favorites-create_http_request">요청
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">POST /me/favorites HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM4ODI1MCwiZXhwIjoxNTkwMzkxODUwfQ.yJrnqXrfkB_HHBxKRjuCn3vGOvKyKnU_Ljlr_qPVcJI
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM5NTIyNSwiZXhwIjoxNTkwMzk4ODI1fQ.mNM5vG2eO53KfcfoGSymfExpeEcUmK5CZ6rviOj_H2o
 Accept: application/json
 Content-Length: 54
 Host: localhost:8080
@@ -2973,8 +2974,8 @@ Host: localhost:8080
                 </div>
                 <div class="sect3">
                     <h4 id="resources-me-favorites-create_http_response"><a class="link"
-                                                                            href="#resources-me-favorites-create_http_response">Example
-                        Response</a></h4>
+                                                                            href="#resources-me-favorites-create_http_response">응답
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 201 Created
@@ -3068,13 +3069,13 @@ Content-Length: 56
                 </h3>
                 <div class="sect3">
                     <h4 id="resources-me-favorites-delete_http_request"><a class="link"
-                                                                           href="#resources-me-favorites-delete_http_request">Example
-                        Request</a></h4>
+                                                                           href="#resources-me-favorites-delete_http_request">요청
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">DELETE /me/favorites HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM4ODI1MCwiZXhwIjoxNTkwMzkxODUwfQ.yJrnqXrfkB_HHBxKRjuCn3vGOvKyKnU_Ljlr_qPVcJI
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwY2kyNjc2QGdtYWlsLmNvbSIsImlhdCI6MTU5MDM5NTIyNSwiZXhwIjoxNTkwMzk4ODI1fQ.mNM5vG2eO53KfcfoGSymfExpeEcUmK5CZ6rviOj_H2o
 Accept: application/json
 Content-Length: 54
 Host: localhost:8080
@@ -3088,8 +3089,8 @@ Host: localhost:8080
                 </div>
                 <div class="sect3">
                     <h4 id="resources-me-favorites-delete_http_response"><a class="link"
-                                                                            href="#resources-me-favorites-delete_http_response">Example
-                        Response</a></h4>
+                                                                            href="#resources-me-favorites-delete_http_response">응답
+                        예시</a></h4>
                     <div class="listingblock">
                         <div class="content">
                             <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 204 No Content</code></pre>
@@ -3175,7 +3176,7 @@ Host: localhost:8080
 </div>
 <div id="footer">
 <div id="footer-text">
-    Last updated 2020-05-25 15:24:42 +0900
+    Last updated 2020-05-25 17:31:40 +0900
 </div>
 </div>
 </body>
