@@ -1,6 +1,8 @@
 package wooteco.subway.domain.favorite;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 
 public class Favorite {
@@ -14,6 +16,7 @@ public class Favorite {
         this(null, memberId, departure, arrival);
     }
 
+    @PersistenceConstructor
     public Favorite(Long id, Long memberId, String departure, String arrival) {
         this.id = id;
         this.memberId = memberId;

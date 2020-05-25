@@ -21,8 +21,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.MemberResponse;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,6 +34,12 @@ class FavoriteControllerTest {
 
     @MockBean
     private FavoriteService favoriteService;
+
+    @MockBean
+    private MemberService memberService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -45,8 +54,13 @@ class FavoriteControllerTest {
         given(favoriteService.create(any(), any())).willReturn(1L);
 
         String inputJson = "{\"departure\" : \"잠실역\", \"arrival\" : \"석촌역\"}";
+
+        String email = "test@test.com";
+        given(memberService.findMemberByEmail(email)).willReturn(new MemberResponse(1L, email, "test"));
+        String token = jwtTokenProvider.createToken(email);
+
         mockMvc.perform(post(uri)
-            .header("Authorization", "bearer tokenValues")
+            .header("Authorization", "bearer " + token)
             .content(inputJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -61,8 +75,12 @@ class FavoriteControllerTest {
         List<FavoriteResponse> favoriteResponses = Collections.singletonList(favoriteResponse);
         given(favoriteService.findAll(any())).willReturn(favoriteResponses);
 
+        String email = "test@test.com";
+        given(memberService.findMemberByEmail(email)).willReturn(new MemberResponse(1L, email, "test"));
+        String token = jwtTokenProvider.createToken(email);
+
         MvcResult mvcResult = mockMvc.perform(get(uri)
-            .header("Authorization", "bearer tokenValues"))
+            .header("Authorization", "bearer " + token))
             .andDo(print())
             .andExpect(status().isOk())
             .andReturn();
