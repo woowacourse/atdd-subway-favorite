@@ -13,6 +13,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -313,24 +314,50 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public String createFavorite(Long memberId, String sourceName, String destinationName) {
+    public void createFavorite(String sourceName, String destinationName) {
         Map<String, String> params = new HashMap<>();
-        params.put("memberId", memberId.toString());
         params.put("sourceName", sourceName);
         params.put("destinationName", destinationName);
 
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                header("Authorization", "bearer " + createToken()).
+                post("/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public List<FavoriteResponse> getFavorites() {
         return
                 given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
                         header("Authorization", "bearer " + createToken()).
-                        post("/favorites").
+                        get("/favorites").
                         then().
                         log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().header("Location");
+                        statusCode(HttpStatus.OK.value()).
+                        extract().jsonPath().getList(".", FavoriteResponse.class);
+    }
+
+    public void deleteFavorite(String sourceName, String destinationName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", sourceName);
+        params.put("destinationName", destinationName);
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                header("Authorization", "bearer " + createToken()).
+                delete("/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     private String createToken() {

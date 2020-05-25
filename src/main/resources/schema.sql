@@ -44,5 +44,5 @@ create table if not exists FAVORITE
 (
     member bigint not null,
     source_id bigint not null,
-    destination_id bigint not null,
+    destination_id bigint not null
 )

@@ -3,12 +3,36 @@ package wooteco.subway.acceptance.favorite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
+
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 목록을 관리한다")
     @Test
     void manageFavorite() {
+        //when
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        createFavorite(1L, STATION_NAME_KANGNAM, STATION_NAME_DOGOK);
+        createFavorite(STATION_NAME_KANGNAM, STATION_NAME_DOGOK);
+        createFavorite(STATION_NAME_SEOLLEUNG, STATION_NAME_DOGOK);
+
+        //when
+        List<FavoriteResponse> favoriteResponses = getFavorites();
+        //then
+        assertThat(favoriteResponses.size()).isEqualTo(2);
+        assertThat(favoriteResponses.get(0).getSourceName()).isEqualTo(STATION_NAME_KANGNAM);
+        assertThat(favoriteResponses.get(0).getDestinationName()).isEqualTo(STATION_NAME_DOGOK);
+        assertThat(favoriteResponses.get(1).getSourceName()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        assertThat(favoriteResponses.get(1).getDestinationName()).isEqualTo(STATION_NAME_DOGOK);
+
+        //when
+        deleteFavorite(STATION_NAME_KANGNAM, STATION_NAME_DOGOK);
+//        favoriteResponses = getFavorites();
+//        //then
+//        assertThat(favoriteResponses.size()).isEqualTo(1);
+//        assertThat(favoriteResponses.get(0).getSourceName()).isEqualTo(STATION_NAME_SEOLLEUNG);
+//        assertThat(favoriteResponses.get(0).getDestinationName()).isEqualTo(STATION_NAME_DOGOK);
     }
 }
