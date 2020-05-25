@@ -5,18 +5,18 @@ import wooteco.subway.domain.member.Member;
 
 public class FavoriteRequest {
 
-    private Long source;
-    private Long target;
+    private String source;
+    private String target;
 
-    public Long getSource() {
+    public String getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public String getTarget() {
         return target;
     }
 
     public FavoriteStation toFavoriteStation(Member member) {
-        return new FavoriteStation(null, member.getId(), source, target);
+        return new FavoriteStation(member.getId(), source, target);
     }
 }

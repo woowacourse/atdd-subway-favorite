@@ -30,8 +30,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
@@ -51,10 +49,6 @@ public class MemberControllerTest extends AcceptanceTest {
     @Autowired
     private MockMvc mockMvc;
     private Member member;
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
-    }
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {

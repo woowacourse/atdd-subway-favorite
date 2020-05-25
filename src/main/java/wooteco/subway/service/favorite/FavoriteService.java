@@ -1,19 +1,42 @@
 package wooteco.subway.service.favorite;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.favorite.FavoriteStation;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
 
 @Service
 public class FavoriteService {
-    private final FavoriteRepository favoriteRepository;
+    private final MemberRepository memberRepository;
+    private final StationRepository stationRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
-        this.favoriteRepository = favoriteRepository;
+    public FavoriteService(MemberRepository memberRepository,
+        StationRepository stationRepository) {
+        this.memberRepository = memberRepository;
+        this.stationRepository = stationRepository;
     }
 
-    public FavoriteStation save(FavoriteStation favoriteStation) {
-        return favoriteRepository.save(favoriteStation);
+    public void save(Member member, FavoriteStation favoriteStation) {
+        member.addFavoriteStation(favoriteStation);
+        memberRepository.save(member);
+    }
+
+    public FavoritesResponse findAll(Member member) {
+        List<FavoriteStation> favoriteStations = new ArrayList<>(member.getFavoriteStations());
+        return FavoritesResponse.of(favoriteStations);
+    }
+
+    public void delete(Member member, String source, String target) {
+        FavoriteStation favoriteStation = member.findByNames(source, target);
+        member.deleteFavoriteStation(favoriteStation);
+        memberRepository.save(member);
     }
 }

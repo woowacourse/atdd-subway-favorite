@@ -40,9 +40,7 @@ create table if not exists MEMBER
 
 create table if not exists FAVORITE
 (
-    id bigint auto_increment not null,
-    member_id bigint not null,
-    source bigint not null,
-    target bigint not null,
-    primary key(id)
+    member bigint not null,
+    source varchar(255) not null,
+    target varchar(255) not null
 );

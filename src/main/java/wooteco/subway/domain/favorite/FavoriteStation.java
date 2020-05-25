@@ -1,39 +1,53 @@
 package wooteco.subway.domain.favorite;
 
-import org.springframework.data.annotation.Id;
+import java.util.Objects;
+
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("FAVORITE")
 public class FavoriteStation {
-    @Id
-    private Long id;
+
+    @Column("member")
     private Long memberId;
-    private Long source;
-    private Long target;
+    private String source;
+    private String target;
 
     public FavoriteStation() {
     }
 
-    public FavoriteStation(Long id, Long memberId, Long source, Long target) {
-        this.id = id;
+    public FavoriteStation(Long memberId, String source, String target) {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public Long getMemberId() {
         return memberId;
     }
 
-    public Long getSource() {
+    public String getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public String getTarget() {
         return target;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        FavoriteStation that = (FavoriteStation)o;
+        return Objects.equals(memberId, that.memberId) &&
+            Objects.equals(source, that.source) &&
+            Objects.equals(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberId, source, target);
     }
 }
