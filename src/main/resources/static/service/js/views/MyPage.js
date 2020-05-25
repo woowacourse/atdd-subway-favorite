@@ -1,4 +1,8 @@
-import {ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE} from "../../utils/constants.js";
+import {
+  EVENT_TYPE,
+  ERROR_MESSAGE,
+  SUCCESS_MESSAGE
+} from "../../utils/constants.js";
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 

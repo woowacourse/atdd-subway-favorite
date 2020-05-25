@@ -33,7 +33,7 @@ const METHOD = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("jwt") || ""
+        "Authorization": localStorage.getItem("jwt")
       },
       body: JSON.stringify({
         ...data
@@ -45,12 +45,12 @@ const METHOD = {
 const api = (() => {
   const request = (uri, config) => fetch(uri, config);
   const requestWithJsonData = (uri, config) =>
-      fetch(uri, config).then(response => {
-        if (!response.ok) {
-          return;
-        }
-        return response.json();
-      });
+    fetch(uri, config).then(response => {
+      if (!response.ok) {
+        return;
+      }
+      return response.json();
+    });
 
   const member = {
     get(id) {
@@ -66,7 +66,7 @@ const api = (() => {
       return request(`/members/${id}`, METHOD.DELETE());
     },
     login(loginInfo) {
-      return requestWithJsonData(`/login`, METHOD.POST(loginInfo));
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(loginInfo));
     }
   };
 
@@ -94,7 +94,7 @@ const api = (() => {
   const path = {
     find(params) {
       return requestWithJsonData(
-          `/paths?source=${params.source}&target=${params.target}&type=${params.type}`
+        `/paths?source=${params.source}&target=${params.target}&type=${params.type}`
       );
     }
   };

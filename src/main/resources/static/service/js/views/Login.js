@@ -1,40 +1,66 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from "../../utils/constants.js";
-import showSnackbar from "../../lib/snackbar/index.js";
-import api from "../../api/index.js";
 
 function Login() {
   const $loginButton = document.querySelector("#login-button");
   const $email = document.querySelector("#email");
   const $password = document.querySelector("#password");
 
-  const onLogin = async event => {
-    event.preventDefault();
-    if (isValid()) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
-      return;
-    }
-    try {
-      const loginMember = {
+  function requestLogin() {
+    console.log("dkfajsklfjas")
+    fetch("/login", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+      , body: JSON.stringify({
         email: $email.value,
         password: $password.value
-      };
-      const jwt = await api.member.login(loginMember);
-      if (jwt) {
-        localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
-        location.href = "/";
-        return;
-      }
-      showSnackbar(ERROR_MESSAGE.COMMON);
-    } catch (e) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
-    }
-  };
+      })
+    }).then(data => data.json())
+        .then(data => {
+          localStorage.setItem("jwt", "Bearer " + data.accessToken)
+          localStorage.setItem("email", data.email)
+          location.href = "/";
+        })
+  }
 
-  const isValid = () => {
-    const email = $email.value;
-    const password = $password.value;
-    return !email || !password;
-  };
+  const onLogin = event => {
+    event.preventDefault()
+    if (!$email.value && !$password.value) {
+      Snackbar.show({text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
+      return
+    }
+    requestLogin();
+  }
+
+  // const onLogin = async event => {
+  //   event.preventDefault();
+  //   if (!isValid()) {
+  //     showSnackbar(ERROR_MESSAGE.COMMON);
+  //     return;
+  //   }
+  //   try {
+  //     const loginMember = {
+  //       email: $email.value,
+  //       password: $password.value
+  //     };
+  //     const jwt = await api.member.login(loginMember);
+  //     if (jwt) {
+  //       localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
+  //       location.href = "/";
+  //       return;
+  //     }
+  //     showSnackbar(ERROR_MESSAGE.COMMON);
+  //   } catch (e) {
+  //     showSnackbar(ERROR_MESSAGE.COMMON);
+  //   }
+  // };
+  //
+  // const isValid = () => {
+  //   const email = $email.value;
+  //   const password = $password.value;
+  //   return !email || !password;
+  // };
 
   this.init = () => {
     $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin);

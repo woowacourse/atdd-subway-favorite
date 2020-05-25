@@ -1,16 +1,21 @@
-import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE, SUCCESS_MESSAGE} from "../../utils/constants.js";
+import {
+  EVENT_TYPE,
+  SUCCESS_MESSAGE,
+  PATH_TYPE,
+  ERROR_MESSAGE
+} from "../../utils/constants.js";
 import api from "../../api/index.js";
-import {searchResultTemplate} from "../../utils/templates.js";
+import { searchResultTemplate } from "../../utils/templates.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 
 function Search() {
   const $departureStationName = document.querySelector(
-      "#departure-station-name"
+    "#departure-station-name"
   );
   const $arrivalStationName = document.querySelector("#arrival-station-name");
   const $searchButton = document.querySelector("#search-button");
   const $searchResultContainer = document.querySelector(
-      "#search-result-container"
+    "#search-result-container"
   );
   const $favoriteButton = document.querySelector("#favorite-button");
   const $searchResult = document.querySelector("#search-result");
@@ -28,6 +33,7 @@ function Search() {
 
   const onSearchShortestDistance = event => {
     event.preventDefault();
+    console.log("찍혀?");
     $shortestDistanceTab.classList.add("active-tab");
     $minimumTimeTab.classList.remove("active-tab");
     getSearchResult(PATH_TYPE.DISTANCE);
@@ -70,16 +76,19 @@ function Search() {
   };
 
   const initEventListener = () => {
+    console.log("init2")
+
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance);
     $shortestDistanceTab.addEventListener(
-        EVENT_TYPE.CLICK,
-        onSearchShortestDistance
+      EVENT_TYPE.CLICK,
+      onSearchShortestDistance
     );
     $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime);
   };
 
   this.init = () => {
+    console.log("init")
     initEventListener();
   };
 }
