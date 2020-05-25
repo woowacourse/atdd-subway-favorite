@@ -8,6 +8,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import sun.tools.jstat.Token;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -308,6 +310,38 @@ public class AcceptanceTest {
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public FavoriteResponse createFavorite(TokenResponse tokenResponse, Long startStationId, Long endStationId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("startStation", startStationId.toString());
+        params.put("name", endStationId.toString());
+
+        return
+                given().auth().
+                        oauth2(tokenResponse.getAccessToken()).
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/favorite").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(FavoriteResponse.class);
+    }
+
+    public FavoriteResponse findFavoriteById(TokenResponse tokenResponse) {
+        return
+                given().auth().
+                        oauth2(tokenResponse.getAccessToken()).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/favorite").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(FavoriteResponse.class);
     }
 }
 
