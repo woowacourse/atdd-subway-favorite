@@ -63,8 +63,10 @@ function MyPageEdit() {
             $email.value = data.email;
             $name.value = data.name;
         })
-            .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)))
-            .then(() => location.href = "/login");
+            .catch(error => {
+                alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR));
+                location.href = "/login";
+            })
     }
 
     this.init = () => {

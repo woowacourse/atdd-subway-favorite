@@ -11,10 +11,9 @@ function MyPage() {
             $name.innerHTML = data.name;
         })
             .catch(error => {
-                console.log(error.message);
-                alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR))
+                alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR));
+                location.href = "/login";
             })
-            .then(() => location.href = "/login");
     }
 }
 
