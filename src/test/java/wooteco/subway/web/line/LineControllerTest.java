@@ -38,7 +38,7 @@ public class LineControllerTest {
     @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
     @Test
     void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
+        WholeSubwayResponse response = WholeSubwayResponse.from(Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.findLinesWithStations()).willReturn(response);
 
         String uri = "/lines/detail";

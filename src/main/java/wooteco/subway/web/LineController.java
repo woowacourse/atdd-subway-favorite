@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 public class LineController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -27,12 +27,12 @@ public class LineController {
 
         return ResponseEntity
                 .created(URI.create("/lines/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine));
+                .body(LineResponse.from(persistLine));
     }
 
     @GetMapping("/lines")
     public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().body(LineResponse.listOf(lineService.findLines()));
+        return ResponseEntity.ok().body(LineResponse.listFrom(lineService.findLines()));
     }
 
     @GetMapping("/lines/{id}")

@@ -31,7 +31,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         TokenResponse token = loginMember(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         // when : 즐겨찾기 추가
-        addMyFavorite(token, stationResponse1.getName(), stationResponse3.getName());
+        addMyFavorite(token, stationResponse1.getId(), stationResponse3.getId());
         // then : 즐겨찾기 조회
         List<FavoriteResponse> favorites = getAllMyFavorites(token);
         assertThat(favorites.get(0).getSourceStationId()).isEqualTo(stationResponse1.getId());

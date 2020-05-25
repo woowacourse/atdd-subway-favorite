@@ -322,7 +322,7 @@ public class AcceptanceTest {
                         extract().as(TokenResponse.class);
     }
 
-    public void addMyFavorite(final TokenResponse token, final String source, final String target) {
+    public void addMyFavorite(final TokenResponse token, final Long source, final Long target) {
         FavoriteRequest request = new FavoriteRequest(source, target);
 
         given().

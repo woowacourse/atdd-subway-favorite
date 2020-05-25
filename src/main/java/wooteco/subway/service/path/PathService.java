@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PathService {
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
-    private GraphService graphService;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final GraphService graphService;
 
     public PathService(StationRepository stationRepository, LineRepository lineRepository, GraphService graphService) {
         this.stationRepository = stationRepository;

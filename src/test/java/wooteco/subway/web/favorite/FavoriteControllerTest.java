@@ -63,7 +63,7 @@ class FavoriteControllerTest {
                 .header("Authorization", "Bearer mockToken")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"source\":\"강남역\",\"target\":\"선릉역\"}"))
+                .content("{\"source\":1,\"target\":3}"))
                 .andDo(print())
                 .andExpect(status().isCreated());
 
@@ -81,7 +81,8 @@ class FavoriteControllerTest {
                 .header("Authorization", "Bearer mockToken"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("[{\"id\":10,\"memberId\":63,\"sourceStationId\":1,\"targetStationId\":3}]"));
+                .andExpect(content().string("[{\"id\":10,\"memberId\":63,\"sourceStationId\":1,\"targetStationId\":3," +
+                        "\"sourceStationName\":null,\"targetStationName\":null}]"));
     }
 
     @DisplayName("즐겨찾기 삭제")

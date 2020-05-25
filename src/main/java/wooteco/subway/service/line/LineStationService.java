@@ -40,7 +40,7 @@ public class LineStationService {
                 .map(it -> LineDetailResponse.of(it, mapStations(it.getStationIds(), stations)))
                 .collect(Collectors.toList());
 
-        return WholeSubwayResponse.of(lineDetailResponses);
+        return WholeSubwayResponse.from(lineDetailResponses);
     }
 
     private List<Station> mapStations(List<Long> stationsIds, List<Station> stations) {

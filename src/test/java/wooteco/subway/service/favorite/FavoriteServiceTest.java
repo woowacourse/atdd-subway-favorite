@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
@@ -25,10 +26,13 @@ class FavoriteServiceTest {
     @Mock
     private FavoriteRepository favoriteRepository;
 
+    @Mock
+    private StationRepository stationRepository;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        favoriteService = new FavoriteService(favoriteRepository);
+        favoriteService = new FavoriteService(favoriteRepository, stationRepository);
     }
 
     @Test

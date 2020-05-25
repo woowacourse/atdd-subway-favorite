@@ -1,3 +1,9 @@
+drop table if exists station;
+drop table if exists line;
+drop table if exists line_station;
+drop table if exists member;
+drop table if exists favorite;
+
 create table if not exists STATION
 (
     id bigint auto_increment not null,
@@ -46,3 +52,8 @@ create table if not exists FAVORITE
     target_station_id bigint not null,
     primary key(id)
 );
+
+alter table station alter column id restart with 1;
+alter table line alter column id restart with 1;
+alter table member alter column id restart with 1;
+alter table favorite alter column id restart with 1;

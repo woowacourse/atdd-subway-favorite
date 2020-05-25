@@ -12,6 +12,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/favorites")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -20,7 +21,7 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @PostMapping("/favorites")
+    @PostMapping
     public ResponseEntity<Void> create(
             @LoginMember Member member,
             @RequestBody FavoriteRequest request
@@ -29,7 +30,7 @@ public class FavoriteController {
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
     }
 
-    @GetMapping("/favorites")
+    @GetMapping
     public ResponseEntity<List<FavoriteResponse>> showAll(
             @LoginMember Member member
     ) {
@@ -37,7 +38,7 @@ public class FavoriteController {
         return ResponseEntity.ok().body(responses);
     }
 
-    @DeleteMapping("/favorites/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(
             @LoginMember Member member,
             @PathVariable("id") Long id
