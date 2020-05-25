@@ -13,25 +13,53 @@ endif::[]
 [[resources]]
 = Resources
 
-[[resources-members]]
+[[resources-admin-members]]
 == Member(Admin)
 
-[[resources-members-create]]
+[[resources-admin-members-create]]
 === 회원 가입
 
 operation::admin/members/create[snippets='http-request,request-fields,http-response,response-headers']
 
-[[resources-members-get]]
+[[resources-admin-members-get]]
 === 회원정보 검색
 
 operation::admin/members/get[snippets='http-request,request-parameters,http-response,response-fields']
 
-[[resources-members-update]]
+[[resources-admin-members-update]]
 === 회원정보 수정
 
 operation::admin/members/update[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
 
-[[resources-members-delete]]
+[[resources-admin-members-delete]]
 === 회원정보 삭제
 
 operation::admin/members/delete[snippets='http-request,path-parameters,http-response']
+
+[[resources-user]]
+== Member(User)
+
+[[resources-user-create]]
+=== 회원 가입
+
+operation::user/create[snippets='http-request,request-fields,http-response']
+
+[[resources-user-login]]
+=== 로그인
+
+operation::user/login[snippets='http-request,request-fields,http-response,response-fields']
+
+[[resources-user-get]]
+=== 개인정보 조회
+
+operation::user/get[snippets='http-request,request-headers,http-response,response-fields']
+
+[[resources-user-update]]
+=== 개인정보 수정
+
+operation::user/update[snippets='http-request,request-headers,request-fields,http-response']
+
+[[resources-user-delete]]
+=== 회원 탈퇴
+
+operation::user/delete[snippets='http-request,request-headers,http-response']

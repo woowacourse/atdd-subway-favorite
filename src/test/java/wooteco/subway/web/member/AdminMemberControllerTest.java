@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import wooteco.subway.doc.AdminMemberDocumentation;
+import wooteco.subway.docs.AdminMemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 

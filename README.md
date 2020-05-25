@@ -15,7 +15,7 @@
     - [x] 인수 테스트 구현
         - [ ] Side Case 테스트 구현
     - [x] Controller 테스트 구현
-        - [ ] Controller 테스트 문서화
+        - [x] Controller 테스트 문서화
         - [ ] Side Case 테스트 구현
     - [x] Service 테스트 구현
         - [ ] Side Case 테스트 구현

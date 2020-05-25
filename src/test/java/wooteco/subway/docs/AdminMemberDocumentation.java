@@ -1,4 +1,4 @@
-package wooteco.subway.doc;
+package wooteco.subway.docs;
 
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
