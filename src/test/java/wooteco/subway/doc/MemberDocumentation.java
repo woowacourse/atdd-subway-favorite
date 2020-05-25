@@ -25,11 +25,19 @@ public class MemberDocumentation {
 		);
 	}
 
+	public static RestDocumentationResultHandler failToCreateMember() {
+		return document("members/create_fail");
+	}
+
 	public static RestDocumentationResultHandler readMember() {
 		return document("members/read",
 				requestParameters(
 						parameterWithName("email").description("User 이메일"))
 		);
+	}
+
+	public static RestDocumentationResultHandler failToReadMemberOfEmail() {
+		return document("members/read_fail_email");
 	}
 
 	public static RestDocumentationResultHandler updateMember() {
@@ -50,5 +58,13 @@ public class MemberDocumentation {
 						parameterWithName("id").description("탈퇴할 User id")
 				)
 		);
+	}
+
+	public static RestDocumentationResultHandler failToAuthorizeMemberByToken() {
+		return document("members/authorize_fail_token");
+	}
+
+	public static RestDocumentationResultHandler failToAuthorizeMemberBySession() {
+		return document("members/authorize_fail_session");
 	}
 }
