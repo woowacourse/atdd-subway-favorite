@@ -1,9 +1,11 @@
 package wooteco.subway.domain.member;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 public class Member {
     @Id
@@ -11,6 +13,8 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    @Embedded.Empty
+    private Favorites favorites = new Favorites(new HashSet<>());
 
     public Member() {
     }
@@ -42,6 +46,18 @@ public class Member {
 
     public String getPassword() {
         return password;
+    }
+
+    public Favorites getFavorites() {
+        return favorites;
+    }
+
+    public void addFavorite(final Favorite favorite) {
+        favorites.addFavorite(favorite);
+    }
+
+    public void removeFavorite(final Long id) {
+        favorites.removeFavorite(id);
     }
 
     public void update(String name, String password) {

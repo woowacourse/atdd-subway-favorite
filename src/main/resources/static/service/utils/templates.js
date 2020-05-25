@@ -24,7 +24,7 @@ export const memberInfo = member => {
           </a>
         </li>
         <li>
-          <a href="/me/favorites" class="hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
+          <a href="/favorites" class="hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
             <span class="mdi mdi-star mr-1"></span>
             즐겨찾기
           </a>

@@ -30,6 +30,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -75,7 +76,7 @@ public class MemberControllerTest {
     public void createMember() throws Exception {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member);
+        given(memberService.createMember(any())).willReturn(MemberResponse.of(member));
 
         String body = objectMapper.writeValueAsString(memberRequest);
 

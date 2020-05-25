@@ -29,7 +29,7 @@ public class MemberController {
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
-        Member member = memberService.createMember(view.toMember());
+        MemberResponse member = memberService.createMember(view.toMember());
         return ResponseEntity
             .created(URI.create("/members/" + member.getId()))
             .build();
@@ -56,7 +56,7 @@ public class MemberController {
         if (!member.isAuthenticated(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        memberService.updateMember(id, param);
+        memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 
@@ -65,7 +65,7 @@ public class MemberController {
         if (!member.isAuthenticated(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        memberService.deleteMember(id);
+        memberService.deleteMember(member);
         return ResponseEntity.noContent().build();
     }
 }

@@ -23,6 +23,8 @@ import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -316,6 +318,37 @@ public class AcceptanceTest {
         mockMvc.perform(delete("/members/{id}", memberResponse.getId())
             .header(AUTHORIZATION, tokenResponse)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andReturn();
+    }
+
+    public void createFavorite(FavoriteRequest request, TokenResponse tokenResponse) throws Exception {
+        String body = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/favorites")
+            .header(AUTHORIZATION, tokenResponse)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body))
+            .andDo(print())
+            .andReturn()
+            .getResponse();
+    }
+
+    public List<FavoriteResponse> getAllFavorites(TokenResponse tokenResponse) throws Exception {
+        String result = mockMvc.perform(get("/favorites")
+            .header(AUTHORIZATION, tokenResponse)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+        return Arrays.asList(objectMapper.readValue(result, FavoriteResponse[].class));
+    }
+
+    public void deleteFavorite(Long id, TokenResponse tokenResponse) throws Exception {
+        mockMvc.perform(delete("/favorites/{id}", id)
+            .header(AUTHORIZATION, tokenResponse))
             .andDo(print())
             .andReturn();
     }
