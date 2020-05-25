@@ -1,9 +1,6 @@
 package wooteco.subway.service.favorite;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.MemberRepository;
@@ -11,8 +8,11 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.exception.DuplicateFavoriteException;
+import wooteco.subway.service.favorite.exception.NoExistFavoriteException;
 import wooteco.subway.service.member.exception.InvalidMemberIdException;
 import wooteco.subway.service.station.exception.InvalidStationNameException;
+
+import java.util.List;
 
 @Service
 public class FavoriteService {
@@ -47,7 +47,13 @@ public class FavoriteService {
                 .anyMatch(f -> f.isDuplicate(favorite));
     }
 
-    public void delete(Long memberId, FavoriteRequest favoriteRequest) {}
+    public void delete(Long memberId, FavoriteRequest favoriteRequest) {
+        Favorite favorite = favoriteRepository.findByMemberIdAndDepartureAndArrival(memberId,
+                favoriteRequest.getDeparture(), favoriteRequest.getArrival())
+                .orElseThrow(NoExistFavoriteException::new);
+
+        favoriteRepository.delete(favorite);
+    }
 
     public List<FavoriteResponse> findAll(Long memberId) {
         return null;

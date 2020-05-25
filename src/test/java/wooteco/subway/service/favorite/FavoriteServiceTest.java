@@ -45,6 +45,7 @@ class FavoriteServiceTest {
         FavoriteRequest favoriteRequest = new FavoriteRequest("잠실", "강남");
         Favorite favorite = new Favorite(1L, 1L, favoriteRequest.getDeparture(),
                 favoriteRequest.getArrival());
+
         when(stationRepository.findByName(favoriteRequest.getDeparture()))
                 .thenReturn(Optional.of(new Station("잠실")));
         when(stationRepository.findByName(favoriteRequest.getArrival()))
@@ -65,12 +66,30 @@ class FavoriteServiceTest {
         FavoriteRequest duplicatedFavoriteRequest = new FavoriteRequest("잠실", "강남");
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member("a@a", "a", "a")));
-        when(stationRepository.findByName(duplicatedFavoriteRequest.getDeparture())).thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getDeparture())));
-        when(stationRepository.findByName(duplicatedFavoriteRequest.getArrival())).thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getArrival())));
+        when(stationRepository.findByName(duplicatedFavoriteRequest.getDeparture()))
+                .thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getDeparture())));
+        when(stationRepository.findByName(duplicatedFavoriteRequest.getArrival()))
+                .thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getArrival())));
         when(favoriteRepository.findAllByMemberId(duplicatedMemberId))
-                .thenReturn(Collections.singletonList(new Favorite(duplicatedMemberId, duplicatedFavoriteRequest.getDeparture(), duplicatedFavoriteRequest.getArrival())));
+                .thenReturn(Collections.singletonList(new Favorite(duplicatedMemberId,
+                        duplicatedFavoriteRequest.getDeparture(), duplicatedFavoriteRequest.getArrival())));
 
         assertThatThrownBy(() -> favoriteService.create(duplicatedMemberId, duplicatedFavoriteRequest))
                 .isInstanceOf(DuplicateFavoriteException.class);
+    }
+
+    @Test
+    void deleteTest() {
+        Long memberId = 1L;
+        FavoriteRequest favoriteRequest = new FavoriteRequest("잠실", "강남");
+
+        when(favoriteRepository.findByMemberIdAndDepartureAndArrival(memberId,
+                favoriteRequest.getDeparture(), favoriteRequest.getArrival()))
+                .thenReturn(Optional.of(
+                        new Favorite(memberId, favoriteRequest.getDeparture(), favoriteRequest.getArrival())));
+
+        favoriteService.delete(memberId, favoriteRequest);
+
+        verify(favoriteRepository).delete(any());
     }
 }
