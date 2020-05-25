@@ -313,6 +313,26 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    public String createFavorite(Long memberId, String sourceName, String destinationName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("memberId", memberId.toString());
+        params.put("sourceName", sourceName);
+        params.put("destinationName", destinationName);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        header("Authorization", "bearer " + createToken()).
+                        post("/favorites").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().header("Location");
+    }
+
     private String createToken() {
         return new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL);
     }
