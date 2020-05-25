@@ -52,6 +52,7 @@ const api = (() => {
                 throw new Error(error.errorMessage)
             })
         }
+        return data;
     })
     const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => {
         if (data.ok) {
@@ -100,11 +101,24 @@ const api = (() => {
         }
     }
 
+    const favorite = {
+        create(data) {
+            return request(`/favorite/me`, METHOD.POST(data, getToken()))
+        },
+        retrieve() {
+            return requestWithJsonData(`/favorite/me`, METHOD.GET(getToken()))
+        },
+        delete(pathId) {
+            return request(`/favorite/me/` + pathId, METHOD.DELETE(getToken()))
+        }
+    }
+
     return {
         line,
         path,
         member,
-        me
+        me,
+        favorite
     }
 })()
 

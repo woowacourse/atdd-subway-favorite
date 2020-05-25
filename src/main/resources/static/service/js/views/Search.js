@@ -12,7 +12,26 @@ function Search() {
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
 
-  const showSearchResult = data => {
+  const showSearchResult = async data => {
+    const response = await api.favorite.retrieve()
+    if (response) {
+      const [registeredFavoritePath] = response.favoritePaths
+          .filter(path => path.source.name === $departureStationName.value &&
+              path.target.name === $arrivalStationName.value)
+
+      if (registeredFavoritePath) {
+        const classList = $favoriteButton.classList
+
+        classList.remove('mdi-star-outline')
+        classList.remove('text-gray-600')
+        classList.remove('bg-yellow-500')
+        classList.add('mdi-star')
+        classList.add('text-yellow-500')
+
+        $favoriteButton.dataset.pathId = registeredFavoritePath.id
+      }
+    }
+
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
@@ -46,7 +65,7 @@ function Search() {
       .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
-  const onToggleFavorite = event => {
+  const onToggleFavorite = async event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
@@ -57,12 +76,26 @@ function Search() {
       classList.add('bg-yellow-500')
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
+
+      api.favorite.delete($favoriteButton.dataset.pathId)
+      $favoriteButton.dataset.pathId = ''
     } else {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
+
+      const data = {
+        source: $departureStationName.value,
+        target: $arrivalStationName.value
+      }
+
+      const response = await api.favorite.create(data)
+      const location = response.headers.get('location')
+      const pathId = location.split('/')[2]
+
+      $favoriteButton.dataset.pathId = pathId
     }
   }
 

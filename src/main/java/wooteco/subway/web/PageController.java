@@ -17,9 +17,14 @@ public class PageController {
         this.stationService = stationService;
     }
 
+    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
+    public String admin() {
+        return "admin/index";
+    }
+
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
-        return "admin/index";
+        return "service/index";
     }
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
@@ -72,5 +77,10 @@ public class PageController {
     @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
     public String myPageEdit() {
         return "service/mypage-edit";
+    }
+
+    @GetMapping(value = "/favorite", produces = MediaType.TEXT_HTML_VALUE)
+    public String favorite() {
+        return "service/favorite";
     }
 }
