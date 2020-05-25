@@ -1,19 +1,21 @@
 package wooteco.subway.web.member.interceptor;
 
+import com.google.gson.Gson;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
 import wooteco.subway.web.member.exception.InvalidAuthenticationException;
 import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 @Component
 public class BearerAuthFavoriteInterceptor implements HandlerInterceptor {
+    private static final Gson gson = new Gson();
+
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -25,20 +27,19 @@ public class BearerAuthFavoriteInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("Favorite 인터셉터 들어감");
+
         String bearer = authExtractor.extract(request, "Bearer");
-        System.out.println("이게 널일까요? " + bearer);
         validateToken(bearer);
         String email = jwtTokenProvider.getSubject(bearer);
+
         request.setAttribute("requestMemberEmail", email);
+        String content = request.getReader().readLine();
+        CreateFavoriteRequest createFavoriteRequest = gson.fromJson(content, CreateFavoriteRequest.class);
 
-        // TODO : 바디에 있는 값을 꺼내서 request.setAttribute("source", source) 해줘야해
-        final Map<String, String> pathVariables = (Map<String, String>) request
-                .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-
-        String source = pathVariables.get("source");
+        String source = createFavoriteRequest.getSource();
         request.setAttribute("source", source);
 
-        String target = pathVariables.get("target");
+        String target = createFavoriteRequest.getTarget();
         request.setAttribute("target", target);
 
         return true;
@@ -46,6 +47,7 @@ public class BearerAuthFavoriteInterceptor implements HandlerInterceptor {
 
     private void validateToken(String bearer) {
         if (bearer.isEmpty() || !jwtTokenProvider.validateToken(bearer)) {
+            System.out.println("에러 포인트 1");
             throw new InvalidAuthenticationException();
         }
     }

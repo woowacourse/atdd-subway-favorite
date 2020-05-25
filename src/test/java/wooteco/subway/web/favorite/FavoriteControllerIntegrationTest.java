@@ -71,12 +71,13 @@ public class FavoriteControllerIntegrationTest {
 
         String uri = "/favorites";
         String content = gson.toJson(createFavoriteRequest);
+        System.out.println(content + " contnenenenenen");
 
         mockMvc.perform(post(uri)
                 .header("Authorization", "Bearer " + wrongRequestToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(content))
+                .content(content)
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }

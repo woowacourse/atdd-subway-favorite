@@ -2,9 +2,12 @@ package wooteco.subway.acceptance.favorite;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.DummyTestUserInfo;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 
@@ -15,6 +18,9 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @DisplayName("즐겨 찾기 추가/삭제/조회")
     @Test
     void favoriteAcceptanceTest() {
@@ -30,6 +36,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         initStation();
         //When
         // 검색한 경로를 즐겨찾기에 추가하는 요청을 보낸다.
+        createMember(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
         createFavorite("강남역", "한티역");
         createFavorite("매봉역", "도곡역");
         //Then
@@ -68,11 +75,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private String createFavorite(String source, String target) {
+        String token = jwtTokenProvider.createToken(DummyTestUserInfo.EMAIL);
+
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
 
         return given().
+                header("Authorization", "Bearer " + token).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -83,5 +93,4 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 statusCode(HttpStatus.CREATED.value()).
                 extract().header("Favorite");
     }
-
 }
