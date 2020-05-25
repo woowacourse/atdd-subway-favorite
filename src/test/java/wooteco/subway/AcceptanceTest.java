@@ -24,6 +24,7 @@ import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
+// @formatter:off
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
@@ -65,9 +66,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/stations").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(StationResponse.class);
@@ -75,18 +76,20 @@ public class AcceptanceTest {
 
     public List<StationResponse> getStations() {
         return
-                given().when().
+                given().
+                when().
                         get("/stations").
-                        then().
+                then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
     }
 
     public void deleteStation(Long id) {
-        given().when().
+        given().
+        when().
                 delete("/stations/" + id).
-                then().
+        then().
                 log().all();
     }
 
@@ -102,9 +105,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/lines").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(LineResponse.class);
@@ -112,9 +115,10 @@ public class AcceptanceTest {
 
     public LineDetailResponse getLine(Long id) {
         return
-                given().when().
+                given().
+                when().
                         get("/lines/" + id).
-                        then().
+                then().
                         log().all().
                         extract().as(LineDetailResponse.class);
     }
@@ -129,27 +133,29 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 put("/lines/" + id).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
     public List<LineResponse> getLines() {
         return
-                given().when().
+                given().
+                when().
                         get("/lines").
-                        then().
+                then().
                         log().all().
                         extract().
                         jsonPath().getList(".", LineResponse.class);
     }
 
     public void deleteLine(Long id) {
-        given().when().
+        given().
+        when().
                 delete("/lines/" + id).
-                then().
+        then().
                 log().all();
     }
 
@@ -168,9 +174,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -179,9 +185,9 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -189,9 +195,9 @@ public class AcceptanceTest {
     public WholeSubwayResponse retrieveWholeSubway() {
         return
                 given().
-                        when().
+                when().
                         get("/lines/detail").
-                        then().
+                then().
                         log().all().
                         extract().as(WholeSubwayResponse.class);
     }
@@ -201,9 +207,9 @@ public class AcceptanceTest {
                 given().
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(PathResponse.class);
@@ -261,9 +267,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/members/signup").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().header("Location");
@@ -275,9 +281,9 @@ public class AcceptanceTest {
                         auth().
                         oauth2(tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         get("/members?email=" + email).
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberResponse.class);
@@ -289,24 +295,25 @@ public class AcceptanceTest {
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         given().
-            header("Authorization", getToken(tokenResponse)).
-            body(params).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            put("/members").
-            then().
+                header("Authorization", getToken(tokenResponse)).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                put("/members").
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
     public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
-        given().when().
-            header("Authorization", getToken(tokenResponse)).
-            delete("/members").
-            then().
-            log().all().
-            statusCode(HttpStatus.NO_CONTENT.value());
+        given().
+        when().
+                header("Authorization", getToken(tokenResponse)).
+                delete("/members").
+        then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     private String getToken(TokenResponse tokenResponse) {
@@ -315,13 +322,13 @@ public class AcceptanceTest {
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
         return
-            given()
-                .auth()
-                .oauth2(tokenResponse.getAccessToken())
+                given()
+                        .auth()
+                        .oauth2(tokenResponse.getAccessToken())
                 .when()
-                .get("/me/bearer")
+                        .get("/me/bearer")
                 .then()
-                .log().all()
+                        .log().all()
                         .statusCode(HttpStatus.OK.value())
                         .extract().as(MemberResponse.class);
     }
@@ -332,9 +339,9 @@ public class AcceptanceTest {
                         body(new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD)).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/oauth/token").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(TokenResponse.class);

@@ -23,8 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(bearerAuthInterceptor)
-                .addPathPatterns("/me/bearer")
-                .addPathPatterns("/members")
+                .addPathPatterns("/me/bearer", "/members", "/members/favorites")
                 .excludePathPatterns("/members/signup");
     }
 
