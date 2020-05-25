@@ -2,9 +2,6 @@ package wooteco.subway;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -27,46 +24,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
     }
 
-    public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        return given().auth()
-            .oauth2(tokenResponse.getAccessToken())
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/me")
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(MemberResponse.class);
-    }
-
     @Test
     void bearerAuthWithUnauthorizedToken() {
+        //@formatter:off
         given()
             .auth()
             .oauth2("invalid_token")
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
+        .when()
             .get("/me")
-            .then()
+        .then()
             .log().all()
             .statusCode(HttpStatus.UNAUTHORIZED.value());
+        //@formatter:on
     }
 
-    public TokenResponse login(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return
-            given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/oauth/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().as(TokenResponse.class);
-    }
 }

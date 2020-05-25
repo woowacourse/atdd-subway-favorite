@@ -1,5 +1,7 @@
 package wooteco.subway.web.member;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
@@ -39,13 +43,32 @@ public class LoginMemberController {
     @PatchMapping("/me")
     public ResponseEntity<Void> updateMemberOfMine(@LoginMember Member member, @Valid @RequestBody
         UpdateMemberRequest updateMemberRequest) {
-        memberService.updateMember(member.getId(), updateMemberRequest);
+        memberService.updateMember(member, updateMemberRequest);
+
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMemberOfMine(@LoginMember Member member) {
         memberService.deleteMember(member.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/favorites")
+    public ResponseEntity<Void> createFavorite(@LoginMember Member member,
+        @RequestBody FavoriteRequest favoriteRequest) {
+        memberService.addFavorite(member, favoriteRequest.toFavorite());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me/favorites")
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
+        return ResponseEntity.ok().body(FavoriteResponse.of(memberService.getFavorites(member)));
+    }
+
+    @DeleteMapping("/me/favorites")
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @RequestBody FavoriteRequest favoriteRequest) {
+        memberService.removeFavorite(member, favoriteRequest.toFavorite());
         return ResponseEntity.noContent().build();
     }
 }
