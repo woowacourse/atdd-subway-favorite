@@ -8,8 +8,8 @@ function SubwayApp() {
             api.loginMember
                 .get()
                 .then(member => {
-                    if (member) {
-                        initNavigation(member);
+                    if (member.body) {
+                        initNavigation(member.body.data);
                     }
                 })
                 .catch(() => initNavigation());

@@ -11,7 +11,7 @@ function Favorite() {
             const template = await api.favorite
                 .getAll()
                 .then(favorites =>
-                    favorites.map(edge => edgeItemTemplate(edge)).join("")
+                    favorites.body.data.favoriteResponses.map(favorite => edgeItemTemplate(favorite)).join("")
                 );
             $favoriteList.innerHTML = template;
         } catch (e) {
@@ -26,8 +26,13 @@ function Favorite() {
             return;
         }
         try {
-            const edgeId = $target.closest(".edge-item").dataset.edgeId;
-            await api.favorite.delete(edgeId);
+            const sourceStationId = $target.closest(".edge-item").dataset.sourceStationId;
+            const targetStationId = $target.closest(".edge-item").dataset.targetStationId;
+            const deleteRequest = {
+                "sourceStationId": sourceStationId,
+                "targetStationId": targetStationId
+            };
+            await api.favorite.delete(deleteRequest);
             await initFavoriteList();
             showSnackbar(SUCCESS_MESSAGE.COMMON);
         } catch (e) {
