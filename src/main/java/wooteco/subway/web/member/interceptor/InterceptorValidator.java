@@ -1,7 +1,6 @@
 package wooteco.subway.web.member.interceptor;
 
 import org.springframework.web.method.HandlerMethod;
-import wooteco.subway.web.member.aspect.NoValidate;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package wooteco.subway.web.member.aspect;
+package wooteco.subway.web.member.interceptor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

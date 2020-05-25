@@ -8,6 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.NoResourceExistException;
 import wooteco.subway.service.member.MemberService;
 
 import java.util.Objects;
@@ -42,8 +43,10 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         }
         try {
             return memberService.findMemberByEmail(emailJwt);
+        } catch (NoResourceExistException e) {
+            throw e;
         } catch (Exception e) {
-            throw new InvalidAuthenticationException("비정상적인 로그인 시도");
+            throw new InvalidAuthenticationException("이메일 인증 실패");
         }
     }
 }

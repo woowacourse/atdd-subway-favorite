@@ -7,7 +7,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.member.aspect.NoValidate;
+import wooteco.subway.web.member.interceptor.NoValidate;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -30,12 +30,7 @@ public class MemberController {
     }
 
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(
-            @RequestParam String email,
-            @RequestAttribute("loginMemberEmailSession") String sessionEmail,
-            @RequestAttribute("loginMemberEmailJwt") String tokenEmail
-    ) {
-        Member member = memberService.findMemberByEmail(email);
+    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
@@ -43,17 +38,24 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMember(
             @PathVariable Long id,
             @RequestBody UpdateMemberRequest param,
-            @RequestAttribute("loginMemberEmailSession") String sessionEmail,
-            @RequestAttribute("loginMemberEmailJwt") String tokenEmail) {
+            @LoginMember Member member
+    ) {
+        validateAuthentication(id, member);
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
+    }
+
+    private void validateAuthentication(Long id, Member member) {
+        if (member.hasNotSameId(id)) {
+            throw new InvalidAuthenticationException("니 아이디 아님");
+        }
     }
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(
             @PathVariable Long id,
-            @RequestAttribute("loginMemberEmailSession") String sessionEmail,
-            @RequestAttribute("loginMemberEmailJwt") String tokenEmail) {
+            @LoginMember Member member) {
+        validateAuthentication(id, member);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }

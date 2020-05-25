@@ -132,7 +132,10 @@ public class MemberControllerTest {
 
 	@Test
 	public void updateMember() throws Exception {
+		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
 		doNothing().when(memberService).updateMember(any(), any());
+		given(memberService.findMemberByEmail(any())).willReturn(member);
 		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
 		given(jwtTokenProvider.validateToken(any())).willReturn(true);
 		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
@@ -157,7 +160,10 @@ public class MemberControllerTest {
 
 	@Test
 	public void deleteMember() throws Exception {
+		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
 		doNothing().when(memberService).deleteMember(any());
+		given(memberService.findMemberByEmail(any())).willReturn(member);
 		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
 		given(jwtTokenProvider.validateToken(any())).willReturn(true);
 		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
