@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.AcceptanceTest.*;
 
+import javax.servlet.http.Cookie;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +47,7 @@ public class MemberControllerTest {
     protected MockMvc mockMvc;
 
     private Member member;
+    private Cookie cookie;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
@@ -55,6 +58,7 @@ public class MemberControllerTest {
             .build();
 
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        cookie = new Cookie("token", "dundung");
     }
 
     @Test
@@ -127,8 +131,10 @@ public class MemberControllerTest {
     @Test
     void getMember() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         this.mockMvc.perform(get("/members")
+            .cookie(cookie)
             .param("email", TEST_USER_EMAIL)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -140,9 +146,11 @@ public class MemberControllerTest {
 
     @Test
     void getNotExistMember() throws Exception {
-        given(memberService.findMemberByEmail(any())).willThrow(new NotFoundMemberException(any()));
+        given(memberService.findMemberByEmail(any())).willThrow(new NotFoundMemberException("이메일을 찾을 수 없습니다."));
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         this.mockMvc.perform(get("/members")
+            .cookie(cookie)
             .param("email", TEST_USER_EMAIL)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
@@ -159,7 +167,7 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(put("/members/" + 1L)
             .contentType(MediaType.APPLICATION_JSON)
-            .header("Authorization", "tmp")
+            .cookie(cookie)
             .content(inputJson)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -171,7 +179,7 @@ public class MemberControllerTest {
     void deleteMember() throws Exception {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         this.mockMvc.perform(delete("/members/" + 1L)
-            .header("Authorization", "tmp"))
+            .cookie(cookie))
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(MemberDocumentation.deleteMember());

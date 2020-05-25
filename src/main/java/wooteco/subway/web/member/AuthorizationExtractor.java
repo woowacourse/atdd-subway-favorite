@@ -7,14 +7,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
+import wooteco.subway.web.member.exception.InvalidTokenException;
+
 @Component
 public class AuthorizationExtractor {
 
     public String extract(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-            .filter(cookie -> cookie.getName().equals("token"))
-            .map(Cookie::getValue)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("토큰을 찾을 수 없습니다."));
+        try {
+            return Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("token"))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElseThrow(() -> new InvalidTokenException("토큰을 찾을 수 없습니다."));
+        } catch (Exception e) {
+            throw new InvalidTokenException("토큰을 찾을 수 없습니다.");
+        }
     }
 }

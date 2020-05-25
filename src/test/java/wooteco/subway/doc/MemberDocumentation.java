@@ -79,10 +79,6 @@ public class MemberDocumentation {
                     .description("The user's old password"),
                 fieldWithPath("newPassword").type(JsonFieldType.STRING)
                     .description("The user's new password")
-            ),
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
             )
         );
     }

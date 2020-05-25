@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -47,6 +49,9 @@ public class AcceptanceTest {
 
     @LocalServerPort
     public int port;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     public void setUp() {
@@ -280,11 +285,13 @@ public class AcceptanceTest {
     }
 
     public MemberResponse getMember(String email) {
+        String token = jwtTokenProvider.createToken(email);
         return
             given().
                 accept(MediaType.APPLICATION_JSON_VALUE).
+                cookie("token", token).
                 when().
-                get("/members?email=" + email).
+                get("/members?email="+email).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -298,8 +305,7 @@ public class AcceptanceTest {
         params.put("newPassword", "NEW_" + TEST_USER_PASSWORD);
 
         given().
-            header("Authorization",
-                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+            cookie("token", tokenResponse.getAccessToken()).
             body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
@@ -312,8 +318,7 @@ public class AcceptanceTest {
 
     public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         given().when().
-            header("Authorization",
-                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+            cookie("token", tokenResponse.getAccessToken()).
             delete("/members/" + memberResponse.getId()).
             then().
             log().all().

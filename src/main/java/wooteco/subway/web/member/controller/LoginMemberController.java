@@ -11,6 +11,8 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.web.member.interceptor.Auth;
+import wooteco.subway.web.member.interceptor.IsAuth;
 import wooteco.subway.web.member.resolver.LoginMember;
 
 @RestController
@@ -27,6 +29,7 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
 
+    @IsAuth(isAuth = Auth.AUTH)
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));

@@ -27,7 +27,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        return given().cookie("token", tokenResponse.getAccessToken())
+        return given()
+            .cookie("token", tokenResponse.getAccessToken())
             .when()
             .get("/me")
             .then()

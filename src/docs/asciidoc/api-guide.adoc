@@ -44,11 +44,13 @@ operation::members/not-match-password-create[snippets='http-request,http-respons
 ==== 성공
 
 ===== 로그인 후 조회
-operation::members/get[snippets='http-request,http-response,response-fields']
+operation::members/get[snippets='http-request,http-response']
 
 ==== 실패
 
-=====
+===== 이메일이 존재하지 않음
+operation::members/not-exist-get[snippets='http-request,http-response']
+
 
 [[resources-members-update]]
 === 회원 정보 수정
