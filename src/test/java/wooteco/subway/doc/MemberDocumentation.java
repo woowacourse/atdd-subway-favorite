@@ -104,7 +104,7 @@ public class MemberDocumentation {
             responseFields(
                 fieldWithPath("message").type(JsonFieldType.STRING)
                     .description("The error message")
-                )
+            )
         );
     }
 
@@ -112,6 +112,24 @@ public class MemberDocumentation {
         return document("members/delete",
             getDocumentRequest(),
             getDocumentResponse()
+        );
+    }
+
+    public static RestDocumentationResultHandler notExistTokenUpdateMember() {
+        return document("members/not-exist-token-update",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("oldPassword").type(JsonFieldType.STRING)
+                    .description("The user's old password"),
+                fieldWithPath("newPassword").type(JsonFieldType.STRING)
+                    .description("The user's new password")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            )
         );
     }
 }

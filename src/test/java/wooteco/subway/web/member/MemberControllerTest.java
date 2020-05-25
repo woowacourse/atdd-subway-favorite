@@ -30,6 +30,7 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.web.member.exception.InvalidTokenException;
 import wooteco.subway.web.member.exception.NotFoundMemberException;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -173,6 +174,22 @@ public class MemberControllerTest {
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    void notExistTokenUpdateMember() throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willThrow(new InvalidTokenException("토큰이 존재하지 않습니다."));
+        String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
+            "\"oldPassword\":\"" + TEST_USER_PASSWORD + "\"," +
+            "\"newPassword\":\"" + "NEW_" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(put("/members/" + 1L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(MemberDocumentation.notExistTokenUpdateMember());
     }
 
     @Test

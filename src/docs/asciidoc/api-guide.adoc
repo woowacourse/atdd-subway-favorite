@@ -48,7 +48,7 @@ operation::members/get[snippets='http-request,http-response']
 
 ==== 실패
 
-===== 이메일이 존재하지 않음
+===== 토큰이 존재하지 않음
 operation::members/not-exist-get[snippets='http-request,http-response']
 
 
@@ -59,6 +59,11 @@ operation::members/not-exist-get[snippets='http-request,http-response']
 
 ===== 로그인 후 올바른 패스워드로 수정
 operation::members/update[snippets='http-request,http-response,request-fields']
+
+==== 실패
+
+===== 토큰이 존재하지 않음
+operation::member/not-exist-token-update[snippets='http-request, http-response, request-fields, response-fields']
 
 [[resources-members-delete]]
 === 회원 탈퇴
