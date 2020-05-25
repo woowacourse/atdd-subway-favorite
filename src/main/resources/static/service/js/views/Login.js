@@ -8,7 +8,7 @@ function Login() {
     const emailValue = document.querySelector('#email').value.trim()
     const passwordValue = document.querySelector('#password').value.trim()
     if (!emailValue || !passwordValue) {
-      Snackbar.show({text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
+      alert(ERROR_MESSAGE.EMPTY_VALUE)
       return
     }
 

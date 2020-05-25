@@ -47,7 +47,16 @@ function MyPageEdit() {
   }
 
   const onDelete = () => {
-
+    api.memberWithToken.deleteMyInformation().then((data) => {
+      if (!data.ok) {
+        throw new Error(data.status)
+      }
+      alert("정상적으로 탈퇴처리 되었습니다. 안녕히가세요")
+      localStorage.clear()
+      location.href = "/"
+    }).catch(error => {
+      alert(ERROR_MESSAGE.DELETE_FAIL)
+    })
   }
 
   this.init = () => {

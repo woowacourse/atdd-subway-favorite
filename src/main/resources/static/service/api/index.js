@@ -40,6 +40,15 @@ const METHOD = {
     return {
       method: 'DELETE'
     }
+  },
+  DELETE_WITH_TOKEN() {
+    return {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("tokenType") + " " + localStorage.getItem("accessToken")
+      }
+    }
   }
 }
 
@@ -77,6 +86,9 @@ const api = (() => {
     },
     updateMyInformation(params) {
       return request(`/me`, METHOD.PUT_WITH_TOKEN(params))
+    },
+    deleteMyInformation() {
+      return request(`/me`, METHOD.DELETE_WITH_TOKEN())
     }
   }
 
