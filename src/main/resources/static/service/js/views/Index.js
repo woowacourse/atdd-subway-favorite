@@ -6,6 +6,7 @@ function Index() {
   const $join = document.querySelector("#join");
   const $myPage = document.querySelector("#my-page");
   const $myPageEdit = document.querySelector("#my-page-edit");
+  const $myFavorites = document.querySelector("#my-favorites");
 
   this.init = () => {
     $logout.addEventListener(EVENT_TYPE.CLICK, logout);
@@ -26,6 +27,7 @@ function Index() {
     $join.classList.toggle("hidden");
     $myPage.classList.toggle("hidden");
     $myPageEdit.classList.toggle("hidden");
+    $myFavorites.classList.toggle("hidden");
   }
 }
 

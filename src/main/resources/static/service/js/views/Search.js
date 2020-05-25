@@ -17,7 +17,8 @@ function Search() {
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
-    $searchResult.innerHTML = searchResultTemplate(data)
+    $searchResult.innerHTML = searchResultTemplate(data);
+    initSearchButton();
   }
 
   const onSearchShortestDistance = event => {
@@ -46,19 +47,30 @@ function Search() {
       .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
+  function parseLocationToId(location) {
+    const index = location.lastIndexOf("/") + 1;
+    return location.substring(index);
+  }
+
+  function initSearchButton() {
+    const classList = $favoriteButton.classList
+    classList.add('mdi-star-outline')
+    classList.add('text-gray-600')
+    classList.add('bg-yellow-500')
+    classList.remove('mdi-star')
+    classList.remove('text-yellow-500')
+    $favoriteButton.dataset.id = "";
+  }
+
+
   const onToggleFavorite = async event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
 
     if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
-      //delete
-      // api.favorite.delete(localStorage.getItem("token"), a);
+      await api.favorite.delete(localStorage.getItem("token"), $favoriteButton.dataset.id);
+      initSearchButton();
     } else {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
@@ -70,12 +82,13 @@ function Search() {
         target: $arrivalStationName.value
       }
       const response = await api.favorite.create(localStorage.getItem("token"), favoriteRequest);
-      console.log(response)
+      $favoriteButton.dataset.id = parseLocationToId(response.headers.get("Location"));
+      console.log($favoriteButton.dataset.id);
     }
   }
 
   const initEventListener = () => {
-    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
+    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
     $shortestDistanceTab.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
     $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime)
