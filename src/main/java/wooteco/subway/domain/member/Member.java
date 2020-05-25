@@ -46,6 +46,10 @@ public class Member {
         return password;
     }
 
+    public Set<Favorite> getFavorites() {
+        return favorites;
+    }
+
     public void update(String name, String password) {
         if (StringUtils.isNotBlank(name)) {
             this.name = name;

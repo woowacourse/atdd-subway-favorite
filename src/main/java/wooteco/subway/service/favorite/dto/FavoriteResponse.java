@@ -7,6 +7,9 @@ public class FavoriteResponse {
     private Long departureId;
     private Long destinationId;
 
+    private FavoriteResponse() {
+    }
+
     public FavoriteResponse(Long id, Long departureId, Long destinationId) {
         this.id = id;
         this.departureId = departureId;

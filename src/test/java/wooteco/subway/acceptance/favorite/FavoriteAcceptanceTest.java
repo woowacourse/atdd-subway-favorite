@@ -1,5 +1,7 @@
 package wooteco.subway.acceptance.favorite;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteListResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -50,6 +53,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         addFavorite(tokenResponse.getAccessToken(), gangnam.getId(), jamsil.getId());
+
+        FavoriteListResponse favoriteListResponse = getFavorites(tokenResponse.getAccessToken());
+        assertThat(favoriteListResponse.getFavoriteResponses().size()).isEqualTo(1);
+
+    }
+
+    private FavoriteListResponse getFavorites(String token) {
+        return given()
+            .auth()
+            .oauth2(token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/members/favorites")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(FavoriteListResponse.class);
     }
 
     private void addFavorite(String token, Long departureId, Long destinationId) {

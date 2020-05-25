@@ -1,5 +1,6 @@
 package wooteco.subway.web.favorite;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
@@ -8,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.AcceptanceTest.*;
 import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
+
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,15 +25,18 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteListResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.AuthorizationExtractor;
@@ -91,5 +97,31 @@ public class FavoriteControllerTest {
         given(authExtractor.extract(any(), eq(BEARER))).willReturn(credential);
         given(jwtTokenProvider.validateToken(credential)).willReturn(true);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+    }
+
+    @Test
+    void findFavorites() throws Exception {
+        //Given
+        setMockToken();
+        FavoriteResponse response = new FavoriteResponse(1L, 1L, 2L);
+        FavoriteResponse response2 = new FavoriteResponse(2L, 3L, 4L);
+        FavoriteListResponse favoriteListResponse = new FavoriteListResponse(
+            Arrays.asList(response, response2));
+
+        given(favoriteService.findFavorites(any())).willReturn(favoriteListResponse);
+
+        //When
+        MvcResult mvcResult = this.mockMvc.perform(get("/members/favorites")
+            .header(HttpHeaders.AUTHORIZATION, mockToken)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn();
+
+        //Then
+        ObjectMapper mapper = new ObjectMapper();
+        assertThat(mapper.readValue(
+            mvcResult.getResponse().getContentAsString(), FavoriteListResponse.class)).isInstanceOf(
+            FavoriteListResponse.class);
     }
 }

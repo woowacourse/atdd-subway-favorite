@@ -4,12 +4,14 @@ import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteListResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.member.LoginMember;
 
@@ -26,5 +28,10 @@ public class FavoriteController {
         @RequestBody FavoriteCreateRequest createRequest) {
         FavoriteResponse response = favoriteService.addFavorite(member, createRequest);
         return ResponseEntity.created(URI.create("/members/favorites/" + response.getId())).build();
+    }
+
+    @GetMapping("/members/favorites")
+    public ResponseEntity<FavoriteListResponse> findFavorites(@LoginMember Member member) {
+        return ResponseEntity.ok(favoriteService.findFavorites(member));
     }
 }
