@@ -42,10 +42,9 @@ class LoginMemberControllerTest {
 	protected MemberService memberService;
 
 	@Autowired
-	protected MockMvc mockMvc;
-
-	@Autowired
 	protected JwtTokenProvider jwtTokenProvider;
+
+	protected MockMvc mockMvc;
 
 	@BeforeEach
 	void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
