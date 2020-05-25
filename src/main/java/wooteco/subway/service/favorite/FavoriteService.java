@@ -1,4 +1,4 @@
-package wooteco.subway.service;
+package wooteco.subway.service.favorite;
 
 import java.util.List;
 
@@ -37,5 +37,9 @@ public class FavoriteService {
     public List<FavoriteResponse> getFavorites(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
         return FavoriteResponse.listFrom(favorites);
+    }
+
+    public void deleteFavorite(Long favoriteId) {
+        favoriteRepository.deleteById(favoriteId);
     }
 }

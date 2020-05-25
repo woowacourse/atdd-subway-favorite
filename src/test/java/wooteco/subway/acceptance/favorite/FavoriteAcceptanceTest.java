@@ -44,6 +44,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(responses.get(0).getSourceStationId()).isEqualTo(stationResponse1.getId());
         assertThat(responses.get(0).getTargetStationId()).isEqualTo(stationResponse2.getId());
 
+        deleteFavoritePath(tokenResponse, responses.get(0).getId());
+        responses = getFavoritePath(tokenResponse);
+        assertThat(responses.size()).isEqualTo(0);
     }
 
     private void addFavoritePath(
@@ -73,6 +76,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     log().all().
                     extract().
                     jsonPath().getList(".", FavoriteResponse.class);
+    }
+
+    private void deleteFavoritePath(TokenResponse tokenResponse, Long favoriteId) {
+        given().
+            header("Authorization",tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+            when().
+            delete("/favorites/" + favoriteId).
+            then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
     }
 
 }
