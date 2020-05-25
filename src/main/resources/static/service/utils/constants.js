@@ -1,5 +1,6 @@
 export const EVENT_TYPE = {
-  CLICK: 'click'
+  CLICK: 'click',
+  KEY_UP: 'keyup'
 }
 
 export const ERROR_MESSAGE = {

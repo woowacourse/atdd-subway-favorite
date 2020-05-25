@@ -40,10 +40,12 @@ function Edit() {
   }
   const onDelete = event => {
     event.preventDefault();
-    api.member.delete(localStorage.getItem("token")).then();
-    alert(SUCCESS.DELETE);
-    localStorage.removeItem("token");
-    location.href = "/"
+    if (confirm("정말로 탈퇴하시겠습니까?")) {
+      api.member.delete(localStorage.getItem("token")).then();
+      alert(SUCCESS.DELETE);
+      localStorage.removeItem("token");
+      location.href = "/"
+    }
   }
 
   const resetEditForm = () => {

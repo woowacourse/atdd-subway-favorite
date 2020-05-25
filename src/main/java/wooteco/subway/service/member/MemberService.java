@@ -3,20 +3,25 @@ package wooteco.subway.service.member;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
 	private MemberRepository memberRepository;
+	private FavoriteService favoriteService;
 	private JwtTokenProvider jwtTokenProvider;
 
-	public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+	public MemberService(MemberRepository memberRepository,
+		FavoriteService favoriteService, JwtTokenProvider jwtTokenProvider) {
 		this.memberRepository = memberRepository;
+		this.favoriteService = favoriteService;
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
@@ -37,8 +42,10 @@ public class MemberService {
 		memberRepository.save(member);
 	}
 
+	@Transactional
 	public void deleteMember(Long id) {
 		memberRepository.deleteById(id);
+		favoriteService.deleteFavorites(id);
 	}
 
 	public String createToken(LoginRequest param) {

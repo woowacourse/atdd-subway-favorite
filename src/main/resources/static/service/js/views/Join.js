@@ -9,6 +9,10 @@ function Join() {
   const $passwordCheck = document.querySelector('#password-check')
 
   const onJoin = event => {
+    if (event.type !== EVENT_TYPE.CLICK && event.key !== "Enter") {
+      return;
+    }
+
     event.preventDefault()
 
     if (!REGEX.EMAIL.test($email.value)) {
@@ -57,6 +61,7 @@ function Join() {
 
   this.init = () => {
     $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoin)
+    $passwordCheck.addEventListener(EVENT_TYPE.KEY_UP, onJoin)
   }
 }
 

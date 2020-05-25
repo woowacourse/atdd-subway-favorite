@@ -3,16 +3,20 @@ import api from "../../api/index.js";
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')
+  const $email = document.querySelector('#email')
+  const $password = document.querySelector('#password')
+
   const onLogin = async event => {
     event.preventDefault()
-    const emailValue = document.querySelector('#email').value
-    const passwordValue = document.querySelector('#password').value
+    if (event.type !== EVENT_TYPE.CLICK && event.key !== "Enter") {
+      return;
+    }
     const requestData = {
-      email: emailValue,
-      password: passwordValue
+      email: $email.value,
+      password: $password.value
     }
 
-    if (!emailValue && !passwordValue) {
+    if (!$email.value && !$password.value) {
       Snackbar.show({text: ERROR_MESSAGE.LOGIN_FAIL, pos: 'bottom-center', showAction: false, duration: 2000})
       return
     }
@@ -36,6 +40,8 @@ function Login() {
 
   this.init = () => {
     $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin)
+    $password.addEventListener(EVENT_TYPE.KEY_UP, onLogin)
+    $email.addEventListener(EVENT_TYPE.KEY_UP, onLogin)
   }
 }
 

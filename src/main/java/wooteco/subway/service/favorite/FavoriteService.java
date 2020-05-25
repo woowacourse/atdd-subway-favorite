@@ -26,4 +26,8 @@ public class FavoriteService {
 	public void deleteFavorite(Long memberId, Long favoriteId) {
 		favoriteRepository.deleteByMemberIdAndId(memberId, favoriteId);
 	}
+
+	public void deleteFavorites(Long memberId) {
+		favoriteRepository.deleteAllByMemberId(memberId);
+	}
 }
