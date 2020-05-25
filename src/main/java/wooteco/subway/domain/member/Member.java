@@ -2,6 +2,10 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import wooteco.subway.domain.favorite.Favorite;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Member {
     @Id
@@ -9,6 +13,7 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    private Set<Favorite> favorites = new HashSet<>();
 
     public Member() {
     }
@@ -26,6 +31,14 @@ public class Member {
         this.password = password;
     }
 
+    public Member(Long id, String email, String name, String password, Set<Favorite> favorites) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.favorites = favorites;
+    }
+
     public Long getId() {
         return id;
     }
@@ -40,6 +53,10 @@ public class Member {
 
     public String getPassword() {
         return password;
+    }
+
+    public Set<Favorite> getFavorites() {
+        return favorites;
     }
 
     public void update(String name, String password) {
