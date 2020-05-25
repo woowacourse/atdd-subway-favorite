@@ -40,43 +40,42 @@ body.modal-active {
 }
 
 .left-10px {
-    left: 10px;
+  left: 10px;
 }
 
 .right-10px {
-    right: 10px;
+  right: 10px;
 }
 
 .top-5px {
-    top: 5px;
+  top: 5px;
 }
 
 .top-50 {
-    top: 50%;
+  top: 50%;
 }
 
 .top-45px {
-    top: 45px;
+  top: 45px;
 }
 
 .bottom-6px {
-    bottom: 6px;
+  bottom: 6px;
 }
 
 .height-90 {
-    height: 90%;
+  height: 90%;
 }
-
 .max-width-md {
-    max-width: 960px;
+  max-width: 960px;
 }
 
 .dropdown:hover .dropdown-menu {
-    display: block;
-    right: 0;
+  display: block;
+  right: 0;
 }
 
 .login-button {
-    margin-top: 2px;
-    right: 30px;
+  margin-top: 2px;
+  right: 30px;
 }

@@ -116,7 +116,7 @@
 2. 즐겨찾기 목록조회
 
     - [x] 인수 테스트 작성
-    - [ ] Controller 테스트 작성
+    - [x] Controller 테스트 작성
     - [ ] Controller 구현
     - [ ] Service 테스트 작성
     - [ ] Service 구현
