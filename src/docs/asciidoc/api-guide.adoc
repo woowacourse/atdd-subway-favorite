@@ -20,3 +20,14 @@ endif::[]
 === 회원 가입
 
 operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources-members-update]]
+=== 회원 수정
+
+operation::members/update[snippets='http-request,http-response,request-fields']
+
+[[resources-members-delete]]
+=== 회원 삭제
+
+operation::members/delete[snippets='http-request,http-response']
+

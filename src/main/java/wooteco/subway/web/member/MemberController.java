@@ -34,12 +34,6 @@ public class MemberController {
             .build();
     }
 
-    @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
-        Member member = memberService.findMemberByEmail(email);
-        return ResponseEntity.ok().body(MemberResponse.of(member));
-    }
-
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
         @RequestBody UpdateMemberRequest param) {

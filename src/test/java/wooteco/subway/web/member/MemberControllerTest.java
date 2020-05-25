@@ -15,10 +15,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
@@ -26,12 +31,15 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
 
+    public static final String UPDATE_NAME = "update_name";
+    public static final String UPDATE_PASSWORD = "update_password";
     @MockBean
     protected MemberService memberService;
 
@@ -63,5 +71,26 @@ public class MemberControllerTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
+    }
+
+    @Test
+    public void updateMember() throws Exception {
+        String inputJson = "{\"name\":\"" + UPDATE_NAME + "\"," +
+            "\"password\":\"" + UPDATE_PASSWORD + "\"}";
+
+        this.mockMvc.perform(put("/members/" + 1L)
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    public void deleteMember() throws Exception {
+        this.mockMvc.perform(delete("/members/" + 1L))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(MemberDocumentation.deleteMember());
     }
 }
