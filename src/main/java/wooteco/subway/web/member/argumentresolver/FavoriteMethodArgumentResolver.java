@@ -48,7 +48,6 @@ public class FavoriteMethodArgumentResolver implements HandlerMethodArgumentReso
             return new Favorite(source, target, email);
         }
 
-        System.out.println(favoriteBySourceAndTarget);
         if (favoriteBySourceAndTarget.isNotEqualEmail(email)) {
             throw new InvalidAuthenticationException("비정상적인 로그인");
         }

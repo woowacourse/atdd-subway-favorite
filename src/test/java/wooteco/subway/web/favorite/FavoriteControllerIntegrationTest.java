@@ -55,14 +55,11 @@ public class FavoriteControllerIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    @DisplayName("권한 없는 즐겨찾기 추가 요청")
+    @DisplayName("회원이 아닌 이메일 JWT 토큰 헤더 요청 시 즐겨찾기 추가 요청")
     @Test
     void createFavoriteFail2() throws Exception {
         String source = "강남역";
         String target = "한티역";
-        String memberEmail = "ramen6315@gmail.com";
-        Favorite favorite = favoriteService.createFavorite(source, target, memberEmail);
-        System.out.println(favorite);
 
         CreateFavoriteRequest createFavoriteRequest = new CreateFavoriteRequest(source, target);
 
@@ -71,7 +68,6 @@ public class FavoriteControllerIntegrationTest {
 
         String uri = "/favorites";
         String content = gson.toJson(createFavoriteRequest);
-        System.out.println(content + " contnenenenenen");
 
         mockMvc.perform(post(uri)
                 .header("Authorization", "Bearer " + wrongRequestToken)
