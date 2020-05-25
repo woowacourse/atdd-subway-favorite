@@ -18,7 +18,7 @@ function Join() {
             };
             api.member.create(newMember)
                 .then(() => location.href = "/login")
-                .catch(error => console.log(error));
+                .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)));
         }
     }
 

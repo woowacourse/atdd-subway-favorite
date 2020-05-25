@@ -32,7 +32,7 @@ function Login() {
             location.href = "/";
           }
         })
-        .catch(error => alert(ERROR_MESSAGE[error.message]));
+        .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)));
   };
 
   this.init = () => {

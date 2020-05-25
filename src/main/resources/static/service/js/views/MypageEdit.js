@@ -20,7 +20,7 @@ function MyPageEdit() {
                 .then(() => {
                     location.href = "/mypage";
                 })
-                .catch(error => alert(ERROR_MESSAGE[error.message]));
+                .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)))
         }
     }
 
@@ -54,7 +54,7 @@ function MyPageEdit() {
                     localStorage.setItem("jwt", "");
                     location.href = "/";
                 })
-                .catch(error => alert(ERROR_MESSAGE[error.message]));
+                .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)));
         }
     }
 
@@ -63,7 +63,8 @@ function MyPageEdit() {
             $email.value = data.email;
             $name.value = data.name;
         })
-            .catch(error => alert(ERROR_MESSAGE[error.message]));
+            .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)))
+            .then(() => location.href = "/login");
     }
 
     this.init = () => {

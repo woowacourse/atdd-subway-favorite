@@ -10,7 +10,11 @@ function MyPage() {
             $email.innerHTML = data.email;
             $name.innerHTML = data.name;
         })
-            .catch(error => alert(ERROR_MESSAGE[error.message]));
+            .catch(error => {
+                console.log(error.message);
+                alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR))
+            })
+            .then(() => location.href = "/login");
     }
 }
 
