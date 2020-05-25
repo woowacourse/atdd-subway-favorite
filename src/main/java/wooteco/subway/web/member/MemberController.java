@@ -77,7 +77,9 @@ public class MemberController {
     @GetMapping("/members/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
         List<FavoriteResponse> favoriteResponses = new ArrayList<>();
-
+        favoriteResponses.add(new FavoriteResponse(1L, "a", "b"));
+        favoriteResponses.add(new FavoriteResponse(2L, "a", "b"));
+        favoriteResponses.add(new FavoriteResponse(3L, "a", "b"));
         return ResponseEntity.ok().body(favoriteResponses);
     }
 

@@ -31,8 +31,16 @@ operation::members/get[snippets='http-request,request-headers,response-fields']
 
 operation::members/update[snippets='http-request,request-headers,request-fields']
 
-
 [[resources-members-delete]]
 === 회원 탈퇴
 
 operation::members/delete[snippets='http-request,request-headers']
+
+
+[[resources-favorites]]
+== Favorite
+
+[[resources-favorites-add]]
+=== 즐겨 찾기 추가
+
+operation::favorites/add[snippets='http-request,request-headers,request-fields']

@@ -25,6 +25,7 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.FavoriteRequest;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -112,5 +113,25 @@ public class MemberControllerTest {
                 .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember());
+    }
+
+    @Test
+    void addFavorite() throws Exception {
+        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+
+        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
+
+        String inputJson = "{\"source\":\"" + "강남" + "\"," +
+            "\"target\":\"" + "잠실" + "\"" + "}";
+
+        this.mockMvc.perform(post("/members/favorites")
+            .header("Authorization", token)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.addFavorite());
     }
 }
