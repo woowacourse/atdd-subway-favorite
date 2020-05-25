@@ -2,6 +2,7 @@ package wooteco.subway.service.member;
 
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -24,8 +25,14 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest memberRequest) {
+        if (memberRepository.findByEmail(memberRequest.getEmail()).isPresent()) {
+            throw new DuplicateEmailException();
+        }
+
         Member member = memberRequest.toMember();
+
         try {
             Member savedMember = memberRepository.save(member);
             return MemberResponse.of(savedMember);
@@ -34,16 +41,19 @@ public class MemberService {
         }
     }
 
+    @Transactional
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(InvalidMemberIdException::new);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
+    @Transactional
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
                 .orElseThrow(InvalidMemberEmailException::new);
@@ -54,6 +64,7 @@ public class MemberService {
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email)
             .orElseThrow(InvalidMemberEmailException::new);

@@ -1,24 +1,24 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import wooteco.subway.service.member.exception.DuplicateEmailException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -52,11 +52,12 @@ public class MemberServiceTest {
     @Test
     void createMemberWithDuplicateEmail() {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, "pobi", "123");
-        when(memberRepository.save(any())).thenThrow(new DuplicateKeyException("이미 가입된 회원입니다."));
+        doThrow(DbActionExecutionException.class)
+            .when(memberRepository)
+            .save(any());
 
-        assertThatThrownBy(() -> {
-            memberService.createMember(memberRequest);
-        }).isInstanceOf(DuplicateKeyException.class);
+        assertThatThrownBy(() -> memberService.createMember(memberRequest))
+            .isInstanceOf(DuplicateEmailException.class);
     }
 
     @Test
