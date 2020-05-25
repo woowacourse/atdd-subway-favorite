@@ -14,10 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import wooteco.subway.doc.MemberDocumentation;
+import wooteco.subway.doc.AdminMemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.MemberResponse;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.doNothing;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,20 +72,20 @@ public class AdminMemberControllerTest {
                 .content(gson.toJson(params)))
                 .andExpect(status().isCreated())
                 .andDo(print())
-                .andDo(MemberDocumentation.createMember());
+                .andDo(AdminMemberDocumentation.createMember());
     }
 
     @Test
     void getMemberByEmail() throws Exception {
         given(memberService.findMemberByEmail(TEST_EMAIL)).willReturn(member);
 
-        MemberResponse expected = MemberResponse.of(member);
-
-        mockMvc.perform(get("/admin/members").param("email", TEST_EMAIL))
+        mockMvc.perform(get("/admin/members")
+                .param("email", TEST_EMAIL))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(jsonPath("$.email", Matchers.is(TEST_EMAIL)))
-                .andExpect(jsonPath("$.name", Matchers.is(TEST_NAME)));
+                .andExpect(jsonPath("$.name", Matchers.is(TEST_NAME)))
+                .andDo(print())
+                .andDo(AdminMemberDocumentation.getMemberByEmail());
     }
 
     @Test
@@ -104,13 +103,14 @@ public class AdminMemberControllerTest {
                 .content(gson.toJson(params)))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(MemberDocumentation.updateMember());
+                .andDo(AdminMemberDocumentation.updateMember());
     }
 
     @Test
     void deleteMember() throws Exception {
         mockMvc.perform(delete("/admin/members/{id}", TEST_ID))
                 .andExpect(status().isNoContent())
-                .andDo(print());
+                .andDo(print())
+                .andDo(AdminMemberDocumentation.deleteMember());
     }
 }
