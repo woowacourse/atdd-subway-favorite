@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.jdbc.Sql;
+
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -21,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@Sql("/truncate.sql")
 public class LineServiceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";

@@ -1,10 +1,10 @@
-package wooteco.subway.web;
+package wooteco.subway.web.favorite;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static wooteco.subway.AcceptanceTest.*;
+import static wooteco.subway.acceptance.AcceptanceTest.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,7 @@ import wooteco.subway.service.member.MemberService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql("/truncate.sql")
 class FavoriteControllerTest {
 
     @Autowired

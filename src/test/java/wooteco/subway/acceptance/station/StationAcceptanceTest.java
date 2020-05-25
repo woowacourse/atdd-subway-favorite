@@ -3,7 +3,7 @@ package wooteco.subway.acceptance.station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.AcceptanceTest;
+import wooteco.subway.acceptance.AcceptanceTest;
 
 import java.util.List;
 

@@ -3,15 +3,13 @@ package wooteco.subway.acceptance.favorite;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import wooteco.subway.AcceptanceTest;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineResponse;
@@ -40,7 +38,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         addFavoritePath(tokenResponse, stationResponse1, stationResponse2);
 
         List<FavoriteResponse> responses = getFavoritePath(tokenResponse);
-        assertThat(responses.get(0).getMemberId()).isEqualTo(1L);
+        assertThat(responses.get(0).getMemberId()).isEqualTo(2L);
         assertThat(responses.get(0).getSourceStationId()).isEqualTo(stationResponse1.getId());
         assertThat(responses.get(0).getTargetStationId()).isEqualTo(stationResponse2.getId());
 

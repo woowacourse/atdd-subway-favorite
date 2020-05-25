@@ -1,19 +1,13 @@
-package wooteco.subway;
+package wooteco.subway.acceptance.member;
 
 import static org.assertj.core.api.Assertions.*;
 
-import io.restassured.authentication.FormAuthConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.web.member.InvalidAuthenticationException;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Login")

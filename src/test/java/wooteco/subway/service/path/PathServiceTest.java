@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.jdbc.Sql;
+
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
@@ -26,6 +28,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@Sql("/truncate.sql")
 public class PathServiceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
