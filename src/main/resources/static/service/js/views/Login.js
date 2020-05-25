@@ -1,4 +1,5 @@
 import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import api from '../../api/index.js'
 
 function Login() {
     const $loginButton = document.querySelector('#login-button');
@@ -13,8 +14,20 @@ function Login() {
                 showAction: false,
                 duration: 2000
             });
-
         }
+
+        const data = {
+            email: emailValue,
+            password: passwordValue
+        };
+
+        api.member.login(data).then(() => {
+            alert("로그인 되었습니다.");
+            location.href = "/";
+        }).catch(error => {
+            console.log(error);
+        });
+
     };
 
     this.init = () => {
