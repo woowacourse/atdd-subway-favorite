@@ -1,0 +1,40 @@
+package wooteco.subway.service.member;
+
+import org.springframework.stereotype.Service;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+
+@Service
+public class FavoriteService {
+    private MemberRepository memberRepository;
+    private StationRepository stationRepository;
+
+    public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
+        this.memberRepository = memberRepository;
+        this.stationRepository = stationRepository;
+    }
+
+    public void createFavorite(FavoriteRequest favoriteRequest, Member member) {
+        Long sourceId = stationRepository.findByName(favoriteRequest.getSourceName())
+                .orElseThrow(RuntimeException::new)
+                .getId();
+        Long destinationId = stationRepository.findByName(favoriteRequest.getDestinationName())
+                .orElseThrow(RuntimeException::new)
+                .getId();
+        member.addFavorite(sourceId, destinationId);
+        memberRepository.save(member);
+    }
+
+    public void removeFavorite(FavoriteRequest favoriteRequest, Member member) {
+        Long sourceId = stationRepository.findByName(favoriteRequest.getSourceName())
+                .orElseThrow(RuntimeException::new)
+                .getId();
+        Long destinationId = stationRepository.findByName(favoriteRequest.getDestinationName())
+                .orElseThrow(RuntimeException::new)
+                .getId();
+        member.removeFavoriteById(sourceId, destinationId);
+        memberRepository.save(member);
+    }
+}

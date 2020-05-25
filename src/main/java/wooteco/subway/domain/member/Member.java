@@ -63,5 +63,14 @@ public class Member {
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
+
+    public void addFavorite(Long sourceId, Long destinationId) {
+        favorites.add(sourceId, destinationId);
+    }
+
+    public void removeFavoriteById(Long sourceId, Long destinationId) {
+        favorites.removeById(sourceId, destinationId);
+    }
+
     // TODO: 2020/05/20 domain에 대한 테스트코드 필요할까? 추가 로직이 생길 경우 테스트 해보기
 }

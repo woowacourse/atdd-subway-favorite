@@ -18,4 +18,13 @@ public class Favorites {
     public Set<Favorite> getFavorites() {
         return favorites;
     }
+
+    public void add(Long sourceId, Long destinationId) {
+        favorites.add(new Favorite(sourceId, destinationId));
+    }
+
+    public void removeById(Long sourceId, Long destinationId) {
+        favorites.remove(new Favorite(sourceId, destinationId));
+    }
+    //// TODO: 2020/05/25 생성 중복, 없는 것 삭제할 시 중복 처리?
 }
