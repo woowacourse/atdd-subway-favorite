@@ -59,15 +59,14 @@ export const searchResultTemplate = result => {
 }
 
 export const pathStationTemplate = (name, index, lastIndex) => {
-  return `
-  ${
-    index === 0 || index === lastIndex
-      ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
-        <span class="font-bold">${name}</span>`
-      : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
-         <span class="text-gray-600">${name}</span>
-        `
-  }`
+  if (index === 0) {
+    return `<span id=\"start-station\" class=\"font-bold\">${name}</span>`
+  }
+  if (index === lastIndex) {
+    return `<span class="mdi mdi-arrow-right-bold text-gray-500"></span><span id=\"end-station\" class="font-bold">${name}</span>`
+  }
+  return `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+         <span class="text-gray-600">${name}</span>`
 }
 
 export const initNavigation = () => {

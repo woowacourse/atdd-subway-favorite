@@ -66,23 +66,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private MemberResponse myInfoWithBasicAuth(String email, String password) {
-        return
-            given()
-                .auth()
-                .preemptive()
-                .basic(email, password)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-                .get("/me/basic")
-            .then()
-                .log().all()
-                .assertThat()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(MemberResponse.class);
-    }
-
     private MemberResponse myInfoWithSession(String sessionId) {
         // TODO: form auth를 활용하여 /me/session 요청하여 내 정보 조회
         return given()

@@ -322,5 +322,22 @@ public class AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
+
+    public MemberResponse myInfoWithBasicAuth(String email, String password) {
+        return
+            given()
+                .auth()
+                .preemptive()
+                .basic(email, password)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/me/basic")
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
+    }
 }
 

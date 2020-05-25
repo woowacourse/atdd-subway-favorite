@@ -30,6 +30,19 @@ const METHOD = {
       }
     }
   },
+  AUTH_POST(token, data) {
+    return {
+      method: 'POST',
+      headers: {
+        'authorization' : 'Bearer ' + token,
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    }
+  },
+
   AUTH_PUT(token, data) {
     return {
       method: 'PUT',
@@ -109,10 +122,20 @@ const api = (() => {
     }
   };
 
+  const favorite = {
+    register(token, data) {
+      return request(`/favorites`, METHOD.AUTH_POST(token, data))
+    },
+    unregister() {
+
+    }
+  };
+
   return {
     line,
     path,
-    user
+    user,
+    favorite
   }
 })();
 

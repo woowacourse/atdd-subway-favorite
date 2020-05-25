@@ -1,6 +1,7 @@
 import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {searchResultTemplate} from '../../utils/templates.js'
+import cookieApi from "../../utils/cookieApi.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -58,6 +59,24 @@ function Search() {
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
     } else {
+      const token = cookieApi.getCookie("token");
+      const $startStationName = document.querySelector("#start-station");
+      const $endStationName = document.querySelector("#end-station");
+
+      const registerInput = {
+        startStationName: $startStationName.innerText,
+        endStationName: $endStationName.innerText
+      };
+
+      console.log("##########")
+      console.log($endStationName);
+      console.log($endStationName.innerText);
+
+      api.favorite
+        .register(token, registerInput)
+        .then(response => console.log(response))
+        .catch(error => console.log(error));
+
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')

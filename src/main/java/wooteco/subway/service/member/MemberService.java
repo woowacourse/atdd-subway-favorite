@@ -10,6 +10,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
+    static final String NOT_MANAGED_BY_REPOSITORY = "repository에 영속되지 않는 member 객체를 update 할 수 없습니다.";
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -30,6 +31,13 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.getName(), param.getPassword());
 
+        memberRepository.save(member);
+    }
+
+    public void updateMember(Member member) {
+        if (member.isNotPersistent()) {
+            throw new IllegalArgumentException(NOT_MANAGED_BY_REPOSITORY);
+        }
         memberRepository.save(member);
     }
 

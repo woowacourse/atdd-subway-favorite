@@ -39,3 +39,12 @@ create table if not exists MEMBER
 );
 
 -- // TODO 즐겨찾기 테이블 스키마 추가
+create table  if not exists FAVORITE_PATH
+(
+    id bigint auto_increment,
+    member_id bigint not null,
+    start_station_id bigint not null,
+    end_station_id bigint not null,
+    primary key(id),
+    unique member_start_end(member_id, start_station_id, end_station_id)
+)

@@ -1,11 +1,10 @@
 package wooteco.subway.service.station;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.line.LineStationService;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-
-import java.util.List;
+import wooteco.subway.service.line.LineStationService;
 
 @Service
 public class StationService {
@@ -28,5 +27,10 @@ public class StationService {
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
+    }
+
+    public Station findByName(String stationName) {
+        return stationRepository.findByName(stationName)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역 입니다."));
     }
 }

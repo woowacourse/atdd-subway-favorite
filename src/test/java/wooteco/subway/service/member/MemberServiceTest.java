@@ -1,5 +1,13 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,13 +17,6 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
-
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -53,5 +54,25 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void updateMemberSuccessCase() {
+        Member member = mock(Member.class);
+        when(member.isNotPersistent()).thenReturn(false);
+
+        memberService.updateMember(member);
+
+        verify(memberRepository).save(member);
+    }
+
+    @Test
+    void updateMemberFailCase() {
+        Member member = mock(Member.class);
+        when(member.isNotPersistent()).thenReturn(true);
+
+        assertThatThrownBy(() -> memberService.updateMember(member))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(MemberService.NOT_MANAGED_BY_REPOSITORY);
     }
 }
