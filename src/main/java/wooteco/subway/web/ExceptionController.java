@@ -5,9 +5,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exceptions.DuplicatedEmailException;
-import wooteco.subway.exceptions.InvalidEmailException;
-import wooteco.subway.exceptions.InvalidPasswordException;
+import wooteco.subway.exceptions.*;
 import wooteco.subway.web.dto.ExceptionResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
@@ -15,8 +13,14 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 public class ExceptionController {
 
 	@ResponseStatus(HttpStatus.CONFLICT)
-	@ExceptionHandler(DuplicatedEmailException.class)
-	public ExceptionResponse duplicatedEmail(DuplicatedEmailException e) {
+	@ExceptionHandler({DuplicatedEmailException.class, DuplicatedFavoritePathException.class})
+	public ExceptionResponse duplicatedEmail(RuntimeException e) {
+		return new ExceptionResponse(e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler({NotExistStationException.class, NotExistFavoritePathException.class})
+	public ExceptionResponse notExistStation(RuntimeException e) {
 		return new ExceptionResponse(e.getMessage());
 	}
 

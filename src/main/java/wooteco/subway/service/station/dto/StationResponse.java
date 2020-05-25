@@ -15,24 +15,30 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedAt());
     }
 
-    public static List<StationResponse> listOf(List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
+	public static List<StationResponse> listOf(List<Station> stations) {
+		return stations.stream()
+				.map(StationResponse::of)
+				.collect(Collectors.toList());
+	}
 
-    public StationResponse() {
-    }
+	public StationResponse() {
+	}
 
-    public StationResponse(Long id, String name, LocalDateTime createdAt) {
-        this.id = id;
-        this.name = name;
-        this.createdAt = createdAt;
-    }
+	public StationResponse(Long id, String name) {
+		this.id = id;
+		this.name = name;
+		this.createdAt = null;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public StationResponse(Long id, String name, LocalDateTime createdAt) {
+		this.id = id;
+		this.name = name;
+		this.createdAt = createdAt;
+	}
+
+	public Long getId() {
+		return id;
+	}
 
     public String getName() {
         return name;

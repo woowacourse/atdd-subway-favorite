@@ -16,6 +16,8 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final String INVALID_TOKEN = "";
+
     /**
      * Scenario: 즐겨찾기 추가/조회/삭제 기능을 구현한다.
      * <p>
@@ -37,6 +39,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * when 즐겨찾기 경로들을 조회한다.
      * then 즐겨찾기 경로들이 조회된다.
      * <p>
+     * when 이미 등록된 즐겨찾기 경로를 등록한다.
+     * then 즐겨찾기가 실패한다.
+     * <p>
      * when 즐겨찾기 경로를 삭제한다.
      * then 즐겨찾기 경로가 삭제된다.
      * <p>
@@ -55,13 +60,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         initStation();
         createMemberSuccessfully(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, TEST_USER_PASSWORD);
         ExceptionResponse notAuthorizedUserResponse =
-                registerFavoritePathFailed("", STATION_NAME_KANGNAM, STATION_NAME_HANTI, HttpStatus.UNAUTHORIZED.value());
+                registerFavoritePathFailed(INVALID_TOKEN, STATION_NAME_KANGNAM, STATION_NAME_HANTI,
+                                           HttpStatus.UNAUTHORIZED.value());
         assertThat(notAuthorizedUserResponse.getErrorMessage()).isEqualTo("유효하지 않은 토큰입니다!");
 
-        notAuthorizedUserResponse = retrieveFavoritePathFailed("");
+        notAuthorizedUserResponse = retrieveFavoritePathFailed(INVALID_TOKEN);
         assertThat(notAuthorizedUserResponse.getErrorMessage()).isEqualTo("유효하지 않은 토큰입니다!");
 
-        notAuthorizedUserResponse = deleteFavoritePathFailed("", 1L, HttpStatus.UNAUTHORIZED.value());
+        notAuthorizedUserResponse = deleteFavoritePathFailed(INVALID_TOKEN, 1L, HttpStatus.UNAUTHORIZED.value());
         assertThat(notAuthorizedUserResponse.getErrorMessage()).isEqualTo("유효하지 않은 토큰입니다!");
 
         TokenResponse tokenResponse = loginSuccessfully(TEST_USER_EMAIL, TEST_USER_PASSWORD);
@@ -73,15 +79,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.getFavoritePaths()).hasSize(1);
         assertThat(response.getFavoritePaths().get(0).getSource().getName()).isEqualTo(STATION_NAME_KANGNAM);
 
+        ExceptionResponse exceptionResponse = registerFavoritePathFailed(authorization, STATION_NAME_KANGNAM,
+                                                                         STATION_NAME_HANTI,
+                                                                         HttpStatus.CONFLICT.value());
+        assertThat(exceptionResponse.getErrorMessage()).isEqualTo("이미 등록된 즐겨찾기 경로입니다!");
+
         deleteFavoritePathSuccessfully(authorization, response.getFavoritePaths().get(0).getId());
         response = retrieveFavoritePathSuccessfully(authorization);
         assertThat(response.getFavoritePaths()).hasSize(0);
 
         ExceptionResponse stationNotExistResponse =
-                registerFavoritePathFailed(authorization, STATION_NAME_KANGNAM, "NOT_REGISTERED_STATION", HttpStatus.BAD_REQUEST.value());
-        assertThat(stationNotExistResponse.getErrorMessage()).isEqualTo("NOT_REGISTERED_STATION" + "역이 존재하지 않습니다.");
+                registerFavoritePathFailed(authorization, STATION_NAME_KANGNAM, "NOT_REGISTERED_STATION",
+                                           HttpStatus.NOT_FOUND.value());
+        assertThat(stationNotExistResponse.getErrorMessage()).isEqualTo("NOT_REGISTERED_STATION" + " 이름을 가진 역은 존재하지 " +
+                                                                                "않습니다!");
 
-        ExceptionResponse notRegisteredPathResponse = deleteFavoritePathFailed(authorization, 1L, HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse notRegisteredPathResponse = deleteFavoritePathFailed(authorization, 1L,
+                                                                               HttpStatus.NOT_FOUND.value());
         assertThat(notRegisteredPathResponse.getErrorMessage()).isEqualTo(String.format("Id가 %d인 즐겨찾기 경로가 존재하지 않습니다.", 1L));
     }
 
@@ -130,7 +144,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         body(params).
                 when().
-                        post("/me/favorite").
+                        post("/favorite/me").
                 then().
                         log().all();
         //@formatter:on
@@ -142,7 +156,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 given().
                         header("Authorization", authorization).
                 when().
-                        get("/me/favorite").
+                        get("/favorite/me").
                 then().
                         log().all();
         //@formatter:on
@@ -154,7 +168,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 given().
                         header("Authorization", authorization).
                 when().
-                        delete("/me/favorite/" + pathId).
+                        delete("/favorite/me/" + pathId).
                 then().
                         log().all();
         //@formatter:on
