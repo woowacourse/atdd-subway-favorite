@@ -81,10 +81,11 @@ public class MemberControllerTest {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME,
                 TEST_USER_PASSWORD);
         MemberResponse memberResponse = MemberResponse.of(member);
-        given(memberService.findMemberByEmail(TEST_USER_EMAIL)).willReturn(member);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        this.mockMvc.perform(get("/members")
+        this.mockMvc.perform(get("/members/me")
                 .header("Authorization", "Bearer Token")
                 .queryParam("email", TEST_USER_EMAIL)
                 .accept(MediaType.APPLICATION_JSON))
@@ -101,8 +102,9 @@ public class MemberControllerTest {
                 = new UpdateMemberRequest("NEW_" + TEST_USER_NAME, "NEW_" + TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        this.mockMvc.perform(put("/members/{id}", 1L)
+        this.mockMvc.perform(put("/members/me", 1L)
                 .header("Authorization", "Bearer Token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(updateMemberRequest))
@@ -117,8 +119,9 @@ public class MemberControllerTest {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        this.mockMvc.perform(delete("/members/{id}", 1L)
+        this.mockMvc.perform(delete("/members/me", 1L)
                 .header("Authorization", "Bearer Token"))
                 .andExpect(status().isNoContent())
                 .andDo(print())

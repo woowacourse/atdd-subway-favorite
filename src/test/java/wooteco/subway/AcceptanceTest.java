@@ -309,21 +309,21 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public MemberResponse getMember(String email, TokenResponse tokenResponse) {
+    public MemberResponse getMember(TokenResponse tokenResponse) {
         return
                 given().
                         auth().
                         oauth2(tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/members?email=" + email).
+                        get("/members/me").
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
+    public void updateMember(TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
@@ -335,18 +335,18 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                put("/members/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
+    public void deleteMember(TokenResponse tokenResponse) {
         given().
                 auth().
                 oauth2(tokenResponse.getAccessToken()).
                 when().
-                delete("/members/" + memberResponse.getId()).
+                delete("/members/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());

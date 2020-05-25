@@ -8,7 +8,6 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -27,36 +26,20 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
-        Member member = memberService.findMemberByEmail(email);
+    @GetMapping("/members/me")
+    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
-                                                       @RequestBody UpdateMemberRequest param, HttpServletRequest request) {
-
-        Member member = memberService.findMemberByEmail(
-                (String) request.getAttribute("loginMemberEmail"));
-        validate(member, id);
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> updateMember(@RequestBody UpdateMemberRequest param, @LoginMember Member member) {
         memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id,
-                                             HttpServletRequest request) {
-        Member member = memberService.findMemberByEmail(
-                (String) request.getAttribute("loginMemberEmail"));
-        validate(member, id);
-        memberService.deleteMember(id);
+    @DeleteMapping("/members/me")
+    public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
         return ResponseEntity.noContent().build();
-    }
-
-    private void validate(Member member, Long id) {
-        if (!member.getId().equals(id)) {
-            throw new IllegalArgumentException("허가되지 않은 접근입니다.");
-        }
     }
 }
