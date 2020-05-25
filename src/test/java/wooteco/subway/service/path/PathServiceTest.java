@@ -7,14 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.NoPathExistsException;
+import wooteco.subway.exception.SourceEqualsTargetException;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -52,6 +54,7 @@ public class PathServiceTest {
 
     private Line line1;
     private Line line2;
+    private Line line3;
 
     @BeforeEach
     void setUp() {
@@ -73,6 +76,9 @@ public class PathServiceTest {
         line2.addLineStation(new LineStation(null, 1L, 10, 10));
         line2.addLineStation(new LineStation(1L, 4L, 10, 10));
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+
+        line3 = new Line(3L, "왕따라인", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line3.addLineStation(new LineStation(null, 6L, 10, 10));
     }
 
     @DisplayName("일반적인 상황의 경로 찾기")
@@ -100,12 +106,15 @@ public class PathServiceTest {
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     void findPathWithSameSourceAndTarget() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
+        assertThrows(SourceEqualsTargetException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
     }
 
     @DisplayName("출발역과 도착역이 연결이 되지 않은 경우")
     @Test
     void findPathWithNoPath() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
+        when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2, line3));
+        when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
+        when(stationRepository.findByName(STATION_NAME6)).thenReturn(Optional.of(station6));
+        assertThrows(NoPathExistsException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
     }
 }

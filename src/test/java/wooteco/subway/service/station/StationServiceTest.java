@@ -9,6 +9,7 @@ import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.NoLineExistException;
 
 import java.time.LocalTime;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class StationServiceTest {
         Optional<Station> resultStation = stationRepository.findById(station1.getId());
         assertThat(resultStation).isEmpty();
 
-        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
+        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(NoLineExistException::new);
         assertThat(resultLine.getStations()).hasSize(1);
     }
 }
