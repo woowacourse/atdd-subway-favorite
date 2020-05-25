@@ -12,7 +12,7 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private Set<Favorite> favorits;
+    private Set<Favorite> favorites;
 
     public Member() {
     }
@@ -21,7 +21,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.favorits = new LinkedHashSet<>();
+        this.favorites = new LinkedHashSet<>();
     }
 
     public Member(Long id, String email, String name, String password) {
@@ -47,6 +47,10 @@ public class Member {
         return password;
     }
 
+    public Set<Favorite> getFavorites() {
+        return favorites;
+    }
+
     public void update(String name, String password) {
         if (StringUtils.isNotBlank(name)) {
             this.name = name;
@@ -61,6 +65,6 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
-        favorits.add(favorite);
+        this.favorites.add(favorite);
     }
 }

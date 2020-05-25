@@ -32,6 +32,8 @@ import wooteco.subway.service.member.dto.FavoriteRequest;
 @AutoConfigureMockMvc
 public class MemberControllerTest {
     private Member member;
+    private String token;
+
     @MockBean
     private MemberService memberService;
 
@@ -48,6 +50,8 @@ public class MemberControllerTest {
             .build();
 
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
+
     }
 
     @Test
@@ -73,8 +77,6 @@ public class MemberControllerTest {
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
-        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
-
         this.mockMvc.perform(get("/members")
             .header("Authorization", token))
             .andExpect(status().isOk())
@@ -88,8 +90,6 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
         String inputJson = "{\"name\":\"" + "brown2" + "\"," +
             "\"password\":\"" + "1234" + "\"" + "}";
-
-        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
 
         this.mockMvc.perform(put("/members/1")
             .header("Authorization", token)
@@ -106,8 +106,6 @@ public class MemberControllerTest {
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
-        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
-
         this.mockMvc.perform(delete("/members/1")
                 .header("Authorization", token))
                 .andExpect(status().isNoContent())
@@ -120,8 +118,6 @@ public class MemberControllerTest {
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
-        String token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
-
         String inputJson = "{\"source\":\"" + "강남" + "\"," +
             "\"target\":\"" + "잠실" + "\"" + "}";
 
@@ -133,5 +129,18 @@ public class MemberControllerTest {
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(MemberDocumentation.addFavorite());
+    }
+
+    @Test
+    void getFavorites() throws Exception {
+        given(memberService.findMemberByEmail(anyString())).willReturn(member);
+        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+
+        this.mockMvc.perform(get("/members/favorites")
+                .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.getFavorites());
     }
 }

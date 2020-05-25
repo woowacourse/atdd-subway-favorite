@@ -3,6 +3,7 @@ package wooteco.subway.web.member;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteRequest;
@@ -67,20 +69,16 @@ public class MemberController {
 
     @IsAuth(isAuth = Auth.AUTH)
     @PostMapping("/members/favorites")
-    public ResponseEntity<Void> addFavorites(@RequestBody FavoriteRequest favoriteRequest,
-                                             @LoginMember Member member) {
-
+    public ResponseEntity<Void> addFavorite(@RequestBody FavoriteRequest favoriteRequest,
+                                            @LoginMember Member member) {
+        memberService.addFavorite(member, favoriteRequest);
         return ResponseEntity.ok().build();
     }
 
     @IsAuth(isAuth = Auth.AUTH)
     @GetMapping("/members/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
-        favoriteResponses.add(new FavoriteResponse(1L, "a", "b"));
-        favoriteResponses.add(new FavoriteResponse(2L, "a", "b"));
-        favoriteResponses.add(new FavoriteResponse(3L, "a", "b"));
-        return ResponseEntity.ok().body(favoriteResponses);
+    public ResponseEntity<Set<FavoriteResponse>> getFavorites(@LoginMember Member member) {
+        return ResponseEntity.ok().body(memberService.findFavorites(member));
     }
 
     @IsAuth(isAuth = Auth.AUTH)

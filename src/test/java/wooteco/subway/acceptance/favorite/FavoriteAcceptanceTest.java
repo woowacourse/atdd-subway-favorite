@@ -55,9 +55,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String token = tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
 
         //when
-        addFavorite(token, "강남", "도곡");
-        addFavorite(token, "강남", "매봉");
-        addFavorite(token, "강남", "한티");
+        addFavorite(token, "강남역", "도곡역");
+        addFavorite(token, "강남역", "매봉역");
+        addFavorite(token, "강남역", "한티역");
 
         //and
         List<FavoriteResponse> favorites = getFavorites(token);

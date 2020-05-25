@@ -11,11 +11,15 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -78,5 +82,29 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void getFavorites() {
+        Station kangNamStation = new Station(1L, KANG_NAM_STATION_NAME);
+        when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
+        Station jamSilStation = new Station(2L, JAM_SIL_STATION_NAME);
+        when(stationRepository.findByName(JAM_SIL_STATION_NAME)).thenReturn(Optional.of(jamSilStation));
+        Station dogukStation = new Station(3L, "도곡역");
+        when(stationRepository.findByName("도곡역")).thenReturn(Optional.of(dogukStation));
+
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(kangNamStation));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(jamSilStation));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(dogukStation));
+
+        FavoriteRequest favoriteRequest1 = new FavoriteRequest(KANG_NAM_STATION_NAME, JAM_SIL_STATION_NAME);
+        FavoriteRequest favoriteRequest2 = new FavoriteRequest(KANG_NAM_STATION_NAME, "도곡역");
+        memberService.addFavorite(member, favoriteRequest1);
+        memberService.addFavorite(member, favoriteRequest2);
+
+        Set<FavoriteResponse> favorites = memberService.findFavorites(member);
+
+        assertThat(favorites.size()).isEqualTo(2);
     }
 }

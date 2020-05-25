@@ -1,6 +1,8 @@
 package wooteco.subway.service.member;
 
+import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.NotFoundUserException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -77,5 +80,21 @@ public class MemberService {
         member.addFavorite(favorite);
 
         memberRepository.save(member);
+    }
+
+    public Set<FavoriteResponse> findFavorites(Member member) {
+        Set<Favorite> favorites = member.getFavorites();
+        Set<FavoriteResponse> favoriteResponses = new LinkedHashSet<>();
+        for (Favorite favorite : favorites) {
+            FavoriteResponse favoriteResponse = new FavoriteResponse(
+                    favorite.getId(),
+                    stationRepository.findById(favorite.getSourceStationId())
+                            .orElseThrow(IllegalArgumentException::new).getName(),
+                    stationRepository.findById(favorite.getTargetStationId())
+                            .orElseThrow(IllegalArgumentException::new).getName()
+            );
+            favoriteResponses.add(favoriteResponse);
+        }
+        return favoriteResponses;
     }
 }
