@@ -21,7 +21,7 @@
 - [ ] 프론트에서 예외 메시지 처리
 
 ## 4. API 문서 자동화
-- [ ] Line API 문서
+- [x] Line API 문서
 - [ ] Station API 문서
 - [ ] Member API 문서
 - [ ] Favorite API 문서

@@ -13,10 +13,33 @@ endif::[]
 [[resources]]
 = Resources
 
+[[resources-lines]]
+== Line
+
+[[resources-lines-create]]
+=== 노선 추가
+operation::lines/create[snippets='http-request,http-response,request-field,request-body']
+
+[[resources-lines-getAll]]
+=== 노선 목록 조회
+operation::lines/getAll[snippets='http-request,http-response,response-body']
+
+[[resources-lines-get]]
+=== 노선 조회
+operation::lines/get[snippets='http-request,http-response,response-body']
+
+[[resources-lines-update]]
+=== 노선 수정
+operation::lines/update[snippets='http-request,http-response,request-field,request-body']
+
+[[resources-lines-delete]]
+=== 노선 삭제
+operation::lines/delete[snippets='http-request,http-response']
+
+
 [[resources-members]]
 == Member
 
 [[resources-members-create]]
 === 회원 가입
-
 operation::members/create[snippets='http-request,http-response']

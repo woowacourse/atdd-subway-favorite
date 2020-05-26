@@ -23,7 +23,9 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest request) {
+    public ResponseEntity<LineResponse> createLine(
+            @RequestBody LineRequest request
+    ) {
         Line persistLine = lineService.save(request.toLine());
 
         return ResponseEntity
@@ -38,7 +40,7 @@ public class LineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
-        return ResponseEntity.ok().body(lineService.retrieveLine(id));
+        return ResponseEntity.ok().body(lineService.getLine(id));
     }
 
     @PutMapping("/{id}")

@@ -22,6 +22,7 @@ public class Station {
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
+        createdAt = LocalDateTime.now();
     }
 
     public Long getId() {

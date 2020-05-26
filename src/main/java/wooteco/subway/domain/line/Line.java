@@ -28,14 +28,22 @@ public class Line {
     }
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
+        this(id, name, startTime, endTime, intervalTime, null, null);
     }
 
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this(null, name, startTime, endTime, intervalTime);
+    }
+
+    public Line(final Long id, final String name, final LocalTime startTime, final LocalTime endTime,
+                final int intervalTime, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+        this.id = id;
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.intervalTime = intervalTime;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {

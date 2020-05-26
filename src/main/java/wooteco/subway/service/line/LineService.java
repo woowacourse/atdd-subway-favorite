@@ -55,7 +55,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public LineDetailResponse retrieveLine(Long id) {
+    public LineDetailResponse getLine(Long id) {
         return lineStationService.findLineWithStationsById(id);
     }
 
