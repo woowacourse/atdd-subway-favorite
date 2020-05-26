@@ -40,7 +40,6 @@ public class MemberControllerTest {
     @MockBean
     protected MemberRepository memberRepository;
 
-    @Autowired
     protected MockMvc mockMvc;
 
     @Autowired
@@ -53,7 +52,6 @@ public class MemberControllerTest {
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
     }
-
 
     @Test
     public void createMember() throws Exception {
@@ -79,8 +77,8 @@ public class MemberControllerTest {
 
         String token = jwtTokenProvider.createToken(member.getEmail());
 
-        String inputJson = "{\"name\":\"" + "abc" + "\"," +
-                "\"password\":\"" + "de" + "\"}";
+        String inputJson = "{\"name\":\"" + "sample_name" + "\"," +
+                "\"password\":\"" + "sample_password" + "\"}";
 
         this.mockMvc.perform(put("/members/1")
                 .header("Authorization", "bearer " + token)
