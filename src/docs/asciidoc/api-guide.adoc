@@ -36,6 +36,20 @@ operation::lines/update[snippets='http-request,http-response,request-field,reque
 === 노선 삭제
 operation::lines/delete[snippets='http-request,http-response']
 
+[[resources-stations]]
+== Station
+
+[[resources-stations-create]]
+=== 지하철 역 추가
+operation::stations/create[snippets='http-request,http-response,request-field,request-body']
+
+[[resources-stations-getAll]]
+=== 지하철 역 조회
+operation::stations/getAll[snippets='http-request,http-response,response-body']
+
+[[resources-stations-delete]]
+=== 지하철 역 삭제
+operation::stations/delete[snippets='http-request,http-response']
 
 [[resources-members]]
 == Member
