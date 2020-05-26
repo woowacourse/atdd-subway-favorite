@@ -131,14 +131,13 @@
 3. 즐겨찾기 목록 제거
 
     - [x] 인수 테스트 작성
-    - [ ] Controller 테스트 작성
-    - [ ] Controller 구현
-    - [ ] Service 테스트 작성
-    - [ ] Service 구현
-    - [ ] Repository 구현
+    - [x] Controller 테스트 작성
+    - [x] Controller 구현
+    - [x] Service 테스트 작성
+    - [x] Service 구현
         
-    - [ ] 예외 처리
-     - [ ] 인증 토큰이 없을 경우
-     - [ ] 권한이 없는 토큰일 경우
+    - [x] 예외 처리
+     - [x] 인증 토큰이 없을 경우
+     - [x] 권한이 없는 토큰일 경우
          
-    - [ ] API 연결
+    - [x] API 연결
