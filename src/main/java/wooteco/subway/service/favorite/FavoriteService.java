@@ -12,6 +12,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
 @Service
@@ -37,5 +38,10 @@ public class FavoriteService {
     private FavoriteResponse makeFavoriteResponse(Favorite favorite, Map<Long, Station> stations) {
         return FavoriteResponse.of(
             stations.get(favorite.getSourceStationId()), stations.get(favorite.getTargetStationId()));
+    }
+
+    public FavoriteExistenceResponse hasFavoritePath(Member member, Long sourceStationId, Long targetStationId) {
+        Favorite request = new Favorite(sourceStationId, targetStationId);
+        return new FavoriteExistenceResponse(member.hasFavorite(request));
     }
 }

@@ -107,4 +107,8 @@ public class Member {
     public Set<Long> findAllFavoriteStationIds() {
         return favorites.findAllIds();
     }
+
+    public boolean hasFavorite(Favorite favorite) {
+        return favorites.hasFavorite(favorite);
+    }
 }

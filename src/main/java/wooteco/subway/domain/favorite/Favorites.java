@@ -23,4 +23,8 @@ public class Favorites {
     public Set<Favorite> getFavorites() {
         return Collections.unmodifiableSet(favorites);
     }
+
+    public boolean hasFavorite(Favorite favorite) {
+        return favorites.contains(favorite);
+    }
 }

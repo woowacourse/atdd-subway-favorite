@@ -37,6 +37,7 @@ import wooteco.subway.doc.MeDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -181,17 +182,18 @@ public class MeControllerTest {
     @Disabled
     @DisplayName("즐겨찾기에 해당 경로가 등록되어있는지 확인")
     @Test
-    void getFavoriteByPath() throws Exception {
+    void isExistFavoritePath() throws Exception {
+        given(favoriteService.hasFavoritePath(any(), any(), any())).willReturn(new FavoriteExistenceResponse(true));
         String expected = "{\"existence\" : " + true + "}";
 
         this.mockMvc.perform(
-            get("/me/favorites/source/{sourceId}/target/{targetId}", SOURCE_STATION_ID, TARGET_STATION_ID)
+            get("/me/favorites/source/{sourceId}/target/{targetId}/existsPath", SOURCE_STATION_ID, TARGET_STATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, token))
             .andExpect(status().isOk())
             .andExpect(content().json(expected))
             .andDo(print())
-            .andDo(MeDocumentation.deleteMember())
+            .andDo(MeDocumentation.getFavoriteByPath())
         ;
     }
 

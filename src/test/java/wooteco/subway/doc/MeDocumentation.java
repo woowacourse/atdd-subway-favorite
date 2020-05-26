@@ -99,4 +99,15 @@ public class MeDocumentation {
 			)
 		);
 	}
+
+	public static ResultHandler getFavoriteByPath() {
+		return document("me/favorites/detail",
+			requestHeaders(
+				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
+			),
+			responseFields(
+				fieldWithPath("existence").type(JsonFieldType.BOOLEAN).description("whether favorite exists")
+			)
+		);
+	}
 }

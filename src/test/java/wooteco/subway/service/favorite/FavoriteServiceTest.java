@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,11 +20,16 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
+    private static final long FIRST_STATION_ID = 1L;
+    private static final long SECOND_STATION_ID = 2L;
+    private static final long THIRD_STATION_ID = 3L;
+
     @Mock
     MemberRepository memberRepository;
 
@@ -34,17 +38,19 @@ class FavoriteServiceTest {
 
     private FavoriteService favoriteService;
 
+    private Member member;
+
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(memberRepository, stationRepository);
+        Favorites favorites = new Favorites(new HashSet<>(Arrays.asList(new Favorite(FIRST_STATION_ID,
+            SECOND_STATION_ID), new Favorite(SECOND_STATION_ID, THIRD_STATION_ID))));
+        member = new Member(1L, "sample@sample", "sample", "sample", favorites);
     }
 
     @DisplayName("회원의 즐겨찾기 노선 목록 전체를 조회")
     @Test
     void getFavorites() {
-        Set<Favorite> favorites = new HashSet<>(Arrays.asList(new Favorite(1L, 2L), new Favorite(2L, 3L)));
-        Member member = new Member(1L, "sample@sample", "sample", "sample", new Favorites(favorites));
-
         Station gangnam = new Station(1L, "강남");
         Station gangbuk = new Station(2L, "강북");
         Station gangdong = new Station(3L, "강동");
@@ -57,5 +63,15 @@ class FavoriteServiceTest {
             new FavoriteResponse(StationResponse.of(gangbuk), StationResponse.of(gangdong)));
 
         assertThat(favorites1).isEqualTo(expected);
+    }
+
+    @DisplayName("해당 경로가 즐겨찾기에 추가되어있는지 확인")
+    @Test
+    void hasFavoritePath() {
+        FavoriteExistenceResponse expected = new FavoriteExistenceResponse(true);
+        FavoriteExistenceResponse actual = favoriteService.hasFavoritePath(member, FIRST_STATION_ID,
+            SECOND_STATION_ID);
+
+        assertThat(actual).isEqualTo(expected);
     }
 }

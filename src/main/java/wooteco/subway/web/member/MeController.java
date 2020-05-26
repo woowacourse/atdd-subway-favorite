@@ -52,7 +52,7 @@ public class MeController {
     }
 
     @GetMapping("/favorites/source/{sourceId}/target/{targetId}/existsPath")
-    public ResponseEntity<FavoriteExistenceResponse> getFavoriteByPath(@LoginMember Member request,
+    public ResponseEntity<FavoriteExistenceResponse> isExistFavoritePath(@LoginMember Member request,
         @PathVariable Long sourceId, @PathVariable Long targetId) {
         return ResponseEntity.ok(new FavoriteExistenceResponse(true));
     }
