@@ -377,4 +377,25 @@ public class AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.UNAUTHORIZED.value());
     }
+
+    public String addFavorite(TokenResponse token, String sourceStationName, String targetStationName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceStationName", sourceStationName);
+        params.put("targetStationName", targetStationName);
+
+        return
+                given().
+                        auth().oauth2(token.getAccessToken()).
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                        post("/me/favorites").
+                then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().
+                        header("Location");
+    }
+
 }

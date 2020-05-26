@@ -14,5 +14,6 @@ public class LoginMemberMethodArgumentResolverTest {
     @DisplayName("토큰을 추출한 결과 해당하는 이메일과 일치하는 멤버가 없는 경우 예외가 발생하는지 테스트")
     @Test
     void noMemberTest() {
+
     }
 }

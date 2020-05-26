@@ -71,4 +71,8 @@ public class Member {
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
 }
