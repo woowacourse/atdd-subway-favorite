@@ -52,10 +52,10 @@ public class StationServiceTest {
         Station station2 = stationRepository.save(new Station("역삼역"));
 
         Station resultStation1 = stationService.findStationById(station1.getId());
-        assertThat(resultStation1).isEqualTo(station1);
+        assertThat(resultStation1.getName()).isEqualTo(station1.getName());
 
         Station resultStation2 = stationService.findStationById(station2.getId());
-        assertThat(resultStation2).isEqualTo(station2);
+        assertThat(resultStation2.getName()).isEqualTo(station2.getName());
     }
 
     @Test
