@@ -41,7 +41,17 @@ operation::members/delete[snippets='http-request,http-response,request-headers']
 
 operation::members/login[snippets='http-request,http-response']
 
-[[resources-members-favorite]]
-=== 즐겨찾기
+[[resources-members-favorite-create]]
+=== 즐겨찾기 추가
 
 operation::members/favorite/create[snippets='http-request,http-response']
+
+[[resources-members-favorite-get]]
+=== 즐겨찾기 조회
+
+operation::members/favorite/get[snippets='http-request,http-response']
+
+[[resources-members-favorite-delete]]
+=== 즐겨찾기 삭제
+
+operation::members/favorite/delete[snippets='http-request,http-response']

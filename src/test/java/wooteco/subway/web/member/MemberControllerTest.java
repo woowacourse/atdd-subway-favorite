@@ -1,13 +1,10 @@
 package wooteco.subway.web.member;
 
-import org.apache.coyote.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -105,7 +102,6 @@ public class MemberControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         this.mockMvc.perform(get("/members")
-                .header("Authorization", "Bearer TestToken")
                 .param("email", TEST_USER_EMAIL)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -176,5 +172,31 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.createFavorite());
+    }
+
+    @Test
+    void findFavorite() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
+        this.mockMvc.perform(get("/members/favorite")
+                .header("Authorization", "bearer " + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.getFavorite());
+    }
+
+    @Test
+    void deleteFavorite() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
+        this.mockMvc.perform(delete("/members/favorite/" + 1L)
+                .header("Authorization", "bearer "+token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteFavorite());
     }
 }

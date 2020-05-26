@@ -30,9 +30,6 @@ public class MemberDocumentation {
         return document("members/findByEmail",
                 requestParameters(
                         parameterWithName("email").description("The user's email")
-                ),
-                requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
                 )
         );
     }
@@ -63,6 +60,22 @@ public class MemberDocumentation {
                         fieldWithPath("startStationId").type(JsonFieldType.STRING).description("Start Station Id"),
                         fieldWithPath("endStationId").type(JsonFieldType.STRING).description("End Station Id")
                 ),
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler getFavorite() {
+        return document("members/favorite/get",
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteFavorite() {
+        return document("members/favorite/delete",
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
                 )
