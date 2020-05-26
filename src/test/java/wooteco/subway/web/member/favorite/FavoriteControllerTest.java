@@ -30,8 +30,7 @@ import java.util.HashSet;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -121,6 +120,30 @@ public class FavoriteControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.favoritesResponse").isArray())
+				.andDo(print());
+//				.andDo(MemberDocumentation.readMember());
+	}
+
+	@DisplayName("즐겨찾기 삭제 컨트롤러")
+	@Test
+	void removeFavorite() throws Exception {
+		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
+		doNothing().when(favoriteService).removeFavorite(anyLong(), anyLong(), anyLong());
+		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+		given(jwtTokenProvider.validateToken(any())).willReturn(true);
+		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+
+		this.mockMvc.perform(delete("/members/1/favorites/source/1/target/2")
+				.session(session)
+				.header("authorization", "Bearer " + TEST_USER_TOKEN)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
 				.andDo(print());
 //				.andDo(MemberDocumentation.readMember());
 	}

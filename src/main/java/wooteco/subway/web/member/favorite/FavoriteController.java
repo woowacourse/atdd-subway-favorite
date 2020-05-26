@@ -29,7 +29,7 @@ public class FavoriteController {
 	) {
 		member.validateId(id);
 		Favorite favorite = favoriteService.addFavorite(id, param.getSourceId(), param.getTargetId());
-		String createUri = "/members/" + id + "/favorites/sourceId/" + param.getSourceId() + "/targetId/" + param.getTargetId();
+		String createUri = "/members/" + id + "/favorites/source/" + param.getSourceId() + "/target/" + param.getTargetId();
 		return ResponseEntity.created(URI.create(createUri))
 				.body(FavoriteResponse.of(id, favorite));
 	}
@@ -44,4 +44,18 @@ public class FavoriteController {
 		return ResponseEntity.ok()
 				.body(FavoritesResponse.of(favorites, id));
 	}
+
+	@DeleteMapping("/members/{memberId}/favorites/source/{sourceId}/target/{targetId}")
+	public ResponseEntity removeFavorite(
+			@PathVariable Long memberId,
+			@PathVariable Long sourceId,
+			@PathVariable Long targetId,
+			@LoginMember Member member
+	) {
+		member.validateId(memberId);
+		favoriteService.removeFavorite(memberId, sourceId, targetId);
+		return ResponseEntity.ok()
+				.build();
+	}
+
 }
