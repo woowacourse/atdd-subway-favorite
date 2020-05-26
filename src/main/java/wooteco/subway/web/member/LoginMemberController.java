@@ -34,7 +34,9 @@ public class LoginMemberController {
     }
 
     @GetMapping
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
+    public ResponseEntity<MemberResponse> getMemberOfMineBasic(
+            @LoginMember Member member
+    ) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
@@ -47,7 +49,9 @@ public class LoginMemberController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@LoginMember Member member) {
+    public ResponseEntity<Void> delete(
+            @LoginMember Member member
+    ) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
