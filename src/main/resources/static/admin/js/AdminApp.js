@@ -1,14 +1,14 @@
-import { initNavigation } from "../utils/templates.js";
+import { initNavigation } from "../utils/templates.js"
 
 function AdminApp() {
   const init = () => {
-    initNavigation();
-  };
+    initNavigation()
+  }
 
   return {
     init
-  };
+  }
 }
 
-const adminApp = new AdminApp();
-adminApp.init();
+const adminApp = new AdminApp()
+adminApp.init()

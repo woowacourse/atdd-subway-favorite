@@ -349,4 +349,4 @@ export const subwayLineColorOptions = [
     bgColor: "bg-pink-900",
     hoverColor: "hover:bg-pink-800"
   }
-];
+]

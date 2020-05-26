@@ -19,4 +19,54 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,http-response,request-fields,response-headers']
+
+[[resources-members-login]]
+=== 로그인
+
+operation::members/login[snippets='http-request,http-response,request-fields,response-headers']
+
+[[resources-members-get]]
+=== 정보 조회
+
+operation::members/getMemberByEmail[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-members-update]]
+=== 정보 수정
+
+operation::members/update[snippets='http-request,http-response,path-parameters,request-headers,request-fields']
+
+[[resources-members-delete]]
+=== 회원 탈퇴
+
+operation::members/delete[snippets='http-request,http-response,path-parameters,request-headers']
+
+[[resources-members-create-fail-blank]]
+=== [예외] 회원 가입 실패 : 빈 문자열
+
+operation::members/create/fail/blank[snippets='http-request,http-response,request-fields,response-body']
+
+[[resources-members-create-fail-duplication]]
+=== [예외] 회원 가입 실패 : 이메일 중복
+
+operation::members/create/fail/duplication[snippets='http-request,http-response,request-fields,response-body']
+
+[[resources-members-update-fail-blank]]
+=== [예외] 회원 정보 수정 실패 : 빈 문자열
+
+operation::members/update/fail/blank[snippets='http-request,http-response,request-fields,response-body']
+
+[[resources-members-favorites-add]]
+=== 즐겨찾기 추가
+
+operation::members/favorites/add[snippets='http-request,http-response,request-headers,request-fields,response-headers']
+
+[[resources-members-favorites-find]]
+=== 즐겨찾기 조회
+
+operation::members/favorites/find[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-members-favorites-delete]]
+=== 즐겨찾기 삭제
+
+operation::members/favorites/delete[snippets='http-request,http-response,request-headers,path-parameters']

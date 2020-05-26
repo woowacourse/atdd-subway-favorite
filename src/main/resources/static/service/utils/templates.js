@@ -23,7 +23,8 @@ export const navTemplate = `<nav class="flex items-center justify-between flex-w
 </nav>`
 
 export const subwayLinesItemTemplate = line => {
-  const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
+  const stations = line.stations ? line.stations.map(station => listItemTemplate(station))
+  .join('') : null
   return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
               <div class="border ${line.bgColor ? line.bgColor : ''} lint-name px-4 py-1">${line.name}</div>
@@ -36,7 +37,9 @@ export const subwayLinesItemTemplate = line => {
 
 export const searchResultTemplate = result => {
   const lastIndex = result.stations.length - 1
-  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.name, index, lastIndex)).join('')
+  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.name,
+    index,
+    lastIndex)).join('')
   return `<div class="px-2 py-4 border-b">
       <div class="w-full flex mb-3">
         <div class="inline-block w-1/2 border-r text-center">
@@ -73,3 +76,21 @@ export const pathStationTemplate = (name, index, lastIndex) => {
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
+
+export const edgeItemTemplate = edge => {
+  return `<li data-edge-id="${edge.id}" 
+class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+            <span class="mdi mdi-subway-variant mr-2"></span>
+            <span data-source-station-id="${edge.departureId}">${
+    edge.departureName ? edge.departureName : "출발역"
+  }</span>
+            <span class="mdi mdi-arrow-right text-gray-500"></span>
+            <span data-target-station-id="${edge.destinationId}">${
+    edge.destinationName ? edge.destinationName : "도착역"
+  }</span>
+            <button class="favorite-delete-button hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right"
+            >
+              <span class="mdi mdi-delete"></span>
+            </button>
+          </li>`;
+};
