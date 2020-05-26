@@ -25,6 +25,9 @@ public class FavoriteService {
     }
 
     public void save(Member member, FavoriteStation favoriteStation) {
+        if(member.contain(favoriteStation)) {
+            throw new IllegalArgumentException();
+        }
         member.addFavoriteStation(favoriteStation);
         memberRepository.save(member);
     }

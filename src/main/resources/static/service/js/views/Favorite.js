@@ -34,10 +34,6 @@ function Favorite() {
 
     const eventListener = () => {
       $favoriteList.addEventListener(EVENT_TYPE.CLICK, deleteFavorite);
-      // $deleteButton.addEventListener(EVENT_TYPE.CLICK, function (event) {
-      //   const $target = event.target;
-      //   console.log($target.closest("<li>"));
-      // });
     }
 
     this.init = () => {

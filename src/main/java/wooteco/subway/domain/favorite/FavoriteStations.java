@@ -33,4 +33,8 @@ public class FavoriteStations {
     public void deleteFavoriteStation(FavoriteStation favoriteStation) {
         favorites.remove(favoriteStation);
     }
+
+    public boolean contain(FavoriteStation favoriteStation) {
+        return favorites.contains(favoriteStation);
+    }
 }

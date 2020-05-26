@@ -62,8 +62,13 @@ function Search() {
       body: JSON.stringify({
         ...favoriteInput
       })
-    }).then(response => alert(SUCCESS_MESSAGE.SAVE))
-    .catch(error => alert(ERROR_MESSAGE.COMMON));
+    }).then(response => {
+      if(!response.ok) {
+        alert(ERROR_MESSAGE.DUPLICATION_CHECK);
+        return;
+      }
+      alert(SUCCESS_MESSAGE.SAVE)
+    })
 
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList

@@ -79,4 +79,8 @@ public class Member {
     public void deleteFavoriteStation(FavoriteStation favoriteStation) {
         favoriteStations.deleteFavoriteStation(favoriteStation);
     }
+
+    public boolean contain(FavoriteStation favoriteStation) {
+        return favoriteStations.contain(favoriteStation);
+    }
 }
