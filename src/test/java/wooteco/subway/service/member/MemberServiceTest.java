@@ -23,7 +23,9 @@ public class MemberServiceTest {
     public static final String TEST_OTHER_USER_EMAIL = "pobi@email.com";
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
+    public static final String TEST_OTHER_USER_NAME = "포비";
     public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_OTHER_USER_PASSWORD = "pobi";
     public static final long TEST_USER_ID = 1L;
 
     private MemberService memberService;
