@@ -12,6 +12,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -49,11 +50,11 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    public static RequestSpecification given() {
+    protected static RequestSpecification given() {
         return RestAssured.given().log().all();
     }
 
-    public StationResponse createStation(String name) {
+    protected StationResponse createStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
@@ -70,7 +71,7 @@ public class AcceptanceTest {
                         extract().as(StationResponse.class);
     }
 
-    public List<StationResponse> getStations() {
+    protected List<StationResponse> getStations() {
         return
                 given().when().
                         get("/stations").
@@ -80,14 +81,14 @@ public class AcceptanceTest {
                         jsonPath().getList(".", StationResponse.class);
     }
 
-    public void deleteStation(Long id) {
+    protected void deleteStation(Long id) {
         given().when().
                 delete("/stations/" + id).
                 then().
                 log().all();
     }
 
-    public LineResponse createLine(String name) {
+    protected LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
@@ -107,7 +108,7 @@ public class AcceptanceTest {
                         extract().as(LineResponse.class);
     }
 
-    public LineDetailResponse getLine(Long id) {
+    protected LineDetailResponse getLine(Long id) {
         return
                 given().when().
                         get("/lines/" + id).
@@ -116,7 +117,7 @@ public class AcceptanceTest {
                         extract().as(LineDetailResponse.class);
     }
 
-    public void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
+    protected void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
         Map<String, String> params = new HashMap<>();
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
@@ -133,7 +134,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    public List<LineResponse> getLines() {
+    protected List<LineResponse> getLines() {
         return
                 given().when().
                         get("/lines").
@@ -143,18 +144,18 @@ public class AcceptanceTest {
                         jsonPath().getList(".", LineResponse.class);
     }
 
-    public void deleteLine(Long id) {
+    protected void deleteLine(Long id) {
         given().when().
                 delete("/lines/" + id).
                 then().
                 log().all();
     }
 
-    public void addLineStation(Long lineId, Long preStationId, Long stationId) {
+    protected void addLineStation(Long lineId, Long preStationId, Long stationId) {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    protected void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
@@ -172,7 +173,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    protected void removeLineStation(Long lineId, Long stationId) {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -183,7 +184,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public WholeSubwayResponse retrieveWholeSubway() {
+    protected WholeSubwayResponse retrieveWholeSubway() {
         return
                 given().
                         when().
@@ -193,7 +194,7 @@ public class AcceptanceTest {
                         extract().as(WholeSubwayResponse.class);
     }
 
-    public PathResponse findPath(String source, String target, String type) {
+    protected PathResponse findPath(String source, String target, String type) {
         return
                 given().
                         contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -213,7 +214,7 @@ public class AcceptanceTest {
      * |           |
      * 양재 - 매봉 - 도곡
      */
-    public void initStation() {
+    protected void initStation() {
         // 역 등록
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
         StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
@@ -247,7 +248,7 @@ public class AcceptanceTest {
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
     }
 
-    public String createMember(String email, String name, String password) {
+    protected String createMember(String email, String name, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
@@ -266,7 +267,7 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(String email) {
+    protected MemberResponse getMember(String email) {
         return
                 given().
                         accept(MediaType.APPLICATION_JSON_VALUE).
@@ -278,7 +279,7 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    protected void updateMember(MemberResponse memberResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
@@ -294,12 +295,55 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
+    protected void deleteMember(MemberResponse memberResponse) {
         given().when().
                 delete("/admin/members/" + memberResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    protected void join(String email, String name, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        params.put("password", password);
+
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    protected TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return given().
+                body(params).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/login").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(TokenResponse.class);
+    }
+
+    protected void deleteMember(TokenResponse token) {
+        given()
+                .auth().oauth2(token.getAccessToken())
+                .when()
+                .delete("/me")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
 

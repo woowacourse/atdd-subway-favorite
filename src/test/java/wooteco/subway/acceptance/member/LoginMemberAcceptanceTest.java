@@ -55,39 +55,6 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
         deleteMember(token);
     }
 
-    private void join(String email, String name, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("name", name);
-        params.put("password", password);
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/members").
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    private TokenResponse login(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return given().
-                body(params).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/login").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().as(TokenResponse.class);
-    }
-
     private MemberResponse getMemberByToken(TokenResponse tokenResponse) {
         return given()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -111,16 +78,6 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .put("/me")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    private void deleteMember(TokenResponse token) {
-        given()
-                .auth().oauth2(token.getAccessToken())
-                .when()
-                .delete("/me")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());

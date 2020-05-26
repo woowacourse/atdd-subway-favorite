@@ -23,7 +23,7 @@ public class AdminMemberController {
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
-                .created(URI.create("/members/" + member.getId()))
+                .created(URI.create("/admin/members/" + member.getId()))
                 .build();
     }
 
