@@ -9,6 +9,9 @@ public class FavoriteResponse {
     private Long sourceId;
     private Long targetId;
 
+    public FavoriteResponse() {
+    }
+
     public FavoriteResponse(Long sourceId, Long targetId) {
         this.sourceId = sourceId;
         this.targetId = targetId;

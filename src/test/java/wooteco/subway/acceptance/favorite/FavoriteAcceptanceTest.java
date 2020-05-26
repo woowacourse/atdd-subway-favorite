@@ -18,17 +18,11 @@ import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.MemberDetailResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
 
     @LocalServerPort
     private int port;
@@ -40,10 +34,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-        station1 = new Station(1L, STATION_NAME_KANGNAM);
-        station2 = new Station(2L, STATION_NAME_DOGOK);
-        station3 = new Station(3L, STATION_NAME_SEOLLEUNG);
-        station4 = new Station(4L, STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_DOGOK);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_YEOKSAM);
     }
 
     @DisplayName("즐겨찾기 관리")
@@ -53,24 +47,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             DynamicTest.dynamicTest("Create Favorite", () -> {
                 createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD,
                     TEST_USER_PASSWORD);
-                String location = createFavorite(TEST_USER_EMAIL, 1L, 2L);
-                String location2 = createFavorite(TEST_USER_EMAIL, 1L, 4L);
+                String location = createFavorite(TEST_USER_EMAIL, STATION_NAME_KANGNAM,
+                    STATION_NAME_DOGOK);
+                String location2 = createFavorite(TEST_USER_EMAIL, STATION_NAME_KANGNAM,
+                    STATION_NAME_YEOKSAM);
                 assertThat(location).isNotNull();
                 assertThat(location2).isNotNull();
             }),
             DynamicTest.dynamicTest("Read Favorite", () -> {
                 MemberDetailResponse memberDetailResponse = getDetailMember(TEST_USER_EMAIL);
-                assertThat(memberDetailResponse.getFavorites())
-                    .usingRecursiveFieldByFieldElementComparator()
-                    .containsExactly(new Favorite(1L, 1L, 2L), new Favorite(2L, 1L, 4L));
+                assertThat(memberDetailResponse.getFavorites()).extracting(
+                    FavoriteResponse::getSourceId).containsExactlyInAnyOrder(1L, 1L);
+                assertThat(memberDetailResponse.getFavorites()).extracting(
+                    FavoriteResponse::getTargetId).containsExactlyInAnyOrder(4L, 2L);
             }),
             DynamicTest.dynamicTest("Delete Favorite", () -> {
                 deleteFavorite(TEST_USER_EMAIL, 1L);
                 MemberDetailResponse memberDetailResponse = getDetailMember(TEST_USER_EMAIL);
-                Set<Favorite> favorites = memberDetailResponse.getFavorites();
+                Set<FavoriteResponse> favorites = memberDetailResponse.getFavorites();
                 assertThat(favorites).hasSize(1);
                 assertThat(favorites).usingRecursiveFieldByFieldElementComparator()
-                    .containsExactly(new Favorite(2L, 1L, 4L));
+                    .containsExactly(new FavoriteResponse(1L, 4L));
             })
         );
     }
@@ -87,11 +84,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    private String createFavorite(String email, Long sourceId, Long targetId) {
+    private String createFavorite(String email, String sourceName, String targetName) {
         String token = jwtTokenProvider.createToken(email);
-        Map<String, Long> params = new HashMap<>();
-        params.put("sourceId", sourceId);
-        params.put("targetId", targetId);
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", sourceName);
+        params.put("targetName", targetName);
 
         return given().
             contentType(MediaType.APPLICATION_JSON_VALUE).
