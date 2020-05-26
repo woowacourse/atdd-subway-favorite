@@ -1,13 +1,12 @@
 package wooteco.subway.web.member;
 
+import static wooteco.subway.web.member.LoginMember.*;
+
 import java.net.URI;
 
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,31 +35,21 @@ public class MemberController {
     }
 
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member, @Param("email") String email) {
-        if (!member.isAuthenticated(email)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember(type = Type.EMAIL) Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(
-        @LoginMember Member member,
-        @PathVariable Long id,
+        @LoginMember(type = Type.ID) Member member,
         @RequestBody UpdateMemberRequest param
     ) {
-        if (!member.isAuthenticated(id)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member, @PathVariable Long id) {
-        if (!member.isAuthenticated(id)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<MemberResponse> deleteMember(@LoginMember(type = Type.ID) Member member) {
         memberService.deleteMember(member);
         return ResponseEntity.noContent().build();
     }

@@ -69,6 +69,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // when 사용자 인증과 함께 회원 정보 삭제 요청을 보낸다.
         deleteMember(member, token);
         // then 회원정보가 삭제된다.
-        assertThat(getMember(TEST_USER_EMAIL, token)).isNull();
+        assertThatThrownBy(() -> getMember(TEST_USER_EMAIL, token));
     }
 }

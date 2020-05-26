@@ -122,12 +122,9 @@ public class MemberServiceTest {
         verify(memberRepository).deleteById(member.getId());
     }
 
-    // TODO: 2020/05/25 전반적인 리팩토링
     // TODO: 2020/05/22 sendError와 controllerAdvice 선택해서 반영
     // TODO: 2020/05/20 - Exception Handler 추가
-    // TODO: 2020/05/22 사용자 파라미터나 쿼리에서 오는 다른 정보와 비교하여 인증하는 로직 옮기기
-    // TODO: 2020/05/20 - 컨트롤러에서의 인증 방식 고민해보기
-    // TODO: 2020/05/20 Dynamic Test 방식으로 변경010509
+    // TODO: 2020/05/20 Dynamic Test 방식으로 변경
     // TODO: 2020/05/25 MethodArgumentResolver, Interceptor Testing
 
     @DisplayName("즐겨찾기 생성 테스트")
