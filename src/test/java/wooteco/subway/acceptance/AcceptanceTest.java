@@ -2,7 +2,6 @@ package wooteco.subway.acceptance;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -15,9 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineResponse;
@@ -65,54 +64,31 @@ public class AcceptanceTest {
     protected ObjectMapper objectMapper;
 
     public List<StationResponse> getStations() throws Exception {
-        String result = mockMvc.perform(get("/stations"))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        String result = parse(request(get("/stations"), null));
         return Arrays.asList(objectMapper.readValue(result, StationResponse[].class));
     }
 
     public void deleteStation(Long id) throws Exception {
-        mockMvc.perform(delete("/stations/{id}", id))
-            .andDo(print())
-            .andReturn();
+        request(delete("/stations/{id}", id));
     }
 
     public LineDetailResponse getLine(Long id) throws Exception {
-        String result = mockMvc.perform(get("/lines/{id}", id))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        String result = parse(request(get("/lines/{id}", id)));
         return objectMapper.readValue(result, LineDetailResponse.class);
     }
 
     public void updateLine(Long id, LocalTime startTime, LocalTime endTime) throws Exception {
-        String body = objectMapper.writeValueAsString(new LineRequest(null, startTime, endTime, 10));
-
-        mockMvc.perform(put("/lines/{id}", id)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andReturn();
+        LineRequest dto = new LineRequest(null, startTime, endTime, 10);
+        request(put("/lines/{id}", id), dto);
     }
 
     public List<LineResponse> getLines() throws Exception {
-        String result = mockMvc.perform(get("/lines"))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
+        String result = parse(request(get("/lines")));
         return Arrays.asList(objectMapper.readValue(result, LineResponse[].class));
     }
 
     public void deleteLine(Long id) throws Exception {
-        mockMvc.perform(delete("/lines/{id}", id))
-            .andDo(print())
-            .andReturn();
+        request(delete("/lines/{id}", id));
     }
 
     public void addLineStation(Long lineId, Long preStationId, Long stationId) throws Exception {
@@ -122,47 +98,24 @@ public class AcceptanceTest {
     public void addLineStation(
         Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration
     ) throws Exception {
-        String body = objectMapper.writeValueAsString(
-            new LineStationCreateRequest(preStationId, stationId, distance, duration));
-
-        mockMvc.perform(post("/lines/{id}/stations", lineId)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andReturn();
+        LineStationCreateRequest dto = new LineStationCreateRequest(preStationId, stationId, distance, duration);
+        request(post("/lines/{id}/stations", lineId), dto);
     }
 
     public void removeLineStation(Long lineId, Long stationId) throws Exception {
-        mockMvc.perform(delete("/lines/{lineId}/stations/{stationId}", lineId, stationId)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print());
+        request(delete("/lines/{lineId}/stations/{stationId}", lineId, stationId));
     }
 
     public WholeSubwayResponse retrieveWholeSubway() throws Exception {
-        String result = mockMvc.perform(get("/lines/detail")
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
+        String result = parse(request(get("/lines/detail")));
         return objectMapper.readValue(result, WholeSubwayResponse.class);
     }
 
     public PathResponse findPath(String source, String target, String type) throws Exception {
-        String result = mockMvc.perform(get("/paths")
+        String result = parse(request(get("/paths")
             .param("source", source)
             .param("target", target)
-            .param("type", type)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
+            .param("type", type)));
         return objectMapper.readValue(result, PathResponse.class);
     }
 
@@ -208,80 +161,35 @@ public class AcceptanceTest {
     }
 
     public StationResponse createStation(String name) throws Exception {
-        String body = objectMapper.writeValueAsString(new StationCreateRequest(name));
-
-        String result = mockMvc.perform(post("/stations")
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
+        StationCreateRequest dto = new StationCreateRequest(name);
+        String result = parse(request(post("/stations"), dto));
         return objectMapper.readValue(result, StationResponse.class);
     }
 
     public LineResponse createLine(String name) throws Exception {
-        String body = objectMapper.writeValueAsString(
-            new LineRequest(name, LocalTime.of(5, 30), LocalTime.of(23, 30), 10));
-
-        String result = mockMvc.perform(post("/lines")
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
+        LineRequest dto = new LineRequest(name, LocalTime.of(5, 30), LocalTime.of(23, 30), 10);
+        String result = parse(request(post("/lines"), dto));
         return objectMapper.readValue(result, LineResponse.class);
     }
 
     public TokenResponse login(String email, String password) throws Exception {
-        String body = objectMapper.writeValueAsString(new LoginRequest(email, password));
-
-        String result = mockMvc.perform(post("/oauth/token")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(body))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
+        LoginRequest dto = new LoginRequest(email, password);
+        String result = parse(request(post("/oauth/token"), dto));
         return objectMapper.readValue(result, TokenResponse.class);
     }
 
     public String createMember(String email, String name, String password) throws Exception {
-        String body = objectMapper.writeValueAsString(new MemberRequest(email, name, password));
-
-        return mockMvc.perform(post("/members")
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andReturn()
+        MemberRequest dto = new MemberRequest(email, name, password);
+        return request(post("/members"), dto)
             .getResponse()
             .getHeader("Location");
     }
 
     public MemberResponse getMember(String email, TokenResponse tokenResponse) throws Exception {
-        MvcResult result = mockMvc.perform(get("/members")
+        String result = parse(request(get("/members")
             .param("email", email)
-            .header(AUTHORIZATION, tokenResponse)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print())
-            .andReturn();
-
-        return mapToMemberResponse(result);
-    }
-
-    private MemberResponse mapToMemberResponse(final MvcResult result) throws Exception {
-        try {
-            return objectMapper.readValue(result.getResponse().getContentAsString(), MemberResponse.class);
-        } catch (MismatchedInputException e) {
-            return null;
-        }
+            .header(AUTHORIZATION, tokenResponse)));
+        return objectMapper.readValue(result, MemberResponse.class);
     }
 
     public void updateMemberWithAuthentication(
@@ -289,65 +197,50 @@ public class AcceptanceTest {
         TokenResponse tokenResponse,
         UpdateMemberRequest updateMemberRequest
     ) throws Exception {
-        String body = objectMapper.writeValueAsString(updateMemberRequest);
-
-        mockMvc.perform(put("/members/{id}", memberResponse.getId())
-            .header(AUTHORIZATION, tokenResponse)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andReturn();
+        request(put("/members/{id}",
+            memberResponse.getId()).header(AUTHORIZATION, tokenResponse),
+            updateMemberRequest
+        );
     }
 
     public void updateMemberWithoutAuthentication(
         MemberResponse memberResponse,
         UpdateMemberRequest updateMemberRequest
     ) throws Exception {
-        String body = objectMapper.writeValueAsString(updateMemberRequest);
-
-        mockMvc.perform(put("/members/{id}", memberResponse.getId())
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andExpect(status().isUnauthorized())
-            .andReturn();
+        request(put("/members/{id}", memberResponse.getId()), updateMemberRequest);
     }
 
     public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) throws Exception {
-        mockMvc.perform(delete("/members/{id}", memberResponse.getId())
-            .header(AUTHORIZATION, tokenResponse)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print())
-            .andReturn();
+        request(delete("/members/{id}", memberResponse.getId()).header(AUTHORIZATION, tokenResponse));
     }
 
     public void createFavorite(FavoriteRequest request, TokenResponse tokenResponse) throws Exception {
-        String body = objectMapper.writeValueAsString(request);
-
-        mockMvc.perform(post("/favorites")
-            .header(AUTHORIZATION, tokenResponse)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .content(body))
-            .andDo(print())
-            .andReturn();
+        request(post("/favorites").header(AUTHORIZATION, tokenResponse), request);
     }
 
     public List<FavoriteResponse> getAllFavorites(TokenResponse tokenResponse) throws Exception {
-        String result = mockMvc.perform(get("/favorites")
-            .header(AUTHORIZATION, tokenResponse)
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        String result = parse(request(get("/favorites").header(AUTHORIZATION, tokenResponse)));
         return Arrays.asList(objectMapper.readValue(result, FavoriteResponse[].class));
     }
 
     public void deleteFavorite(Long id, TokenResponse tokenResponse) throws Exception {
-        mockMvc.perform(delete("/favorites/{id}", id)
-            .header(AUTHORIZATION, tokenResponse))
+        request(delete("/favorites/{id}", id).header(AUTHORIZATION, tokenResponse));
+    }
+
+    private String parse(MvcResult mvcResult) throws Exception {
+        return mvcResult.getResponse().getContentAsString();
+    }
+
+    private MvcResult request(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        return request(requestBuilder, null);
+    }
+
+    private MvcResult request(MockHttpServletRequestBuilder requestBuilder, Object dto) throws Exception {
+        String body = objectMapper.writeValueAsString(dto);
+        return mockMvc.perform(requestBuilder
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body))
             .andDo(print())
             .andReturn();
     }
