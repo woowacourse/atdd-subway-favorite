@@ -1,5 +1,6 @@
 package wooteco.subway.web.member;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,6 +35,7 @@ class LoginMemberControllerTest {
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
+    @DisplayName("로그인")
     @Test
     public void login() throws Exception {
         given(memberService.createToken(any())).willReturn("this is accessToken");
@@ -49,6 +51,7 @@ class LoginMemberControllerTest {
         verify(memberService).createToken(any());
     }
 
+    @DisplayName("내 정보 불러오기")
     @Test
     public void myInformation() throws Exception {
         final Member member = new Member(63L, "bossdog@email.com", "boss", "dog");

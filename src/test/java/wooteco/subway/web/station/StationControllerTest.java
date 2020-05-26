@@ -1,6 +1,7 @@
-package wooteco.subway.web;
+package wooteco.subway.web.station;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ class StationControllerTest {
                 .build();
     }
 
+    @DisplayName("지하철 역 추가")
     @Test
     public void create() throws Exception {
         final Station station = new Station(11L, "잠실역");
@@ -60,6 +62,7 @@ class StationControllerTest {
                 .andDo(StationDocumentation.createStation());
     }
 
+    @DisplayName("지하철 역 목록 조회")
     @Test
     public void getStation() throws Exception {
         final List<Station> stations = new ArrayList<>();
@@ -72,6 +75,7 @@ class StationControllerTest {
                 .andDo(StationDocumentation.getStations());
     }
 
+    @DisplayName("지하철 역 삭제")
     @Test
     public void deleteStation() throws Exception {
 

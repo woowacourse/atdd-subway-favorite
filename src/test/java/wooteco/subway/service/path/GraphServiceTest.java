@@ -2,6 +2,7 @@ package wooteco.subway.service.path;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineStation;
@@ -56,6 +57,7 @@ public class GraphServiceTest {
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
     }
 
+    @DisplayName("경로 찾기")
     @Test
     void findPath() {
         List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(), station5.getId(), PathType.DISTANCE);
@@ -68,9 +70,10 @@ public class GraphServiceTest {
         assertThat(stationIds.get(4)).isEqualTo(5L);
     }
 
+    @DisplayName("존재하지 않는 경로일 경우 예외 발생")
     @Test
     void findPathWithNoPath() {
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(NotExistedPathException.class, () ->
                 graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
         );
 
@@ -80,7 +83,7 @@ public class GraphServiceTest {
     void findPathWithDisconnected() {
         line2.removeLineStationById(station1.getId());
 
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(NotExistedPathException.class, () ->
                 graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
         );
     }

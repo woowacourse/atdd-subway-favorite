@@ -1,6 +1,7 @@
 package wooteco.subway.service.favorite;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -35,6 +36,7 @@ class FavoriteServiceTest {
         favoriteService = new FavoriteService(favoriteRepository, stationRepository);
     }
 
+    @DisplayName("즐겨찾기 추가")
     @Test
     public void addFavorite() {
         final Favorite favorite = new Favorite(10L, 63L, 1L, 3L);
@@ -49,6 +51,7 @@ class FavoriteServiceTest {
         assertThat(response.getTargetStationId()).isEqualTo(3L);
     }
 
+    @DisplayName("즐겨찾기 조회 by 회원 ID")
     @Test
     public void showMyAllFavorites() {
         List<Favorite> favorites = new ArrayList<>();
@@ -64,9 +67,10 @@ class FavoriteServiceTest {
         assertThat(responses.get(0).getTargetStationId()).isEqualTo(3L);
     }
 
+    @DisplayName("즐겨찾기 삭제")
     @Test
-    public void removeMyFavorite() {
-        favoriteService.removeFavorite(10L);
+    public void deleteFavorite() {
+        favoriteService.deleteFavorite(10L);
         verify(favoriteRepository).deleteById(eq(10L));
     }
 

@@ -87,6 +87,7 @@ public class LineControllerTest {
         return LineDetailResponse.of(new Line(), stations);
     }
 
+    @DisplayName("노선 추가")
     @Test
     public void create() throws Exception {
         final Line line = new Line(
@@ -103,6 +104,7 @@ public class LineControllerTest {
                 .andDo(LineDocumentation.createLine());
     }
 
+    @DisplayName("모든 노선 조회")
     @Test
     public void getAll() throws Exception {
         final List<Line> lines = new ArrayList<>();
@@ -117,6 +119,7 @@ public class LineControllerTest {
                 .andDo(LineDocumentation.getLines());
     }
 
+    @DisplayName("노선 한개 조회")
     @Test
     public void getLine() throws Exception {
         final LineDetailResponse line = new LineDetailResponse(
@@ -131,6 +134,7 @@ public class LineControllerTest {
                 .andDo(LineDocumentation.getLine());
     }
 
+    @DisplayName("노선 정보 수정")
     @Test
     public void update() throws Exception {
         mockMvc.perform(put("/lines/63")
@@ -143,6 +147,7 @@ public class LineControllerTest {
                 .andDo(LineDocumentation.updateLine());
     }
 
+    @DisplayName("노선 삭제")
     @Test
     public void deleteLine() throws Exception {
         mockMvc.perform(delete("/lines/63"))

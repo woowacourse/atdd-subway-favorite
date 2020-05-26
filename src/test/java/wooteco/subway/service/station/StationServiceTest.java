@@ -1,5 +1,6 @@
 package wooteco.subway.service.station;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,9 +24,11 @@ public class StationServiceTest {
 
     @Autowired
     private StationRepository stationRepository;
+
     @Autowired
     private LineRepository lineRepository;
 
+    @DisplayName("지하철 역 제거")
     @Test
     public void removeStation() {
         Station station1 = stationRepository.save(new Station("강남역"));

@@ -112,6 +112,6 @@ class FavoriteControllerTest {
                 .andDo(print())
                 .andDo(FavoriteDocumentation.deleteFavorite());
 
-        verify(favoriteService).removeFavorite(eq(10L));
+        verify(favoriteService).deleteFavorite(eq(10L));
     }
 }

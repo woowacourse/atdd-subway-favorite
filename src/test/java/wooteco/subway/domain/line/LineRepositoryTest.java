@@ -1,5 +1,6 @@
 package wooteco.subway.domain.line;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -13,6 +14,7 @@ public class LineRepositoryTest {
     @Autowired
     private LineRepository lineRepository;
 
+    @DisplayName("구간 추가")
     @Test
     void addLineStation() {
         // given

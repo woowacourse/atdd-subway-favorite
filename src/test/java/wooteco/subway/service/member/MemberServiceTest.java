@@ -43,6 +43,7 @@ public class MemberServiceTest {
         this.memberService = new MemberService(memberRepository, favoriteRepository, jwtTokenProvider);
     }
 
+    @DisplayName("회원 가입")
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -52,6 +53,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("로그인")
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -63,6 +65,7 @@ public class MemberServiceTest {
         verify(jwtTokenProvider).createToken(anyString());
     }
 
+    @DisplayName("회원 정보 수정")
     @Test
     void updateMember() {
         Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

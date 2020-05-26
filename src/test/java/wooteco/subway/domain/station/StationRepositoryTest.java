@@ -1,5 +1,6 @@
 package wooteco.subway.domain.station;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -14,6 +15,7 @@ public class StationRepositoryTest {
     @Autowired
     private StationRepository stationRepository;
 
+    @DisplayName("지하철역 저장")
     @Test
     void saveStation() {
         String stationName = "강남역";

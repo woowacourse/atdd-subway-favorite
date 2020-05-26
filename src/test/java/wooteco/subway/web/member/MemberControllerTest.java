@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class MemberControllerTest {
                 .build();
     }
 
+    @DisplayName("회원 가입")
     @Test
     public void create() throws Exception {
         final Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -64,6 +66,7 @@ public class MemberControllerTest {
         verify(memberService).createMember(any());
     }
 
+    @DisplayName("이메일로 회원 조회")
     @Test
     public void show() throws Exception {
         final Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -79,6 +82,7 @@ public class MemberControllerTest {
         verify(memberService).findMemberByEmail(eq(TEST_USER_EMAIL));
     }
 
+    @DisplayName("회원 정보 수정")
     @Test
     public void update() throws Exception {
         final Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -96,6 +100,7 @@ public class MemberControllerTest {
         verify(memberService).updateMember(eq(member.getId()), any());
     }
 
+    @DisplayName("회원 삭제(탈퇴)")
     @Test
     public void deleteMember() throws Exception {
         final Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

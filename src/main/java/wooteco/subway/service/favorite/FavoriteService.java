@@ -36,7 +36,7 @@ public class FavoriteService {
         return FavoriteResponse.listFrom(favorites);
     }
 
-    public void removeFavorite(final Long id) {
+    public void deleteFavorite(final Long id) {
         favoriteRepository.deleteById(id);
     }
 }

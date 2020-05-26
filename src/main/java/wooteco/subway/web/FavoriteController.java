@@ -42,7 +42,7 @@ public class FavoriteController {
             @LoginMember Member member,
             @PathVariable("id") Long id
     ) {
-        favoriteService.removeFavorite(id);
+        favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }
 
