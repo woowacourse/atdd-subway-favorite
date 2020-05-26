@@ -11,8 +11,10 @@ endif::[]
 :operation-http-response-title: Example Response
 [[resources]]
 = Resources
+
 [[resources-members]]
 == Member
+
 [[resources-members-create]]
 === 회원 가입
 
@@ -32,3 +34,21 @@ operation::me/bearer/update[snippets='http-request,request-headers,request-body,
 === 회원 탈퇴
 
 operation::me/bearer/delete[snippets='http-request,request-headers']
+
+[[resources-favorites]]
+== Favorite
+
+[[resources-favorites-create]]
+=== 즐겨찾기 생성
+
+operation::favorites/create[snippets='http-request,request-headers,request-fields,http-response,response-headers']
+
+[[resources-favorites-show]]
+=== 즐겨찾기 조회
+
+operation::favorites/show[snippets='http-request,request-headers,http-response,response-fields']
+
+[[resources-favorites-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorites/delete[snippets='http-request,request-headers,request-fields']
