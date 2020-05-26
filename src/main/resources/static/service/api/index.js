@@ -62,7 +62,21 @@ const METHOD = {
 
 const api = (() => {
   const request = (uri, config) => fetch(uri, config).then(data => data)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+  const requestWithJsonData = async (uri, config) => {
+    try {
+      const response = await fetch(uri, config)
+      if (response.status === 403) {
+        const error = await response.json()
+        alert(error.message)
+        window.location.href = "login"
+        return
+      }
+      return await response.json()
+    }
+    catch (error) {
+      alert(error.message)
+    }
+  }
 
   const line = {
     getAll() {
@@ -118,6 +132,7 @@ const api = (() => {
     path,
     member
   }
-})()
+})
+()
 
 export default api

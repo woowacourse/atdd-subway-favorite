@@ -1,5 +1,7 @@
 package wooteco.subway.web.member.interceptor;
 
+import static wooteco.subway.web.exception.UnauthorizedException.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.web.exception.UnauthorizedException;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
 @Component
@@ -26,12 +29,13 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
         HttpServletResponse response, Object handler) {
+        // 회원가입 시 토큰 검증 불필요
         if (request.getMethod().equals("POST") && request.getRequestURI().equals("/members")) {
             return true;
         }
         String credential = authExtractor.extract(request, BEARER);
         if (!jwtTokenProvider.validateToken(credential)) {
-            throw new IllegalArgumentException("로그인 실패");
+            throw new UnauthorizedException(REQUIRE_LOGIN_MESSAGE);
         }
 
         String email = jwtTokenProvider.getSubject(credential);
