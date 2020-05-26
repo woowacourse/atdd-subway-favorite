@@ -87,14 +87,18 @@ public class MemberService {
         Set<FavoriteResponse> favoriteResponses = new LinkedHashSet<>();
         for (Favorite favorite : favorites) {
             FavoriteResponse favoriteResponse = new FavoriteResponse(
-                    favorite.getId(),
-                    stationRepository.findById(favorite.getSourceStationId())
-                            .orElseThrow(IllegalArgumentException::new).getName(),
-                    stationRepository.findById(favorite.getTargetStationId())
-                            .orElseThrow(IllegalArgumentException::new).getName()
+                favorite.getId(),
+                stationRepository.findById(favorite.getSourceStationId())
+                    .orElseThrow(IllegalArgumentException::new).getName(),
+                stationRepository.findById(favorite.getTargetStationId())
+                    .orElseThrow(IllegalArgumentException::new).getName()
             );
             favoriteResponses.add(favoriteResponse);
         }
         return favoriteResponses;
+    }
+
+    public void deleteFavorites(Long source, Long target, Member member) {
+        // favoriteRepository.(id);
     }
 }

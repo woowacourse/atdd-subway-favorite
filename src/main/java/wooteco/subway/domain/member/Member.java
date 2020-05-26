@@ -29,6 +29,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = new LinkedHashSet<>();
     }
 
     public Long getId() {
