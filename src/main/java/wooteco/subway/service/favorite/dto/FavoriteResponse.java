@@ -1,19 +1,21 @@
 package wooteco.subway.service.favorite.dto;
 
+import wooteco.subway.domain.station.Station;
+
 public class FavoriteResponse {
-	private String preStationName;
-	private String stationName;
+    private Station preStation;
+    private Station station;
 
-	public FavoriteResponse(String preStationName, String stationName) {
-		this.preStationName = preStationName;
-		this.stationName = stationName;
-	}
+    public FavoriteResponse(Station preStation, Station station) {
+        this.preStation = preStation;
+        this.station = station;
+    }
 
-	public String getPreStationName() {
-		return preStationName;
-	}
+    public Station getPreStation() {
+        return preStation;
+    }
 
-	public String getStationName() {
-		return stationName;
-	}
+    public Station getStation() {
+        return station;
+    }
 }

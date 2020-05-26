@@ -28,21 +28,21 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import(ETagHeaderFilter.class)
-
 public class LineControllerTest {
-	@Autowired
-	protected MockMvc mockMvc;
-	@MockBean
-	private LineService lineService;
+    @Autowired
+    protected MockMvc mockMvc;
 
-	@DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
-	@Test
-	void ETag() throws Exception {
-		WholeSubwayResponse response = WholeSubwayResponse.of(
-			Arrays.asList(createMockResponse(), createMockResponse()));
-		given(lineService.findLinesWithStations()).willReturn(response);
+    @MockBean
+    private LineService lineService;
 
-		String uri = "/admin/lines/detail";
+    @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
+    @Test
+    void ETag() throws Exception {
+        WholeSubwayResponse response = WholeSubwayResponse.of(
+            Arrays.asList(createMockResponse(), createMockResponse()));
+        given(lineService.findLinesWithStations()).willReturn(response);
+
+        String uri = "/admin/lines/detail";
 
 		MvcResult mvcResult = mockMvc.perform(get(uri))
 			.andDo(print())

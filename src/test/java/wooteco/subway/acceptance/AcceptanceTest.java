@@ -333,17 +333,17 @@ public class AcceptanceTest {
 			extract().as(TokenResponse.class);
 	}
 
-	public void createFavorite(TokenResponse tokenResponse, String preStationName, String stationName) {
-		HashMap<String, String> params = new HashMap<>();
-		params.put("preStationName", preStationName);
-		params.put("stationName", stationName);
+	public void createFavorite(TokenResponse tokenResponse, Long preStation, Long station) {
+		HashMap<String, Long> params = new HashMap<>();
+		params.put("preStationId", preStation);
+		params.put("stationId", station);
 
 		given()
 			.auth().oauth2(tokenResponse.getAccessToken())
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(params)
 			.when()
-			.post("/favorites")
+			.post("/members/favorites")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.CREATED.value());
@@ -353,7 +353,7 @@ public class AcceptanceTest {
 		return given()
 			.auth().oauth2(tokenResponse.getAccessToken())
 			.when()
-			.get("/favorites")
+			.get("/members/favorites")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
@@ -364,7 +364,7 @@ public class AcceptanceTest {
 		given()
 			.auth().oauth2(tokenResponse.getAccessToken())
 			.when()
-			.delete("/favorites")
+			.delete("/members/favorites")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.NO_CONTENT.value());
