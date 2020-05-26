@@ -61,4 +61,10 @@ public class MemberService {
                         favoriteCreateRequest.getEndStationId()));
         memberRepository.save(member);
     }
+
+    public void deleteFavoriteById(Member member, Long id) {
+        System.out.println(member.getFavorites() + "#####################");
+        member.removeFavorite(id);
+        memberRepository.save(member);
+    }
 }

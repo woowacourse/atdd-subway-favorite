@@ -59,4 +59,12 @@ public class MemberController {
         MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member);
         return ResponseEntity.ok().body(memberFavoriteResponse);
     }
+
+    @RequiredAuth
+    @DeleteMapping("/members/favorite/{id}")
+    public ResponseEntity<MemberFavoriteResponse> deleteFavoriteById(@LoginMember Member member, @PathVariable Long id) {
+        System.out.println(member.getId() + "@@@@@@@@@@@@@@@@@@@@@@@@");
+        memberService.deleteFavoriteById(member, id);
+        return ResponseEntity.noContent().build();
+    }
 }

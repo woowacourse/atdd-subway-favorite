@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -15,6 +16,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -81,6 +83,17 @@ public class MemberServiceTest {
         memberService.addFavorite(member, favoriteCreateRequest);
         MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member);
 
-        System.out.println(memberFavoriteResponse.getFavorites().size());
+        assertThat(memberFavoriteResponse.getFavorites().size()).isEqualTo(1);
+    }
+
+    @Test
+    void deleteFavoriteById() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        member.addFavorite(new Favorite(1L, 1L, 2L));
+
+        memberService.deleteFavoriteById(member, 1L);
+        MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member);
+
+        assertThat(memberFavoriteResponse.getFavorites().size()).isEqualTo(0);
     }
 }

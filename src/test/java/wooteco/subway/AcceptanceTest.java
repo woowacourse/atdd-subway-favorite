@@ -341,5 +341,16 @@ public class AcceptanceTest {
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberFavoriteResponse.class);
     }
+
+    public void deleteFavoriteById(TokenResponse tokenResponse, Long id) {
+        given().auth().
+                oauth2(tokenResponse.getAccessToken()).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                delete("/members/favorite/" + id).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }
 

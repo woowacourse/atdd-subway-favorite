@@ -32,20 +32,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * And 즐겨 찾기 추가 요청을 보낸다.
      * <p>
      * Then 즐겨 찾기 목록을 응답 받는다.
+     *
+     * When 즐겨찾기 삭제 요청을 보낸다.
+     *
+     * Then 삭제를 확인한다.
      */
 
-    @DisplayName("")
     @Test
     void favoriteTest() {
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         List<StationResponse> stations = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE").getStations();
+
         StationResponse startStation = stations.get(0);
         StationResponse endStation = stations.get(stations.size() - 1);
-
         createFavorite(tokenResponse, startStation.getId(), endStation.getId());
-        MemberFavoriteResponse memberFavoriteResponse = findFavoriteById(tokenResponse);
-        assertThat(memberFavoriteResponse.getFavorites().size()).isEqualTo(1);
+
+        MemberFavoriteResponse memberFavoriteResponse1 = findFavoriteById(tokenResponse);
+        assertThat(memberFavoriteResponse1.getFavorites().size()).isEqualTo(1);
+
+        deleteFavoriteById(tokenResponse, 1L);
+        MemberFavoriteResponse memberFavoriteResponse2 = findFavoriteById(tokenResponse);
+        assertThat(memberFavoriteResponse2.getFavorites().size()).isEqualTo(0);
     }
 }

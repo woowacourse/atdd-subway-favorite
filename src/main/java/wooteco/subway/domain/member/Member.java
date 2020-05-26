@@ -57,7 +57,10 @@ public class Member {
 
     public void removeFavorite(Long favoriteId) {
         Favorite findFavorite = favorites.stream()
-        .filter(favorite -> favorite.getId().equals(favoriteId))
+        .filter(favorite -> {
+            System.out.println(favoriteId + "##" + favorite.getId());
+            return favorite.getId().equals(favoriteId);
+        })
         .findFirst()
         .orElseThrow(IllegalArgumentException::new);
 

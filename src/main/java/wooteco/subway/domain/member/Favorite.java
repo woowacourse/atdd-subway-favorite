@@ -11,6 +11,11 @@ public class Favorite {
     public Favorite() {}
 
     public Favorite(Long startStationId, Long endStationId) {
+        this(null, startStationId, endStationId);
+    }
+
+    public Favorite(Long id, Long startStationId, Long endStationId) {
+        this.id = id;
         this.startStationId = startStationId;
         this.endStationId = endStationId;
     }
