@@ -62,6 +62,7 @@ public class LineService {
     }
 
     public WholeSubwayResponse findLinesWithStations() {
+        System.out.println();
         return lineStationService.findLinesWithStations();
     }
 }

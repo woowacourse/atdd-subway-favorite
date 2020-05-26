@@ -28,6 +28,16 @@ const METHOD = {
       }
     };
   },
+
+  DELETE_FAVORITE() {
+    return {
+      method: "DELETE",
+      headers: {
+        Authorization: localStorage.getItem("jwt") || ""
+      }
+    };
+  },
+
   POST(data) {
     return {
       method: "POST",
@@ -52,6 +62,11 @@ const api = (() => {
       return response.json();
     });
 
+  const path = {
+    find(params) {
+      return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
+    }
+  }
   const member = {
     get(id) {
       return requestWithJsonData(`/members/${id}`);
@@ -70,6 +85,18 @@ const api = (() => {
     }
   };
 
+  const favorite = {
+    get() {
+      return requestWithJsonData(`/favorites`, METHOD.GET_WITH_AUTH());
+    },
+    create(favoriteInput) {
+      return requestWithJsonData(`/favorites`, METHOD.POST(favoriteInput));
+    },
+    delete(favoriteInput) {
+      return request(`/favorites?source=${favoriteInput.source}&target=${favoriteInput.target}`, METHOD.DELETE_FAVORITE(favoriteInput));
+    }
+  }
+
   const loginMember = {
     get() {
       return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
@@ -84,7 +111,9 @@ const api = (() => {
 
   return {
     member,
-    loginMember
+    favorite,
+    loginMember,
+    path
   };
 })();
 
