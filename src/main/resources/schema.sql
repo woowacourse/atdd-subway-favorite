@@ -45,6 +45,3 @@ create table if not exists FAVORITE
     start_station_id bigint not null,
     end_station_id bigint not null
 );
---
--- INSERT INTO MEMBER (email, name, password)
--- VALUES ('jun@naver.com', 'tiger', '1234');
