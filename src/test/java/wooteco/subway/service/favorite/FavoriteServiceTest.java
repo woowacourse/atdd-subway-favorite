@@ -21,6 +21,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -73,5 +74,14 @@ class FavoriteServiceTest {
             SECOND_STATION_ID);
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("즐겨찾기 경로 추가")
+    @Test
+    void addFavorite() {
+        FavoriteRequest request = new FavoriteRequest(FIRST_STATION_ID, THIRD_STATION_ID);
+        favoriteService.addFavorite(member, request);
+        verify(memberRepository).save(any());
+        assertThat(member.getFavorites()).contains(request.toFavorite());
     }
 }

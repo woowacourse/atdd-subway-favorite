@@ -13,6 +13,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
 @Service
@@ -43,5 +44,11 @@ public class FavoriteService {
     public FavoriteExistenceResponse hasFavoritePath(Member member, Long sourceStationId, Long targetStationId) {
         Favorite request = new Favorite(sourceStationId, targetStationId);
         return new FavoriteExistenceResponse(member.hasFavorite(request));
+    }
+
+    public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
+        Favorite favorite = favoriteRequest.toFavorite();
+        member.addFavorite(favorite);
+        memberRepository.save(member);
     }
 }

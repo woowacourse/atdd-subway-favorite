@@ -27,4 +27,8 @@ public class Favorites {
     public boolean hasFavorite(Favorite favorite) {
         return favorites.contains(favorite);
     }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
 }

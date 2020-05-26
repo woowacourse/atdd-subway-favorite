@@ -111,4 +111,8 @@ public class Member {
     public boolean hasFavorite(Favorite favorite) {
         return favorites.hasFavorite(favorite);
     }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.addFavorite(favorite);
+    }
 }

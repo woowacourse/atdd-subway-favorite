@@ -207,10 +207,11 @@ public class MeControllerTest {
         this.mockMvc.perform(post("/me/favorites")
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, token)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(body))
             .andExpect(status().isCreated())
             .andDo(print())
-            .andDo(MeDocumentation.deleteMember())
+            .andDo(MeDocumentation.addFavorite())
         ;
     }
 

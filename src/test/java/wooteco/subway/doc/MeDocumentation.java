@@ -110,4 +110,16 @@ public class MeDocumentation {
 			)
 		);
 	}
+
+	public static ResultHandler addFavorite() {
+		return document("me/favorites/create",
+			requestHeaders(
+				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
+			),
+			requestFields(
+				fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER).description("source station id"),
+				fieldWithPath("targetStationId").type(JsonFieldType.NUMBER).description("target station id")
+			)
+		);
+	}
 }

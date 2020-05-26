@@ -21,7 +21,6 @@ import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.service.station.dto.StationResponse;
 
 @RestController
 @RequestMapping("/me")
@@ -52,30 +51,28 @@ public class MeController {
     }
 
     @GetMapping("/favorites/source/{sourceId}/target/{targetId}/existsPath")
-    public ResponseEntity<FavoriteExistenceResponse> isExistFavoritePath(@LoginMember Member request,
+    public ResponseEntity<FavoriteExistenceResponse> isExistFavoritePath(@LoginMember Member member,
         @PathVariable Long sourceId, @PathVariable Long targetId) {
-        return ResponseEntity.ok(new FavoriteExistenceResponse(true));
+        FavoriteExistenceResponse response = favoriteService.hasFavoritePath(member, sourceId, targetId);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity<Void> addFavorite(@LoginMember Member request,
+    public ResponseEntity<Void> addFavorite(@LoginMember Member member,
         @RequestBody FavoriteRequest favoriteRequest) {
+        favoriteService.addFavorite(member, favoriteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/favorites/source/{sourceId}/target/{targetId}")
-    public ResponseEntity<Void> removeFavorite(@LoginMember Member request,
+    public ResponseEntity<Void> removeFavorite(@LoginMember Member member,
         @PathVariable Long sourceId, @PathVariable Long targetId) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
-        return ResponseEntity.ok(favorites);
-    }
-
-    private FavoriteResponse createFavorite() {
-        return new FavoriteResponse(new StationResponse(), new StationResponse());
+        List<FavoriteResponse> response = favoriteService.getFavorites(member);
+        return ResponseEntity.ok(response);
     }
 }
