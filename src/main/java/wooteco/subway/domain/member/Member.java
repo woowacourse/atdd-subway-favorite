@@ -1,7 +1,9 @@
 package wooteco.subway.domain.member;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
@@ -67,5 +69,11 @@ public class Member {
 
     public void addFavorite(Favorite favorite) {
         this.favorites.add(favorite);
+    }
+
+    public void deleteFavoriteBy(Long favoriteId) {
+        favorites.remove(favorites.stream()
+                .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
+                .findFirst().orElseThrow(IllegalArgumentException::new));
     }
 }

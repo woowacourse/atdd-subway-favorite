@@ -65,11 +65,6 @@ public class MemberService {
             .orElseThrow(NotFoundUserException::new);
     }
 
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
-    }
-
     public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
         Station source = stationRepository.findByName(favoriteRequest.getSource())
             .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
@@ -98,7 +93,8 @@ public class MemberService {
         return favoriteResponses;
     }
 
-    public void deleteFavorites(Long source, Long target, Member member) {
-        // favoriteRepository.(id);
+    public void deleteFavorites(Long favoriteId, Member member) {
+        member.deleteFavoriteBy(favoriteId);
+        memberRepository.save(member);
     }
 }

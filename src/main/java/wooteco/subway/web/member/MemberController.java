@@ -86,8 +86,7 @@ public class MemberController {
     @IsAuth(isAuth = Auth.AUTH)
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<Void> deleteFavorites(@PathVariable Long id, @LoginMember Member member) {
-        // memberService.deleteFavorites(id, member);
-        return ResponseEntity.noContent()
-            .build();
+         memberService.deleteFavorites(id, member);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
@@ -32,6 +33,7 @@ public class MemberServiceTest {
     public static final String TEST_USER_PASSWORD = "brown";
     private static final String KANG_NAM_STATION_NAME = "강남역";
     private static final String JAM_SIL_STATION_NAME = "잠실역";
+    private static final String DOGOK_STATION_NAME = "도곡역";
 
     private MemberService memberService;
 
@@ -40,6 +42,7 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
@@ -60,8 +63,8 @@ public class MemberServiceTest {
     @Test
     void addFavorite() {
         Station kangNamStation = new Station(KANG_NAM_STATION_NAME);
-        when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
         Station jamSilStation = new Station(JAM_SIL_STATION_NAME);
+        when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
         when(stationRepository.findByName(JAM_SIL_STATION_NAME)).thenReturn(Optional.of(jamSilStation));
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         FavoriteRequest favoriteRequest = new FavoriteRequest(KANG_NAM_STATION_NAME, JAM_SIL_STATION_NAME);
@@ -87,11 +90,11 @@ public class MemberServiceTest {
     @Test
     void getFavorites() {
         Station kangNamStation = new Station(1L, KANG_NAM_STATION_NAME);
-        when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
         Station jamSilStation = new Station(2L, JAM_SIL_STATION_NAME);
+        Station dogukStation = new Station(3L, DOGOK_STATION_NAME);
+        when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
         when(stationRepository.findByName(JAM_SIL_STATION_NAME)).thenReturn(Optional.of(jamSilStation));
-        Station dogukStation = new Station(3L, "도곡역");
-        when(stationRepository.findByName("도곡역")).thenReturn(Optional.of(dogukStation));
+        when(stationRepository.findByName(DOGOK_STATION_NAME)).thenReturn(Optional.of(dogukStation));
 
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(stationRepository.findById(1L)).thenReturn(Optional.of(kangNamStation));
@@ -99,12 +102,23 @@ public class MemberServiceTest {
         when(stationRepository.findById(3L)).thenReturn(Optional.of(dogukStation));
 
         FavoriteRequest favoriteRequest1 = new FavoriteRequest(KANG_NAM_STATION_NAME, JAM_SIL_STATION_NAME);
-        FavoriteRequest favoriteRequest2 = new FavoriteRequest(KANG_NAM_STATION_NAME, "도곡역");
+        FavoriteRequest favoriteRequest2 = new FavoriteRequest(KANG_NAM_STATION_NAME, DOGOK_STATION_NAME);
         memberService.addFavorite(member, favoriteRequest1);
         memberService.addFavorite(member, favoriteRequest2);
 
         Set<FavoriteResponse> favorites = memberService.findFavorites(member);
 
         assertThat(favorites.size()).isEqualTo(2);
+    }
+
+    @Test
+    void deleteFavorites() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        member.addFavorite(new Favorite(1L,1L,2L));
+        member.addFavorite(new Favorite(2L,1L,3L));
+        memberService.deleteFavorites(1L, member);
+
+        assertThat(member.getFavorites().size()).isEqualTo(1);
+        verify(memberRepository).save(member);
     }
 }
