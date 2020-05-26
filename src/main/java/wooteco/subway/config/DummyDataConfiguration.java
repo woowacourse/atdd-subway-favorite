@@ -4,6 +4,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
@@ -15,18 +17,20 @@ import wooteco.subway.service.member.MemberService;
 import java.time.LocalTime;
 
 @Configuration
-public class MemberDefaultDataConfiguration {
+public class DummyDataConfiguration {
     @Configuration
     @Profile("local")
     private class LocalDataApplicationRunner implements ApplicationRunner {
         private final MemberService memberService;
         private final StationRepository stationRepository;
         private final LineRepository lineRepository;
+        private final FavoriteRepository favoriteRepository;
 
-        public LocalDataApplicationRunner(MemberService memberService, StationRepository stationRepository, LineRepository lineRepository) {
+        public LocalDataApplicationRunner(MemberService memberService, StationRepository stationRepository, LineRepository lineRepository, FavoriteRepository favoriteRepository) {
             this.memberService = memberService;
             this.stationRepository = stationRepository;
             this.lineRepository = lineRepository;
+            this.favoriteRepository = favoriteRepository;
         }
 
         @Override
@@ -56,6 +60,9 @@ public class MemberDefaultDataConfiguration {
 
             Member member = new Member("ramen6315@gmail.com", "ramen", "6315");
             memberService.createMember(member);
+
+            favoriteRepository.save(new Favorite("중량", "청량리", "ramen6315@gmail.com"));
+            favoriteRepository.save(new Favorite("청량리", "왕십리", "ramen635@gmail.com"));
         }
     }
 }
