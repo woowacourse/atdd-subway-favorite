@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import wooteco.subway.acceptance.favorite.dto.FavoritePathResponse;
 import wooteco.subway.acceptance.favorite.dto.StationPathResponse;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
@@ -37,16 +43,19 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.AcceptanceTest.*;
 
+@ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = FavoriteController.class)
 @AutoConfigureMockMvc
 @Import({BearerAuthInterceptor.class, AuthorizationExtractor.class, JwtTokenProvider.class})
 class FavoriteControllerTest {
 	private static final String INVALID_TOKEN = "";
+	private static final String NOT_DOCUMENTATION = "";
 
 	@MockBean
 	private FavoriteService favoriteService;
@@ -60,9 +69,6 @@ class FavoriteControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Autowired
-	private WebApplicationContext ctx;
-
 	@Value("${security.jwt.token.secret-key}")
 	private String secretKey;
 
@@ -70,10 +76,11 @@ class FavoriteControllerTest {
 	private long validityInMilliseconds;
 
 	@BeforeEach
-	public void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
+	public void setup(WebApplicationContext webApplicationContext,
+	                  RestDocumentationContextProvider restDocumentation) {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 				.addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
-				.alwaysDo(print())
+				.apply(documentationConfiguration(restDocumentation))
 				.build();
 	}
 
@@ -83,7 +90,7 @@ class FavoriteControllerTest {
 		FavoritePathRequest request = new FavoritePathRequest(STATION_NAME_KANGNAM, STATION_NAME_HANTI);
 		String stringContent = objectMapper.writeValueAsString(request);
 
-		MvcResult result = register(INVALID_TOKEN, stringContent, status().isUnauthorized());
+		MvcResult result = register(INVALID_TOKEN, stringContent, status().isUnauthorized(), "createError");
 
 		String stringBody = result.getResponse().getContentAsString();
 		ExceptionResponse response = objectMapper.readValue(stringBody, ExceptionResponse.class);
@@ -93,7 +100,7 @@ class FavoriteControllerTest {
 	@DisplayName("토큰이 유효하지 않는 경우 즐겨찾기 조회에 실패하는지 확인")
 	@Test
 	void authFailedWhenRetrieveFavoritePath() throws Exception {
-		MvcResult result = retrieve(INVALID_TOKEN, status().isUnauthorized());
+		MvcResult result = retrieve(INVALID_TOKEN, status().isUnauthorized(), NOT_DOCUMENTATION);
 		String stringBody = result.getResponse().getContentAsString();
 		ExceptionResponse response = objectMapper.readValue(stringBody, ExceptionResponse.class);
 		assertThat(response.getErrorMessage()).isEqualTo("유효하지 않은 토큰입니다!");
@@ -102,7 +109,7 @@ class FavoriteControllerTest {
 	@DisplayName("토큰이 유효하지 않는 경우 즐겨찾기 삭제에 실패하는지 확인")
 	@Test
 	void authFailedWhenDeleteFavoritePath() throws Exception {
-		MvcResult result = delete(INVALID_TOKEN, status().isUnauthorized());
+		MvcResult result = delete(INVALID_TOKEN, status().isUnauthorized(), "deleteError");
 
 		String stringBody = result.getResponse().getContentAsString();
 		ExceptionResponse response = objectMapper.readValue(stringBody, ExceptionResponse.class);
@@ -121,12 +128,12 @@ class FavoriteControllerTest {
 
 		String token =
 				"bearer " + new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL);
-		MvcResult result = register(token, stringContent, status().isCreated());
+		MvcResult result = register(token, stringContent, status().isCreated(), "create");
 
 		assertThat(result.getResponse().getHeader("Location")).isNotNull();
 	}
 
-	private MvcResult register(String token, String content, ResultMatcher status) throws Exception {
+	private MvcResult register(String token, String content, ResultMatcher status, String identifier) throws Exception {
 		return mockMvc.perform(
 				post("/favorite/me")
 						.header("Authorization", token)
@@ -134,6 +141,7 @@ class FavoriteControllerTest {
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(print())
 				.andExpect(status)
+				.andDo(FavoriteDocumentation.createFavorite(identifier))
 				.andReturn();
 	}
 
@@ -155,7 +163,7 @@ class FavoriteControllerTest {
 
 		String token =
 				"bearer " + new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL);
-		MvcResult result = retrieve(token, status().isOk());
+		MvcResult result = retrieve(token, status().isOk(), "retrieve");
 
 		String body = result.getResponse().getContentAsString();
 		FavoritePathResponse response = objectMapper.readValue(body, FavoritePathResponse.class);
@@ -164,11 +172,15 @@ class FavoriteControllerTest {
 		assertThat(response.getFavoritePaths().get(0).getSource().getId()).isEqualTo(1L);
 	}
 
-	private MvcResult retrieve(String token, ResultMatcher status) throws Exception {
-		return mockMvc.perform(
+	private MvcResult retrieve(String token, ResultMatcher status, String identifier) throws Exception {
+		ResultActions actions = mockMvc.perform(
 				MockMvcRequestBuilders.get("/favorite/me")
 						.header("Authorization", token))
-				.andDo(print())
+				.andDo(print());
+		if (!NOT_DOCUMENTATION.equals(identifier)) {
+			actions = actions.andDo(FavoriteDocumentation.retrieveFavorite(identifier));
+		}
+		return actions
 				.andExpect(status)
 				.andReturn();
 	}
@@ -187,9 +199,9 @@ class FavoriteControllerTest {
 
 		String token =
 				"bearer " + new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL);
-		delete(token, status().isNoContent());
+		delete(token, status().isNoContent(), "delete");
 
-		MvcResult result = retrieve(token, status().isOk());
+		MvcResult result = retrieve(token, status().isOk(), "retrieve");
 		String body = result.getResponse().getContentAsString();
 		FavoritePathResponse response = objectMapper.readValue(body, FavoritePathResponse.class);
 
@@ -197,10 +209,11 @@ class FavoriteControllerTest {
 		assertThat(response.getFavoritePaths().get(0).getSource().getId()).isEqualTo(3L);
 	}
 
-	private MvcResult delete(String token, ResultMatcher statusCode) throws Exception {
+	private MvcResult delete(String token, ResultMatcher statusCode, String identifier) throws Exception {
 		return mockMvc.perform(
-				MockMvcRequestBuilders.delete("/favorite/me/1")
+				RestDocumentationRequestBuilders.delete("/favorite/me/{id}", 1)
 						.header("Authorization", token))
+				.andDo(FavoriteDocumentation.deleteFavorite(identifier))
 				.andDo(print())
 				.andExpect(statusCode)
 				.andReturn();
