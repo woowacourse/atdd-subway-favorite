@@ -3,6 +3,7 @@ package wooteco.subway.service.member.favorite;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Favorite;
+import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.NoMemberExistException;
@@ -24,6 +25,13 @@ public class FavoriteService {
 		memberRepository.save(member);
 
 		return favorite;
+	}
+
+	public Favorites readFavorites(long memberId) {
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(NoMemberExistException::new);
+
+		return member.getFavorites();
 	}
 
 	public void removeFavorite(long memberId, long sourceId, long targetId) {
