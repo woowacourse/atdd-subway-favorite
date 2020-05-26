@@ -1,19 +1,19 @@
 package wooteco.subway.acceptance.favorite;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.line.dto.LineDetailResponse;
-import wooteco.subway.service.member.dto.FavoriteResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import wooteco.subway.AcceptanceTest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String AUTHORIZATION = "Authorization";
@@ -63,40 +63,49 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         deleteFavorite(token, 1L);
 
-       favorites = getFavorites(token);
-       assertThat(favorites.size()).isEqualTo(2);
+        favorites = getFavorites(token);
+        assertThat(favorites.size()).isEqualTo(2);
     }
 
+    // @formatter:off
     private void deleteFavorite(String token, Long favoriteId) {
-        given().header(AUTHORIZATION, token)
-                .when()
-                .delete("/members/favorites/" + favoriteId)
-                .then()
-                .log().all().statusCode(HttpStatus.NO_CONTENT.value());
+        given()
+            .header(AUTHORIZATION, token)
+        .when()
+            .delete("/members/favorites/" + favoriteId)
+        .then()
+            .log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    // @formatter:off
     private List<FavoriteResponse> getFavorites(String token) {
-        return given().header(AUTHORIZATION, token).
-                when().
-                get("/members/favorites").
-                then().
-                log().all().statusCode(HttpStatus.OK.value()).
-                extract().
-                jsonPath().getList(".", FavoriteResponse.class);
+        return given()
+                    .header(AUTHORIZATION, token)
+                .when()
+                    .get("/members/favorites")
+                .then()
+                    .log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .jsonPath().getList(".", FavoriteResponse.class);
     }
 
+    // @formatter:off
     private void addFavorite(String token, String source, String target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
 
-        given().header(AUTHORIZATION, token).
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/members/favorites").
-                then().
-                log().all().statusCode(HttpStatus.OK.value());
+        given()
+            .header(AUTHORIZATION, token)
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE).
+        when()
+            .post("/members/favorites")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value());
     }
 }

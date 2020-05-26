@@ -1,6 +1,7 @@
 package wooteco.subway.service.line;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -55,6 +56,7 @@ public class LineServiceTest {
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
     }
 
+    @DisplayName("노선 출발역에 역을 추가하는 테스트")
     @Test
     void addLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -71,6 +73,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("노선에 있는 역 사이에 역을 추가하는 테스트")
     @Test
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -87,6 +90,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(3L);
     }
 
+    @DisplayName("노선에 종착역을 등록하는 테스트")
     @Test
     void addLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -103,6 +107,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(3)).isEqualTo(4L);
     }
 
+    @DisplayName("출발역을 제가하는 테스트")
     @Test
     void removeLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -115,6 +120,7 @@ public class LineServiceTest {
         assertThat(stationIds.get(1)).isEqualTo(3L);
     }
 
+    @DisplayName("사이에 있는 역을 삭제하는 테스트")
     @Test
     void removeLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
@@ -123,6 +129,7 @@ public class LineServiceTest {
         verify(lineRepository).save(any());
     }
 
+    @DisplayName("종착역을 삭제하는 테스트")
     @Test
     void removeLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));

@@ -48,9 +48,6 @@ public class MemberControllerTest {
     private String token;
 
     @MockBean
-    private StationRepository stationRepository;
-
-    @MockBean
     private MemberService memberService;
 
     @MockBean
@@ -67,7 +64,6 @@ public class MemberControllerTest {
 
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
-
     }
 
     @Test
@@ -165,6 +161,7 @@ public class MemberControllerTest {
         given(memberService.findMemberByEmail(anyString())).willReturn(member);
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/favorites/{id}", 1)
             .header("Authorization", token))
             .andExpect(status().isNoContent())

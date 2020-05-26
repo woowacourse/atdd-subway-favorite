@@ -1,6 +1,7 @@
 package wooteco.subway.domain.line;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,12 +22,14 @@ public class LineTest {
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
     }
 
+    @DisplayName("노선에 라인을 추가하는 기능 테스트")
     @Test
     void addLineStation() {
         line.addLineStation(new LineStation(null, 4L, 10, 10));
         assertThat(line.getStations()).hasSize(4);
     }
 
+    @DisplayName("노선에 있는 역들의 id를 반환하는 테스트")
     @Test
     void getLineStations() {
         List<Long> stationIds = line.getStationIds();
@@ -37,6 +40,7 @@ public class LineTest {
         assertThat(stationIds.get(2)).isEqualTo(3L);
     }
 
+    @DisplayName("노선에 있는 역을 삭제하는 테스트")
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L})
     void removeLineStation(Long stationId) {

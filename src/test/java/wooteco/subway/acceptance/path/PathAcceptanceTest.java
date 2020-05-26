@@ -37,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void findPathByDuration() {
         PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DURATION");
         List<StationResponse> path = pathResponse.getStations();
+
         assertThat(path).hasSize(4);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
         assertThat(path.get(1).getName()).isEqualTo(STATION_NAME_YANGJAE);

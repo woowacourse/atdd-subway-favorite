@@ -52,6 +52,7 @@ public class MemberServiceTest {
         this.memberService = new MemberService(memberRepository, stationRepository, jwtTokenProvider);
     }
 
+    @DisplayName("회원가입 테스트")
     @Test
     void createMember() {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -61,6 +62,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("즐겨찾기 등록 테스트")
     @Test
     void addFavorite() {
         Station kangNamStation = new Station(KANG_NAM_STATION_NAME);
@@ -77,6 +79,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("토큰을 생성하는 테스트")
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -88,6 +91,7 @@ public class MemberServiceTest {
         verify(jwtTokenProvider).createToken(anyString());
     }
 
+    @DisplayName("모든 즐겨찾기 조회")
     @Test
     void getFavorites() {
         Station kangNamStation = new Station(1L, KANG_NAM_STATION_NAME);
@@ -112,14 +116,16 @@ public class MemberServiceTest {
         assertThat(favorites.size()).isEqualTo(2);
     }
 
+    @DisplayName("즐겨찾기 삭제")
     @Test
-    void deleteFavorites() {
+    void deleteFavorite() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         member.addFavorite(new Favorite(1L, 1L, 2L));
         member.addFavorite(new Favorite(2L, 1L, 3L));
         memberService.deleteFavorites(1L, member);
 
         assertThat(member.getFavorites().size()).isEqualTo(1);
+
         verify(memberRepository).save(member);
     }
 }
