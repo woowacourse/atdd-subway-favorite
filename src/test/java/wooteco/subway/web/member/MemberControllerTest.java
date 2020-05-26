@@ -38,14 +38,14 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Import({AuthorizationExtractor.class, JwtTokenProvider.class})
 public class MemberControllerTest {
 
-    private static final String AUTHORIZATION = "authorization";
-    private static final String TEST_USER_EMAIL = "brown@email.com";
-    private static final String TEST_USER_NAME = "브라운";
-    private static final String TEST_USER_PASSWORD = "brown";
-    private static final String TEST_USER_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTAwNDEyNzEsImV4cCI6MTU5MDA0NDg3MX0.xqlqbBXFVhYvzGi9g37YncXAiupfSeWsaC8s0Km_LtQ";
-    private static final String TEST_USER_NAME2 = "터틀";
-    private static final String TEST_USER_PASSWORD2 = "turtle";
-    private static final String ENCODING = "UTF-8";
+    static final String AUTHORIZATION = "authorization";
+    static final String TEST_USER_EMAIL = "brown@email.com";
+    static final String TEST_USER_NAME = "브라운";
+    static final String TEST_USER_PASSWORD = "brown";
+    static final String TEST_USER_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTAwNDEyNzEsImV4cCI6MTU5MDA0NDg3MX0.xqlqbBXFVhYvzGi9g37YncXAiupfSeWsaC8s0Km_LtQ";
+    static final String TEST_USER_NAME2 = "터틀";
+    static final String TEST_USER_PASSWORD2 = "turtle";
+    static final String ENCODING = "UTF-8";
 
     @MockBean
     protected MemberService memberService;
