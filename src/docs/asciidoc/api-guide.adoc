@@ -43,3 +43,21 @@ operation::members/update[snippets='http-request,http-response']
 === 회원 정보 삭제
 
 operation::members/delete[snippets='http-request,http-response']
+
+[[resources-favorites]]
+== Favorite
+
+[[resources-favorites-create]]
+=== 즐겨찾기 추가
+
+operation::favorites/create[snippets='http-request,http-response']
+
+[[resources-favorites-get]]
+=== 즐겨찾기 조회
+
+operation::favorites/get[snippets='http-request,http-response']
+
+[[resources-members-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorites/delete[snippets='http-request,http-response']
