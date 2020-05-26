@@ -6,16 +6,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.member.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.station.StationService;
 import wooteco.subway.web.member.InvalidRegisterException;
 import wooteco.subway.web.member.InvalidUpdateException;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,11 +37,15 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
+    private FavoriteRepository favoriteRepository;
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private StationService stationService;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, favoriteRepository, jwtTokenProvider, stationService);
     }
 
     @Test
@@ -92,6 +101,19 @@ public class MemberServiceTest {
 
         assertThatThrownBy(() -> memberService.updateMember(member2, member1.getId(), updateData))
                 .isInstanceOf(InvalidUpdateException.class);
+    }
 
+    @Test
+    void findAllFavorites() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(member.getId(), 1L, 3L);
+
+        memberService.addFavorite(member, favoriteCreateRequest);
+
+        when(stationService.findStationById(1L)).thenReturn(new Station("왕십리"));
+        when(stationService.findStationById(3L)).thenReturn(new Station("구의"));
+
+        assertThat(memberService.findAllFavorites(member)).isNotNull();
+        assertThat(memberService.findAllFavorites(member).size()).isEqualTo(1);
     }
 }
