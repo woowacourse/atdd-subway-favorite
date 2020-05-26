@@ -35,6 +35,7 @@ import wooteco.subway.service.favorite.FavoriteRequest;
 import wooteco.subway.service.favorite.FavoriteResponse;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -48,6 +49,9 @@ public class FavoriteControllerTest {
 
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    protected LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -64,6 +68,9 @@ public class FavoriteControllerTest {
             .build();
 
         given(jwtTokenProvider.validateToken(anyString())).willReturn(true);
+        given(loginMemberMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginMemberMethodArgumentResolver.resolveArgument(any(), any(), any(),
+            any())).willReturn(1L);
     }
 
     @Test
@@ -86,7 +93,7 @@ public class FavoriteControllerTest {
         StationResponse source = new StationResponse(1L, "강남역", LocalDateTime.now());
         StationResponse target = new StationResponse(2L, "역삼역", LocalDateTime.now());
         FavoriteResponse favoriteResponse = new FavoriteResponse(id, source, target);
-        given(favoriteService.getFavorite(any(), anyLong(), anyLong())).willReturn(
+        given(favoriteService.getFavorite(anyLong(), anyLong(), anyLong())).willReturn(
             favoriteResponse);
 
         String response = this.mockMvc.perform(
@@ -124,8 +131,17 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    void deleteFavorite() {
-        // /favorites/{source}/{target}
+    void deleteFavorite() throws Exception {
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/favorites/{source}/{target}", 1, 2)
+                .header("Authorization", token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(FavoriteDocumentation.removeFavorite());
+
+        verify(favoriteService).removeFavorite(anyLong(), anyLong(), anyLong());
     }
 
     @Test
