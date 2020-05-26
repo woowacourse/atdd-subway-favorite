@@ -1,7 +1,6 @@
-package wooteco.subway.service;
+package wooteco.subway.service.favorite;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.acceptance.favorite.dto.StationPathResponse;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.path.FavoritePath;
@@ -9,6 +8,7 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
 import wooteco.subway.exceptions.NotExistStationException;
+import wooteco.subway.service.favorite.dto.FavoritePathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class FavoriteService {
 		return savedMember.getRecentlyUpdatedPath();
 	}
 
-	public List<StationPathResponse> retrievePath(Member member) {
+	public List<FavoritePathResponse> retrievePath(Member member) {
 		List<FavoritePath> favoritePaths = member.getFavoritePaths();
 		return favoritePaths.stream()
 				.map(path -> {
@@ -44,8 +44,8 @@ public class FavoriteService {
 							stationRepository.findById(path.getSourceId()).orElseThrow(() -> new NotExistStationException(path.getSourceId()));
 					Station target =
 							stationRepository.findById(path.getTargetId()).orElseThrow(() -> new NotExistStationException(path.getTargetId()));
-					return new StationPathResponse(path.getId(), StationResponse.of(source),
-					                               StationResponse.of(target));
+					return new FavoritePathResponse(path.getId(), StationResponse.of(source),
+					                                StationResponse.of(target));
 				})
 				.collect(Collectors.toList());
 	}

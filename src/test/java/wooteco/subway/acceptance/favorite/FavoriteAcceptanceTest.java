@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.acceptance.favorite.dto.FavoritePathResponse;
+import wooteco.subway.service.favorite.dto.FavoritePathsResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.web.dto.ExceptionResponse;
 
@@ -75,7 +75,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         registerFavoritePathSuccessfully(authorization, STATION_NAME_KANGNAM, STATION_NAME_HANTI);
 
-        FavoritePathResponse response = retrieveFavoritePathSuccessfully(authorization);
+        FavoritePathsResponse response = retrieveFavoritePathSuccessfully(authorization);
         assertThat(response.getFavoritePaths()).hasSize(1);
         assertThat(response.getFavoritePaths().get(0).getSource().getName()).isEqualTo(STATION_NAME_KANGNAM);
 
@@ -105,10 +105,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract().as(ExceptionResponse.class);
     }
 
-    private FavoritePathResponse retrieveFavoritePathSuccessfully(String authorization) {
+    private FavoritePathsResponse retrieveFavoritePathSuccessfully(String authorization) {
         return retrieveFavoritePath(authorization)
                 .statusCode(HttpStatus.OK.value())
-                .extract().as(FavoritePathResponse.class);
+                .extract().as(FavoritePathsResponse.class);
     }
 
     private ExceptionResponse registerFavoritePathFailed(String authorization, String source, String target, int statusCode) {

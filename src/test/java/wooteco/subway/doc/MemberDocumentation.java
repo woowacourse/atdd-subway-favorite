@@ -28,7 +28,7 @@ public class MemberDocumentation {
 	public static RestDocumentationResultHandler updateMember() {
 		return document("members/update",
 		                requestFields(
-				                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+				                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name").optional(),
 				                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
 		                ),
 		                requestHeaders(

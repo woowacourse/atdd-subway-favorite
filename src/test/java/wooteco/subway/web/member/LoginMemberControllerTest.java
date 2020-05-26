@@ -65,7 +65,6 @@ public class LoginMemberControllerTest {
                 .setPort(port)
                 .build();
         RestAssured.port = port;
-        BDDMockito.given(memberService.loginWithForm(any(), any())).willReturn(true);
         BDDMockito.given(memberService.createToken(any())).willReturn(new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL));
         BDDMockito.given(memberService.findMemberByEmail(TEST_USER_EMAIL)).willReturn(new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD));
         tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);

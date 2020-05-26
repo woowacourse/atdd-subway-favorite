@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.acceptance.favorite.dto.StationPathResponse;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.path.FavoritePath;
@@ -15,7 +14,7 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
-import wooteco.subway.service.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoritePathResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,11 +95,11 @@ class FavoriteServiceTest {
 		BDDMockito.when(stationRepository.findById(dogok.getId())).thenReturn(Optional.of(dogok));
 		BDDMockito.when(stationRepository.findById(yangjae.getId())).thenReturn(Optional.of(yangjae));
 
-		List<StationPathResponse> stationPathResponses = favoriteService.retrievePath(member);
+		List<FavoritePathResponse> favoritePathRespons = favoriteService.retrievePath(member);
 
-		assertThat(stationPathResponses).hasSize(2);
-		assertThat(stationPathResponses.get(0).getId()).isNotNull();
-		assertThat(stationPathResponses.get(0).getSource().getName()).isEqualTo(STATION_NAME_KANGNAM);
+		assertThat(favoritePathRespons).hasSize(2);
+		assertThat(favoritePathRespons.get(0).getId()).isNotNull();
+		assertThat(favoritePathRespons.get(0).getSource().getName()).isEqualTo(STATION_NAME_KANGNAM);
 	}
 
 	@DisplayName("즐겨찾기 경로 삭제에 성공하는지 확인")

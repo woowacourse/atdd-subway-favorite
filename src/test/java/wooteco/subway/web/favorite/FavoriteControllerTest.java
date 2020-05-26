@@ -24,14 +24,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import wooteco.subway.acceptance.favorite.dto.FavoritePathResponse;
-import wooteco.subway.acceptance.favorite.dto.StationPathResponse;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.FavoriteService;
+import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoritePathResponse;
+import wooteco.subway.service.favorite.dto.FavoritePathsResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.web.FavoriteController;
@@ -155,10 +155,10 @@ class FavoriteControllerTest {
 		Station yangjae = new Station(4L, STATION_NAME_YANGJAE);
 
 		BDDMockito.when(favoriteService.retrievePath(member))
-				.thenReturn(Arrays.asList(new StationPathResponse(1L, StationResponse.of(kangnam),
-				                                                  StationResponse.of(hanti)),
-				                          new StationPathResponse(2L, StationResponse.of(dogok),
-				                                                  StationResponse.of(yangjae))));
+				.thenReturn(Arrays.asList(new FavoritePathResponse(1L, StationResponse.of(kangnam),
+				                                                   StationResponse.of(hanti)),
+				                          new FavoritePathResponse(2L, StationResponse.of(dogok),
+				                                                   StationResponse.of(yangjae))));
 		BDDMockito.when(memberService.findMemberByEmail(TEST_USER_EMAIL)).thenReturn(member);
 
 		String token =
@@ -166,7 +166,7 @@ class FavoriteControllerTest {
 		MvcResult result = retrieve(token, status().isOk(), "retrieve");
 
 		String body = result.getResponse().getContentAsString();
-		FavoritePathResponse response = objectMapper.readValue(body, FavoritePathResponse.class);
+		FavoritePathsResponse response = objectMapper.readValue(body, FavoritePathsResponse.class);
 
 		assertThat(response.getFavoritePaths()).hasSize(2);
 		assertThat(response.getFavoritePaths().get(0).getSource().getId()).isEqualTo(1L);
@@ -193,8 +193,8 @@ class FavoriteControllerTest {
 		Station yangjae = new Station(4L, STATION_NAME_YANGJAE);
 
 		BDDMockito.when(favoriteService.retrievePath(member))
-				.thenReturn(Arrays.asList(new StationPathResponse(2L, StationResponse.of(dogok),
-				                                                  StationResponse.of(yangjae))));
+				.thenReturn(Arrays.asList(new FavoritePathResponse(2L, StationResponse.of(dogok),
+				                                                   StationResponse.of(yangjae))));
 		BDDMockito.when(memberService.findMemberByEmail(TEST_USER_EMAIL)).thenReturn(member);
 
 		String token =
@@ -203,7 +203,7 @@ class FavoriteControllerTest {
 
 		MvcResult result = retrieve(token, status().isOk(), "retrieve");
 		String body = result.getResponse().getContentAsString();
-		FavoritePathResponse response = objectMapper.readValue(body, FavoritePathResponse.class);
+		FavoritePathsResponse response = objectMapper.readValue(body, FavoritePathsResponse.class);
 
 		assertThat(response.getFavoritePaths()).hasSize(1);
 		assertThat(response.getFavoritePaths().get(0).getSource().getId()).isEqualTo(3L);

@@ -2,10 +2,10 @@ package wooteco.subway.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.acceptance.favorite.dto.FavoritePathResponse;
-import wooteco.subway.acceptance.favorite.dto.StationPathResponse;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.service.FavoriteService;
+import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoritePathResponse;
+import wooteco.subway.service.favorite.dto.FavoritePathsResponse;
 import wooteco.subway.web.dto.FavoritePathRequest;
 import wooteco.subway.web.member.LoginMember;
 
@@ -28,10 +28,10 @@ public class FavoriteController {
 	}
 
 	@GetMapping("/favorite/me")
-	public ResponseEntity<FavoritePathResponse> retrieveFavoritePath(@LoginMember Member member) {
-		List<StationPathResponse> stationPathResponses = favoriteService.retrievePath(member);
-		FavoritePathResponse favoritePathResponse = new FavoritePathResponse(stationPathResponses);
-		return ResponseEntity.ok(favoritePathResponse);
+	public ResponseEntity<FavoritePathsResponse> retrieveFavoritePath(@LoginMember Member member) {
+		List<FavoritePathResponse> favoritePathResponse = favoriteService.retrievePath(member);
+		FavoritePathsResponse favoritePathsResponse = new FavoritePathsResponse(favoritePathResponse);
+		return ResponseEntity.ok(favoritePathsResponse);
 	}
 
 	@DeleteMapping("/favorite/me/{id}")
