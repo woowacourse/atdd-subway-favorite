@@ -15,6 +15,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.DuplicateMemberException;
+import wooteco.subway.web.member.NoSuchMemberException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -96,8 +97,8 @@ public class MemberServiceTest {
     void cannotFoundDeleteMemberTest() {
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> memberService.deleteMember(1L))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("멤버 데이터를 찾을 수 없습니다.");
+                .isInstanceOf(NoSuchMemberException.class)
+                .hasMessage("해당하는 멤버를 찾을 수 없습니다.");
 
     }
 
