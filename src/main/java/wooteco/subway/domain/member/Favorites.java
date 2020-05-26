@@ -22,13 +22,6 @@ public class Favorites {
 		favorites.remove(favorite);
 	}
 
-	public void removeById(Long sourceId, Long targetId) {
-		favorites.stream()
-				.filter(favorite -> favorite.hasSourceId(sourceId) && favorite.hasTargetId(targetId))
-				.findFirst()
-				.ifPresent(this::remove);
-	}
-
 	public Set<Favorite> getFavorites() {
 		return favorites;
 	}

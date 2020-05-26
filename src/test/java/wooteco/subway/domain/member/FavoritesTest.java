@@ -35,12 +35,4 @@ class FavoritesTest {
 
 		assertThat(favorites.getFavorites().size()).isEqualTo(0);
 	}
-
-	@DisplayName("즐겨찾기 id로 삭제 기능")
-	@Test
-	void removeById() {
-		favorites.removeById(1L, 2L);
-
-		assertThat(favorites.getFavorites().size()).isEqualTo(0);
-	}
 }

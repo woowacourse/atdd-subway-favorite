@@ -45,10 +45,6 @@ public class Member {
         favorites.remove(favorite);
     }
 
-    public void removeFavoriteById(Long sourceId, Long targetId) {
-        favorites.removeById(sourceId, targetId);
-    }
-
     public void update(String name, String password) {
         if (StringUtils.isNotBlank(name)) {
             this.name = name;

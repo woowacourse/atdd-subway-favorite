@@ -11,6 +11,10 @@ public class Favorite {
 		this.targetId = targetId;
 	}
 
+	public static Favorite of(Long sourceId, Long targetId) {
+		return new Favorite(sourceId, targetId);
+	}
+
 	public boolean hasSourceId(Long sourceId) {
 		return this.sourceId.equals(sourceId);
 	}
