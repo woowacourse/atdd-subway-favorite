@@ -13,6 +13,8 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.DuplicateMemberException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
+import wooteco.subway.web.member.NoSuchFavoriteException;
+import wooteco.subway.web.member.NoSuchMemberException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +50,7 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         if (!memberRepository.findById(id).isPresent()) {
-            throw new NoSuchElementException("멤버 데이터를 찾을 수 없습니다.");
+            throw new NoSuchMemberException();
         }
         memberRepository.deleteById(id);
     }
@@ -67,11 +69,18 @@ public class MemberService {
     }
 
     public Member addFavorite(Long memberId, FavoriteCreateRequest request) {
-        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
+        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchMemberException::new);
         Long sourceStationId = stationRepository.findIdByName(request.getSourceStationName());
         Long targetStationId = stationRepository.findIdByName(request.getTargetStationName());
         Favorite favorite = new Favorite(sourceStationId, targetStationId);
         member.addFavorite(favorite);
         return memberRepository.save(member);
+    }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchMemberException::new);
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(NoSuchFavoriteException::new);
+        member.removeFavorite(favorite);
+        memberRepository.save(member);
     }
 }

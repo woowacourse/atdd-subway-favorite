@@ -411,5 +411,14 @@ public class AcceptanceTest {
                         getList(".", FavoriteResponse.class);
     }
 
+    public void deleteFavorite(TokenResponse token, long favoriteId) {
+        given().
+                auth().oauth2(token.getAccessToken()).
+                when().
+                delete("/me/favorites/" + favoriteId).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
 
 }

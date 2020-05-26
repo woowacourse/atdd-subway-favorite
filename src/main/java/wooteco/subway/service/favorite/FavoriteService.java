@@ -15,13 +15,9 @@ import java.util.NoSuchElementException;
 
 @Service
 public class FavoriteService {
-    private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
     private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository, FavoriteRepository favoriteRepository) {
-        this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
+    public FavoriteService(FavoriteRepository favoriteRepository) {
         this.favoriteRepository = favoriteRepository;
     }
 

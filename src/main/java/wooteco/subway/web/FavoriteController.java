@@ -1,10 +1,7 @@
 package wooteco.subway.web;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.favorite.FavoriteService;
@@ -35,6 +32,12 @@ public class FavoriteController {
     @PostMapping("/me/favorites")
     public ResponseEntity<Void> addFavorite(@LoginMember Member member, @RequestBody FavoriteCreateRequest request) {
         memberService.addFavorite(member.getId(), request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me/favorites/{favoriteId}")
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long favoriteId) {
+        memberService.deleteFavorite(member.getId(), favoriteId);
         return ResponseEntity.ok().build();
     }
 }

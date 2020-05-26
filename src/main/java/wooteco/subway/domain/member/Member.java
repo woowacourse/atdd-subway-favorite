@@ -76,14 +76,7 @@ public class Member {
         favorites.add(favorite);
     }
 
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", favorites=" + favorites +
-                '}';
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
     }
 }
