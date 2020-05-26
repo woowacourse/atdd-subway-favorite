@@ -37,11 +37,23 @@ const METHOD = {
         ...data
       })
     }
-  }
+  },
+  POST_WITH_AUTH(token, data) {
+    return {
+      method: 'POST',
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    }
+  },
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
+  const request = (uri, config) => fetch(uri, config).then(data => data)
   const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
 
   const line = {
@@ -51,6 +63,12 @@ const api = (() => {
     getAllDetail() {
       return requestWithJsonData(`/lines/detail`)
     }
+  }
+
+  const station = {
+    getAll() {
+      return requestWithJsonData(`/stations`)
+    },
   }
 
   const path = {
@@ -74,11 +92,18 @@ const api = (() => {
     },
     delete(id, token) {
       return request(`/members/${id}`, METHOD.DELETE(id, token))
+    },
+    addFavorite(token, data) {
+      return request(`/members/favorites`, METHOD.POST_WITH_AUTH(token, data))
+    },
+    findFavorites(token) {
+      return requestWithJsonData(`/members/favorites`, METHOD.GET_WITH_AUTH(token))
     }
   }
 
   return {
     line,
+    station,
     path,
     member
   }

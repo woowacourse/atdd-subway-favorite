@@ -26,7 +26,7 @@ function MyPageEdit() {
     const passwordCheckInput = $passwordCheck.value
 
     if (!nameInput || !passwordInput || passwordInput !== passwordCheckInput) {
-      alert("NONONONO")
+      alert("Update Failed")
     }
 
     const updateDetail = {
@@ -35,6 +35,7 @@ function MyPageEdit() {
     }
 
     api.member.update(memberId, token, updateDetail)
+    alert("Update Success")
   }
 
   const onDelete = event => {
