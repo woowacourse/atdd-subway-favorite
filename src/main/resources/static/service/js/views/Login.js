@@ -1,4 +1,4 @@
-import { EVENT_TYPE, ERROR_MESSAGE } from "../../utils/constants.js";
+import {ERROR_MESSAGE, EVENT_TYPE} from "../../utils/constants.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 import api from "../../api/index.js";
 
@@ -9,7 +9,7 @@ function Login() {
 
   const onLogin = async event => {
     event.preventDefault();
-    if (!isValid()) {
+    if (isInvalid()) {
       showSnackbar(ERROR_MESSAGE.COMMON);
       return;
     }
@@ -30,7 +30,7 @@ function Login() {
     }
   };
 
-  const isValid = () => {
+  const isInvalid = () => {
     const email = $email.value;
     const password = $password.value;
     return !email || !password;

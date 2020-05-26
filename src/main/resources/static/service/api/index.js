@@ -66,13 +66,13 @@ const api = (() => {
       return request(`/members/${id}`, METHOD.DELETE());
     },
     login(loginInfo) {
-      return requestWithJsonData(`/oauth/token`, METHOD.POST(loginInfo));
+      return requestWithJsonData(`/login`, METHOD.POST(loginInfo));
     }
   };
 
   const loginMember = {
     get() {
-      return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonData(`/me`, METHOD.GET_WITH_AUTH());
     },
     update(updatedInfo) {
       return request(`/me`, METHOD.PUT(updatedInfo));
