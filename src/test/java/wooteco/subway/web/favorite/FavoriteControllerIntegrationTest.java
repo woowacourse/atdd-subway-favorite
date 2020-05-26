@@ -16,6 +16,7 @@ import wooteco.subway.DummyTestUserInfo;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
@@ -23,8 +24,9 @@ import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.MemberService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +43,8 @@ public class FavoriteControllerIntegrationTest {
     @Autowired
     private MemberService memberService;
     @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
@@ -48,6 +52,7 @@ public class FavoriteControllerIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .build();
         favoriteRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @DisplayName("JWT 토큰이 없는 즐겨찾기 추가 요청")
@@ -55,7 +60,7 @@ public class FavoriteControllerIntegrationTest {
     void createFavoriteFail1() throws Exception {
         String source = "강남역";
         String target = "한티역";
-        CreateFavoriteRequest createFavoriteRequest = new CreateFavoriteRequest(source, target);
+        CreateFavoriteRequest createFavoriteRequest = new CreateFavoriteRequest(source, target, DummyTestUserInfo.EMAIL);
 
         String uri = "/favorites";
         String content = gson.toJson(createFavoriteRequest);
@@ -74,7 +79,7 @@ public class FavoriteControllerIntegrationTest {
         String source = "강남역";
         String target = "한티역";
 
-        CreateFavoriteRequest createFavoriteRequest = new CreateFavoriteRequest(source, target);
+        CreateFavoriteRequest createFavoriteRequest = new CreateFavoriteRequest(source, target, DummyTestUserInfo.EMAIL);
 
         String wrongRequestEmail = "email@gmail.com";
         String wrongRequestToken = jwtTokenProvider.createToken(wrongRequestEmail);
@@ -95,11 +100,11 @@ public class FavoriteControllerIntegrationTest {
     @Test
     void findFavoriteSuccessTest() throws Exception {
         //given
-        Favorite favorite1 = new Favorite("강남역", "양재역", DummyTestUserInfo.EMAIL);
-        Favorite favorite2 = new Favorite("양재역", "판교역", DummyTestUserInfo.EMAIL);
-        favoriteService.save(favorite1);
-        favoriteService.save(favorite2);
+        CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
+        CreateFavoriteRequest favorite2 = new CreateFavoriteRequest("양재역", "판교역", DummyTestUserInfo.EMAIL);
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+        favoriteService.save(favorite1, member.getEmail());
+        favoriteService.save(favorite2, member.getEmail());
         memberService.createMember(member);
         String token = jwtTokenProvider.createToken(member.getEmail());
         String uri = "/favorites";
@@ -121,10 +126,10 @@ public class FavoriteControllerIntegrationTest {
     @Test
     void findFavoriteFailTest() throws Exception {
 
-        Favorite favorite1 = new Favorite("강남역", "양재역", DummyTestUserInfo.EMAIL);
-        Favorite favorite2 = new Favorite("양재역", "판교역", DummyTestUserInfo.EMAIL);
-        favoriteService.save(favorite1);
-        favoriteService.save(favorite2);
+        CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
+        CreateFavoriteRequest favorite2 = new CreateFavoriteRequest("양재역", "판교역", DummyTestUserInfo.EMAIL);
+        favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
+        favoriteService.save(favorite2, DummyTestUserInfo.EMAIL);
 
         String uri = "/favorites";
 
@@ -137,14 +142,74 @@ public class FavoriteControllerIntegrationTest {
     @DisplayName("회원이 아닌 이메일 JWT 토큰 헤더 요청 시 즐겨찾기 조회 요청이 실패 한다")
     @Test
     void findFavoriteFailTest2() throws Exception {
-
-        Favorite favorite1 = new Favorite("강남역", "양재역", DummyTestUserInfo.EMAIL);
-        Favorite favorite2 = new Favorite("양재역", "판교역", DummyTestUserInfo.EMAIL);
-        favoriteService.save(favorite1);
-        favoriteService.save(favorite2);
+        CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
+        CreateFavoriteRequest favorite2 = new CreateFavoriteRequest("양재역", "판교역", DummyTestUserInfo.EMAIL);
+        favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
+        favoriteService.save(favorite2, DummyTestUserInfo.EMAIL);
 
         String unExistEmailToken = jwtTokenProvider.createToken("wrong@gmail.com");
         String uri = "/favorites";
+
+        mockMvc.perform(get(uri)
+                .header("Authorization", "Bearer" + unExistEmailToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("즐겨찾기 삭제가 성공한다")
+    @Test
+    void deleteFavoriteSuccessTest() throws Exception {
+        //given
+        CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
+        Favorite present = favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
+        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+        memberService.createMember(member);
+
+        String token = jwtTokenProvider.createToken(member.getEmail());
+        String uri = "/favorites/" + present.getId();
+
+        //when
+        mockMvc.perform(delete(uri)
+                .header("Authorization", "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @DisplayName("토큰이 없는 상태에서 즐겨찾기 삭제가 실패한다")
+    @Test
+    void deleteFavoriteFailTest() throws Exception {
+        CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
+        Favorite present = favoriteService.save(favorite1, favorite1.getEmail());
+
+        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+        memberService.createMember(member);
+
+        favoriteService.save(favorite1, member.getEmail());
+
+        String uri = "/favorites/" + present.getId();
+
+        mockMvc.perform(delete(uri)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("회원이 아닌 이메일 JWT 토큰 헤더 요청 시 즐겨찾기 삭제 요청이 실패 한다")
+    @Test
+    void deleteFavoriteFailTest2() throws Exception {
+        CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
+        Favorite present = favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
+
+        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+        memberService.createMember(member);
+
+        favoriteService.save(favorite1, member.getEmail());
+
+        String unExistEmailToken = jwtTokenProvider.createToken("wrong@gmail.com");
+        String uri = "/favorites/?source=" + present.getSource() + "&target=" + present.getTarget();
+
 
         mockMvc.perform(get(uri)
                 .header("Authorization", "Bearer" + unExistEmailToken)
