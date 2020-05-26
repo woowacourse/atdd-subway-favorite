@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class Line {
     @Embedded.Empty
-    private final LineStations stations = LineStations.empty();
+    private LineStations stations = LineStations.empty();
     @Id
     private Long id;
     private String name;

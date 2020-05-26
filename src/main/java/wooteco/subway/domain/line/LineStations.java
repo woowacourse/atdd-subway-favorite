@@ -3,7 +3,7 @@ package wooteco.subway.domain.line;
 import java.util.*;
 
 public class LineStations {
-    private final Set<LineStation> stations;
+    private Set<LineStation> stations;
 
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;
