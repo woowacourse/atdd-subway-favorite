@@ -135,12 +135,12 @@ class LoginMemberControllerTest {
     void getMyInfo() throws Exception {
         memberRepository.save(new Member(EMAIL, NAME, PASSWORD));
 
-        String token = "bearer asdf.zxcv.qewr";
+        String token = jwtTokenProvider.createToken(EMAIL);
 
         mockMvc.perform(get("/me")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
+                .header("Authorization", "bearer " + token)
         )
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -152,12 +152,12 @@ class LoginMemberControllerTest {
     void deleteMyInfo() throws Exception {
         memberRepository.save(new Member(EMAIL, NAME, PASSWORD));
 
-        String token = "bearer asdf.zxcv.qewr";
+        String token = jwtTokenProvider.createToken(EMAIL);
 
         mockMvc.perform(delete("/me")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
+                .header("Authorization", "bearer " + token)
         )
                 .andExpect(status().isNoContent())
                 .andDo(print())
@@ -169,14 +169,14 @@ class LoginMemberControllerTest {
     void updateMyInfo() throws Exception {
         memberRepository.save(new Member(EMAIL, NAME, PASSWORD));
 
-        String token = "bearer asdf.zxcv.qewr";
+        String token = jwtTokenProvider.createToken(EMAIL);
         UpdateMemberRequest request = new UpdateMemberRequest(NAME, PASSWORD);
         String updateRequestContent = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(put("/me")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
+                .header("Authorization", "bearer " + token)
                 .content(updateRequestContent)
         )
                 .andExpect(status().isNoContent())

@@ -1,20 +1,30 @@
 package wooteco.subway.service.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.member.favorite.Favorite;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponses;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.member.favorite.FavoriteService;
 
+import java.util.Arrays;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -32,7 +42,7 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private StationRepository stationRepository;
-    @Mock
+
     private FavoriteService favoriteService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -40,9 +50,11 @@ public class MemberServiceTest {
 
     @BeforeEach
     void setUp() {
+        favoriteService = new FavoriteService();
         this.memberService = new MemberService(memberRepository, stationRepository, favoriteService, jwtTokenProvider);
     }
 
+    @DisplayName("회원 가입 기능")
     @Test
     void createMember() {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -52,6 +64,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("로그인 후 토큰 생성")
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -61,5 +74,88 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @DisplayName("회원 정보 수정")
+    @Test
+    void update() {
+        //given
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("NEW_" + TEST_USER_EMAIL, "NEW_" + TEST_USER_PASSWORD);
+        when(memberRepository.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(Optional.of(new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD)));
+
+        //when
+        memberService.updateMember(updateMemberRequest, new LoginEmail(TEST_USER_EMAIL));
+
+        //then
+        verify(memberRepository).save(any());
+    }
+
+    @DisplayName("회원 탈퇴")
+    @Test
+    void delete() {
+        //given
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(Optional.of(member));
+
+        //when
+        memberService.deleteByEmail(new LoginEmail(TEST_USER_EMAIL));
+
+        //then
+        verify(memberRepository).delete(any());
+    }
+
+    @DisplayName("즐겨찾기 추가")
+    @Test
+    void addFavorite() {
+        //given
+        FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+        LoginEmail loginEmail = new LoginEmail(TEST_USER_EMAIL);
+
+        when(memberRepository.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(Optional.of(new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD)));
+        when(stationRepository.findAllById(Arrays.asList(1L, 2L)))
+                .thenReturn(Arrays.asList(new Station(1L, "123"), new Station(2L, "456")));
+
+        //when
+        memberService.addFavorite(favoriteRequest, loginEmail);
+
+        //then
+        verify(memberRepository).save(any());
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        //given
+        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(1L, 2L);
+        LoginEmail loginEmail = new LoginEmail(TEST_USER_EMAIL);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        member.addFavorite(new Favorite(1L, 2L));
+        when(memberRepository.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(Optional.of(member));
+        //when
+        memberService.deleteFavorite(favoriteDeleteRequest, loginEmail);
+        //then
+        verify(memberRepository).save(any());
+    }
+
+    @DisplayName("즐겨찾기 조회")
+    @Test
+    void getFavorites() {
+        //given
+        LoginEmail loginEmail = new LoginEmail(TEST_USER_EMAIL);
+
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        member.addFavorite(new Favorite(1L, 2L));
+        member.addFavorite(new Favorite(2L, 3L));
+
+        when(memberRepository.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(Optional.of(member));
+        //when
+        FavoriteResponses allFavorites = memberService.getAllFavorites(loginEmail);
+        //then
+        assertThat(allFavorites.getFavoriteResponses()).hasSize(2);
     }
 }

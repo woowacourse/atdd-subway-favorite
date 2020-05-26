@@ -60,6 +60,7 @@ class MemberTest {
         assertThat(member.getFavorites().getFavorites()).hasSize(0);
     }
 
+    @DisplayName("존재하지 않는 즐겨찾기 제거시 Exception 발생")
     @Test
     void removeNotFoundFavorite() {
         member = new Member(1L, "example@gmail.com", "박찬인", "example");

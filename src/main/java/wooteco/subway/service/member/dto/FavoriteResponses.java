@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 public class FavoriteResponses {
     private List<FavoriteResponse> favoriteResponses;
 
+    private FavoriteResponses() {
+    }
+
     public FavoriteResponses(final List<FavoriteResponse> favoriteResponses) {
         this.favoriteResponses = favoriteResponses;
     }

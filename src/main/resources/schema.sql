@@ -43,5 +43,7 @@ create table if not exists FAVORITE
     member            bigint not null,
     member_key        bigint not null,
     source_station_id bigint not null,
-    target_station_id bigint not null
+    target_station_id bigint not null,
+    foreign key (source_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
+    foreign key (target_station_id) REFERENCES STATION (id) ON DELETE CASCADE
 );

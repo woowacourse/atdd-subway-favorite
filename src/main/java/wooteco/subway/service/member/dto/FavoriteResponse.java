@@ -10,6 +10,9 @@ public class FavoriteResponse {
     private Long targetStationId;
     private String targetStationName;
 
+    private FavoriteResponse() {
+    }
+
     public FavoriteResponse(final Long sourceStationId, final String sourceStationName, final Long targetStationId, final String targetStationName) {
         this.sourceStationId = sourceStationId;
         this.sourceStationName = sourceStationName;

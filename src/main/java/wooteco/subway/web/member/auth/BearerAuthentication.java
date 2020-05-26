@@ -1,6 +1,5 @@
 package wooteco.subway.web.member.auth;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -11,7 +10,6 @@ import java.util.Objects;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
-@Profile(value = {"!test"})
 @Component
 public class BearerAuthentication implements Authentication {
 
