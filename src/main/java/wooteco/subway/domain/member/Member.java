@@ -1,5 +1,6 @@
 package wooteco.subway.domain.member;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +20,7 @@ public class Member {
     }
 
     public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(null, email, name, password);
     }
 
     public Member(Long id, String email, String name, String password) {
@@ -29,6 +28,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = new HashSet<>();
     }
 
     public Long getId() {
