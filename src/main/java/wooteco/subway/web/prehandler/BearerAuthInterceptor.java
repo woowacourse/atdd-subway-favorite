@@ -28,7 +28,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
         IsAuth annotation = getAnnotation((HandlerMethod)handler, IsAuth.class);
-        Auth auth = null;
+        Auth auth;
         if (!ObjectUtils.isEmpty(annotation)) {
             auth = annotation.isAuth();
             if (auth == Auth.AUTH) {

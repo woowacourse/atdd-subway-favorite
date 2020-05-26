@@ -65,7 +65,7 @@ public class MemberControllerTest {
     @Test
     public void createMember() throws Exception {
         given(memberService.save(any())).willReturn(member);
-        given(memberService.isNotExistEmail(any())).willReturn(true);
+        given(memberService.isExistEmail(any())).willReturn(false);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +
@@ -84,7 +84,7 @@ public class MemberControllerTest {
     @Test
     void createDuplicateMember() throws Exception {
         given(memberService.save(any())).willReturn(member);
-        given(memberService.isNotExistEmail(any())).willReturn(true);
+        given(memberService.isExistEmail(any())).willReturn(false);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +
@@ -99,7 +99,7 @@ public class MemberControllerTest {
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
 
-        given(memberService.isNotExistEmail(any())).willReturn(false);
+        given(memberService.isExistEmail(any())).willReturn(true);
 
         this.mockMvc.perform(post("/members")
             .content(inputJson)
@@ -113,7 +113,7 @@ public class MemberControllerTest {
     @Test
     void createNotMatchPasswordMember() throws Exception {
         given(memberService.save(any())).willReturn(member);
-        given(memberService.isNotExistEmail(any())).willReturn(true);
+        given(memberService.isExistEmail(any())).willReturn(false);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +
@@ -187,7 +187,7 @@ public class MemberControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(inputJson)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isUnauthorized())
             .andDo(print())
             .andDo(MemberDocumentation.notExistTokenUpdateMember());
     }

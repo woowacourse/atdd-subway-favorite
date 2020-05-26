@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import wooteco.subway.AcceptanceTest;
@@ -22,6 +23,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.service.member.dto.MemberDetailResponse;
 
+@Sql("/truncate.sql")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @LocalServerPort
