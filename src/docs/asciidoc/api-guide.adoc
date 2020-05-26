@@ -40,3 +40,8 @@ operation::me-edit[snippets='http-request,http-response']
 === 탈퇴
 
 operation::me-delete[snippets='http-request,http-response']
+
+[[resources-members-favorite-add]]
+=== 즐겨찾기 추가
+
+operation::favorite-add[snippets='http-request,http-response']

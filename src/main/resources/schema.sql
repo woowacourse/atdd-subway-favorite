@@ -40,9 +40,7 @@ create table if not exists MEMBER
 
 create table if not exists FAVORITE
 (
-    id bigint auto_increment not null,
-    member_id bigint not null,
-    source_station_id bigint not null,
-    target_station_id bigint not null,
-    primary key(id)
+    member bigint not null,
+    source_id bigint not null,
+    target_id bigint not null
 );

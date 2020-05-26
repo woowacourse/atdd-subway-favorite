@@ -15,9 +15,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.station.DuplicateFavoriteException;
+import wooteco.subway.service.station.NotFoundStationException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -30,11 +35,13 @@ public class MemberServiceTest {
 	@Mock
 	private MemberRepository memberRepository;
 	@Mock
+	private StationRepository stationRepository;
+	@Mock
 	private JwtTokenProvider jwtTokenProvider;
 
 	@BeforeEach
 	void setUp() {
-		this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+		this.memberService = new MemberService(memberRepository, stationRepository, jwtTokenProvider);
 	}
 
 	@Test
@@ -108,5 +115,61 @@ public class MemberServiceTest {
 		assertThatThrownBy(() -> memberService.findMemberByEmail("a@email.com"))
 			.isInstanceOf(NotFoundMemberException.class)
 			.hasMessageContaining("해당하는");
+	}
+
+	@Test
+	void addFavorite() {
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of("잠실역")));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(Station.of("강남역")));
+
+		memberService.createFavorite(member, favoriteRequest);
+
+		verify(memberRepository).save(any());
+	}
+
+	@DisplayName("출발역이 없는 경우 예외처리한다.")
+	@Test
+	void addFavorite2() {
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+
+		when(stationRepository.findById(1L)).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> memberService.createFavorite(member, favoriteRequest))
+			.isInstanceOf(NotFoundStationException.class)
+			.hasMessageContaining("출발역");
+	}
+
+	@DisplayName("도착역이 없는 경우 예외처리한다.")
+	@Test
+	void addFavorite3() {
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of("잠실역")));
+		when(stationRepository.findById(2L)).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> memberService.createFavorite(member, favoriteRequest))
+			.isInstanceOf(NotFoundStationException.class)
+			.hasMessageContaining("도착역");
+	}
+
+	@DisplayName("이미 있는 즐겨찾기인 경우 예외처리한다.")
+	@Test
+	void addFavorite4() {
+		final Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of("잠실역")));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(Station.of("강남역")));
+
+		final Member newMember = member.addFavorite(favoriteRequest.toFavorite());
+
+		assertThatThrownBy(() -> memberService.createFavorite(newMember, favoriteRequest))
+			.isInstanceOf(DuplicateFavoriteException.class)
+			.hasMessageContaining("존재하는");
 	}
 }

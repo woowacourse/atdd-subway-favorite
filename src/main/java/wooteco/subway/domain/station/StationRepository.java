@@ -12,6 +12,9 @@ public interface StationRepository extends CrudRepository<Station, Long> {
 	List<Station> findAllById(Iterable ids);
 
 	@Override
+	Optional<Station> findById(Long id);
+
+	@Override
 	List<Station> findAll();
 
 	@Query("select * from station where name = :stationName")

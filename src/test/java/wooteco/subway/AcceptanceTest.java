@@ -362,5 +362,23 @@ public class AcceptanceTest {
 			log().all().
 			statusCode(HttpStatus.NO_CONTENT.value());
 	}
+
+	public void addFavorite(String token, Long sourceStationId, Long targetStationId) {
+		Map<String, Long> params = new HashMap<>();
+		params.put("sourceId", sourceStationId);
+		params.put("targetId", targetStationId);
+
+		given().auth()
+			.oauth2(token)
+			.body(params)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.post("/favorites")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.CREATED.value());
+		;
+	}
 }
 
