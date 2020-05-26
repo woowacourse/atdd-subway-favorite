@@ -8,7 +8,6 @@ import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,9 +20,7 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
-        favoriteResponses.add(new FavoriteResponse("강남역", "도곡역"));
-        favoriteResponses.add(new FavoriteResponse("선릉역", "도곡역"));
+        List<FavoriteResponse> favoriteResponses = favoriteService.showFavorites(member);
 
         return ResponseEntity.ok().body(favoriteResponses);
     }

@@ -14,25 +14,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavorite() {
         //when
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_YANGJAE);
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        createFavorite(STATION_NAME_KANGNAM, STATION_NAME_DOGOK);
-        createFavorite(STATION_NAME_SEOLLEUNG, STATION_NAME_DOGOK);
+        createFavorite(STATION_NAME_YEOKSAM, STATION_NAME_SEOLLEUNG);
+        createFavorite(STATION_NAME_SEOLLEUNG, STATION_NAME_YANGJAE);
 
         //when
         List<FavoriteResponse> favoriteResponses = getFavorites();
         //then
         assertThat(favoriteResponses.size()).isEqualTo(2);
-        assertThat(favoriteResponses.get(0).getSourceName()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(favoriteResponses.get(0).getDestinationName()).isEqualTo(STATION_NAME_DOGOK);
+        assertThat(favoriteResponses.get(0).getSourceName()).isEqualTo(STATION_NAME_YEOKSAM);
+        assertThat(favoriteResponses.get(0).getDestinationName()).isEqualTo(STATION_NAME_SEOLLEUNG);
         assertThat(favoriteResponses.get(1).getSourceName()).isEqualTo(STATION_NAME_SEOLLEUNG);
-        assertThat(favoriteResponses.get(1).getDestinationName()).isEqualTo(STATION_NAME_DOGOK);
+        assertThat(favoriteResponses.get(1).getDestinationName()).isEqualTo(STATION_NAME_YANGJAE);
 
         //when
-        deleteFavorite(STATION_NAME_KANGNAM, STATION_NAME_DOGOK);
-//        favoriteResponses = getFavorites();
-//        //then
-//        assertThat(favoriteResponses.size()).isEqualTo(1);
-//        assertThat(favoriteResponses.get(0).getSourceName()).isEqualTo(STATION_NAME_SEOLLEUNG);
-//        assertThat(favoriteResponses.get(0).getDestinationName()).isEqualTo(STATION_NAME_DOGOK);
+        deleteFavorite(STATION_NAME_YEOKSAM, STATION_NAME_SEOLLEUNG);
+        favoriteResponses = getFavorites();
+        //then
+        assertThat(favoriteResponses.size()).isEqualTo(1);
+        assertThat(favoriteResponses.get(0).getSourceName()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        assertThat(favoriteResponses.get(0).getDestinationName()).isEqualTo(STATION_NAME_YANGJAE);
     }
 }
