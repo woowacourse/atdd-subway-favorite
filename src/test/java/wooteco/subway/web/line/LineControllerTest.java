@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,14 +23,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.web.LineController;
+import wooteco.subway.web.member.AuthorizationExtractor;
 
-@Disabled
-@WebMvcTest(controllers = LineController.class)
-@Import(ETagHeaderFilter.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class LineControllerTest {
     @Autowired
     protected MockMvc mockMvc;

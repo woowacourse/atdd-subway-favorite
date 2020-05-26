@@ -58,3 +58,26 @@ operation::favorites/delete[snippets='http-request,http-response']
 === 즐겨찾기 삭제 (id)
 
 operation::favorites/deleteById[snippets='http-request,http-response']
+
+[[resources-loginMember]]
+== LoginMember
+
+[[resources-loginMember-login]]
+=== 로그인
+
+operation::loginMember/login[snippets='http-request,http-response,request-fields']
+
+[[resources-loginMember-get]]
+=== 로그인 멤버 불러오기
+
+operation::loginMember/get[snippets='http-request,http-response']
+
+[[resources-loginMember-update]]
+=== 로그인 멤버 수정
+
+operation::loginMember/update[snippets='http-request,http-response,request-fields']
+
+[[resources-loginMember-delete]]
+=== 로그인 멤버 삭제
+
+operation::loginMember/delete[snippets='http-request,http-response']

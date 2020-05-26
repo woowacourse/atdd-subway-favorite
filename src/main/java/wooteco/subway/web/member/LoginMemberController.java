@@ -29,7 +29,7 @@ public class LoginMemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMemberId Long id) {
+    public ResponseEntity<MemberResponse> getMe(@LoginMemberId Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
         return ResponseEntity.ok().body(memberResponse);
     }
