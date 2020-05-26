@@ -35,7 +35,7 @@ public class FavoriteController {
             .build();
     }
 
-    @GetMapping("/favorites/{source}/{target}")
+    @GetMapping(value = "/favorites/{source}/{target}")
     public ResponseEntity<FavoriteResponse> getFavorite(@LoginMemberId Long memberId,
         @PathVariable Long source,
         @PathVariable Long target) {

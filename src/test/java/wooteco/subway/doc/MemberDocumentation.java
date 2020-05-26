@@ -6,7 +6,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.ResultHandler;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
