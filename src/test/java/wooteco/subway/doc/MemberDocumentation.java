@@ -71,6 +71,7 @@ public class MemberDocumentation {
             requestHeaders(
                 headerWithName("Authorization").description("The token for login which is Bearer Type")
             ), responseFields(
+                fieldWithPath("[].id").description("id of favorite").type(String.class),
                 fieldWithPath("[].source").description("The start station").type(String.class),
                 fieldWithPath("[].target").description("The arrive station").type(String.class))
         );

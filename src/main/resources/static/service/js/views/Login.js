@@ -27,7 +27,9 @@ function Login() {
                     localStorage.setItem('jwt', token.accessToken)
                 })
                 window.location.href = '/';
-            })
+            }).catch(error => {
+            error.json().then(error => alert(error.message))
+        })
 
 
     }
