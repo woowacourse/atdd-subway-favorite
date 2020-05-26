@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Embedded;
 
 public class Line {
@@ -21,21 +22,25 @@ public class Line {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    @Column("bg_color")
+    private String backgroundColor;
     @Embedded.Empty
     private LineStations stations = LineStations.empty();
 
     public Line() {
-	}
+    }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+            String backgroundColor) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
+        this.backgroundColor = backgroundColor;
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {
+        this(null, name, startTime, endTime, intervalTime, backgroundColor);
     }
 
     public Long getId() {
@@ -56,6 +61,10 @@ public class Line {
 
     public int getIntervalTime() {
         return intervalTime;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
     public Set<LineStation> getStations() {
