@@ -20,11 +20,11 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.service.member.dto.MemberDetailResponse;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.service.member.dto.MemberDetailResponse;
+import wooteco.subway.web.service.member.dto.MemberResponse;
+import wooteco.subway.web.service.member.dto.TokenResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")

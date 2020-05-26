@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.NotFoundStationException;
 import wooteco.subway.service.line.LineStationService;
+import wooteco.subway.web.exception.NotFoundStationException;
 
 @Service
 public class StationService {

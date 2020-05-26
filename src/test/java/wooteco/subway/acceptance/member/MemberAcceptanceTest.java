@@ -13,8 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.web.service.member.dto.MemberResponse;
+import wooteco.subway.web.service.member.dto.TokenResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 

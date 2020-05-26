@@ -12,10 +12,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.exception.DuplicatedFavoriteException;
-import wooteco.subway.service.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.StationService;
+import wooteco.subway.web.exception.DuplicatedFavoriteException;
+import wooteco.subway.web.service.favorite.FavoriteService;
+import wooteco.subway.web.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.web.service.member.MemberService;
 
 @ExtendWith(SpringExtension.class)
 public class FavoriteServiceTest {

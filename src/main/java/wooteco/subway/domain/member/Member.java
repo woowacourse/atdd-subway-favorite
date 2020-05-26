@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
 import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.exception.DuplicatedFavoriteException;
+import wooteco.subway.web.exception.DuplicatedFavoriteException;
 
 public class Member {
     @Id

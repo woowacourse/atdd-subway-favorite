@@ -28,8 +28,8 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.favorite.FavoriteService;
-import wooteco.subway.service.member.MemberService;
+import wooteco.subway.web.service.favorite.FavoriteService;
+import wooteco.subway.web.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest

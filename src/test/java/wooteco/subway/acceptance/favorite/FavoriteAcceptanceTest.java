@@ -19,8 +19,8 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.favorite.dto.FavoriteResponse;
-import wooteco.subway.service.member.dto.MemberDetailResponse;
+import wooteco.subway.web.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.web.service.member.dto.MemberDetailResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 

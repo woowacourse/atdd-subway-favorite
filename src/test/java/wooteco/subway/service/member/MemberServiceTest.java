@@ -15,8 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.service.member.MemberService;
+import wooteco.subway.web.service.member.dto.LoginRequest;
+import wooteco.subway.web.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {

@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
-import wooteco.subway.web.member.resolver.LoginMemberMethodArgumentResolver;
+import wooteco.subway.web.prehandler.BearerAuthInterceptor;
+import wooteco.subway.web.prehandler.LoginMemberMethodArgumentResolver;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

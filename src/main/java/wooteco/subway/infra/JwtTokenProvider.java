@@ -11,7 +11,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import wooteco.subway.web.member.exception.InvalidAuthenticationException;
+import wooteco.subway.web.exception.InvalidAuthenticationException;
 
 @Component
 public class JwtTokenProvider {

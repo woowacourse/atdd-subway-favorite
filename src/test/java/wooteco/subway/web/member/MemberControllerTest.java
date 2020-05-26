@@ -29,9 +29,9 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.MemberService;
-import wooteco.subway.web.member.exception.InvalidTokenException;
-import wooteco.subway.web.member.exception.NotFoundMemberException;
+import wooteco.subway.web.exception.InvalidTokenException;
+import wooteco.subway.web.exception.NotFoundMemberException;
+import wooteco.subway.web.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
