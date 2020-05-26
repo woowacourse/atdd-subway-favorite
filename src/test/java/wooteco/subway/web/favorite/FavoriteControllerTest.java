@@ -32,6 +32,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -90,7 +91,8 @@ public class FavoriteControllerTest {
             .content(request)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andDo(MemberDocumentation.addFavorite());
     }
 
     public void setMockToken() {
@@ -115,6 +117,7 @@ public class FavoriteControllerTest {
             .header(HttpHeaders.AUTHORIZATION, mockToken)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
+            .andDo(MemberDocumentation.findFavorites())
             .andReturn();
 
         //Then
@@ -129,8 +132,9 @@ public class FavoriteControllerTest {
         setMockToken();
         Favorite favorite = new Favorite(1L, 1L, 2L);
 
-        this.mockMvc.perform(delete("/members/favorites/" + favorite.getId())
+        this.mockMvc.perform(delete("/members/favorites/{id}", favorite.getId())
             .header(HttpHeaders.AUTHORIZATION, mockToken))
-            .andExpect(status().isNoContent());
+            .andExpect(status().isNoContent())
+            .andDo(MemberDocumentation.deleteFavorite());
     }
 }

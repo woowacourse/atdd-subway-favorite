@@ -55,3 +55,18 @@ operation::members/create/fail/duplication[snippets='http-request,http-response,
 === [예외] 회원 정보 수정 실패 : 빈 문자열
 
 operation::members/update/fail/blank[snippets='http-request,http-response,request-fields,response-body']
+
+[[resources-members-favorites-add]]
+=== 즐겨찾기 추가
+
+operation::members/favorites/add[snippets='http-request,http-response,request-headers,request-fields,response-headers']
+
+[[resources-members-favorites-find]]
+=== 즐겨찾기 조회
+
+operation::members/favorites/find[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-members-favorites-delete]]
+=== 즐겨찾기 삭제
+
+operation::members/favorites/delete[snippets='http-request,http-response,request-headers,path-parameters']
