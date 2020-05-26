@@ -5,17 +5,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
+@Transactional
 @Service
 public class FavoriteService {
     private final MemberRepository memberRepository;
@@ -26,6 +31,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> getFavorites(Member member) {
         Set<Long> memberFavoriteStationIds = member.findAllFavoriteStationIds();
         Map<Long, Station> stations = stationRepository.findAllById(memberFavoriteStationIds).stream()
@@ -49,6 +55,20 @@ public class FavoriteService {
     public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
         Favorite favorite = favoriteRequest.toFavorite();
         member.addFavorite(favorite);
+
+        try {
+            memberRepository.save(member);
+        } catch (DbActionExecutionException e) {
+            if (e.getCause() instanceof DuplicateKeyException) {
+                throw new DuplicateEmailException();
+            }
+            throw e;
+        }
+    }
+
+    public void removeFavorite(Member member, Long sourceId, Long targetId) {
+        Favorite favorite = new Favorite(sourceId, targetId);
+        member.removeFavorite(favorite);
         memberRepository.save(member);
     }
 }

@@ -67,6 +67,7 @@ public class MeController {
     @DeleteMapping("/favorites/source/{sourceId}/target/{targetId}")
     public ResponseEntity<Void> removeFavorite(@LoginMember Member member,
         @PathVariable Long sourceId, @PathVariable Long targetId) {
+        favoriteService.removeFavorite(member, sourceId, targetId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

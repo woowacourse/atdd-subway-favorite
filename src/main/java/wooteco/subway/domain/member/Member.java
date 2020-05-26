@@ -115,4 +115,8 @@ public class Member {
     public void addFavorite(Favorite favorite) {
         favorites.addFavorite(favorite);
     }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.removeFavorite(favorite);
+    }
 }

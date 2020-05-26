@@ -63,3 +63,24 @@ operation::me/deleteException[snippets='curl-request,http-request,http-response'
 === 내 즐겨 찾기 목록
 
 operation::me/favorites[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-favorites-detail]]
+=== 내 즐겨 찾기 경로 존재 여부 확인
+
+operation::me/favorites/detail[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-favorites-create]]
+=== 내 즐겨 찾기 경로 추가
+
+operation::me/favorites/create[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-favorites-delete]]
+=== 내 즐겨 찾기 경로 제거
+
+operation::me/favorites/delete[snippets='curl-request,http-request,http-response']

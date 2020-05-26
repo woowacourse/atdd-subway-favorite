@@ -84,4 +84,14 @@ class FavoriteServiceTest {
         verify(memberRepository).save(any());
         assertThat(member.getFavorites()).contains(request.toFavorite());
     }
+
+    @DisplayName("즐겨찾기에서 경로 삭제")
+    @Test
+    void removeFavorite() {
+        favoriteService.removeFavorite(member, FIRST_STATION_ID, SECOND_STATION_ID);
+
+        verify(memberRepository).save(any());
+        assertThat(member.getFavorites().contains(new Favorite(FIRST_STATION_ID, SECOND_STATION_ID))).isFalse();
+
+    }
 }

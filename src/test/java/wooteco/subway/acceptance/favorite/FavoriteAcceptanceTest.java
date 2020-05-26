@@ -72,8 +72,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         removeFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
         favoriteExistenceResponse = existFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
-        // 구현 후 False로
-        assertThat(favoriteExistenceResponse.isExistence()).isTrue();
+        assertThat(favoriteExistenceResponse.isExistence()).isFalse();
 
         //given
         addFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
@@ -85,12 +84,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         removeFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
         allFavorites = findAllFavorites(loginToken);
-        // TODO: 2020/05/26 추후 size 2로 변경
-        assertThat(allFavorites).hasSize(3);
+        assertThat(allFavorites).hasSize(2);
 
         favoriteExistenceResponse = existFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
-        // TODO: 2020/05/26 추후 false로 변경 해야함
-        assertThat(favoriteExistenceResponse.isExistence()).isTrue();
+        assertThat(favoriteExistenceResponse.isExistence()).isFalse();
     }
 
     private FavoriteExistenceResponse existFavorite(TokenResponse loginToken, Long sourceStationId,

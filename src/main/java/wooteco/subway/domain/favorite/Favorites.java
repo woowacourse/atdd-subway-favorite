@@ -31,4 +31,8 @@ public class Favorites {
     public void addFavorite(Favorite favorite) {
         favorites.add(favorite);
     }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
+    }
 }

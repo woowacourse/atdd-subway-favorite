@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -179,7 +178,6 @@ public class MeControllerTest {
         ;
     }
 
-    @Disabled
     @DisplayName("즐겨찾기에 해당 경로가 등록되어있는지 확인")
     @Test
     void isExistFavoritePath() throws Exception {
@@ -197,7 +195,6 @@ public class MeControllerTest {
         ;
     }
 
-    @Disabled
     @DisplayName("즐겨찾기에 경로 추가")
     @Test
     void addFavorite() throws Exception {
@@ -215,7 +212,6 @@ public class MeControllerTest {
         ;
     }
 
-    @Disabled
     @DisplayName("즐겨찾기에서 경로 제거")
     @Test
     void removeFavorite() throws Exception {
@@ -226,7 +222,7 @@ public class MeControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, token))
             .andExpect(status().isNoContent())
             .andDo(print())
-            .andDo(MeDocumentation.deleteMember())
+            .andDo(MeDocumentation.removeFavorite())
         ;
     }
 
