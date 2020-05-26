@@ -3,11 +3,11 @@ package wooteco.subway.doc;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.ResultHandler;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
@@ -23,15 +23,28 @@ public class MemberDocumentation {
         );
     }
 
-//    public static RestDocumentationResultHandler updateMember() {
-//        return document("members/update",
-//                requestFields(
-//                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-//                        fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
-//                ),
-//                requestHeaders(
-//                        headerWithName("Authorization").description("The token for login which is Bearer Type")
-//                )
-//        );
-//    }
+   public static RestDocumentationResultHandler updateMember() {
+       return document("members/update",
+               requestFields(
+                       fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                       fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+               ),
+               requestHeaders(
+                       headerWithName("Authorization").description("The token for login which is Bearer Type")
+               )
+       );
+   }
+
+    public static RestDocumentationResultHandler getMember() {
+        return document("members/get",
+            responseFields(
+                fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
+                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
+            ));
+    }
+
+    public static RestDocumentationResultHandler deleteMember() {
+        return document("members/delete");
+    }
 }

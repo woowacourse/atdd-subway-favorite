@@ -22,7 +22,7 @@ import wooteco.subway.service.member.MemberService;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.service.member.MemberServiceTest.*;
@@ -64,6 +64,44 @@ public class MemberControllerTest {
                 .andDo(print())
                 .andDo(MemberDocumentation.createMember());
 
+    }
+
+    @Test
+    public void updateMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        String inputJson = "{\"name\":\"bossdog\",\"password\":\"rebecca\"}";
+
+        this.mockMvc.perform(put("/members/" + member.getId())
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "this is user's accessToken"))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.updateMember());
+    }
+
+    @Test
+    public void getMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+
+        this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(MemberDocumentation.getMember());
+    }
+
+    @Test
+    public void deleteMember() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        this.mockMvc.perform(delete("/members/" + member.getId()))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(MemberDocumentation.deleteMember());
     }
 }
 

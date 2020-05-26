@@ -38,7 +38,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         addFavoritePath(tokenResponse, stationResponse1, stationResponse2);
 
         List<FavoriteResponse> responses = getFavoritePath(tokenResponse);
-        assertThat(responses.get(0).getMemberId()).isEqualTo(2L);
         assertThat(responses.get(0).getSourceStationId()).isEqualTo(stationResponse1.getId());
         assertThat(responses.get(0).getTargetStationId()).isEqualTo(stationResponse2.getId());
 

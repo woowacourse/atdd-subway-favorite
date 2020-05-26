@@ -18,5 +18,16 @@ endif::[]
 
 [[resources-members-create]]
 === 회원 가입
-
 operation::members/create[snippets='http-request,http-response,request-fields,request-body']
+
+[[resources-members-update]]
+=== 회원 정보 수정
+operation::members/update[snippets='http-request,http-response,request-fields,request-body']
+
+[[resources-members-get]]
+=== 회원 정보 조회
+operation::members/get[snippets='http-request,http-response,response-fields,response-body']
+
+[[resources-members-delete]]
+=== 회원 삭제
+operation::members/delete[snippets='http-request,http-response']
