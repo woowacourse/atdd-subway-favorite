@@ -1,12 +1,21 @@
 package wooteco.subway.service.favorite.dto;
 
 public class CreateFavoriteRequest {
-    private final String source;
-    private final String target;
+    private String source;
+    private String target;
+    private String email;
 
-    public CreateFavoriteRequest(String source, String target) {
+    public CreateFavoriteRequest() {
+    }
+
+    public CreateFavoriteRequest(String source, String target, String email) {
         this.source = source;
         this.target = target;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getSource() {

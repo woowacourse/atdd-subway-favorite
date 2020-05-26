@@ -11,7 +11,6 @@ import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.argumentresolver.annotation.CreateFavorite;
 import wooteco.subway.web.member.exception.InvalidAuthenticationException;
-import wooteco.subway.web.member.exception.NotExistFavoriteDataException;
 import wooteco.subway.web.member.exception.NotExistMemberDataException;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
@@ -35,30 +34,21 @@ public class FavoriteMethodArgumentResolver implements HandlerMethodArgumentReso
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         System.out.println("리졸버에 들어옵니다");
+
         String email = (String) webRequest.getAttribute("requestMemberEmail", SCOPE_REQUEST);
         validateMemberExist(email);
 
-        String source = (String) webRequest.getAttribute("source", SCOPE_REQUEST);
-        String target = (String) webRequest.getAttribute("target", SCOPE_REQUEST);
+        String favoriteId = (String) webRequest.getAttribute("favoriteId", SCOPE_REQUEST);
 
-        Favorite favoriteBySourceAndTarget;
-        try {
-            favoriteBySourceAndTarget = favoriteService.findFavoriteBySourceAndTarget(source, target);
-        } catch(NotExistFavoriteDataException e) {
-            return new Favorite(source, target, email);
-        }
-
-        if (favoriteBySourceAndTarget.isNotEqualEmail(email)) {
-            throw new InvalidAuthenticationException("비정상적인 로그인");
-        }
-        System.out.println("리졸버에 나갑니다");
-        return favoriteBySourceAndTarget;
+        Favorite favoriteById = favoriteService.findFavoriteById(Long.valueOf(favoriteId));
+        return favoriteById;
     }
 
     private void validateMemberExist(String email) {
         try {
             memberService.findMemberByEmail(email);
         } catch(NotExistMemberDataException e) {
+            System.out.println("durlfhs");
             throw new InvalidAuthenticationException();
         }
     }

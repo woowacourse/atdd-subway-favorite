@@ -3,9 +3,12 @@ package wooteco.subway.service.favorite.dto;
 import wooteco.subway.domain.favorite.Favorite;
 
 public class FavoriteResponse {
-    private final Long id;
-    private final String source;
-    private final String target;
+    private Long id;
+    private String source;
+    private String target;
+
+    public FavoriteResponse() {
+    }
 
     public FavoriteResponse(Long id, String source, String target) {
         this.id = id;

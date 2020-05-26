@@ -3,7 +3,10 @@ package wooteco.subway.service.favorite.dto;
 import java.util.List;
 
 public class FavoritesResponse {
-    private final List<FavoriteResponse> favoriteResponses;
+    private List<FavoriteResponse> favoriteResponses;
+
+    public FavoritesResponse() {
+    }
 
     public FavoritesResponse(List<FavoriteResponse> favoriteResponses) {
         this.favoriteResponses = favoriteResponses;
