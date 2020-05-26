@@ -64,7 +64,10 @@ public class BearerAuthMemberInterceptor implements HandlerInterceptor {
     }
 
     private void validateEmailEquals(HttpServletRequest request, String email) {
-        if (request.getParameter("email").equals(email) == false) {
+        System.out.println(request + " requuuuuu");
+        System.out.println(email);
+        System.out.println(request.getAttribute("requestMemberEmail"));
+        if (request.getAttribute("requestMemberEmail").equals(email) == false) {
             throw new NotMatchedEmailIExistInJwtException(email);
         }
     }
