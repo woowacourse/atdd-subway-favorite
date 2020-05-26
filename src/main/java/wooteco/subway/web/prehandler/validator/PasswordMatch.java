@@ -13,7 +13,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordMatch {
 
-    String message() default "패스워드가 일치하지 않습니다.";
+    String message() default "";
 
     String field();
 

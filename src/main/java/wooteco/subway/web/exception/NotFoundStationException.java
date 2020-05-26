@@ -1,6 +1,8 @@
 package wooteco.subway.web.exception;
 
-public class NotFoundStationException extends RuntimeException {
+import org.springframework.dao.DataAccessException;
+
+public class NotFoundStationException extends DataAccessException {
     public NotFoundStationException(String message) {
         super(message);
     }

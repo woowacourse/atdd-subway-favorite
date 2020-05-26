@@ -5,6 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.stereotype.Component;
 
+import wooteco.subway.web.exception.DuplicateEmailException;
 import wooteco.subway.web.service.member.MemberService;
 
 @Component
@@ -19,6 +20,9 @@ public class EmailMatchValidator implements ConstraintValidator<DuplicateCheck, 
     }
 
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        return memberService.isNotExistEmail(email);
+        if (memberService.isExistEmail(email)) {
+            throw new DuplicateEmailException(email);
+        }
+        return true;
     }
 }

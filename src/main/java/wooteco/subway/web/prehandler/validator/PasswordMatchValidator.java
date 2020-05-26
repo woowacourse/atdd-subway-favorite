@@ -7,6 +7,8 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.BeanWrapperImpl;
 
+import wooteco.subway.web.exception.NotMatchPasswordException;
+
 public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
    private String field;
    private String fieldMatch;
@@ -21,6 +23,9 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
       Object fieldValue = new BeanWrapperImpl(value).getPropertyValue(field);
       Object fieldMatchValue = new BeanWrapperImpl(value).getPropertyValue(fieldMatch);
 
-      return Objects.equals(fieldValue, fieldMatchValue);
+      if (!Objects.equals(fieldValue, fieldMatchValue)) {
+         throw new NotMatchPasswordException("패스워드 확인이 올바르지 않습니다.");
+      }
+      return true;
    }
 }

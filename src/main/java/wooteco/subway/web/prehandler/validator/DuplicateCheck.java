@@ -12,7 +12,7 @@ import javax.validation.Payload;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicateCheck {
-    String message() default "이메일이 중복됩니다.";
+    String message() default "";
 
     Class<?>[] groups() default {};
 

@@ -77,7 +77,7 @@ public class Member {
 
     public void addFavorite(Favorite favorite) {
         if (favorites.contains(favorite)) {
-            throw new DuplicatedFavoriteException("해당 경로는 이미 추가되어 있습니다.");
+            throw new DuplicatedFavoriteException(favorite.getSourceId(), favorite.getTargetId());
         }
         favorites.add(favorite);
     }

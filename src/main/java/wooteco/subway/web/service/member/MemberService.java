@@ -30,7 +30,7 @@ public class MemberService {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new NotFoundMemberException(param.getName()));
         if (!member.checkPassword(param.getOldPassword())) {
-            throw new NotMatchPasswordException("잘못된 패스워드 입니다.");
+            throw new NotMatchPasswordException();
         }
         member.update(param.getName(), param.getNewPassword());
         memberRepository.save(member);
@@ -44,7 +44,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
             .orElseThrow(() -> new NotFoundMemberException(param.getEmail()));
         if (!member.checkPassword(param.getPassword())) {
-            throw new NotMatchPasswordException("잘못된 패스워드 입니다.");
+            throw new NotMatchPasswordException();
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
@@ -55,8 +55,8 @@ public class MemberService {
             .orElseThrow(() -> new NotFoundMemberException(email));
     }
 
-    public boolean isNotExistEmail(String email) {
+    public boolean isExistEmail(String email) {
         Optional<Member> byEmail = memberRepository.findByEmail(email);
-        return !byEmail.isPresent();
+        return byEmail.isPresent();
     }
 }
