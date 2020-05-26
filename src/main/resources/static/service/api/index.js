@@ -39,11 +39,29 @@ const METHOD = {
         ...data
       })
     };
+  },
+  DELETE_WITH_JSON(data) {
+    return {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    };
   }
 };
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config);
+  const request = (uri, config) => fetch(uri, config).then(response => {
+    if (!response.ok) {
+      response.json().then(response => alert(response.errorMessage))
+      return;
+    }
+  });
+
   const requestWithJsonData = (uri, config) =>
     fetch(uri, config).then(response => {
       if (!response.ok) {
@@ -54,6 +72,13 @@ const api = (() => {
         throw new Error("json fail");
       });
     });
+
+  const requestWithNoContent = (uri, config) => fetch(uri, config).then(response => {
+    if (!response.ok) {
+      response.json().then(response => alert(response.errorMessage))
+      return;
+    }
+  });
 
   const member = {
     get(id) {
@@ -112,8 +137,8 @@ const api = (() => {
     getAll() {
       return requestWithJsonData(`/favorites`, METHOD.GET_WITH_AUTH());
     },
-    delete(id) {
-      return request(`/favorites/${id}`, METHOD.DELETE());
+    delete(body) {
+      return requestWithNoContent(`/favorites`, METHOD.DELETE_WITH_JSON(body));
     }
   };
 

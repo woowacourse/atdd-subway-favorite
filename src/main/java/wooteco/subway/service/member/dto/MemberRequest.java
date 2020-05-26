@@ -2,10 +2,11 @@ package wooteco.subway.service.member.dto;
 
 import wooteco.subway.domain.member.Member;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class MemberRequest {
-    @NotBlank
+    @Email
     private String email;
     @NotBlank
     private String name;

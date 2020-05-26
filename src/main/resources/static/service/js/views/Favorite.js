@@ -1,7 +1,7 @@
-import { edgeItemTemplate } from "../../utils/templates.js";
+import {edgeItemTemplate} from "../../utils/templates.js";
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
-import { ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE } from "../../utils/constants.js";
+import {ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE} from "../../utils/constants.js";
 
 function Favorite() {
   const $favoriteList = document.querySelector("#favorite-list");
@@ -26,10 +26,11 @@ function Favorite() {
       return;
     }
     try {
-      const edgeId = $target.closest(".edge-item").dataset.edgeId;
-      await api.favorite.delete(edgeId);
+      const departure = $target.closest(".edge-item").dataset.edgeDeparture;
+      const arrival = $target.closest(".edge-item").dataset.edgeArrival;
+      await api.favorite.delete({departure, arrival});
       await initFavoriteList();
-      showSnackbar(SUCCESS_MESSAGE.COMMON);
+      showSnackbar(SUCCESS_MESSAGE.DELETE);
     } catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
