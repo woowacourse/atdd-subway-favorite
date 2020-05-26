@@ -1,11 +1,11 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.member.dto.FavoriteCreateRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberFavoriteResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;

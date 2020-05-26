@@ -8,10 +8,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.MemberFavoriteResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
@@ -311,36 +312,34 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public FavoriteResponse createFavorite(TokenResponse tokenResponse, Long startStationId, Long endStationId) {
+    public void createFavorite(TokenResponse tokenResponse, Long startStationId, Long endStationId) {
         Map<String, String> params = new HashMap<>();
-        params.put("startStation", startStationId.toString());
-        params.put("name", endStationId.toString());
+        params.put("startStationId", startStationId.toString());
+        params.put("endStationId", endStationId.toString());
 
-        return
-                given().auth().
-                        oauth2(tokenResponse.getAccessToken()).
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/favorite").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(FavoriteResponse.class);
+        given().auth().
+                oauth2(tokenResponse.getAccessToken()).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members/favorite").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
     }
 
-    public FavoriteResponse findFavoriteById(TokenResponse tokenResponse) {
+    public MemberFavoriteResponse findFavoriteById(TokenResponse tokenResponse) {
         return
                 given().auth().
                         oauth2(tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/favorite").
+                        get("/members/favorite").
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
-                        extract().as(FavoriteResponse.class);
+                        extract().as(MemberFavoriteResponse.class);
     }
 }
 

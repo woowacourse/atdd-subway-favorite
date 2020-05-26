@@ -1,6 +1,6 @@
-package wooteco.subway.service.favorite.dto;
+package wooteco.subway.service.member.dto;
 
-import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.member.Favorite;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,6 +9,8 @@ public class FavoriteResponse {
     private Long id;
     private Long startStationId;
     private Long endStationId;
+
+    public FavoriteResponse() {}
 
     public FavoriteResponse(Long id, Long startStationId, Long endStationId) {
         this.id = id;

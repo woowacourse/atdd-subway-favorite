@@ -4,13 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.member.dto.MemberFavoriteResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.AuthAcceptanceTest.login;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -37,6 +37,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("")
     @Test
     void favoriteTest() {
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         List<StationResponse> stations = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE").getStations();
@@ -44,6 +45,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         StationResponse endStation = stations.get(stations.size() - 1);
 
         createFavorite(tokenResponse, startStation.getId(), endStation.getId());
-        findFavoriteById(tokenResponse);
+        MemberFavoriteResponse memberFavoriteResponse = findFavoriteById(tokenResponse);
+        assertThat(memberFavoriteResponse.getFavorites().size()).isEqualTo(1);
     }
 }

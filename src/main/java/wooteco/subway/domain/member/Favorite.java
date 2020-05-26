@@ -1,15 +1,22 @@
-package wooteco.subway.service.favorite.dto;
+package wooteco.subway.domain.member;
 
-public class FavoriteCreateRequest {
+import org.springframework.data.annotation.Id;
+
+public class Favorite {
+    @Id
+    private Long id;
     private Long startStationId;
     private Long endStationId;
 
-    public FavoriteCreateRequest() {
-    }
+    public Favorite() {}
 
-    public FavoriteCreateRequest(Long startStationId, Long endStationId) {
+    public Favorite(Long startStationId, Long endStationId) {
         this.startStationId = startStationId;
         this.endStationId = endStationId;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getStartStationId() {
