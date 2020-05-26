@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.FavoriteCreateRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -34,10 +35,12 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, jwtTokenProvider, stationRepository);
     }
 
     @Test

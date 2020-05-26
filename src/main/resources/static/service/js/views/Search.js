@@ -51,19 +51,22 @@ function Search() {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
+    const startStationId = document.querySelector('#start-station-id').dataset.startStationId
+    const endStationId = document.querySelector('#end-station-id').dataset.endStationId
+    const token = sessionStorage.getItem("accessToken");
 
-    if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
-    } else {
+    if (!isFavorite) {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
+      const favoriteInfo = {
+        startStationId: startStationId,
+        endStationId: endStationId
+      }
+      api.favorite
+          .create(token, favoriteInfo)
     }
   }
 

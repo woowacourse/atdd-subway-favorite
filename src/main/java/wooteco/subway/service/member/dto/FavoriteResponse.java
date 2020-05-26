@@ -1,42 +1,29 @@
 package wooteco.subway.service.member.dto;
 
-import wooteco.subway.domain.member.Favorite;
-
-import java.util.Set;
-import java.util.stream.Collectors;
+import wooteco.subway.domain.station.Station;
 
 public class FavoriteResponse {
     private Long id;
-    private Long startStationId;
-    private Long endStationId;
+    private Station startStation;
+    private Station endStation;
 
     public FavoriteResponse() {}
 
-    public FavoriteResponse(Long id, Long startStationId, Long endStationId) {
+    public FavoriteResponse(Long id, Station startStation, Station endStation) {
         this.id = id;
-        this.startStationId = startStationId;
-        this.endStationId = endStationId;
+        this.startStation = startStation;
+        this.endStation = endStation;
     }
 
-    public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), favorite.getStartStationId(), favorite.getEndStationId());
+    public Station getStartStation() {
+        return startStation;
     }
 
-    public static Set<FavoriteResponse> setOf(Set<Favorite> favorites) {
-        return favorites.stream()
-                .map(FavoriteResponse::of)
-                .collect(Collectors.toSet());
+    public Station getEndStation() {
+        return endStation;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getStartStationId() {
-        return startStationId;
-    }
-
-    public Long getEndStationId() {
-        return endStationId;
     }
 }

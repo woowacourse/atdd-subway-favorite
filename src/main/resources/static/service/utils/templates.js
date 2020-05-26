@@ -36,7 +36,7 @@ export const subwayLinesItemTemplate = line => {
 
 export const searchResultTemplate = result => {
   const lastIndex = result.stations.length - 1
-  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.name, index, lastIndex)).join('')
+  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.id, station.name, index, lastIndex)).join('')
   return `<div class="px-2 py-4 border-b">
       <div class="w-full flex mb-3">
         <div class="inline-block w-1/2 border-r text-center">
@@ -58,12 +58,11 @@ export const searchResultTemplate = result => {
     </div>`
 }
 
-export const pathStationTemplate = (name, index, lastIndex) => {
+export const pathStationTemplate = (id, name, index, lastIndex) => {
   return `
   ${
     index === 0 || index === lastIndex
-      ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
-        <span class="font-bold">${name}</span>`
+      ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500" ></span><span id="end-station-id" class="font-bold" data-end-station-id="${id}">${name}</span>` : `<span id="start-station-id" class="font-bold" data-start-station-id="${id}">${name}</span>`}`
       : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
          <span class="text-gray-600">${name}</span>
         `

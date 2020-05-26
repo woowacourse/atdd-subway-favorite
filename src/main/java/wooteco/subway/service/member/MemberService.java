@@ -4,20 +4,24 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.dto.FavoriteCreateRequest;
-import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberFavoriteResponse;
-import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.member.dto.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
+    private StationRepository stationRepository;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, StationRepository stationRepository) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.stationRepository = stationRepository;
     }
 
     public Member createMember(Member member) {
@@ -53,14 +57,35 @@ public class MemberService {
     }
 
     public MemberFavoriteResponse findFavorites(Member member) {
-        return MemberFavoriteResponse.of(member);
+        Set<Favorite> favorites = member.getFavorites();
+        Set<Long> stationIds = new HashSet<>();
+        favorites.forEach(favorite -> {
+            stationIds.add(favorite.getStartStationId());
+            stationIds.add(favorite.getEndStationId());
+        });
+
+        List<Station> stations = stationRepository.findAllById(stationIds);
+
+        Map<Long, Station> stationMap = new HashMap<>();
+
+        stations.forEach(station -> stationMap.put(station.getId(), station));
+
+        Set<FavoriteResponse> favoriteResponses = favorites.stream()
+                .map(it ->
+                        new FavoriteResponse(it.getId(),
+                                stationMap.get(it.getStartStationId()),
+                                stationMap.get(it.getEndStationId())))
+                .collect(Collectors.toSet());
+
+        return new MemberFavoriteResponse(member.getId(), favoriteResponses);
     }
 
     public void addFavorite(Member member, FavoriteCreateRequest favoriteCreateRequest) {
         member.addFavorite(new Favorite(favoriteCreateRequest.getStartStationId(),
-                        favoriteCreateRequest.getEndStationId()));
+                favoriteCreateRequest.getEndStationId()));
         memberRepository.save(member);
     }
+
 
     public void deleteFavoriteById(Member member, Long id) {
         member.removeFavorite(id);

@@ -15,10 +15,6 @@ public class MemberFavoriteResponse {
         this.favorites = favorites;
     }
 
-    public static MemberFavoriteResponse of(Member member) {
-        return new MemberFavoriteResponse(member.getId(), FavoriteResponse.setOf(member.getFavorites()));
-    }
-
     public Long getId() {
         return id;
     }

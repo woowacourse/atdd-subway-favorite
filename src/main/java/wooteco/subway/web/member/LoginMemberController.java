@@ -20,7 +20,6 @@ public class LoginMemberController {
         this.memberService = memberService;
     }
 
-    @RequiredAuth
     @PostMapping("/oauth/token")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest param) {
         String token = memberService.createToken(param);
