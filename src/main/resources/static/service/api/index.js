@@ -103,14 +103,13 @@ const api = (() => {
 
   const favorite = {
     create(token,data) {
-      console.log(data)
       return request(`/members/favorite`, METHOD.POST_WITH_TOKEN(token,data))
     },
     getFavoriteByMember(token) {
       return requestWithJsonData(`/members/favorite`, METHOD.GET_WITH_TOKEN(token))
     },
     delete(token, favoriteId) {
-      return requestWithJsonData(`/members/favorite/${favoriteId}`, METHOD.DELETE_WITH_TOKEN(token))
+      return request(`/members/favorite/${favoriteId}`, METHOD.DELETE_WITH_TOKEN(token))
     }
   }
 
