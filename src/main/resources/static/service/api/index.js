@@ -72,7 +72,7 @@ const api = (() => {
 
   const loginMember = {
     get() {
-      return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonData(`/members`, METHOD.GET_WITH_AUTH());
     },
     update(updatedInfo) {
       return request(`/me`, METHOD.PUT(updatedInfo));

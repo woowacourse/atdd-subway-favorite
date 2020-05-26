@@ -1,23 +1,17 @@
-import { edgeItemTemplate } from "../../utils/templates.js";
+import {edgeItemTemplate} from "../../utils/templates.js";
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
-import {
-  EVENT_TYPE,
-  SUCCESS_MESSAGE,
-  ERROR_MESSAGE
-} from "../../utils/constants.js";
+import {ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE} from "../../utils/constants.js";
 
 function Favorite() {
   const $favoriteList = document.querySelector("#favorite-list");
 
   const initFavoriteList = async () => {
     try {
-      const template = await api.favorite
-        .getAll()
-        .then(favorites =>
-          favorites.map(edge => edgeItemTemplate(edge)).join("")
-        );
-      $favoriteList.innerHTML = template;
+      const template = await api.favorite.getAll();
+      const favorites = template.favoriteResponses;
+      console.log(favorites);
+      $favoriteList.innerHTML = favorites.map(favorite => edgeItemTemplate(favorite)).join("");
     } catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
