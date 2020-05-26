@@ -70,10 +70,11 @@ public class MemberControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         mvc.perform(get("/members?email=" + TEST_USER_EMAIL))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .string("{\"id\":63,\"email\":\"bossdog@email.com\",\"name\":\"boss\"}"));
+                        .string("{\"id\":63,\"email\":\"bossdog@email.com\",\"name\":\"boss\"}"))
+                .andDo(print())
+                .andDo(MemberDocumentation.getMember());
 
         verify(memberService).findMemberByEmail(eq(TEST_USER_EMAIL));
     }
@@ -89,7 +90,8 @@ public class MemberControllerTest {
                 .content("{\"name\":\"보스독\",\"password\":\"ysys\"}"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(MemberDocumentation.updateMember());;
+                .andDo(MemberDocumentation.updateMember());
+        ;
 
         verify(memberService).updateMember(eq(member.getId()), any());
     }
@@ -99,8 +101,9 @@ public class MemberControllerTest {
         final Member member = new Member(63L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
         mvc.perform(delete("/members/" + member.getId()))
+                .andExpect(status().isNoContent())
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andDo(MemberDocumentation.deleteMember());
 
         verify(memberService).deleteMember(eq(member.getId()));
     }

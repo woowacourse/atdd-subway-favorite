@@ -6,8 +6,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
@@ -33,5 +33,22 @@ public class MemberDocumentation {
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
                 )
         );
+    }
+
+    public static RestDocumentationResultHandler getMember() {
+        return document("members/get",
+                requestParameters(
+                        parameterWithName("email").description("find by user email")
+                ),
+                responseFields(
+                        fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
+                )
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteMember() {
+        return document("members/delete");
     }
 }
