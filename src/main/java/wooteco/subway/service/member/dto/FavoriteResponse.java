@@ -21,4 +21,8 @@ public class FavoriteResponse {
     public String getTarget() {
         return target;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

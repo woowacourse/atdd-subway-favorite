@@ -97,6 +97,15 @@ const api = (() => {
           'Authorization' : 'bearer ' + localStorage.getItem("jwt")
         }
       });
+    },
+    delete(id){
+      return request('/members/favorites/' + id, {
+        method : 'delete',
+        headers : {
+          'content-type': 'application/json',
+          'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+        }
+      });
     }
   }
 
