@@ -1,4 +1,7 @@
-package wooteco.subway.service.favorite.dto;
+package wooteco.subway.service.member.favorite.dto;
+
+
+import wooteco.subway.domain.member.favorite.Favorite;
 
 public class FavoriteRequest {
     private String source;
@@ -18,5 +21,9 @@ public class FavoriteRequest {
 
     public String getTarget() {
         return target;
+    }
+
+    public Favorite toFavorite() {
+        return new Favorite(source, target);
     }
 }

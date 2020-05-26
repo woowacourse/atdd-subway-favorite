@@ -3,9 +3,9 @@ package wooteco.subway.web;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.service.favorite.FavoriteService;
-import wooteco.subway.service.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.favorite.FavoriteService;
+import wooteco.subway.service.member.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.member.LoginMember;
 
 import java.net.URI;

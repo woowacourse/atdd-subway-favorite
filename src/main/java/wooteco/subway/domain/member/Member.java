@@ -2,6 +2,11 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import wooteco.subway.domain.member.favorite.Favorite;
+
+import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class Member {
     @Id
@@ -9,14 +14,9 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    private Set<Favorite> favorites = new LinkedHashSet<>();
 
     public Member() {
-    }
-
-    public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
     }
 
     public Member(Long id, String email, String name, String password) {
@@ -24,6 +24,27 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    public Member(String email, String name, String password) {
+        this(null, email, name, password);
+    }
+
+    public void update(String name, String password) {
+        if (StringUtils.isNotBlank(name)) {
+            this.name = name;
+        }
+        if (StringUtils.isNotBlank(password)) {
+            this.password = password;
+        }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 
     public Long getId() {
@@ -42,16 +63,23 @@ public class Member {
         return password;
     }
 
-    public void update(String name, String password) {
-        if (StringUtils.isNotBlank(name)) {
-            this.name = name;
-        }
-        if (StringUtils.isNotBlank(password)) {
-            this.password = password;
-        }
+    public Set<Favorite> getFavorites() {
+        return favorites;
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public Favorite findSameFavorite(Favorite favorite) {
+        return favorites.stream()
+                .filter(item -> item.isSame(favorite))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    public void removeFavorite(Long id) {
+        Favorite removedFavorite = favorites.stream()
+                .filter(favorite -> favorite.isSameId(id))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+
+        favorites.remove(removedFavorite);
     }
 }
