@@ -49,3 +49,5 @@ bootJar {
 		into 'static/docs'
 	}
 }
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

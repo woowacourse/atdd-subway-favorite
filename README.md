@@ -24,4 +24,4 @@
 - [x] Line API 문서
 - [x] Station API 문서
 - [x] Member API 문서
-- [ ] Favorite API 문서
+- [x] Favorite API 문서
