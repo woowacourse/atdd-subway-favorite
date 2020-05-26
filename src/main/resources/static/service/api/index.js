@@ -76,10 +76,26 @@ const api = (() => {
     }
   }
 
+  const favorite = {
+    add(params){
+      return request('/members/favorites', {
+        method : 'post',
+        headers : {
+          'content-type': 'application/json',
+          'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+        },
+        body: JSON.stringify({
+          ...params
+        })
+      });
+    },
+  }
+
   return {
     line,
     path,
-    member
+    member,
+    favorite
   }
 })()
 
