@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.FavoriteExistResponse;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -66,8 +68,15 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(FavoriteResponse.of(memberService.getFavorites(member)));
     }
 
+    @GetMapping("/me/favorites/from/{sourceId}/to/{targetId}")
+    public ResponseEntity<FavoriteExistResponse> hasFavorite(@LoginMember Member member,
+        @PathVariable Long sourceId, @PathVariable Long targetId) {
+        return ResponseEntity.ok().body(new FavoriteExistResponse(memberService.hasFavorite(member, sourceId, targetId)));
+    }
+
     @DeleteMapping("/me/favorites")
-    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @RequestBody FavoriteRequest favoriteRequest) {
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member,
+        @RequestBody FavoriteRequest favoriteRequest) {
         memberService.removeFavorite(member, favoriteRequest.toFavorite());
         return ResponseEntity.noContent().build();
     }

@@ -68,6 +68,10 @@ public class Member {
         favorites.add(favorite);
     }
 
+    public boolean hasFavorite(Favorite favorite) {
+        return favorites.contains(favorite);
+    }
+
     public void removeFavorite(Favorite favorite) {
         favorites.remove(favorite);
     }

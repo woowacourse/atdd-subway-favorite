@@ -78,4 +78,8 @@ public class MemberService {
         member.removeFavorite(favorite);
         memberRepository.save(member);
     }
+
+    public boolean hasFavorite(Member member, Long sourceId, Long targetId) {
+         return member.hasFavorite(new Favorite(sourceId, targetId));
+    }
 }
