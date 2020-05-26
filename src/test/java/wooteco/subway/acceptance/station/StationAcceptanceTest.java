@@ -9,7 +9,6 @@ import wooteco.subway.AcceptanceTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@Disabled
 public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 관리한다")
     @Test

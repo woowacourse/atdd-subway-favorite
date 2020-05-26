@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-@Disabled
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
     private static final String STATION_NAME1 = "강남역";

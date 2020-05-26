@@ -15,7 +15,6 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@Disabled
 @SpringBootTest
 @Sql("/truncate.sql")
 public class StationServiceTest {

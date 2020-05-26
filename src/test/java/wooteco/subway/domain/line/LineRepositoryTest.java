@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@Disabled
 @DataJdbcTest
 public class LineRepositoryTest {
     @Autowired

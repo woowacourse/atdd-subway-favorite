@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-@Disabled
 @DataJdbcTest
 public class StationRepositoryTest {
     @Autowired

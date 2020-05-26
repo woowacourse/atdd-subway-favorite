@@ -9,7 +9,6 @@ import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.AcceptanceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@Disabled
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")

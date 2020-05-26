@@ -11,7 +11,7 @@ import wooteco.subway.service.station.dto.StationResponse;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@Disabled
+
 public class PathAcceptanceTest extends AcceptanceTest {
     @Override
     @BeforeEach
