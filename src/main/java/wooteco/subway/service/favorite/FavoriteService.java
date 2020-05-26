@@ -22,6 +22,10 @@ public class FavoriteService {
     }
 
     public FavoriteResponse addFavorite(final Long memberId, final FavoriteRequest request) {
+        if (favoriteRepository.existsByMemberIdAndSourceIdAndTargetId(
+                memberId, request.getSource(), request.getTarget())) {
+            throw new ExistedFavoriteException();
+        }
         Favorite favorite = favoriteRepository.save(request.toFavorite(memberId));
         return FavoriteResponse.from(favorite);
     }

@@ -49,40 +49,44 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void addMyFavorite(final TokenResponse token, final Long source, final Long target) {
         FavoriteRequest request = new FavoriteRequest(source, target);
-
+        // @formatter:off
         given().
                 header("Authorization", token.getTokenType() + " " + token.getAccessToken()).
                 body(request).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/favorites").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value());
+        // @formatter:on
     }
 
     private List<FavoriteResponse> getAllMyFavorites(final TokenResponse token) {
+        // @formatter:off
         return given().
                 header("Authorization", token.getTokenType() + " " + token.getAccessToken()).
-                when().
+        when().
                 get("/favorites").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract().
                 jsonPath().getList(".", FavoriteResponse.class);
+        // @formatter:on
     }
 
     private void removeFavorite(final TokenResponse token, final Long id) {
+        // @formatter:off
         given().
                 header("Authorization", token.getTokenType() + " " + token.getAccessToken()).
-                when().
+        when().
                 delete("/favorites/" + id).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
-
+        // @formatter:on
     }
 
 }

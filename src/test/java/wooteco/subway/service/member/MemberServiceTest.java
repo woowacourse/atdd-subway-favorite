@@ -16,6 +16,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,15 +48,23 @@ public class MemberServiceTest {
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
         memberService.createMember(member);
-
         verify(memberRepository).save(any());
     }
 
-    @DisplayName("로그인")
+    @DisplayName("이미 등록된 이메일로 회원가입")
     @Test
-    void createToken() {
+    void failCreatingMember() {
+        assertThatThrownBy(() -> {
+            Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+            when(memberRepository.existsByEmail(any())).thenReturn(true);
+            memberService.createMember(member);
+        }).isInstanceOf(ExistedEmailException.class);
+    }
+
+    @DisplayName("로그인 성공")
+    @Test
+    void createTokenWithValidAttributes() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
@@ -63,6 +72,31 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @DisplayName("로그인 실패 - 이메일 없음")
+    @Test
+    void loginFailWithNotExistedEmail() {
+        assertThatThrownBy(() -> {
+            final LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+            when(memberService.findMemberByEmail(any())).thenReturn(null);
+
+            memberService.createToken(request);
+        }).isInstanceOf(NotExistedEmailException.class);
+    }
+
+    @DisplayName("로그인 실패 - 잘못된 비밀 번호")
+    @Test
+    void loginFailWithWrongPassword() {
+        assertThatThrownBy(() -> {
+            final LoginRequest request = new LoginRequest(TEST_USER_EMAIL, "wrong password");
+            final Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+            when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
+
+            memberService.createToken(request);
+        }).isInstanceOf(WrongPasswordException.class);
     }
 
     @DisplayName("회원 정보 수정")

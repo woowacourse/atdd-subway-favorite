@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -49,6 +50,16 @@ class FavoriteServiceTest {
         assertThat(response.getMemberId()).isEqualTo(63L);
         assertThat(response.getSourceStationId()).isEqualTo(1L);
         assertThat(response.getTargetStationId()).isEqualTo(3L);
+    }
+
+    @DisplayName("이미 등록된 즐겨찾기 추가할 경우 예외발생")
+    @Test
+    public void addFavoriteWithDuplicatedAttributes() {
+        assertThatThrownBy(() -> {
+            when(favoriteRepository.existsByMemberIdAndSourceIdAndTargetId(any(), any(), any())).thenReturn(true);
+
+            favoriteService.addFavorite(63L, new FavoriteRequest(1L, 3L));
+        }).isInstanceOf(ExistedFavoriteException.class);
     }
 
     @DisplayName("즐겨찾기 조회 by 회원 ID")

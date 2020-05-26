@@ -23,11 +23,15 @@ public class MemberService {
     }
 
     public Member createMember(final Member member) {
+        if (memberRepository.existsByEmail(member.getEmail())) {
+            throw new ExistedEmailException();
+        }
         return memberRepository.save(member);
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(NotExistUserException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(NotExistUserException::new);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -38,14 +42,16 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(NotExistUserException::new);
+        Member member = memberRepository.findByEmail(param.getEmail())
+                .orElseThrow(NotExistedEmailException::new);
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new WrongPasswordException();
         }
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(NotExistedEmailException::new);
     }
 }
