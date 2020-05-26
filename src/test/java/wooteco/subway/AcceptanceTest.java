@@ -47,6 +47,8 @@ public class AcceptanceTest {
     public static final String TEST_INVALID_USER_EMAIL = "brown.borwn";
     public static final String TEST_INVALID_USER_NAME = "";
 
+    public static final Long TEST_START_STATION_ID = 1L;
+    public static final Long TEST_END_STATION_ID = 2L;
 
     @LocalServerPort
     public int port;

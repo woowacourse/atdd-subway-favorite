@@ -56,4 +56,16 @@ public class MemberDocumentation {
                 )
         );
     }
+
+    public static RestDocumentationResultHandler createFavorite() {
+        return document("members/favorite/create",
+                requestFields(
+                        fieldWithPath("startStationId").type(JsonFieldType.STRING).description("Start Station Id"),
+                        fieldWithPath("endStationId").type(JsonFieldType.STRING).description("End Station Id")
+                ),
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                )
+        );
+    }
 }

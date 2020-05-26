@@ -56,7 +56,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void createMember() throws Exception {
+    void createMember() throws Exception {
         given(memberService.createMember(any())).willReturn(member);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -101,7 +101,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void findMemberByEmail() throws Exception {
+    void findMemberByEmail() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         this.mockMvc.perform(get("/members")
@@ -115,7 +115,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void updateMember() throws Exception {
+    void updateMember() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
         String inputJson =
                 "{\"name\":\"" + "NEW" + TEST_USER_NAME + "\"," +
@@ -148,7 +148,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void deleteMember() throws Exception {
+    void deleteMember() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
         String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
         this.mockMvc.perform(delete("/members")
@@ -158,5 +158,23 @@ public class MemberControllerTest {
                 .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember());
+    }
+
+    @Test
+    void createFavorite() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
+
+        String inputJson = "{\"startStationId\":\"" + TEST_START_STATION_ID + "\"," +
+                "\"endStationId\":\"" + TEST_END_STATION_ID + "\"}";
+
+        this.mockMvc.perform(post("/members/favorite")
+                .header("Authorization", "bearer " + token)
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.createFavorite());
     }
 }

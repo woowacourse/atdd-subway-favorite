@@ -40,3 +40,8 @@ operation::members/delete[snippets='http-request,http-response,request-headers']
 === 로그인
 
 operation::members/login[snippets='http-request,http-response']
+
+[[resources-members-favorite]]
+=== 즐겨찾기
+
+operation::members/favorite/create[snippets='http-request,http-response']
