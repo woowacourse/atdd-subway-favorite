@@ -50,6 +50,14 @@ const METHOD = {
       })
     }
   },
+  DELETE_WITH_TOKEN(token) {
+    return {
+      method: 'DELETE',
+      headers: {
+        'Authorization': token,
+      }
+    }
+  }
 }
 
 const api = (() => {
@@ -98,6 +106,9 @@ const api = (() => {
     },
     findFavorites(token) {
       return requestWithJsonData(`/members/favorites`, METHOD.GET_WITH_AUTH(token))
+    },
+    deleteFavorite(token, id) {
+      return request(`/members/favorites/${id}`, METHOD.DELETE_WITH_TOKEN(token, id))
     }
   }
 
