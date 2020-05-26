@@ -3,6 +3,7 @@ package wooteco.subway.domain.member;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 public class Member {
     @Id
@@ -58,8 +59,10 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public boolean hasNotSameId(Long id) {
-        return !this.id.equals(id);
+    public void validateId(Long id) {
+        if (!this.id.equals(id)) {
+            throw new InvalidAuthenticationException("니 아이디 아님");
+        }
     }
 
     public Long getId() {

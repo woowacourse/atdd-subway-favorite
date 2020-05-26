@@ -40,22 +40,16 @@ public class MemberController {
             @RequestBody UpdateMemberRequest param,
             @LoginMember Member member
     ) {
-        validateAuthentication(id, member);
+        member.validateId(id);
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
-    }
-
-    private void validateAuthentication(Long id, Member member) {
-        if (member.hasNotSameId(id)) {
-            throw new InvalidAuthenticationException("니 아이디 아님");
-        }
     }
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(
             @PathVariable Long id,
             @LoginMember Member member) {
-        validateAuthentication(id, member);
+        member.validateId(id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }

@@ -15,12 +15,15 @@ public class FavoriteService {
 		this.memberRepository = memberRepository;
 	}
 
-	public void addFavorite(long memberId, long sourceId, long targetId) {
+	public Favorite addFavorite(long memberId, long sourceId, long targetId) {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(NoMemberExistException::new);
 
-		member.addFavorite(Favorite.of(sourceId, targetId));
+		Favorite favorite = Favorite.of(sourceId, targetId);
+		member.addFavorite(favorite);
 		memberRepository.save(member);
+
+		return favorite;
 	}
 
 	public void removeFavorite(long memberId, long sourceId, long targetId) {
