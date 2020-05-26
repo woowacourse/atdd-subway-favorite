@@ -1,13 +1,23 @@
 package wooteco.subway;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -15,12 +25,6 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -41,6 +45,9 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+
+    public static final String TEST_SOURCE = "강남역";
+    public static final String TEST_TARGET = "잠실역";
 
     @LocalServerPort
     public int port;
@@ -343,13 +350,57 @@ public class AcceptanceTest {
 
     public void deleteMember(TokenResponse tokenResponse) {
         given().
-                auth().
-                oauth2(tokenResponse.getAccessToken()).
-                when().
-                delete("/members/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+            auth().
+            oauth2(tokenResponse.getAccessToken()).
+            when().
+            delete("/members/me").
+            then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
     }
+
+    public String createFavorite(TokenResponse tokenResponse) {
+        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(
+            TEST_SOURCE, TEST_TARGET);
+
+        return given().log().all().
+            auth().
+            oauth2(tokenResponse.getAccessToken()).
+            body(favoriteCreateRequest).
+            when().
+            post("/favorites/me").
+            then().log().all().
+            statusCode(HttpStatus.CREATED.value()).
+            extract().header("location");
+    }
+
+    public List<FavoriteResponse> getFavorites(TokenResponse tokenResponse) {
+        return given().log().all().
+            auth().
+            oauth2(tokenResponse.getAccessToken()).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            get("/favorites/me").
+            then().log().all().
+            statusCode(HttpStatus.OK.value()).
+            extract().jsonPath().
+            getList(".", FavoriteResponse.class);
+    }
+
+    public void deleteFavorite(TokenResponse tokenResponse) {
+        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(
+            TEST_SOURCE, TEST_TARGET);
+
+        given().log().all().
+            auth().
+            oauth2(tokenResponse.getAccessToken()).
+            body(favoriteDeleteRequest).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            delete("/favorites/me").
+            then().
+            statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
 }
 

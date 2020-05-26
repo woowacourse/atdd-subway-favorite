@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.station.StationService;
 
@@ -69,7 +70,7 @@ public class PageController {
         return "service/mypage-edit";
     }
 
-    @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/favorites-page", produces = MediaType.TEXT_HTML_VALUE)
     public String favoritesPage() {
         return "service/favorite";
     }
