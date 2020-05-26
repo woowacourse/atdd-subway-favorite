@@ -3,7 +3,7 @@ package wooteco.subway.web.member.favorite;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Favorite;
-import wooteco.subway.domain.member.Favorites;
+import wooteco.subway.domain.member.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.favorite.FavoriteService;
 import wooteco.subway.service.member.favorite.dto.AddFavoriteRequest;
@@ -12,6 +12,7 @@ import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 import wooteco.subway.web.member.LoginMember;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class FavoriteController {
@@ -40,9 +41,10 @@ public class FavoriteController {
 			@LoginMember Member member
 	) {
 		member.validateId(id);
-		Favorites favorites = favoriteService.readFavorites(id);
+		List<FavoriteDetail> favoriteDetails = favoriteService.readFavorites(id);
+
 		return ResponseEntity.ok()
-				.body(FavoritesResponse.of(favorites, id));
+				.body(new FavoritesResponse(favoriteDetails));
 	}
 
 	@DeleteMapping("/members/{memberId}/favorites/source/{sourceId}/target/{targetId}")

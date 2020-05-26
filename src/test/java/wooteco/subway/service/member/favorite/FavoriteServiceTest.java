@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
 
 import java.util.Optional;
 
@@ -25,10 +26,12 @@ public class FavoriteServiceTest {
 
 	@Mock
 	private MemberRepository memberRepository;
+	@Mock
+	private StationRepository stationRepository;
 
 	@BeforeEach
 	void setUp() {
-		this.favoriteService = new FavoriteService(memberRepository);
+		this.favoriteService = new FavoriteService(memberRepository, stationRepository);
 	}
 
 	@DisplayName("즐겨찾기 추가 서비스")

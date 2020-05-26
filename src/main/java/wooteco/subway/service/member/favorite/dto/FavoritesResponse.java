@@ -1,27 +1,17 @@
 package wooteco.subway.service.member.favorite.dto;
 
-import wooteco.subway.domain.member.Favorites;
+import wooteco.subway.domain.member.FavoriteDetail;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class FavoritesResponse {
-	private Set<FavoriteResponse> favorites;
+	private List<FavoriteDetail> favorites;
 
-	public FavoritesResponse(Set<FavoriteResponse> favorites) {
+	public FavoritesResponse(List<FavoriteDetail> favorites) {
 		this.favorites = favorites;
 	}
 
-	public static FavoritesResponse of(Favorites favorites, Long memberId) {
-		Set<FavoriteResponse> favoriteResponses = favorites.getFavorites()
-				.stream()
-				.map(favorite -> FavoriteResponse.of(memberId, favorite))
-				.collect(Collectors.toSet());
-
-		return new FavoritesResponse(favoriteResponses);
-	}
-
-	public Set<FavoriteResponse> getFavoritesResponse() {
+	public List<FavoriteDetail> getFavoritesResponse() {
 		return favorites;
 	}
 }

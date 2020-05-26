@@ -2,18 +2,23 @@ package wooteco.subway.service.member.favorite;
 
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.member.Favorite;
-import wooteco.subway.domain.member.Favorites;
-import wooteco.subway.domain.member.Member;
-import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.member.*;
+import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.NoMemberExistException;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
 	private MemberRepository memberRepository;
+	private StationRepository stationRepository;
 
-	public FavoriteService(MemberRepository memberRepository) {
+	public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
 		this.memberRepository = memberRepository;
+		this.stationRepository = stationRepository;
 	}
 
 	public Favorite addFavorite(long memberId, long sourceId, long targetId) {
@@ -27,11 +32,21 @@ public class FavoriteService {
 		return favorite;
 	}
 
-	public Favorites readFavorites(long memberId) {
+	public List<FavoriteDetail> readFavorites(long memberId) {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(NoMemberExistException::new);
 
-		return member.getFavorites();
+		Favorites favorites = member.getFavorites();
+		Set<Long> ids = favorites.extractStationIds();
+		Stations stations = new Stations(stationRepository.findAllById(ids));
+
+		return favorites.getFavorites().stream()
+				.map(favorite -> FavoriteDetail.of(
+						memberId,
+						favorite,
+						stations.extractStationById(favorite.getSourceId()).getName(),
+						stations.extractStationById(favorite.getTargetId()).getName()))
+				.collect(Collectors.toList());
 	}
 
 	public void removeFavorite(long memberId, long sourceId, long targetId) {

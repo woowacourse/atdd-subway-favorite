@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.domain.member.Favorite;
-import wooteco.subway.domain.member.Favorites;
+import wooteco.subway.domain.member.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
@@ -25,7 +25,7 @@ import wooteco.subway.service.member.favorite.FavoriteService;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -59,7 +59,7 @@ public class FavoriteControllerTest {
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders
 				.webAppContextSetup(webApplicationContext)
-				.addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print()) // TODO: 2020/05/21 개꿀
+				.addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print())
 				.apply(documentationConfiguration(restDocumentation))
 				.build();
 	}
@@ -89,8 +89,7 @@ public class FavoriteControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.sourceId").value(1L))
-				.andExpect(jsonPath("$.targetId").value(2L))
-				.andDo(print());
+				.andExpect(jsonPath("$.targetId").value(2L));
 //				.andDo(MemberDocumentation.readMember());
 	}
 
@@ -99,12 +98,11 @@ public class FavoriteControllerTest {
 	void readFavorite() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-		Favorite favorite = Favorite.of(1L, 2L);
-		Favorite favorite2 = Favorite.of(2L, 3L);
-		Favorite favorite3 = Favorite.of(3L, 4L);
-		Favorites favorites = new Favorites(new HashSet<>(Arrays.asList(favorite, favorite2, favorite3)));
 
-		when(favoriteService.readFavorites(anyLong())).thenReturn(favorites);
+		List<FavoriteDetail> favoriteDetails = Arrays.asList(new FavoriteDetail(1L, 1L, 2L, "유안", "토니"),
+				new FavoriteDetail(1L, 2L, 3L, "토니", "코즈"));
+
+		when(favoriteService.readFavorites(anyLong())).thenReturn(favoriteDetails);
 		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
 		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
 		given(jwtTokenProvider.validateToken(any())).willReturn(true);
@@ -119,8 +117,7 @@ public class FavoriteControllerTest {
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.favoritesResponse").isArray())
-				.andDo(print());
+				.andExpect(jsonPath("$.favoritesResponse").isArray());
 //				.andDo(MemberDocumentation.readMember());
 	}
 
@@ -143,8 +140,7 @@ public class FavoriteControllerTest {
 				.header("authorization", "Bearer " + TEST_USER_TOKEN)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andDo(print());
+				.andExpect(status().isOk());
 //				.andDo(MemberDocumentation.readMember());
 	}
 }
