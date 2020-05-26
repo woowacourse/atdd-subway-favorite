@@ -110,8 +110,7 @@ public class MemberServiceTest {
         // then
         verify(memberRepository).deleteById(member.getId());
     }
-
-    // TODO: 2020/05/20 페이지 연동
+    
     // TODO: 2020/05/25 전반적인 리팩토링
 
     // TODO: 2020/05/22 sendError와 controllerAdvice 선택해서 반영

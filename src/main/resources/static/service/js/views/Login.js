@@ -1,4 +1,4 @@
-import { ERROR_MESSAGE, EVENT_TYPE } from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE, KEY_TYPE } from "../../utils/constants.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 import api from "../../api/index.js";
 
@@ -8,25 +8,26 @@ function Login() {
   const $password = document.querySelector("#password");
 
   const onLogin = async event => {
-    event.preventDefault();
-    if (!isValid()) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
-      return;
-    }
-    try {
-      const loginMember = {
-        email: $email.value,
-        password: $password.value
-      };
-      const jwt = await api.member.login(loginMember);
-      if (jwt) {
-        localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
-        location.href = "/";
+    if (event.type === EVENT_TYPE.CLICK || event.key === KEY_TYPE.ENTER) {
+      if (!isValid()) {
+        showSnackbar(ERROR_MESSAGE.COMMON);
         return;
       }
-      showSnackbar(ERROR_MESSAGE.COMMON);
-    } catch (e) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      try {
+        const loginMember = {
+          email: $email.value,
+          password: $password.value
+        };
+        const jwt = await api.member.login(loginMember);
+        if (jwt) {
+          localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
+          location.href = "/";
+          return;
+        }
+        showSnackbar(ERROR_MESSAGE.COMMON);
+      } catch (e) {
+        showSnackbar(ERROR_MESSAGE.COMMON);
+      }
     }
   };
 
@@ -38,6 +39,7 @@ function Login() {
 
   this.init = () => {
     $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin);
+    $password.addEventListener(EVENT_TYPE.KEY_PRESS, onLogin);
   };
 }
 
