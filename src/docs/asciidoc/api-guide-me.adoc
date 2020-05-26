@@ -56,3 +56,10 @@ operation::me/delete[snippets='curl-request,http-request,http-response']
 === 내 정보 삭제 예외
 
 operation::me/deleteException[snippets='curl-request,http-request,http-response']
+
+'''
+
+[[resources-me-favorites]]
+=== 내 즐겨 찾기 목록
+
+operation::me/favorites[snippets='curl-request,http-request,http-response']

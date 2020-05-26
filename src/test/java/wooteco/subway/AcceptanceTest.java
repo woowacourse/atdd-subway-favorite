@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
@@ -25,7 +26,12 @@ import wooteco.subway.service.station.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class AcceptanceTest {
+	public static final long TIGER_ID = 1L;
+	public static final String TIGER_EMAIL = "tiger@luv.com";
+	public static final String TIGER_NAME = "tiger";
+	public static final String TIGER_PASSWORD = "prettiger";
 	public static final String STATION_NAME_KANGNAM = "강남역";
 	public static final String STATION_NAME_YEOKSAM = "역삼역";
 	public static final String STATION_NAME_SEOLLEUNG = "선릉역";

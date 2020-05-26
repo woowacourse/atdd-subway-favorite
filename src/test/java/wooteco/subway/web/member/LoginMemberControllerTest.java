@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import wooteco.subway.service.member.MemberService;
@@ -23,6 +24,7 @@ import wooteco.subway.service.member.dto.TokenResponse;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:application-test.properties")
 class LoginMemberControllerTest {
     private static final String TIGER_EMAIL = "tiger@luv.com";
     private static final String TIGER_PASSWORD = "prettiger";

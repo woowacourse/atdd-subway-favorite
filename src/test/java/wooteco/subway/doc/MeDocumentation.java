@@ -15,7 +15,6 @@ public class MeDocumentation {
 			requestHeaders(
 				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
 			),
-
 			responseFields(
 				fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
 				fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
@@ -77,6 +76,26 @@ public class MeDocumentation {
 			),
 			responseHeaders(
 				headerWithName(HttpHeaders.LOCATION).description("location to redirect")
+			)
+		);
+	}
+
+	public static ResultHandler getFavorites() {
+		return document("me/favorites",
+			requestHeaders(
+				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
+			),
+			responseFields(
+				fieldWithPath("[].sourceStation.id").type(JsonFieldType.NUMBER).description("The sourceStation's id"),
+				fieldWithPath("[].sourceStation.name").type(JsonFieldType.STRING)
+					.description("The sourceStation's name"),
+				fieldWithPath("[].sourceStation.createdAt").type(JsonFieldType.STRING)
+					.description("The sourceStation's createAt time"),
+				fieldWithPath("[].targetStation.id").type(JsonFieldType.NUMBER).description("The targetStation's id"),
+				fieldWithPath("[].targetStation.name").type(JsonFieldType.STRING)
+					.description("The targetStation's name"),
+				fieldWithPath("[].targetStation.createdAt").type(JsonFieldType.STRING)
+					.description("The targetStation's createAt time")
 			)
 		);
 	}

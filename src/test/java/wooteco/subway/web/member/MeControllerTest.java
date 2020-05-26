@@ -6,8 +6,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -30,19 +36,29 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MeDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.station.dto.StationResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class MeControllerTest {
     private static final long TIGER_ID = 1L;
     private static final String TIGER_EMAIL = "tiger@luv.com";
     private static final String TIGER_NAME = "tiger";
     private static final String TIGER_PASSWORD = "prettiger";
 
+    private static final Long SOURCE_STATION_ID = 1L;
+    private static final Long TARGET_STATION_ID = 2L;
+
     @MockBean
     MemberService memberService;
+
+    @MockBean
+    FavoriteService favoriteService;
 
     @Autowired
     MockMvc mockMvc;
@@ -159,6 +175,85 @@ public class MeControllerTest {
             .andExpect(header().string(HttpHeaders.LOCATION, "/login"))
             .andDo(print())
             .andDo(MeDocumentation.deleteMemberException())
+        ;
+    }
+
+    @Disabled
+    @DisplayName("즐겨찾기에 해당 경로가 등록되어있는지 확인")
+    @Test
+    void getFavoriteByPath() throws Exception {
+        String expected = "{\"existence\" : " + true + "}";
+
+        this.mockMvc.perform(
+            get("/me/favorites/source/{sourceId}/target/{targetId}", SOURCE_STATION_ID, TARGET_STATION_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token))
+            .andExpect(status().isOk())
+            .andExpect(content().json(expected))
+            .andDo(print())
+            .andDo(MeDocumentation.deleteMember())
+        ;
+    }
+
+    @Disabled
+    @DisplayName("즐겨찾기에 경로 추가")
+    @Test
+    void addFavorite() throws Exception {
+        String body =
+            "{\"sourceStationId\" : " + SOURCE_STATION_ID + ", \"targetStationId\" : " + TARGET_STATION_ID + "}";
+
+        this.mockMvc.perform(post("/me/favorites")
+            .accept(MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .content(body))
+            .andExpect(status().isCreated())
+            .andDo(print())
+            .andDo(MeDocumentation.deleteMember())
+        ;
+    }
+
+    @Disabled
+    @DisplayName("즐겨찾기에서 경로 제거")
+    @Test
+    void removeFavorite() throws Exception {
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/me/favorites/source/{sourceId}/target/{targetId}",
+                SOURCE_STATION_ID, TARGET_STATION_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(MeDocumentation.deleteMember())
+        ;
+    }
+
+    @DisplayName("즐겨찾기 전체 목록을 조회.")
+    @Test
+    void getFavorites() throws Exception {
+        LocalDateTime createdTime = LocalDateTime.of(2020, 5, 26, 14, 18, 18);
+        StationResponse gangnam = new StationResponse(1L, "강남", createdTime);
+        StationResponse gangbuk = new StationResponse(2L, "강북", createdTime);
+        StationResponse gangdong = new StationResponse(3L, "강동", createdTime);
+
+        List<FavoriteResponse> favoriteResponses = Arrays.asList(new FavoriteResponse(gangbuk, gangdong),
+            new FavoriteResponse(gangbuk, gangnam), new FavoriteResponse(gangnam, gangdong));
+
+        String expected = "[{\"sourceStation\":{\"id\":2,\"name\":\"강북\",\"createdAt\":\"2020-05-26T14:18:18\"},"
+            + "\"targetStation\":{\"id\":3,\"name\":\"강동\",\"createdAt\":\"2020-05-26T14:18:18\"}},"
+            + "{\"sourceStation\":{\"id\":2,\"name\":\"강북\",\"createdAt\":\"2020-05-26T14:18:18\"},"
+            + "\"targetStation\":{\"id\":1,\"name\":\"강남\",\"createdAt\":\"2020-05-26T14:18:18\"}},"
+            + "{\"sourceStation\":{\"id\":1,\"name\":\"강남\",\"createdAt\":\"2020-05-26T14:18:18\"},"
+            + "\"targetStation\":{\"id\":3,\"name\":\"강동\",\"createdAt\":\"2020-05-26T14:18:18\"}}]";
+
+        when(favoriteService.getFavorites(any())).thenReturn(favoriteResponses);
+        this.mockMvc.perform(get("/me/favorites")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .header(HttpHeaders.AUTHORIZATION, token))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().json(expected))
+            .andDo(MeDocumentation.getFavorites())
         ;
     }
 }
