@@ -8,6 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -378,24 +379,37 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public String addFavorite(TokenResponse token, String sourceStationName, String targetStationName) {
+    public void addFavorite(TokenResponse token, String sourceStationName, String targetStationName) {
         Map<String, String> params = new HashMap<>();
         params.put("sourceStationName", sourceStationName);
         params.put("targetStationName", targetStationName);
 
+        given().
+                auth().oauth2(token.getAccessToken()).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                post("/me/favorites").
+        then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public List<FavoriteResponse> getOwnFavorites(TokenResponse token) {
         return
                 given().
                         auth().oauth2(token.getAccessToken()).
-                        body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/me/favorites").
-                then().
+                        when().
+                        get("/me/favorites").
+                        then().
                         log().all().
-                        statusCode(HttpStatus.CREATED.value()).
                         extract().
-                        header("Location");
+                        jsonPath().
+                        getList(".", FavoriteResponse.class);
     }
+
 
 }

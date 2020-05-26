@@ -1,12 +1,16 @@
 package wooteco.subway.domain.favorite;
 
 import org.springframework.data.annotation.Id;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
 public class Favorite {
     @Id
-    private final Long id;
-    private final Long sourceStationId;
-    private final Long targetStationId;
+    private Long id;
+    private Long sourceStationId;
+    private Long targetStationId;
+
+    public Favorite() {
+    }
 
     public Favorite(Long id, Long sourceStationId, Long targetStationId) {
         this.id = id;
@@ -16,6 +20,10 @@ public class Favorite {
 
     public Favorite(Long sourceStationId, Long targetStationId) {
         this(null, sourceStationId, targetStationId);
+    }
+
+    public FavoriteResponse toFavoriteResponse() {
+        return new FavoriteResponse(id, sourceStationId, targetStationId);
     }
 
     public Long getId() {

@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -33,11 +36,15 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
+    private StationRepository stationRepository;
+    @Mock
+    private FavoriteRepository favoriteRepository;
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, stationRepository, favoriteRepository, jwtTokenProvider);
     }
 
     @DisplayName("멤버 생성 테스트")

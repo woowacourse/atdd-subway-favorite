@@ -75,4 +75,15 @@ public class Member {
     public void addFavorite(Favorite favorite) {
         favorites.add(favorite);
     }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", favorites=" + favorites +
+                '}';
+    }
 }

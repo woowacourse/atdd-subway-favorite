@@ -1,23 +1,35 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.DuplicateMemberException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final StationRepository stationRepository;
+    private final FavoriteRepository favoriteRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository, StationRepository stationRepository, FavoriteRepository favoriteRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.stationRepository = stationRepository;
+        this.favoriteRepository = favoriteRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -52,5 +64,14 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
+    public Member addFavorite(Long memberId, FavoriteCreateRequest request) {
+        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
+        Long sourceStationId = stationRepository.findIdByName(request.getSourceStationName());
+        Long targetStationId = stationRepository.findIdByName(request.getTargetStationName());
+        Favorite favorite = new Favorite(sourceStationId, targetStationId);
+        member.addFavorite(favorite);
+        return memberRepository.save(member);
     }
 }
