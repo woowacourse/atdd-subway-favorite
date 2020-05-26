@@ -38,7 +38,7 @@ create table if not exists MEMBER
     primary key(id)
 );
 
-create table if not exists STATION_PATH
+create table if not exists FAVORITE_PATH
 (
     id bigint auto_increment not null primary key,
     source_id bigint not null,

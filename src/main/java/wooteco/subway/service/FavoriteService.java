@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.acceptance.favorite.dto.StationPathResponse;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.path.StationPath;
+import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
@@ -24,20 +24,20 @@ public class FavoriteService {
 		this.stationRepository = stationRepository;
 	}
 
-	public StationPath registerPath(Member member, String sourceName, String targetName) {
+	public FavoritePath registerPath(Member member, String sourceName, String targetName) {
 		Station source = stationRepository.findByName(sourceName)
 				.orElseThrow(() -> new NotExistStationException(sourceName));
 		Station target = stationRepository.findByName(targetName)
 				.orElseThrow(() -> new NotExistStationException(targetName));
 
-		StationPath stationPath = StationPath.of(source.getId(), target.getId());
-		member.addFavoritePath(stationPath);
+		FavoritePath favoritePath = FavoritePath.of(source.getId(), target.getId());
+		member.addFavoritePath(favoritePath);
 		Member savedMember = memberRepository.save(member);
 		return savedMember.getRecentlyUpdatedPath();
 	}
 
 	public List<StationPathResponse> retrievePath(Member member) {
-		List<StationPath> favoritePaths = member.getFavoritePaths();
+		List<FavoritePath> favoritePaths = member.getFavoritePaths();
 		return favoritePaths.stream()
 				.map(path -> {
 					Station source =

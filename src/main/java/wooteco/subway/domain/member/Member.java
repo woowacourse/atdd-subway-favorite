@@ -2,7 +2,7 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
-import wooteco.subway.domain.path.StationPath;
+import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private List<StationPath> favoritePaths = new ArrayList<>();
+    private List<FavoritePath> favoritePaths = new ArrayList<>();
 
     public Member() {
     }
@@ -32,7 +32,7 @@ public class Member {
         this.id = id;
     }
 
-    public Member(Long id, String email, String name, String password, List<StationPath> favoritePaths) {
+    public Member(Long id, String email, String name, String password, List<FavoritePath> favoritePaths) {
         this(id, email, name, password);
         this.favoritePaths = favoritePaths;
     }
@@ -46,18 +46,18 @@ public class Member {
         }
     }
 
-    public void addFavoritePath(StationPath stationPath) {
-        validateDuplication(stationPath);
+    public void addFavoritePath(FavoritePath favoritePath) {
+        validateDuplication(favoritePath);
 
-        if (Objects.nonNull(stationPath)) {
-            this.favoritePaths.add(stationPath);
+        if (Objects.nonNull(favoritePath)) {
+            this.favoritePaths.add(favoritePath);
         }
     }
 
-    private void validateDuplication(StationPath stationPath) {
+    private void validateDuplication(FavoritePath favoritePath) {
         favoritePaths.stream()
-                .filter(path -> Objects.equals(path.getSourceId(), stationPath.getSourceId()) &&
-                        Objects.equals(path.getTargetId(), stationPath.getTargetId()))
+                .filter(path -> Objects.equals(path.getSourceId(), favoritePath.getSourceId()) &&
+                        Objects.equals(path.getTargetId(), favoritePath.getTargetId()))
                 .findFirst()
                 .ifPresent(path -> {
                     throw new DuplicatedFavoritePathException();
@@ -95,11 +95,11 @@ public class Member {
         return password;
     }
 
-    public List<StationPath> getFavoritePaths() {
+    public List<FavoritePath> getFavoritePaths() {
         return favoritePaths;
     }
 
-    public StationPath getRecentlyUpdatedPath() {
+    public FavoritePath getRecentlyUpdatedPath() {
         return favoritePaths.get(favoritePaths.size() - 1);
     }
 

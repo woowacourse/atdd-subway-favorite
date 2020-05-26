@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.acceptance.favorite.dto.StationPathResponse;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.path.StationPath;
+import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
@@ -45,19 +45,19 @@ class FavoriteServiceTest {
 		Member expectedMember = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		Station source = new Station(1L, STATION_NAME_KANGNAM);
 		Station target = new Station(2L, STATION_NAME_HANTI);
-		StationPath stationPathToAdd = new StationPath(1L, 1L, 2L);
-		expectedMember.addFavoritePath(stationPathToAdd);
+		FavoritePath favoritePathToAdd = new FavoritePath(1L, 1L, 2L);
+		expectedMember.addFavoritePath(favoritePathToAdd);
 
 		BDDMockito.when(stationRepository.findByName(STATION_NAME_KANGNAM)).thenReturn(Optional.of(source));
 		BDDMockito.when(stationRepository.findByName(STATION_NAME_HANTI)).thenReturn(Optional.of(target));
 		BDDMockito.when(memberRepository.save(any())).thenReturn(expectedMember);
 
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		StationPath stationPath = favoriteService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI);
+		FavoritePath favoritePath = favoriteService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI);
 
-		assertThat(stationPath.getId()).isEqualTo(1L);
-		assertThat(stationPath.getSourceId()).isEqualTo(1L);
-		assertThat(stationPath.getTargetId()).isEqualTo(2L);
+		assertThat(favoritePath.getId()).isEqualTo(1L);
+		assertThat(favoritePath.getSourceId()).isEqualTo(1L);
+		assertThat(favoritePath.getTargetId()).isEqualTo(2L);
 	}
 
 	@DisplayName("이미 등록된 즐겨찾기 경로를 재등록 시 실패하는지 확인")
@@ -66,8 +66,8 @@ class FavoriteServiceTest {
 		Member expectedMember = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		Station source = new Station(1L, STATION_NAME_KANGNAM);
 		Station target = new Station(2L, STATION_NAME_HANTI);
-		StationPath stationPathToAdd = new StationPath(1L, 1L, 2L);
-		expectedMember.addFavoritePath(stationPathToAdd);
+		FavoritePath favoritePathToAdd = new FavoritePath(1L, 1L, 2L);
+		expectedMember.addFavoritePath(favoritePathToAdd);
 
 		BDDMockito.when(stationRepository.findByName(STATION_NAME_KANGNAM)).thenReturn(Optional.of(source));
 		BDDMockito.when(stationRepository.findByName(STATION_NAME_HANTI)).thenReturn(Optional.of(target));
@@ -86,10 +86,10 @@ class FavoriteServiceTest {
 		Station hanti = new Station(2L, STATION_NAME_HANTI);
 		Station dogok = new Station(3L, STATION_NAME_DOGOK);
 		Station yangjae = new Station(4L, STATION_NAME_YANGJAE);
-		StationPath stationPath1 = new StationPath(1L, 1L, 2L);
-		StationPath stationPath2 = new StationPath(2L, 3L, 4L);
-		member.addFavoritePath(stationPath1);
-		member.addFavoritePath(stationPath2);
+		FavoritePath favoritePath1 = new FavoritePath(1L, 1L, 2L);
+		FavoritePath favoritePath2 = new FavoritePath(2L, 3L, 4L);
+		member.addFavoritePath(favoritePath1);
+		member.addFavoritePath(favoritePath2);
 
 		BDDMockito.when(stationRepository.findById(kangnam.getId())).thenReturn(Optional.of(kangnam));
 		BDDMockito.when(stationRepository.findById(hanti.getId())).thenReturn(Optional.of(hanti));
@@ -107,10 +107,10 @@ class FavoriteServiceTest {
 	@Test
 	void deletePath() {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		StationPath stationPath1 = new StationPath(1L, 1L, 2L);
-		StationPath stationPath2 = new StationPath(2L, 3L, 4L);
-		member.addFavoritePath(stationPath1);
-		member.addFavoritePath(stationPath2);
+		FavoritePath favoritePath1 = new FavoritePath(1L, 1L, 2L);
+		FavoritePath favoritePath2 = new FavoritePath(2L, 3L, 4L);
+		member.addFavoritePath(favoritePath1);
+		member.addFavoritePath(favoritePath2);
 
 		favoriteService.deletePath(member, 1L);
 
@@ -123,10 +123,10 @@ class FavoriteServiceTest {
 	void deletePathFailedWhenDeleteNotMyPath() {
 		Member other = new Member(2L, "other " + TEST_USER_EMAIL, "other", "other " + TEST_USER_PASSWORD);
 		Member me = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		StationPath stationPath1 = new StationPath(1L, 1L, 2L);
-		StationPath stationPath2 = new StationPath(2L, 3L, 4L);
-		me.addFavoritePath(stationPath1);
-		me.addFavoritePath(stationPath2);
+		FavoritePath favoritePath1 = new FavoritePath(1L, 1L, 2L);
+		FavoritePath favoritePath2 = new FavoritePath(2L, 3L, 4L);
+		me.addFavoritePath(favoritePath1);
+		me.addFavoritePath(favoritePath2);
 
 		assertThatThrownBy(() -> favoriteService.deletePath(other, 1L))
 				.isInstanceOf(NotExistFavoritePathException.class)
