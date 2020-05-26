@@ -44,7 +44,17 @@ operation::favorites/add[snippets='http-request,http-response']
 
 operation::favorites/get[snippets='http-request,http-response,path-parameters']
 
-[[resources-favorites-get]]
+[[resources-favorites-read]]
 === 즐겨찾기 목록 불러오기
 
 operation::favorites/read[snippets='http-request,http-response']
+
+[[resources-favorites-delete]]
+=== 즐겨찾기 삭제 (Source & Target)
+
+operation::favorites/delete[snippets='http-request,http-response']
+
+[[resources-favorites-deleteById]]
+=== 즐겨찾기 삭제 (id)
+
+operation::favorites/deleteById[snippets='http-request,http-response']

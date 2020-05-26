@@ -60,4 +60,15 @@ public class FavoriteDocumentation {
                 )
             );
     }
+
+    public static RestDocumentationResultHandler removeFavoriteById() {
+        return document("favorites/deleteById",
+            requestHeaders(
+                headerWithName("Authorization").description("The login token should be bearer type")
+            ),
+            pathParameters(
+                parameterWithName("favoriteId").description("The favorite id of favorite")
+            )
+        );
+    }
 }

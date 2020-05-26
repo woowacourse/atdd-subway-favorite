@@ -134,9 +134,7 @@ public class FavoriteControllerTest {
     void deleteFavorite() throws Exception {
         this.mockMvc.perform(
             RestDocumentationRequestBuilders.delete("/favorites/{source}/{target}", 1, 2)
-                .header("Authorization", token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                .header("Authorization", token))
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(FavoriteDocumentation.removeFavorite());
@@ -145,7 +143,14 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    void deleteFavoriteById() {
-        // /favorites/{favoritesId}
+    void deleteFavoriteById() throws Exception {
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/favorites/{favoriteId}", 1)
+                .header("Authorization", token))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(FavoriteDocumentation.removeFavoriteById());
+
+        verify(favoriteService).removeFavoriteById(anyLong(), anyLong());
     }
 }
