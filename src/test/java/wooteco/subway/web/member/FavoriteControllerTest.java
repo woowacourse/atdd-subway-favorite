@@ -1,11 +1,14 @@
 package wooteco.subway.web.member;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.service.member.MemberServiceTest.*;
+
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,8 +29,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.config.ETagHeaderFilter;
-import wooteco.subway.doc.LoginMemberDocumentation;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
@@ -35,7 +39,8 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class LoginMemberControllerTest {
+public class FavoriteControllerTest {
+
     @Autowired
     protected MockMvc mockMvc;
     @MockBean
@@ -63,76 +68,67 @@ public class LoginMemberControllerTest {
             .build();
     }
 
-    @DisplayName("회원가입을 한다")
+    @DisplayName("즐겨찾기에 경로를 추가한다")
     @Test
-    void createMember() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member);
+    void addFavorite() throws Exception {
+        String inputJson = "{\"sourceStationId\":" + 1 + "," +
+            "\"targetStationId\":" + 2 + "}";
 
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"name\":\"" + TEST_USER_NAME + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
-
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me")
-            .content(inputJson)
+        this.mockMvc.perform(post("/me/favorites")
+            .header("Authorization", "bearer brownToken")
             .accept(MediaType.APPLICATION_JSON)
+            .content(inputJson)
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent())
             .andDo(print())
-            .andDo(LoginMemberDocumentation.createMember());
+            .andExpect(status().isCreated())
+            .andDo(FavoriteDocumentation.addFavorite());
     }
 
-    @DisplayName("로그인을 시도하여 토큰을 얻는다.")
+    @DisplayName("즐겨찾기에 있는 경로를 삭제한다")
     @Test
-    void tokenLogin() throws Exception {
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+    void deleteFavorites() throws Exception {
+        String inputJson = "{\"sourceStationId\":" + 1 + "," +
+            "\"targetStationId\":" + 2 + "}";
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me/login")
+        this.mockMvc.perform(post("/me/favorites")
+            .header("Authorization", "bearer brownToken")
+            .accept(MediaType.APPLICATION_JSON)
             .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/me/favorites/{favoriteId}", 1)
+                .header("Authorization", "bearer brownToken")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNoContent())
+            .andDo(FavoriteDocumentation.deleteFavorite());
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다")
+    @Test
+    void getFavorites() throws Exception {
+        String inputJson = "{\"sourceStationId\":\"" + 1 + "\"," +
+            "\"targetStationId\":\"" + 2 + "\"}";
+
+        this.mockMvc.perform(post("/me/favorites")
+            .header("Authorization", "bearer brownToken")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isCreated());
+
+        given(memberService.findAllFavoritesByMember(any())).willReturn(
+            Arrays.asList(new FavoriteResponse(1L, "잠실역", "몽촌토성역"),
+                new FavoriteResponse(2L, "교대역", "잠실역")));
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/me/favorites")
+            .header("Authorization", "bearer brownToken")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.login());
-    }
-
-    @DisplayName("회원 정보 조회")
-    @Test
-    void meBearer() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/me")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.getMember());
-    }
-
-    @DisplayName("회원 정보 수정")
-    @Test
-    void edit() throws Exception {
-        String inputJson = "{\"name\":\"" + "CU" + "\"," +
-            "\"password\":\"" + "1234" + "\"}";
-
-        this.mockMvc.perform(put("/me")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isNoContent())
-            .andDo(LoginMemberDocumentation.editMember());
-    }
-
-    @DisplayName("회원 정보 삭제")
-    @Test
-    void deleteMember() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isNoContent())
-            .andDo(LoginMemberDocumentation.deleteMember());
+            .andDo(FavoriteDocumentation.getFavorites());
     }
 }

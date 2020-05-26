@@ -38,6 +38,33 @@ public class Line {
         this(null, name, startTime, endTime, intervalTime);
     }
 
+    public void update(Line line) {
+        if (line.getName() != null) {
+            this.name = line.getName();
+        }
+        if (line.getStartTime() != null) {
+            this.startTime = line.getStartTime();
+        }
+        if (line.getEndTime() != null) {
+            this.endTime = line.getEndTime();
+        }
+        if (line.getIntervalTime() != 0) {
+            this.intervalTime = line.getIntervalTime();
+        }
+    }
+
+    public void addLineStation(LineStation lineStation) {
+        stations.add(lineStation);
+    }
+
+    public void removeLineStationById(Long stationId) {
+        stations.removeById(stationId);
+    }
+
+    public List<Long> getStationIds() {
+        return stations.getStationIds();
+    }
+
     public Long getId() {
         return id;
     }
@@ -68,32 +95,5 @@ public class Line {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void update(Line line) {
-        if (line.getName() != null) {
-            this.name = line.getName();
-        }
-        if (line.getStartTime() != null) {
-            this.startTime = line.getStartTime();
-        }
-        if (line.getEndTime() != null) {
-            this.endTime = line.getEndTime();
-        }
-        if (line.getIntervalTime() != 0) {
-            this.intervalTime = line.getIntervalTime();
-        }
-    }
-
-    public void addLineStation(LineStation lineStation) {
-        stations.add(lineStation);
-    }
-
-    public void removeLineStationById(Long stationId) {
-        stations.removeById(stationId);
-    }
-
-    public List<Long> getStationIds() {
-        return stations.getStationIds();
     }
 }

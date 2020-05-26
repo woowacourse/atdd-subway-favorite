@@ -31,6 +31,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
 
         if (StringUtils.isBlank(email)) {
+            System.out.println("여기냐?");
             return new Member();
         }
         try {

@@ -30,6 +30,9 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         if (request.getMethod().equals("POST") && request.getRequestURI().equals("/me")) {
             return true;
         }
+        if (request.getMethod().equals("POST") && request.getRequestURI().equals("/me/login")) {
+            return true;
+        }
 
         String token = authExtractor.extract(request, "bearer");
         if (StringUtils.isEmpty(token)) {

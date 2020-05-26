@@ -6,9 +6,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 
 @SpringBootApplication
 public class SubwayAdminApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SubwayAdminApplication.class, args);
 	}
-
 }

@@ -33,6 +33,7 @@ public class MemberServiceTest {
     public static final String TEST_USER_PASSWORD = "brown";
 
     private MemberService memberService;
+    private Member member;
 
     @Mock
     private StationRepository stationRepository;
@@ -45,18 +46,17 @@ public class MemberServiceTest {
     void setUp() {
         this.memberService = new MemberService(memberRepository, stationRepository,
             jwtTokenProvider);
+        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         memberService.createMember(member);
         verify(memberRepository).save(any());
     }
 
     @Test
     void createToken() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
@@ -67,7 +67,6 @@ public class MemberServiceTest {
 
     @Test
     void updateMember() {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("CU", "1234");
         memberService.updateMember(1L, updateMemberRequest);
@@ -84,8 +83,6 @@ public class MemberServiceTest {
     @DisplayName("즐겨찾기에 경로를 추가한다")
     @Test
     void saveFavorite() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(memberRepository.save(any())).willReturn(member);
 
@@ -97,27 +94,23 @@ public class MemberServiceTest {
     @DisplayName("즐겨찾기에 있는 경로를 삭제한다")
     @Test
     void deleteFavorite() {
-        Favorite favorite = new Favorite(1L, 2L);
-
-        memberService.deleteFavorite(favorite.getId());
+        Favorite favorite = new Favorite(1L, 1L, 2L, 1L);
+        member.addFavorite(favorite);
+        memberService.deleteFavorite(member, favorite.getId());
         verify(memberRepository).deleteFavoriteById(favorite.getId());
     }
 
     @DisplayName("즐겨찾기에 있는 경로를 조회한다")
     @Test
     void findAll() {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         member.addFavorite(new Favorite(1L, 2L));
         member.addFavorite(new Favorite(2L, 3L));
         member.addFavorite(new Favorite(3L, 4L));
-        // given(memberRepository.save(any())).willReturn(member);
 
-        given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
             new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
 
-        List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMemberId(
-            1L);
+        List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMember(member);
 
         assertThat(allFavoritesByMemberId).isNotNull();
         assertThat(allFavoritesByMemberId).hasSize(3);

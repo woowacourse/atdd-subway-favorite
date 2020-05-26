@@ -41,3 +41,20 @@ operation::members/read[snippets='http-request,request-headers,http-response,res
 
 operation::members/delete[snippets='http-request,request-headers,http-response']
 
+[[resources-favorites]]
+== Favorite
+
+[[resources-favorites-add]]
+=== 즐겨찾기 추가
+
+operation::favorites/add[snippets='http-request,request-headers,request-fields,http-response']
+
+[[resources-favorites-read]]
+=== 즐겨찾기 조회
+
+operation::favorites/read[snippets='http-request,request-headers,http-response,response-body']
+
+[[resources-favorites-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorites/delete[snippets='http-request,request-headers,http-response']

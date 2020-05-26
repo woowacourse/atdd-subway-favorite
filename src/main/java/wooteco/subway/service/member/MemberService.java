@@ -67,15 +67,7 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(NoSuchAccountException::new);
     }
 
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
-    }
-
-    public List<FavoriteResponse> findAllFavoritesByMemberId(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(NoSuchAccountException::new);
-
+    public List<FavoriteResponse> findAllFavoritesByMember(Member member) {
         Map<Long, String> stationNameById = stationRepository.findAll().stream()
             .collect(Collectors.toMap(Station::getId, Station::getName));
 
@@ -93,7 +85,10 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void deleteFavorite(Long favoriteId) {
+    public void deleteFavorite(Member member, Long favoriteId) {
+        if (member.doesNotHaveFavoriteWithId(favoriteId)) {
+            throw new IllegalArgumentException("잘못된 즐겨찾기 삭제 요청입니다.");
+        }
         memberRepository.deleteFavoriteById(favoriteId);
     }
 

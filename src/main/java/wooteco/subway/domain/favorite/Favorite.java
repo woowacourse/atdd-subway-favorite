@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.stereotype.Controller;
 
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 
@@ -12,8 +13,18 @@ public class Favorite {
 	private Long id;
 	private Long sourceStationId;
 	private Long targetStationId;
+	@Column("member")
+	private Long memberId;
 
 	public Favorite() {
+	}
+
+	public Favorite(final Long id, final Long sourceStationId, final Long targetStationId,
+		final Long memberId) {
+		this.id = id;
+		this.sourceStationId = sourceStationId;
+		this.targetStationId = targetStationId;
+		this.memberId = memberId;
 	}
 
 	public Favorite(Long sourceStationId, Long targetStationId) {
@@ -21,14 +32,18 @@ public class Favorite {
 		this.targetStationId = targetStationId;
 	}
 
-	public Favorite(Long id, Long sourceStationId, Long targetStationId) {
-		this.id = id;
+	public Favorite(final Long sourceStationId, final Long targetStationId, final Long memberId) {
 		this.sourceStationId = sourceStationId;
 		this.targetStationId = targetStationId;
+		this.memberId = memberId;
 	}
 
 	public static Favorite of(FavoriteRequest favoriteRequest) {
 		return new Favorite(favoriteRequest.getSourceStationId(), favoriteRequest.getTargetStationId());
+	}
+
+	public boolean isNotSameUserId(Long id) {
+		return !memberId.equals(id);
 	}
 
 	public Long getId() {
@@ -41,6 +56,10 @@ public class Favorite {
 
 	public Long getTargetStationId() {
 		return targetStationId;
+	}
+
+	public Long getMemberId() {
+		return memberId;
 	}
 
 	@Override
@@ -57,14 +76,5 @@ public class Favorite {
 	@Override
 	public int hashCode() {
 		return Objects.hash(sourceStationId, targetStationId);
-	}
-
-	@Override
-	public String toString() {
-		return "Favorite{" +
-			"id=" + id +
-			", sourceStationId=" + sourceStationId +
-			", targetStationId=" + targetStationId +
-			'}';
 	}
 }

@@ -73,10 +73,6 @@ public class LoginMemberDocumentation {
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login which is Bearer Type")
-            ),
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
             )
         );
     }
