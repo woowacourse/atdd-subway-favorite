@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.docs.LoginMemberDocumentation;
 import wooteco.subway.domain.member.Member;
@@ -29,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LoginMemberControllerTest {
     private static final Gson GSON = new Gson();
     private static final String TEST_USER_EMAIL = "test@email.com";
-    private static final String TEST_USER_NAME = "name";
+    private static final String TEST_USER_NAME = "타미";
     private static final String TEST_USER_PASSWORD = "password";
     private static final String TOKEN = "This.is.token";
 
@@ -62,6 +64,8 @@ class LoginMemberControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .alwaysDo(print())
                 .build();
     }
 

@@ -13,6 +13,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.docs.AdminMemberDocumentation;
 import wooteco.subway.domain.member.Member;
@@ -54,6 +55,8 @@ public class AdminMemberControllerTest {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilter(new ShallowEtagHeaderFilter())
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .alwaysDo(print())
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
     }
@@ -71,7 +74,6 @@ public class AdminMemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(params)))
                 .andExpect(status().isCreated())
-                .andDo(print())
                 .andDo(AdminMemberDocumentation.createMember());
     }
 
@@ -84,7 +86,6 @@ public class AdminMemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email", Matchers.is(TEST_EMAIL)))
                 .andExpect(jsonPath("$.name", Matchers.is(TEST_NAME)))
-                .andDo(print())
                 .andDo(AdminMemberDocumentation.getMemberByEmail());
     }
 
@@ -102,7 +103,6 @@ public class AdminMemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(params)))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andDo(AdminMemberDocumentation.updateMember());
     }
 
@@ -110,7 +110,6 @@ public class AdminMemberControllerTest {
     void deleteMember() throws Exception {
         mockMvc.perform(delete("/admin/members/{id}", TEST_ID))
                 .andExpect(status().isNoContent())
-                .andDo(print())
                 .andDo(AdminMemberDocumentation.deleteMember());
     }
 }
