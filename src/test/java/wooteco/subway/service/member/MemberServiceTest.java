@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -128,5 +129,41 @@ public class MemberServiceTest {
     void deleteMember() {
         memberService.deleteMember(1L);
         verify(memberRepository).deleteById(any());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 추가")
+    void addFavorite() {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Favorite favorite = new Favorite(1L, 2L);
+        memberService.addFavorite(member, favorite);
+        verify(memberRepository).save(any());
+        assertThat(member.hasFavorite(favorite)).isTrue();
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회")
+    void getFavorites() {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        memberService.getFavorites(member);
+        verify(memberRepository).findFavoritesById(any());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제")
+    void removeFavorite() {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Favorite favorite = new Favorite(1L, 2L);
+        member.addFavorite(favorite);
+        memberService.removeFavorite(member, 1L, 2L);
+        verify(memberRepository).save(any());
+        assertThat(member.hasFavorite(favorite)).isFalse();
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 여부 확인")
+    void hasFavorite() {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(memberService.hasFavorite(member, 1L, 2L)).isFalse();
     }
 }
