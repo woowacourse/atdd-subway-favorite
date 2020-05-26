@@ -45,11 +45,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberResponse updatedMember = getMember(TEST_USER_EMAIL, token);
         // then 회원 정보는 수정되지 않는다.
         assertThat(updatedMember.getName()).isEqualTo(TEST_USER_NAME);
+
         // when 다른 사용자 인증과 함께 회원 정보 수정 요청을 보낸다.
         updateMemberWithAuthentication(member, token2, updateDto);
         // then 회원 정보가 수정되었다.
         MemberResponse shouldNotBeUpdated = getMember(TEST_USER_EMAIL, token);
         assertThat(shouldNotBeUpdated.getName()).isEqualTo(TEST_USER_NAME);
+
         // when 인증과 함께 회원 정보 수정 요청을 보낸다.
         updateMemberWithAuthentication(member, token, updateDto);
         // then 회원 정보가 수정되었다.
@@ -63,6 +65,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         deleteMember(member, token2);
         // then 회원정보가 삭제되지 않는다.
         assertThat(getMember(TEST_USER_EMAIL, token).getName()).isNotNull();
+
         // when 사용자 인증과 함께 회원 정보 삭제 요청을 보낸다.
         deleteMember(member, token);
         // then 회원정보가 삭제된다.

@@ -63,7 +63,7 @@ public class MemberControllerTest {
 
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .addFilter(new CharacterEncodingFilter(ENCODING, true))
             .addFilter(new ShallowEtagHeaderFilter())
             .apply(documentationConfiguration(restDocumentation))
@@ -80,7 +80,7 @@ public class MemberControllerTest {
 
         String body = objectMapper.writeValueAsString(memberRequest);
 
-        this.mockMvc.perform(post("/members")
+        mockMvc.perform(post("/members")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body))

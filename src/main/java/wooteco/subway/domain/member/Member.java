@@ -32,26 +32,6 @@ public class Member {
         this.password = password;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Favorites getFavorites() {
-        return favorites;
-    }
-
     public void addFavorite(final Favorite favorite) {
         favorites.addFavorite(favorite);
     }
@@ -74,12 +54,32 @@ public class Member {
     }
 
     public boolean isAuthenticated(Long id) {
-        return Objects.nonNull(this.id) && this.id == id;
+        return Objects.equals(this.id, id);
     }
 
     public boolean isAuthenticated(final String email) {
-        return Objects.nonNull(this.email) && this.email.equals(email);
+        return Objects.equals(this.email, email);
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Favorites getFavorites() {
+        return favorites;
     }
 
     @Override

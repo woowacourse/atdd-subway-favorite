@@ -12,12 +12,12 @@ public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
         return document("members/create",
             requestFields(
-                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
-                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                fieldWithPath("email").type(JsonFieldType.STRING).description("사용자의 이메일"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자의 이름"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("사용자의 비밀번호")
             ),
             responseHeaders(
-                headerWithName("Location").description("The user's location who just created")
+                headerWithName("Location").description("생성된 사용자의 Location URI")
             )
         );
     }
@@ -44,11 +44,11 @@ public class MemberDocumentation {
                 parameterWithName("id").description("사용자의 고유 id")
             ),
             requestFields(
-                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자의 이름"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("사용자의 비밀번호")
             ),
             requestHeaders(
-                headerWithName("Authorization").description("The token for login which is Bearer Type")
+                headerWithName("Authorization").description("사용자의 JWT 토큰")
             )
         );
     }

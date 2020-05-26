@@ -28,19 +28,15 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
-        MemberResponse member = memberService.createMember(view.toMember());
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+        MemberResponse member = memberService.createMember(request.toMember());
         return ResponseEntity
             .created(URI.create("/members/" + member.getId()))
             .build();
     }
 
     @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail
-        (
-            @LoginMember Member member,
-            @Param("email") String email
-        ) {
+    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member, @Param("email") String email) {
         if (!member.isAuthenticated(email)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

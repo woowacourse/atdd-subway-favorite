@@ -26,27 +26,19 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(
-        @LoginMember Member member,
-        @RequestBody FavoriteRequest request
-    ) {
+    public ResponseEntity<Void> create(@LoginMember Member member, @RequestBody FavoriteRequest request) {
         memberService.addFavorite(member, request);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> getAll(
-        @LoginMember Member member
-    ) {
+    public ResponseEntity<List<FavoriteResponse>> getAll(@LoginMember Member member) {
         List<FavoriteResponse> response = memberService.getAllFavorites(member);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remove(
-        @LoginMember Member member,
-        @PathVariable Long id
-    ) {
+    public ResponseEntity<Void> remove(@LoginMember Member member, @PathVariable Long id) {
         memberService.removeFavoriteById(member, id);
         return ResponseEntity.noContent().build();
     }

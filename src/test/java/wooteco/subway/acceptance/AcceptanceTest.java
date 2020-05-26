@@ -276,7 +276,6 @@ public class AcceptanceTest {
         return mapToMemberResponse(result);
     }
 
-    // TODO: 2020/05/21 생각해보기
     private MemberResponse mapToMemberResponse(final MvcResult result) throws Exception {
         try {
             return objectMapper.readValue(result.getResponse().getContentAsString(), MemberResponse.class);
@@ -290,12 +289,12 @@ public class AcceptanceTest {
         TokenResponse tokenResponse,
         UpdateMemberRequest updateMemberRequest
     ) throws Exception {
-        String updateJsonInfo = objectMapper.writeValueAsString(updateMemberRequest);
+        String body = objectMapper.writeValueAsString(updateMemberRequest);
 
         mockMvc.perform(put("/members/{id}", memberResponse.getId())
             .header(AUTHORIZATION, tokenResponse)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(updateJsonInfo))
+            .content(body))
             .andDo(print())
             .andReturn();
     }
@@ -311,7 +310,8 @@ public class AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .content(body))
             .andDo(print())
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().isUnauthorized())
+            .andReturn();
     }
 
     public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) throws Exception {
@@ -331,8 +331,7 @@ public class AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .content(body))
             .andDo(print())
-            .andReturn()
-            .getResponse();
+            .andReturn();
     }
 
     public List<FavoriteResponse> getAllFavorites(TokenResponse tokenResponse) throws Exception {

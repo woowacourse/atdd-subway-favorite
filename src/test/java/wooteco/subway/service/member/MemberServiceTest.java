@@ -28,12 +28,12 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
-    public static final String TEST_USER_EMAIL = "brown@email.com";
-    public static final String TEST_USER_NAME = "브라운";
-    public static final String TEST_USER_PASSWORD = "brown";
-    public static final String TEST_USER_NAME2 = "터틀";
-    public static final String TEST_USER_PASSWORD2 = "turtle";
-    public static final long TEST_USER_ID = 1L;
+    private static final String TEST_USER_EMAIL = "brown@email.com";
+    private static final String TEST_USER_NAME = "브라운";
+    private static final String TEST_USER_PASSWORD = "brown";
+    private static final String TEST_USER_NAME2 = "터틀";
+    private static final String TEST_USER_PASSWORD2 = "turtle";
+    private static final long TEST_USER_ID = 1L;
 
     private MemberService memberService;
 
@@ -42,44 +42,55 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(stationRepository, memberRepository, jwtTokenProvider);
-
     }
 
     @DisplayName("회원 생성 테스트")
     @Test
     void createMember() {
+        // given
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberRepository.save(any())).willReturn(member);
 
+        // when
         memberService.createMember(member);
 
+        // then
         verify(memberRepository).save(any());
     }
 
     @DisplayName("토큰 생성 테스트")
     @Test
     void createToken() {
+        // given
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
+        // when
         memberService.createToken(loginRequest);
 
+        // then
         verify(jwtTokenProvider).createToken(anyString());
     }
 
     @DisplayName("회원 정보 조회 테스트")
     @Test
     void getMember() {
+        // given
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+
+        // when
         Member memberFound = memberService.findMemberByEmail(TEST_USER_EMAIL);
+
+        // then
         assertThat(memberFound).isEqualTo(member);
     }
 
@@ -110,14 +121,13 @@ public class MemberServiceTest {
         // then
         verify(memberRepository).deleteById(member.getId());
     }
-    
-    // TODO: 2020/05/25 전반적인 리팩토링
 
+    // TODO: 2020/05/25 전반적인 리팩토링
     // TODO: 2020/05/22 sendError와 controllerAdvice 선택해서 반영
     // TODO: 2020/05/20 - Exception Handler 추가
     // TODO: 2020/05/22 사용자 파라미터나 쿼리에서 오는 다른 정보와 비교하여 인증하는 로직 옮기기
     // TODO: 2020/05/20 - 컨트롤러에서의 인증 방식 고민해보기
-    // TODO: 2020/05/20 Dynamic Test 방식으로 변경
+    // TODO: 2020/05/20 Dynamic Test 방식으로 변경010509
     // TODO: 2020/05/25 MethodArgumentResolver, Interceptor Testing
 
     @DisplayName("즐겨찾기 생성 테스트")
@@ -168,6 +178,7 @@ public class MemberServiceTest {
     @DisplayName("즐겨찾기 삭제 테스트")
     @Test
     void deleteFavorite() {
+        // given
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         member.addFavorite(new Favorite(1L, 1L, 2L));
 
