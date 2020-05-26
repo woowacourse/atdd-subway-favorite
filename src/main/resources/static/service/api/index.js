@@ -65,10 +65,26 @@ const api = (() => {
     }
   }
 
+  const favorite = {
+    create(favoritePath) {
+      return request(`/favorites`, METHOD.POST(favoritePath));
+    },
+    get(id) {
+      return requestWithJsonData(`/favorites/${id}`);
+    },
+    getAll() {
+      return requestWithJsonData(`/me/favorites`);
+    },
+    delete(id) {
+      return request(`/favorites/${id}`, METHOD.DELETE());
+    }
+  };
+
   return {
     line,
     path,
     member,
+    favorite,
   }
 })()
 

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
 import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.exception.DuplicatedFavoriteException;
 
 public class Member {
     @Id
@@ -75,6 +76,9 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
+        if (favorites.contains(favorite)) {
+            throw new DuplicatedFavoriteException("해당 경로는 이미 추가되어 있습니다.");
+        }
         favorites.add(favorite);
     }
 

@@ -4,12 +4,13 @@ import java.util.Set;
 
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
 public class MemberDetailResponse {
     private Long id;
     private String email;
     private String name;
-    private Set<Favorite> favorites;
+    private Set<FavoriteResponse> favorites;
 
     public MemberDetailResponse() {
     }
@@ -19,7 +20,7 @@ public class MemberDetailResponse {
         this.id = id;
         this.email = email;
         this.name = name;
-        this.favorites = favorites;
+        this.favorites = FavoriteResponse.setOf(favorites);
     }
 
     public static MemberDetailResponse of(Member member) {
@@ -39,7 +40,7 @@ public class MemberDetailResponse {
         return name;
     }
 
-    public Set<Favorite> getFavorites() {
+    public Set<FavoriteResponse> getFavorites() {
         return favorites;
     }
 }

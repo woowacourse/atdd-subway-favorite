@@ -1,34 +1,28 @@
 package wooteco.subway.service.favorite.dto;
 
-import javax.validation.constraints.NotNull;
-
-import wooteco.subway.domain.favorite.Favorite;
+import javax.validation.constraints.NotBlank;
 
 public class FavoriteRequest {
 
-    @NotNull
-    private Long sourceId;
+    @NotBlank
+    private String sourceName;
 
-    @NotNull
-    private Long targetId;
+    @NotBlank
+    private String targetName;
 
     public FavoriteRequest() {
     }
 
-    public FavoriteRequest(Long sourceId, Long targetId) {
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+    public FavoriteRequest(String sourceName, String targetName) {
+        this.sourceName = sourceName;
+        this.targetName = targetName;
     }
 
-    public Favorite toFavorite() {
-        return new Favorite(null, sourceId, targetId);
+    public String getSourceName() {
+        return sourceName;
     }
 
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public Long getTargetId() {
-        return targetId;
+    public String getTargetName() {
+        return targetName;
     }
 }
