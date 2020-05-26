@@ -19,19 +19,37 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='curl-request,http-request,http-response']
+operation::members/create[snippets='curl-request,http-request,http-response,request-fields,response-headers']
 
 [[resources-members-get]]
 === 내 정보 조회
 
-operation::members/get[snippets='curl-request,http-request,http-response']
+operation::members/get[snippets='curl-request,http-request,http-response,request-headers,response-fields']
 
 [[resources-members-update]]
 === 내 정보 수정
 
-operation::members/update[snippets='curl-request,http-request,http-response']
+operation::members/update[snippets='curl-request,http-request,http-response,request-headers,request-fields']
 
 [[resources-members-delete]]
 === 회원 탈퇴
 
-operation::members/delete[snippets='curl-request,http-request,http-response']
+operation::members/delete[snippets='curl-request,http-request,http-response,request-headers']
+
+[[resources-favorite]]
+== Favorite
+
+[[resources-favorite-add]]
+=== 즐겨찾기 추가
+
+operation::favorite/add[snippets='curl-request,http-request,http-response,request-headers,request-fields']
+
+[[resources-favorite-get]]
+=== 즐겨찾기 조회
+
+operation::favorite/get[snippets='curl-request,http-request,http-response,request-headers,response-fields']
+
+[[resources-favorite-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorite/delete[snippets='curl-request,http-request,http-response,request-headers,request-fields']
