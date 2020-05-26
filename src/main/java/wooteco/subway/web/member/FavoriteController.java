@@ -19,10 +19,16 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        List<FavoriteResponse> favoriteResponses = favoriteService.showFavorites(member);
+    public ResponseEntity<List<FavoriteResponse>> getAllFavorites(@LoginMember Member member) {
+        List<FavoriteResponse> favoriteResponses = favoriteService.showAllFavorites(member);
 
         return ResponseEntity.ok().body(favoriteResponses);
+    }
+
+    @GetMapping("/favorites/exists")
+    public ResponseEntity<Boolean> ifFavoriteExists(@LoginMember Member member, @RequestParam String source, @RequestParam String destination) {
+        Boolean ifExists = favoriteService.findFavorite(member, source, destination);
+        return ResponseEntity.ok().body(ifExists);
     }
 
     @PostMapping("/favorites")

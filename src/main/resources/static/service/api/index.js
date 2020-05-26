@@ -45,7 +45,8 @@ const METHOD = {
     return {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("jwt") || ""
       },
       body: JSON.stringify({
         ...data
@@ -92,22 +93,25 @@ const api = (() => {
       return request(`/members`, METHOD.DELETE())
     },
     login(data) {
-      return requestWithJsonData('/login', METHOD.POST(data))
+      return requestWithJsonData(`/login`, METHOD.POST(data))
     },
     myinfo() {
-      return requestWithJsonData('/myinfo', METHOD.AUTHORIZED_GET())
+      return requestWithJsonData(`/myinfo`, METHOD.AUTHORIZED_GET())
     }
   }
 
   const favorite = {
     create(data) {
-      return request('/favorites', METHOD.POST(data))
+      return request(`/favorites`, METHOD.POST(data))
     },
-    find() {
-      return requestWithJsonData('/favorites', METHOD.AUTHORIZED_GET())
+    exists(source, destination) {
+      return requestWithJsonData(`/favorites/exists?source=${source}&destination=${destination}`, METHOD.AUTHORIZED_GET())
+    },
+    findAll() {
+      return requestWithJsonData(`/favorites`, METHOD.AUTHORIZED_GET())
     },
     delete(data) {
-      return request('/favorites', METHOD.DELETE_WITH_PARAMS(data))
+      return request(`/favorites`, METHOD.DELETE_WITH_PARAMS(data))
     }
   }
 

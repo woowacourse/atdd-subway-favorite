@@ -25,7 +25,7 @@ function Favorite() {
     }
 
     const loadFavoriteList = () => {
-        api.favorite.find()
+        api.favorite.findAll()
             .then(favorites => {
                 const template = favorites.map(edge => edgeItemTemplate(edge)).join('')
                 $favoriteList.insertAdjacentHTML('beforeend', template)

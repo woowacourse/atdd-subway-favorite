@@ -42,9 +42,20 @@ public class FavoriteService {
         memberRepository.save(member);
     }
 
-    public List<FavoriteResponse> showFavorites(Member member) {
+    public List<FavoriteResponse> showAllFavorites(Member member) {
         Favorites favorites = new Favorites(member.getFavorites());
 
         return favorites.toFavoriteResponses(stationRepository.findAll());
+    }
+
+    public boolean findFavorite(Member member, String source, String destination) {
+        Favorites favorites = new Favorites(member.getFavorites());
+        Long sourceId = stationRepository.findByName(source)
+                .orElseThrow(RuntimeException::new)
+                .getId();
+        Long destinationId = stationRepository.findByName(destination)
+                .orElseThrow(RuntimeException::new)
+                .getId();
+        return favorites.findById(sourceId, destinationId).isPresent();
     }
 }
