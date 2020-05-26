@@ -2,6 +2,11 @@ export const EVENT_TYPE = {
   CLICK: 'click'
 }
 
+export const SUCCESS_MESSAGE = {
+  ADD_FAVORITE: '즐겨찾기 추가 완료',
+  DELETE_FAVORITE: '즐겨찾기 삭제 완료'
+}
+
 export const ERROR_MESSAGE = {
   FORM_EMPTY: '입력되지 않은 정보를 입력해주세요.',
   INVALID_EMAIL_FORMAT: '유효한 이메일 형식이 아닙니다.',

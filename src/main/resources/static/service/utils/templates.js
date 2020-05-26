@@ -73,3 +73,15 @@ export const pathStationTemplate = (name, index, lastIndex) => {
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
+
+export const edgeItemTemplate = edge => {
+  return `<li data-source-id="${edge.sourceId}" data-target-id="${edge.targetId}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+            <span class="mdi mdi-subway-variant mr-2"></span>
+            <span>${edge.sourceName ? edge.sourceName : "출발역"}</span>
+            <span class="mdi mdi-arrow-right text-gray-500"></span>
+            <span>${edge.targetName ? edge.targetName : "도착역"}</span>
+            <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+              <span class="mdi mdi-delete"></span>
+            </button>
+          </li>`;
+};

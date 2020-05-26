@@ -1,7 +1,7 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE, SUCCESS_MESSAGE } from '../../utils/constants.js'
 import api from '../../api/index.js'
+import user from '../../api/user.js';
 import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -13,11 +13,16 @@ function Search() {
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
 
+  let sourceStationId;
+  let targetStationId;
   const showSearchResult = data => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
+
+    sourceStationId = data.stations[0].id
+    targetStationId = data.stations[data.stations.length - 1].id
     $searchResult.innerHTML = searchResultTemplate(data)
   }
 
@@ -47,11 +52,32 @@ function Search() {
       .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
-  const onToggleFavorite = event => {
+  const onToggleFavorite = async event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
 
+    try {
+      await user.addFavorite({
+        sourceStationId,
+        targetStationId
+      })
+
+      Snackbar.show({
+        text: SUCCESS_MESSAGE.ADD_FAVORITE,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+      })
+    }
+    catch (error) {
+      Snackbar.show({
+        text: error.message,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+      })
+    }
     if (isFavorite) {
       classList.add('mdi-star-outline')
       classList.add('text-gray-600')

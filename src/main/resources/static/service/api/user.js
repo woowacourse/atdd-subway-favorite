@@ -33,16 +33,48 @@ export default (() => {
     method: "PATCH",
     body: JSON.stringify(data)
   }).catch(() => {
-    throw new Error("정보를 불러오는데 실패했습니다.")
+    throw new Error("회원 정보 수정에 실패했습니다.")
   })
 
   const deleteAccount = () => request("/me", {
     headers,
     method: "DELETE"
   }).catch(() => {
-    throw new Error("정보를 불러오는데 실패했습니다.")
+    throw new Error("회원 탈퇴에 실패했습니다.")
   }).then(() => {
     logout()
+  })
+
+  const addFavorite = data => request("/me/favorites", {
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    method: "POST",
+    body: JSON.stringify(data)
+  }).catch(() => {
+    throw new Error("즐겨찾기 추가에 실패했습니다.")
+  })
+
+  const getFavorites = () => requestWithJsonData("/me/favorites", {
+    headers,
+  }).catch(() => {
+    throw new Error("즐겨찾기를 불러오는데 실패했습니다.")
+  })
+
+  const hasFavorite = ({ sourceId, targetId }) => request(`/me/favorites/from/${sourceId}/to/${targetId}`,
+    {
+      headers,
+    }).catch(() => {
+    throw new Error("즐겨찾기를 불러오는데 실패했습니다.")
+  })
+
+  const deleteFavorite = ({ sourceId, targetId }) => request(`/me/favorites/from/${sourceId}/to/${targetId}`,
+    {
+      headers,
+      method: 'DELETE'
+    }).catch(() => {
+    throw new Error("즐겨찾기를 삭제하는데 실패했습니다.")
   })
 
   const isLoggedIn = () => active
@@ -63,6 +95,10 @@ export default (() => {
     getInfo,
     isLoggedIn,
     update,
-    deleteAccount
+    deleteAccount,
+    addFavorite,
+    getFavorites,
+    hasFavorite,
+    deleteFavorite
   }
 })()
