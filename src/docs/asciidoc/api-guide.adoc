@@ -51,3 +51,13 @@ operation::login/[snippets='http-request,http-response,request-fields,response-f
 === 내 정보
 
 operation::myInfo/[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-favorites]]
+== Favorite
+
+[[resources-favorites-create]]
+=== 즐겨찾기 추가
+
+
+
+

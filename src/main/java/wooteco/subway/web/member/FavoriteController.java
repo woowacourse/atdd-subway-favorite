@@ -8,7 +8,9 @@ import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class FavoriteController {
@@ -26,9 +28,11 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites/exists")
-    public ResponseEntity<Boolean> ifFavoriteExists(@LoginMember Member member, @RequestParam String source, @RequestParam String destination) {
-        Boolean ifExists = favoriteService.findFavorite(member, source, destination);
-        return ResponseEntity.ok().body(ifExists);
+    public ResponseEntity<Map<String, Boolean>> ifFavoriteExists(@LoginMember Member member, @RequestParam String source, @RequestParam String destination) {
+        Boolean ifExists = favoriteService.ifFavoriteExist(member, source, destination);
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("exists", ifExists);
+        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/favorites")

@@ -48,7 +48,7 @@ public class FavoriteService {
         return favorites.toFavoriteResponses(stationRepository.findAll());
     }
 
-    public boolean findFavorite(Member member, String source, String destination) {
+    public boolean ifFavoriteExist(Member member, String source, String destination) {
         Favorites favorites = new Favorites(member.getFavorites());
         Long sourceId = stationRepository.findByName(source)
                 .orElseThrow(RuntimeException::new)

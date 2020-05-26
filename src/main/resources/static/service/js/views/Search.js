@@ -43,18 +43,29 @@ function Search() {
     api.path
         .find(searchInput)
         .then(data => showSearchResult(data))
-        .catch(error => alert(ERROR_MESSAGE.COMMON))
+        .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)))
 
     api.favorite
         .exists($departureStationName.value, $arrivalStationName.value)
-        .then(exists => {
-          if (exists) {
+        .then(result => {
+          if (result.exists) {
             turnOnStar()
           } else {
             turnOffStar()
           }
         })
-        .catch(error => alert(ERROR_MESSAGE.COMMON))
+        .catch(error => {
+          turnOffStar()
+          $favoriteButton.removeEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
+          $favoriteButton.addEventListener(EVENT_TYPE.CLICK, unauthorizedToggleFavorite);
+        })
+  }
+
+  const unauthorizedToggleFavorite = event => {
+    event.preventDefault()
+    if (confirm(ERROR_MESSAGE.LOGIN_NEEDED)) {
+      location.href = "/login"
+    }
   }
 
   const onToggleFavorite = event => {
@@ -69,10 +80,18 @@ function Search() {
           .then(() => {
             turnOffStar();
           })
+          .catch(error => {
+            alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR));
+            location.href = "/login";
+          })
     } else {
       api.favorite.create(favorite)
           .then(() => {
             turnOnStar();
+          })
+          .catch(error => {
+            alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR));
+            location.href = "/login";
           })
     }
   }

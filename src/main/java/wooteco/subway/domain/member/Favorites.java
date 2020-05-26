@@ -1,6 +1,7 @@
 package wooteco.subway.domain.member;
 
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.exception.WrongStationException;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import java.util.HashSet;
@@ -44,12 +45,12 @@ public class Favorites {
                 .filter(station -> station.getId().equals(favorite.getSourceId()))
                 .map(Station::getName)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(WrongStationException::new);
         String destinationName = stations.stream()
                 .filter(station -> station.getId().equals(favorite.getDestinationId()))
                 .map(Station::getName)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(WrongStationException::new);
         return new FavoriteResponse(sourceName, destinationName);
     }
 
