@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -82,5 +84,20 @@ public class Member {
 
     public Favorites getFavorites() {
         return favorites;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Member member = (Member)o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
