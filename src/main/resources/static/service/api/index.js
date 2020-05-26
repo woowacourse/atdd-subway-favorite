@@ -82,9 +82,41 @@ const api = (() => {
     }
   };
 
+  const line = {
+    getAll() {
+      return request(`/lines/detail`);
+    },
+    getAllDetail() {
+      return requestWithJsonData(`/lines/detail`);
+    }
+  };
+
+  const path = {
+    find(params) {
+      return requestWithJsonData(
+          `/paths?source=${params.source}&target=${params.target}&type=${params.type}`
+      );
+    }
+  };
+
+  const favorite = {
+    create(favoritePath) {
+      return request(`/me/favorites`, METHOD.POST(favoritePath));
+    },
+    getAll() {
+      return requestWithJsonData(`/me/favorites`, METHOD.GET_WITH_AUTH());
+    },
+    delete(id) {
+      return request(`/me/favorites/${id}`, METHOD.DELETE());
+    }
+  };
+
   return {
     member,
-    loginMember
+    loginMember,
+    line,
+    path,
+    favorite
   };
 })();
 

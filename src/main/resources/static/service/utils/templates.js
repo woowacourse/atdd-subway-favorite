@@ -45,6 +45,11 @@ export const navTemplate = member => `<nav class="flex items-center justify-betw
           경로 조회
           </a>
       </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded inline-block">
+         <a href="/favorites" class="text-gray-800 text-sm">
+          즐겨찾기
+          </a>
+      </div>
     </div>
     ${memberInfo(member)}
   </div>
@@ -114,4 +119,22 @@ export const initNavigation = member => {
     document
         .querySelector("body")
         .insertAdjacentHTML("afterBegin", navTemplate(member));
+};
+
+export const edgeItemTemplate = edge => {
+    return `<li data-edge-id="${
+        edge.id
+    }" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+            <span class="mdi mdi-subway-variant mr-2"></span>
+            <span data-source-station-id="${edge.sourceStationId}">${
+        edge.sourceStationName ? edge.sourceStationName : "출발역"
+    }</span>
+            <span class="mdi mdi-arrow-right text-gray-500"></span>
+            <span data-target-station-id="${edge.targetStationId}">${
+        edge.targetStationName ? edge.targetStationName : "도착역"
+    }</span>
+            <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+              <span class="mdi mdi-delete"></span>
+            </button>
+          </li>`;
 };
