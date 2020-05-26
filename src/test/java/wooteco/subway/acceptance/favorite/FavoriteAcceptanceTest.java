@@ -16,7 +16,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-
     private static final String AUTHORIZATION = "Authorization";
 
     @Override
@@ -45,11 +44,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기 목록을 응답받는다.
      * Then 즐겨찾기 목록은 n-1개이다.
      */
-
-
     @Test
     void manageFavorite() {
-        //And 사용자가 로그인이 되어 있다.
+        //And
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         String token = tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
@@ -66,8 +63,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         deleteFavorite(token, 1L);
 
-//        favorites = getFavorites(token);
-//        assertThat(favorites.size()).isEqualTo(2);
+       favorites = getFavorites(token);
+       assertThat(favorites.size()).isEqualTo(2);
     }
 
     private void deleteFavorite(String token, Long favoriteId) {
@@ -92,7 +89,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
-
 
         given().header(AUTHORIZATION, token).
                 body(params).

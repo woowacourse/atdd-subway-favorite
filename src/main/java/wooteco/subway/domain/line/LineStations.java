@@ -3,7 +3,7 @@ package wooteco.subway.domain.line;
 import java.util.*;
 
 public class LineStations {
-    private Set<LineStation> stations;
+    private final Set<LineStation> stations;
 
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;
@@ -67,10 +67,10 @@ public class LineStations {
     }
 
     public int getTotalDistance() {
-        return stations.stream().mapToInt(it -> it.getDistance()).sum();
+        return stations.stream().mapToInt(LineStation::getDistance).sum();
     }
 
     public int getTotalDuration() {
-        return stations.stream().mapToInt(it -> it.getDuration()).sum();
+        return stations.stream().mapToInt(LineStation::getDuration).sum();
     }
 }

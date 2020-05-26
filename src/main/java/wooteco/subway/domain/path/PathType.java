@@ -14,7 +14,6 @@ public enum PathType {
         this.expression = expression;
     }
 
-
     public int findWeightOf(LineStation lineStation) {
         return expression.apply(lineStation);
     }

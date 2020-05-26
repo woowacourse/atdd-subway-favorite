@@ -1,13 +1,10 @@
 package wooteco.subway.web.member;
 
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.digester.DocumentProperties;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,8 +40,8 @@ public class MemberController {
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = memberService.createMember(memberRequest);
         return ResponseEntity
-                .created(URI.create("/members/" + member.getId()))
-                .build();
+            .created(URI.create("/members/" + member.getId()))
+            .build();
     }
 
     @IsAuth(isAuth = Auth.AUTH)
@@ -56,7 +53,7 @@ public class MemberController {
     @IsAuth(isAuth = Auth.AUTH)
     @PutMapping("/{id}")
     public ResponseEntity<MemberResponse> updateMember(@RequestAttribute String email, @PathVariable Long id,
-                                                       @RequestBody UpdateMemberRequest param) {
+        @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(email, id, param);
         return ResponseEntity.ok().build();
     }
@@ -71,7 +68,7 @@ public class MemberController {
     @IsAuth(isAuth = Auth.AUTH)
     @PostMapping("/favorites")
     public ResponseEntity<Void> addFavorite(@RequestBody FavoriteRequest favoriteRequest,
-                                            @LoginMember Member member) {
+        @LoginMember Member member) {
         memberService.addFavorite(member, favoriteRequest);
         return ResponseEntity.ok().build();
     }
@@ -85,8 +82,8 @@ public class MemberController {
 
     @IsAuth(isAuth = Auth.AUTH)
     @DeleteMapping("/favorites/{id}")
-    public ResponseEntity<Void> deleteFavorites(@PathVariable Long id, @LoginMember Member member) {
-         memberService.deleteFavorites(id, member);
+    public ResponseEntity<Void> deleteFavorites(@LoginMember Member member, @PathVariable Long id) {
+        memberService.deleteFavorites(id, member);
         return ResponseEntity.noContent().build();
     }
 }

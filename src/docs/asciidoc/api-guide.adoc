@@ -49,3 +49,8 @@ operation::favorites/add[snippets='http-request,request-headers,request-fields']
 === 즐겨 찾기 조회
 
 operation::favorites/get[snippets='http-request,request-headers,response-body,response-fields']
+
+[[resources-favorites-delete]]
+=== 즐겨 찾기 삭제
+
+operation::favorites/delete[snippets='http-request,request-headers,path-parameters,http-response']

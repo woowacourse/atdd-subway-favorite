@@ -72,7 +72,7 @@ public class Member {
     }
 
     public void deleteFavoriteBy(Long favoriteId) {
-        favorites.remove(favorites.stream()
+        this.favorites.remove(favorites.stream()
                 .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
                 .findFirst().orElseThrow(IllegalArgumentException::new));
     }
