@@ -1,10 +1,11 @@
 package wooteco.subway.domain.member;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.relational.core.mapping.Embedded;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import wooteco.subway.domain.member.favorite.Favorite;
 import wooteco.subway.domain.member.favorite.Favorites;
 
@@ -33,7 +34,8 @@ public class Member {
     }
 
     @PersistenceConstructor
-    public Member(final Long id, final String email, final String name, final String password, final Favorites favorites) {
+    public Member(final Long id, final String email, final String name, final String password,
+        final Favorites favorites) {
         this.id = id;
         this.email = email;
         this.name = name;

@@ -1,15 +1,15 @@
 package wooteco.subway.web.member.interceptor;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-import wooteco.subway.web.member.auth.Authentication;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import wooteco.subway.web.member.auth.Authentication;
+
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-
     private final Authentication authentication;
 
     public BearerAuthInterceptor(final Authentication authentication) {
@@ -17,9 +17,9 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+        Object handler) {
         authentication.setAuthentication(request);
         return true;
     }
-
 }

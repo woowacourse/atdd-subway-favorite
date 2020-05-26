@@ -51,10 +51,10 @@ const resolver = (response) => {
     let func;
     response.status < 400 ? func = resolve : func = reject;
     if (response.status !== 204) {
-      response.json().then(data => func({'status': response.status, 'body': data}));
+      response.json().then(data => func({ 'status': response.status, 'body': data }));
       return;
     }
-    func({'status': response.status})
+    func({ 'status': response.status })
   });
 }
 
@@ -62,12 +62,12 @@ const api = (() => {
   const customRequest = (uri, config) => fetch(uri, config).then(resolver);
   const request = (uri, config) => fetch(uri, config);
   const requestWithJsonData = (uri, config) =>
-      fetch(uri, config).then(response => {
-        if (!response.ok) {
-          return;
-        }
-        return response.json();
-      });
+    fetch(uri, config).then(response => {
+      if (!response.ok) {
+        return;
+      }
+      return response.json();
+    });
 
   const member = {
     get(id) {
@@ -111,7 +111,7 @@ const api = (() => {
   const path = {
     find(params) {
       return requestWithJsonData(
-          `/paths?source=${params.source}&target=${params.target}&type=${params.type}`
+        `/paths?source=${params.source}&target=${params.target}&type=${params.type}`
       );
     }
   };

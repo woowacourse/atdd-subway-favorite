@@ -1,8 +1,11 @@
 package wooteco.subway.service.member;
 
+import java.util.Arrays;
+
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -23,8 +26,6 @@ import wooteco.subway.service.member.favorite.FavoriteService;
 import wooteco.subway.web.dto.ErrorCode;
 import wooteco.subway.web.member.exception.MemberException;
 
-import java.util.Arrays;
-
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -32,18 +33,19 @@ public class MemberService {
     private FavoriteService favoriteService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(final MemberRepository memberRepository, final StationRepository stationRepository,
-                         final FavoriteService favoriteService, final JwtTokenProvider jwtTokenProvider) {
+    public MemberService(final MemberRepository memberRepository,
+        final StationRepository stationRepository,
+        final FavoriteService favoriteService, final JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
         this.favoriteService = favoriteService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
     @Transactional
     public Long createMember(MemberRequest memberRequest) {
-        Member member = new Member(memberRequest.getEmail(), memberRequest.getName(), memberRequest.getPassword());
+        Member member = new Member(memberRequest.getEmail(), memberRequest.getName(),
+            memberRequest.getPassword());
         validateName(member);
         try {
             return memberRepository.save(member).getId();
@@ -78,7 +80,8 @@ public class MemberService {
 
     private Member getMember(final String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(String.format("%s : 가입하지 않은 이메일입니다.", email), ErrorCode.UNSIGNED_EMAIL));
+            .orElseThrow(() -> new MemberException(String.format("%s : 가입하지 않은 이메일입니다.", email),
+                ErrorCode.UNSIGNED_EMAIL));
     }
 
     @Transactional
@@ -95,7 +98,8 @@ public class MemberService {
     @Transactional
     public void addFavorite(final FavoriteRequest favoriteRequest, LoginEmail loginEmail) {
         Member member = getMember(loginEmail.getEmail());
-        Stations stations = new Stations(stationRepository.findAllById(Arrays.asList(favoriteRequest.getSourceStationId(),
+        Stations stations = new Stations(
+            stationRepository.findAllById(Arrays.asList(favoriteRequest.getSourceStationId(),
                 favoriteRequest.getTargetStationId())));
         Station source = stations.extractStationById(favoriteRequest.getSourceStationId());
         Station target = stations.extractStationById(favoriteRequest.getTargetStationId());
@@ -104,8 +108,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteFavorite(final FavoriteDeleteRequest deleteRequest, final LoginEmail loginEmail) {
-        Favorite favorite = new Favorite(deleteRequest.getSourceStationId(), deleteRequest.getTargetStationId());
+    public void deleteFavorite(final FavoriteDeleteRequest deleteRequest,
+        final LoginEmail loginEmail) {
+        Favorite favorite = new Favorite(deleteRequest.getSourceStationId(),
+            deleteRequest.getTargetStationId());
         Member member = getMember(loginEmail.getEmail());
         favoriteService.removeFavoriteToMember(member, favorite);
         memberRepository.save(member);

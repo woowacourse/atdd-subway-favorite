@@ -1,5 +1,7 @@
 package wooteco.subway.web.member;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
@@ -21,8 +24,6 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.dto.DefaultResponse;
 import wooteco.subway.web.member.auth.LoginMember;
 
-import javax.validation.Valid;
-
 @RestController
 public class LoginMemberController {
     private MemberService memberService;
@@ -32,13 +33,15 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<DefaultResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<DefaultResponse<TokenResponse>> login(
+        @Valid @RequestBody LoginRequest loginRequest) {
         String token = memberService.createToken(loginRequest);
         return ResponseEntity.ok().body(DefaultResponse.of(new TokenResponse(token, "bearer")));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<DefaultResponse<MemberResponse>> getMyInfo(@LoginMember LoginEmail loginEmail) {
+    public ResponseEntity<DefaultResponse<MemberResponse>> getMyInfo(
+        @LoginMember LoginEmail loginEmail) {
         Member member = memberService.findMemberByEmail(loginEmail);
         return ResponseEntity.ok().body(DefaultResponse.of(MemberResponse.of(member)));
     }
@@ -50,25 +53,29 @@ public class LoginMemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Void> updateMyInfo(@RequestBody UpdateMemberRequest updateMemberRequest, @LoginMember LoginEmail loginEmail) {
+    public ResponseEntity<Void> updateMyInfo(@RequestBody UpdateMemberRequest updateMemberRequest,
+        @LoginMember LoginEmail loginEmail) {
         memberService.updateMember(updateMemberRequest, loginEmail);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/me/favorites")
-    public ResponseEntity<DefaultResponse<Void>> addFavorite(@RequestBody FavoriteRequest favoriteRequest, @LoginMember LoginEmail loginEmail) {
+    public ResponseEntity<DefaultResponse<Void>> addFavorite(
+        @RequestBody FavoriteRequest favoriteRequest, @LoginMember LoginEmail loginEmail) {
         memberService.addFavorite(favoriteRequest, loginEmail);
         return new ResponseEntity<>(DefaultResponse.empty(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/me/favorites")
-    public ResponseEntity<Void> deleteFavorite(@RequestBody FavoriteDeleteRequest deleteRequest, @LoginMember LoginEmail loginEmail) {
+    public ResponseEntity<Void> deleteFavorite(@RequestBody FavoriteDeleteRequest deleteRequest,
+        @LoginMember LoginEmail loginEmail) {
         memberService.deleteFavorite(deleteRequest, loginEmail);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me/favorites")
-    public ResponseEntity<DefaultResponse<FavoriteResponses>> getAllFavorites(@LoginMember LoginEmail loginEmail) {
+    public ResponseEntity<DefaultResponse<FavoriteResponses>> getAllFavorites(
+        @LoginMember LoginEmail loginEmail) {
         FavoriteResponses favoriteResponses = memberService.getAllFavorites(loginEmail);
         return ResponseEntity.ok(DefaultResponse.of(favoriteResponses));
     }

@@ -5,7 +5,7 @@ public class DefaultResponse<T> {
     private Integer code;
     private String message;
 
-    public DefaultResponse() {
+    private DefaultResponse() {
     }
 
     public DefaultResponse(final T data, final Integer code, final String message) {

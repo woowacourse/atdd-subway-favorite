@@ -2,6 +2,7 @@ package wooteco.subway.web.member.auth;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import wooteco.subway.web.dto.ErrorCode;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)

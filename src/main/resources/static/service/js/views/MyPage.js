@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE} from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE } from "../../utils/constants.js";
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 
@@ -18,7 +18,8 @@ function MyInfo() {
       await api.loginMember.delete();
       localStorage.setItem("jwt", "");
       location.href = "/";
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
@@ -33,7 +34,8 @@ function MyInfo() {
       };
       await api.loginMember.update(updatedInfo);
       showSnackbar(SUCCESS_MESSAGE.SAVE);
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
@@ -47,7 +49,8 @@ function MyInfo() {
         $name.value = member.name;
         $password.value = member.password;
       }
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };

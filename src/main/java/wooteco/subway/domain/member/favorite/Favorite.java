@@ -1,17 +1,18 @@
 package wooteco.subway.domain.member.favorite;
 
-import org.springframework.data.annotation.PersistenceConstructor;
-import wooteco.subway.domain.station.Station;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import wooteco.subway.domain.station.Station;
 
 public class Favorite {
     private Long sourceStationId;
     private Long targetStationId;
 
-    @PersistenceConstructor
+    private Favorite() {
+    }
+
     public Favorite(final Long sourceStationId, final Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
@@ -35,11 +36,13 @@ public class Favorite {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Favorite favorite = (Favorite) o;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final Favorite favorite = (Favorite)o;
         return Objects.equals(sourceStationId, favorite.sourceStationId) &&
-                Objects.equals(targetStationId, favorite.targetStationId);
+            Objects.equals(targetStationId, favorite.targetStationId);
     }
 
     @Override

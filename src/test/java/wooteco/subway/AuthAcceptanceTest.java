@@ -1,21 +1,21 @@
 package wooteco.subway;
 
-import io.restassured.mapper.TypeRef;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.web.dto.DefaultResponse;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import io.restassured.mapper.TypeRef;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.web.dto.DefaultResponse;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
@@ -30,16 +30,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
         return
-                given().
-                        auth().oauth2(tokenResponse.getAccessToken()).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        get("/me").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(new TypeRef<DefaultResponse<MemberResponse>>() {
-                }).getData();
+            given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(new TypeRef<DefaultResponse<MemberResponse>>() {
+            }).getData();
     }
 
     public TokenResponse login(String email, String password) {
@@ -48,16 +48,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("password", password);
 
         return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/login").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(new TypeRef<DefaultResponse<TokenResponse>>() {
-                }).getData();
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/login").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(new TypeRef<DefaultResponse<TokenResponse>>() {
+            }).getData();
     }
 }

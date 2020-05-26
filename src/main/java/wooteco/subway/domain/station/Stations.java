@@ -11,19 +11,19 @@ public class Stations {
         this.stations = stations;
     }
 
-    public List<Station> getStations() {
-        return stations;
-    }
-
     public Station extractStationById(Long stationId) {
         return stations.stream()
-                .filter(it -> it.getId().equals(stationId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> it.getId().equals(stationId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
     public Map<Long, String> toMap() {
         return stations.stream()
-                .collect(Collectors.toMap(Station::getId, Station::getName));
+            .collect(Collectors.toMap(Station::getId, Station::getName));
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 }

@@ -3,7 +3,6 @@ package wooteco.subway.service.member.dto;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 public class FavoriteRequest {
-
     @JsonAlias("source")
     private Long sourceStationId;
     @JsonAlias("target")

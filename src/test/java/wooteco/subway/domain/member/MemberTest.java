@@ -1,15 +1,14 @@
 package wooteco.subway.domain.member;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import wooteco.subway.domain.member.favorite.Favorite;
 import wooteco.subway.web.member.exception.MemberException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 class MemberTest {
-
     private Member member;
 
     @DisplayName("사용자 생성시 즐겨찾기 목록이 없다.")
@@ -43,8 +42,9 @@ class MemberTest {
         member.addFavorite(favorite);
         //then
         assertThatThrownBy(() -> member.addFavorite(favorite))
-                .isInstanceOf(MemberException.class)
-                .hasMessage("source: %d, target: %d, 이미 존재하는 즐겨찾기입니다.", favorite.getSourceStationId(), favorite.getTargetStationId());
+            .isInstanceOf(MemberException.class)
+            .hasMessage("source: %d, target: %d, 이미 존재하는 즐겨찾기입니다.", favorite.getSourceStationId(),
+                favorite.getTargetStationId());
     }
 
     @DisplayName("즐겨찾기 제거")
@@ -67,7 +67,8 @@ class MemberTest {
         Favorite favorite = new Favorite(1L, 2L);
         //then
         assertThatThrownBy(() -> member.removeFavorite(favorite))
-                .isInstanceOf(MemberException.class)
-                .hasMessage("source: %d, target: %d, 존재하지 않는 즐겨찾기입니다.", favorite.getSourceStationId(), favorite.getTargetStationId());
+            .isInstanceOf(MemberException.class)
+            .hasMessage("source: %d, target: %d, 존재하지 않는 즐겨찾기입니다.", favorite.getSourceStationId(),
+                favorite.getTargetStationId());
     }
 }
