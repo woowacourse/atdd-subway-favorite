@@ -2,6 +2,7 @@ package wooteco.subway.domain.member;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
@@ -17,21 +18,27 @@ public class Favorites {
     }
 
     public static Favorites empty() {
-        return new Favorites(new ArrayList<>());
-    }
+		return new Favorites(new ArrayList<>());
+	}
 
-    public void addFavorite(Favorite favorite) {
-        if (favorites.contains(favorite)) {
-            throw new IllegalArgumentException("중복되는 즐겨찾기 항목입니다.");
-        }
-        favorites.add(favorite);
-    }
+	public void addFavorite(Favorite favorite) {
+		if (favorites.contains(favorite)) {
+			throw new IllegalArgumentException("중복되는 즐겨찾기 항목입니다.");
+		}
+		favorites.add(favorite);
+	}
 
-    public int size() {
-        return favorites.size();
-    }
+	public List<Long> getStationIds() {
+		return favorites.stream()
+			.flatMap(Favorite::getStationIdsStream)
+			.collect(Collectors.toList());
+	}
 
-    public List<Favorite> getFavorites() {
-        return favorites;
-    }
+	public int size() {
+		return favorites.size();
+	}
+
+	public List<Favorite> getFavorites() {
+		return favorites;
+	}
 }

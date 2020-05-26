@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
@@ -38,6 +40,10 @@ public class Member {
         }
     }
 
+    public List<Long> getFavoriteStationIds() {
+        return favorites.getStationIds();
+    }
+
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
@@ -62,7 +68,7 @@ public class Member {
         return password;
     }
 
-    public Favorites getFavorites() {
-        return favorites;
+    public List<Favorite> getFavorites() {
+        return favorites.getFavorites();
     }
 }

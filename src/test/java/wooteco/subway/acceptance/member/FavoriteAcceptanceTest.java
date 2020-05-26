@@ -1,5 +1,7 @@
 package wooteco.subway.acceptance.member;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,9 +31,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         FavoriteCreateRequest SEOUL_TO_GANGNAM = new FavoriteCreateRequest(1L, 9L);
         addFavorite(SEOUL_TO_GANGNAM, tokenResponse);
-        //
-        // List<FavoriteResponse> addedFavorites = getFavorites(tokenResponse);
-        // assertThat(addedFavorites.size()).isEqualTo(2);
+
+        List<FavoriteResponse> addedFavorites = getFavorites(tokenResponse);
+        assertThat(addedFavorites.size()).isEqualTo(2);
 
         // FavoriteRemoveRequest favoriteRemoveRequest = new FavoriteRemoveRequest(2L, 4L);
         // removeFavorite(favoriteRemoveRequest, tokenResponse);

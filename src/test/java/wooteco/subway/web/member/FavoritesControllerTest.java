@@ -1,13 +1,11 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_EMAIL;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static wooteco.subway.service.member.MemberServiceTest.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +32,8 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 @WebMvcTest(controllers = FavoritesController.class)
 public class FavoritesControllerTest {
     private static final Member MEMBER_BROWN = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+    private static final String BEARER_JWT_TOKEN = "Bearer BEARER_JWT_TOKEN";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     protected MockMvc mockMvc;
 
@@ -50,21 +50,27 @@ public class FavoritesControllerTest {
     public void setUp(WebApplicationContext webApplicationContext,
             RestDocumentationContextProvider restDocumentationContextProvider) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(documentationConfiguration(restDocumentationContextProvider))
-                .build();
+            .apply(documentationConfiguration(restDocumentationContextProvider))
+            .build();
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
     }
 
     @Test
     void addFavorite() throws Exception {
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
-
         mockMvc.perform(post("/members/favorites")
-                .header("Authorization",
-                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
-                .content("{\"departStationId\": \"1\"," + "\"arriveStationId\": \"2\"}")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+            .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN)
+            .content("{\"departStationId\": \"1\"," + "\"arriveStationId\": \"2\"}")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void getFavorites() throws Exception {
+        mockMvc.perform(get("/members/favorites")
+            .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
     }
 }

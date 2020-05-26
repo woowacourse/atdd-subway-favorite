@@ -1,6 +1,7 @@
 package wooteco.subway.domain.member;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class Favorite {
     private Long departStationId;
@@ -12,6 +13,10 @@ public class Favorite {
     public Favorite(Long departStationId, Long arriveStationId) {
         this.departStationId = departStationId;
         this.arriveStationId = arriveStationId;
+    }
+
+    public Stream<Long> getStationIdsStream() {
+        return Stream.of(departStationId, arriveStationId);
     }
 
     public Long getDepartStationId() {
