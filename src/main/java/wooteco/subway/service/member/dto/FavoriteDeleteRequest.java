@@ -1,13 +1,15 @@
 package wooteco.subway.service.member.dto;
 
-public class FavoriteRemoveRequest {
+import wooteco.subway.domain.member.Favorite;
+
+public class FavoriteDeleteRequest {
     private Long departStationId;
     private Long arriveStationId;
 
-    private FavoriteRemoveRequest() {
+    private FavoriteDeleteRequest() {
     }
 
-    public FavoriteRemoveRequest(Long departStationId, Long arriveStationId) {
+    public FavoriteDeleteRequest(Long departStationId, Long arriveStationId) {
         this.departStationId = departStationId;
         this.arriveStationId = arriveStationId;
     }
@@ -18,5 +20,9 @@ public class FavoriteRemoveRequest {
 
     public Long getArriveStationId() {
         return arriveStationId;
+    }
+
+    public Favorite toEntity() {
+        return new Favorite(departStationId, arriveStationId);
     }
 }

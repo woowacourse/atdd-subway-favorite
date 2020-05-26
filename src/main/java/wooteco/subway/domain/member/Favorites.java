@@ -18,27 +18,31 @@ public class Favorites {
     }
 
     public static Favorites empty() {
-		return new Favorites(new ArrayList<>());
-	}
+        return new Favorites(new ArrayList<>());
+    }
 
-	public void addFavorite(Favorite favorite) {
-		if (favorites.contains(favorite)) {
-			throw new IllegalArgumentException("중복되는 즐겨찾기 항목입니다.");
-		}
-		favorites.add(favorite);
-	}
+    public void addFavorite(Favorite favorite) {
+        if (favorites.contains(favorite)) {
+            throw new IllegalArgumentException("중복되는 즐겨찾기 항목입니다.");
+        }
+        favorites.add(favorite);
+    }
 
-	public List<Long> getStationIds() {
-		return favorites.stream()
-			.flatMap(Favorite::getStationIdsStream)
-			.collect(Collectors.toList());
-	}
+    public List<Long> getStationIds() {
+        return favorites.stream()
+                .flatMap(Favorite::getStationIdsStream)
+                .collect(Collectors.toList());
+    }
 
-	public int size() {
-		return favorites.size();
-	}
+    public int size() {
+        return favorites.size();
+    }
 
-	public List<Favorite> getFavorites() {
-		return favorites;
-	}
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public void delete(Favorite favorite) {
+        favorites.remove(favorite);
+    }
 }

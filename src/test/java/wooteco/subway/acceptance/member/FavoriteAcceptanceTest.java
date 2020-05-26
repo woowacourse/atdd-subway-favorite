@@ -1,6 +1,6 @@
 package wooteco.subway.acceptance.member;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.FavoriteCreateRequest;
-import wooteco.subway.service.member.dto.FavoriteRemoveRequest;
+import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
@@ -35,11 +35,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         List<FavoriteResponse> addedFavorites = getFavorites(tokenResponse);
         assertThat(addedFavorites.size()).isEqualTo(2);
 
-        // FavoriteRemoveRequest favoriteRemoveRequest = new FavoriteRemoveRequest(2L, 4L);
-        // removeFavorite(favoriteRemoveRequest, tokenResponse);
-        //
-        // List<FavoriteResponse> removedFavorites = getFavorites(tokenResponse);
-        // assertThat(removedFavorites.size()).isEqualTo(1);
+        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(2L, 4L);
+        removeFavorite(favoriteDeleteRequest, tokenResponse);
+
+        List<FavoriteResponse> removedFavorites = getFavorites(tokenResponse);
+        assertThat(removedFavorites.size()).isEqualTo(1);
     }
 
     // @formatter:off
@@ -72,12 +72,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         jsonPath().getList(".", FavoriteResponse.class);
     }
 
-    public void removeFavorite(FavoriteRemoveRequest favoriteRemoveRequest, TokenResponse tokenResponse) {
+    public void removeFavorite(FavoriteDeleteRequest favoriteDeleteRequest, TokenResponse tokenResponse) {
         given().
                 auth().
                 oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                body(favoriteRemoveRequest).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                body(favoriteDeleteRequest).
         when().
                 delete("/members/favorites").
         then().

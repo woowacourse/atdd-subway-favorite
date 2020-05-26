@@ -71,4 +71,8 @@ public class Member {
     public List<Favorite> getFavorites() {
         return favorites.getFavorites();
     }
+
+    public void deleteFavorite(Favorite favorite) {
+        favorites.delete(favorite);
+    }
 }
