@@ -1,11 +1,13 @@
 package wooteco.subway.service.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -29,12 +31,16 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private FavoriteRepository favoriteRepository;
+
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, favoriteRepository, jwtTokenProvider);
     }
 
     @Test
@@ -66,5 +72,19 @@ public class MemberServiceTest {
         memberService.updateMember(member.getId(), updateParam);
 
         verify(memberRepository).findById(eq(member.getId()));
+    }
+
+    @DisplayName("회원 탈퇴 기능")
+    @Test
+    void deleteMember() {
+        memberService.deleteMember(63L);
+        verify(memberRepository).deleteById(eq(63L));
+    }
+
+    @DisplayName("회원 탈퇴 시 관련 즐겨찾기도 모두 삭제")
+    @Test
+    void deleteMemberWithFavorites() {
+        memberService.deleteMember(63L);
+        verify(favoriteRepository).deleteAllByMemberId(eq(63L));
     }
 }

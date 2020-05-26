@@ -2,6 +2,7 @@ package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -12,10 +13,12 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final FavoriteRepository favoriteRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(final MemberRepository memberRepository, final JwtTokenProvider jwtTokenProvider) {
+    public MemberService(final MemberRepository memberRepository, final FavoriteRepository favoriteRepository, final JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.favoriteRepository = favoriteRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -30,6 +33,7 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
+        favoriteRepository.deleteAllByMemberId(id);
         memberRepository.deleteById(id);
     }
 
@@ -38,7 +42,6 @@ public class MemberService {
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }
-
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
