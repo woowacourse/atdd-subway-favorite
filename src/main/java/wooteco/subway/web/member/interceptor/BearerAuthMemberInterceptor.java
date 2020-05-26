@@ -30,6 +30,7 @@ public class BearerAuthMemberInterceptor implements HandlerInterceptor {
                              HttpServletResponse response, Object handler) {
         System.out.println("인터셉터 들어감");
         if (isPost(request)) {
+            System.out.println("왜 일로 들어올까");
             return true;
         }
 

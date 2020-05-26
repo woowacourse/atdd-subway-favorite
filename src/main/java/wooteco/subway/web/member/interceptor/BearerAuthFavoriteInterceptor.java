@@ -1,6 +1,7 @@
 package wooteco.subway.web.member.interceptor;
 
 import com.google.gson.Gson;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,20 +28,23 @@ public class BearerAuthFavoriteInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("Favorite 인터셉터 들어감");
+        if(request.getMethod().equals(HttpMethod.POST.name())) {
+            String content = request.getReader().readLine();
+            CreateFavoriteRequest createFavoriteRequest = gson.fromJson(content, CreateFavoriteRequest.class);
+
+            String source = createFavoriteRequest.getSource();
+            request.setAttribute("source", source);
+
+            String target = createFavoriteRequest.getTarget();
+            request.setAttribute("target", target);
+        }
 
         String bearer = authExtractor.extract(request, "Bearer");
+        System.out.println(bearer + " 베어맨");
         validateToken(bearer);
         String email = jwtTokenProvider.getSubject(bearer);
 
         request.setAttribute("requestMemberEmail", email);
-        String content = request.getReader().readLine();
-        CreateFavoriteRequest createFavoriteRequest = gson.fromJson(content, CreateFavoriteRequest.class);
-
-        String source = createFavoriteRequest.getSource();
-        request.setAttribute("source", source);
-
-        String target = createFavoriteRequest.getTarget();
-        request.setAttribute("target", target);
 
         return true;
     }

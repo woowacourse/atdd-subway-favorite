@@ -14,11 +14,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import wooteco.subway.DummyTestUserInfo;
 import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
+import wooteco.subway.service.member.MemberService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -35,12 +37,17 @@ public class FavoriteControllerIntegrationTest {
     @Autowired
     private FavoriteService favoriteService;
     @Autowired
+    private FavoriteRepository favoriteRepository;
+    @Autowired
+    private MemberService memberService;
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .build();
+        favoriteRepository.deleteAll();
     }
 
     @DisplayName("JWT 토큰이 없는 즐겨찾기 추가 요청")
@@ -92,17 +99,20 @@ public class FavoriteControllerIntegrationTest {
         Favorite favorite2 = new Favorite("양재역", "판교역", DummyTestUserInfo.EMAIL);
         favoriteService.save(favorite1);
         favoriteService.save(favorite2);
-        //when
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+        memberService.createMember(member);
         String token = jwtTokenProvider.createToken(member.getEmail());
         String uri = "/favorites";
 
+        //when
         MvcResult mvcResult = mockMvc.perform(get(uri)
-                .header("Authorization", "Bearer" + token)
+                .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
+
+        // then
         FavoritesResponse favoritesResponse = gson.fromJson(mvcResult.getResponse().getContentAsString(), FavoritesResponse.class);
         assertThat(favoritesResponse.getFavoriteResponses()).hasSize(2);
     }

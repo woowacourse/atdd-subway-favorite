@@ -10,9 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import wooteco.subway.DummyTestUserInfo;
@@ -21,12 +21,17 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.exception.NotExistFavoriteDataException;
 
-import static org.mockito.BDDMockito.given;
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,13 +67,13 @@ public class FavoriteControllerTest {
         String targetStation = "한티역";
 
         CreateFavoriteRequest favoriteRequest = new CreateFavoriteRequest(sourceStation, targetStation);
-        Member member = new Member(DummyTestUserInfo.EMAIL,DummyTestUserInfo.NAME,DummyTestUserInfo.PASSWORD);
+        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
 
         given(favoriteService.save(any())).willReturn(new Favorite(sourceStation, targetStation, DummyTestUserInfo.EMAIL));
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(DummyTestUserInfo.EMAIL);
         given(memberService.findMemberByEmail(any())).willReturn(member);
-        given(favoriteService.findFavoriteBySourceAndTarget(any(),any())).willThrow(NotExistFavoriteDataException.class);
+        given(favoriteService.findFavoriteBySourceAndTarget(any(), any())).willThrow(NotExistFavoriteDataException.class);
 
         String uri = "/favorites";
         String content = gson.toJson(favoriteRequest);
@@ -80,5 +85,27 @@ public class FavoriteControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
+    }
+
+    @DisplayName("즐겨찾기 조회한다")
+    @Test
+    void selectFavoriteTest() throws Exception {
+        Favorite favorite1 = new Favorite("강남역", "역삼역", "email@gmail.com");
+        Member member = new Member("email@gmail.com", null, null);
+        given(favoriteService.findAllByEmail(any())).willReturn(Arrays.asList(FavoriteResponse.of(favorite1), FavoriteResponse.of(favorite1)));
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+
+        String uri = "/favorites";
+
+        MvcResult mvcResult = mockMvc.perform(get(uri)
+                .header("Authorization", "Bearer " + "이메일 Token")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        FavoritesResponse favoritesResponse = gson.fromJson(mvcResult.getResponse().getContentAsString(), FavoritesResponse.class);
+        assertThat(favoritesResponse.getFavoriteResponses()).hasSize(2);
     }
 }

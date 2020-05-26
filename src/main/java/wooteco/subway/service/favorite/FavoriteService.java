@@ -3,7 +3,11 @@ package wooteco.subway.service.favorite;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.member.exception.NotExistFavoriteDataException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -24,5 +28,11 @@ public class FavoriteService {
 
     public Favorite save(Favorite favorite) {
         return favoriteRepository.save(favorite);
+    }
+
+    public List<FavoriteResponse> findAllByEmail(String email) {
+        return favoriteRepository.findByEmail(email).stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }
