@@ -14,10 +14,11 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
     Optional<Member> findByEmail(@Param("email") String email);
 
     @Query(
-        "select source.id as source_id, target.id as target_id, source.name as source_name, target.name as target_name from favorite "
-            + "INNER JOIN station as source "
+        "select favorite.source_station_id as source_id, favorite.target_station_id as target_id, "
+            + "source.name as source_name, target.name as target_name from favorite "
+            + "LEFT JOIN station as source "
             + "ON favorite.source_station_id = source.id "
-            + "INNER JOIN station as target "
+            + "LEFT JOIN station as target "
             + "ON favorite.target_station_id = target.id "
             + "WHERE favorite.member = :id")
     List<FavoriteDetail> findFavoritesById(@Param("id") Long id);

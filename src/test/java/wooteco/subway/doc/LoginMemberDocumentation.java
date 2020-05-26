@@ -3,6 +3,7 @@ package wooteco.subway.doc;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -65,6 +66,74 @@ public class LoginMemberDocumentation {
                 headerWithName("Authorization").description(
                     "The token for login which is Bearer Type")
             )
+        );
+    }
+
+    public static RestDocumentationResultHandler createFavorite() {
+        return document("me/favorites/create",
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            ),
+            requestFields(
+                fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER)
+                    .description("Departure Station"),
+                fieldWithPath("targetStationId").type(JsonFieldType.NUMBER)
+                    .description("Arrival Station")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler getFavorites() {
+        return document("me/favorites/read",
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            ),
+            responseFields(
+                fieldWithPath("[].sourceId").type(JsonFieldType.NUMBER)
+                    .description("The departure station's identity"),
+                fieldWithPath("[].targetId").type(JsonFieldType.NUMBER)
+                    .description("The target station's identity"),
+                fieldWithPath("[].sourceName").type(JsonFieldType.STRING)
+                    .description("The departure station's name"),
+                fieldWithPath("[].targetName").type(JsonFieldType.STRING)
+                    .description("The target station's name")
+            ));
+    }
+
+    public static RestDocumentationResultHandler deleteFavorite() {
+        return document("me/favorites/delete",
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            ),
+            pathParameters(
+                parameterWithName("sourceId")
+                    .description("The departure station's identity"),
+                parameterWithName("targetId")
+                    .description("The target station's identity")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler hasFavorite() {
+        return document("me/favorites/exist",
+            requestHeaders(
+                headerWithName("Authorization").description(
+                    "The token for login which is Bearer Type")
+            ),
+            pathParameters(
+                parameterWithName("sourceId")
+                    .description("The departure station's identity"),
+                parameterWithName("targetId")
+                    .description("The target station's identity")
+            ),
+            responseFields(
+                fieldWithPath("exist").type(JsonFieldType.BOOLEAN)
+                    .description("The status whether the favorite was already added or not")
+            )
+
         );
     }
 }

@@ -58,3 +58,23 @@ operation::me/update[snippets='http-request,http-response,request-fields']
 === 내 정보 삭제
 
 operation::me/delete[snippets='http-request,http-response']
+
+[[resources-me-favorites-create]]
+=== 즐겨찾기 추가
+
+operation::me/favorites/create[snippets='http-request,http-response,request-fields']
+
+[[resources-me-favorites-read]]
+=== 즐겨찾기 조회
+
+operation::me/favorites/read[snippets='http-request,http-response,response-fields']
+
+[[resources-me-favorites-exist]]
+=== 즐겨찾기 여부 확인
+
+operation::me/favorites/exist[snippets='http-request,http-response,path-parameters,response-fields']
+
+[[resources-me-favorites-delete]]
+=== 즐겨찾기 삭제
+
+operation::me/favorites/delete[snippets='http-request,http-response,path-parameters']

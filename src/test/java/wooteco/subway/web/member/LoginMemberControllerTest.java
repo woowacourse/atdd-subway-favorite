@@ -3,10 +3,12 @@ package wooteco.subway.web.member;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.service.member.MemberServiceTest.*;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +27,13 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import wooteco.subway.doc.LoginMemberDocumentation;
+import wooteco.subway.domain.favorite.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.member.exception.NotFoundMemberException;
@@ -167,5 +172,69 @@ public class LoginMemberControllerTest {
 
         mockMvc.perform(delete("/me"))
             .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 추가")
+    void createFavorite() throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        String inputJson = objectMapper.writeValueAsString(new FavoriteRequest(1L, 2L));
+
+        mockMvc.perform(post("/me/favorites")
+            .header("Authorization", "Bearer access_token")
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(LoginMemberDocumentation.createFavorite());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회")
+    void getFavorites() throws Exception {
+        List<FavoriteDetail> favoriteDetails = Lists.newArrayList(
+            new FavoriteDetail(1L, 2L, "잠실역", "삼성역"));
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(memberService.getFavorites(any())).willReturn(favoriteDetails);
+
+        mockMvc.perform(get("/me/favorites")
+            .header("Authorization", "Bearer access_token")
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("[0].sourceId").value(favoriteDetails.get(0).getSourceId()))
+            .andExpect(jsonPath("[0].targetId").value(favoriteDetails.get(0).getTargetId()))
+            .andExpect(jsonPath("[0].sourceName").value(favoriteDetails.get(0).getSourceName()))
+            .andExpect(jsonPath("[0].targetName").value(favoriteDetails.get(0).getTargetName()))
+            .andDo(print())
+            .andDo(LoginMemberDocumentation.getFavorites());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 여부 확인")
+    void hasFavorite() throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(memberService.hasFavorite(any(), anyLong(), anyLong())).willReturn(true);
+
+        mockMvc.perform(get("/me/favorites/from/{sourceId}/to/{targetId}", 1L, 2L)
+            .header("Authorization", "Bearer access_token")
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.exist").value(true))
+            .andDo(print())
+            .andDo(LoginMemberDocumentation.hasFavorite());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제")
+    void deleteFavorite() throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+
+        mockMvc.perform(delete("/me/favorites/from/{sourceId}/to/{targetId}", 1L, 2L)
+            .header("Authorization", "Bearer access_token"))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(LoginMemberDocumentation.deleteFavorite());
     }
 }

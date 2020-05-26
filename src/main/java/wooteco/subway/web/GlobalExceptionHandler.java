@@ -31,9 +31,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException() {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ErrorResponse("서버에서 오류가 발생했습니다."));
-    }
+    // @ExceptionHandler(Exception.class)
+    // public ResponseEntity<ErrorResponse> handleException() {
+    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //         .body(new ErrorResponse("서버에서 오류가 발생했습니다."));
+    // }
 }
