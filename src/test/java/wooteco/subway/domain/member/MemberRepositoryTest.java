@@ -31,7 +31,7 @@ public class MemberRepositoryTest {
 
     @Test
     void duplicatedEmail() {
-        Member newMember = new Member(TEST_USER_EMAIL, "KYLE","ORANGE");
+        Member newMember = new Member(TEST_USER_EMAIL, "KYLE", "ORANGE");
         memberRepository.save(member);
 
         assertThatThrownBy(() -> {

@@ -18,8 +18,8 @@ public class LoginAcceptanceTest extends AuthAcceptanceTest {
 
     @DisplayName("로그인 인수 테스트")
     @Test
-    void login () {
-        createMember(TEST_USER_EMAIL,TEST_USER_NAME,TEST_USER_PASSWORD);
+    void login() {
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         MemberResponse memberResponse = myInfoWithBearerAuth(tokenResponse);
@@ -29,7 +29,7 @@ public class LoginAcceptanceTest extends AuthAcceptanceTest {
         assertThat(updatedMemberResponse.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
         assertThat(updatedMemberResponse.getEmail()).isEqualTo(memberResponse.getEmail());
 
-        deleteMember(updatedMemberResponse,tokenResponse);
+        deleteMember(updatedMemberResponse, tokenResponse);
         findNotExistMember(updatedMemberResponse, tokenResponse);
     }
 
@@ -46,11 +46,12 @@ public class LoginAcceptanceTest extends AuthAcceptanceTest {
     public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("password", TEST_USER_PASSWORD);
+        params.put("newPassword", "NEW_" + TEST_USER_PASSWORD);
 
         given().
             body(params).
-            header("Authorization" , "Bearer", tokenResponse.getAccessToken()).
+            header("Authorization", "Bearer", tokenResponse.getAccessToken()).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().

@@ -3,7 +3,6 @@ package wooteco.subway.doc;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -29,9 +28,12 @@ public class FavoriteDocumentation {
                 headerWithName("Authorization").description("The token for login which is Bearer Type")
             ),
             responseFields(
-                fieldWithPath("favoriteStations[0].memberId").type(JsonFieldType.NUMBER).description("The user's favorites set"),
-                fieldWithPath("favoriteStations[0].source").type(JsonFieldType.STRING).description("The user's favorites set"),
-                fieldWithPath("favoriteStations[0].target").type(JsonFieldType.STRING).description("The user's favorites set")
+                fieldWithPath("favoriteStations[0].memberId").type(JsonFieldType.NUMBER)
+                    .description("The user's favorites set"),
+                fieldWithPath("favoriteStations[0].source").type(JsonFieldType.STRING)
+                    .description("The user's favorites set"),
+                fieldWithPath("favoriteStations[0].target").type(JsonFieldType.STRING)
+                    .description("The user's favorites set")
             )
         );
     }

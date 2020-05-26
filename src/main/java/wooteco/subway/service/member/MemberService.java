@@ -31,7 +31,10 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
+        if (!member.getPassword().equals(param.getPassword())) {
+            throw new IllegalArgumentException();
+        }
+        member.update(param.getName(), param.getNewPassword());
         memberRepository.save(member);
     }
 
@@ -49,7 +52,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(()-> new NoSuchMemberException("존재하지 않는 유저입니다."));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchMemberException("존재하지 않는 유저입니다."));
     }
 
     public boolean isExistMember(String email) {

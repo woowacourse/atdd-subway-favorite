@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -131,7 +130,6 @@ public class MemberControllerTest extends AcceptanceTest {
             .andDo(print());
     }
 
-
     @Test
     void findByEmail() throws Exception {
         when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
@@ -153,7 +151,7 @@ public class MemberControllerTest extends AcceptanceTest {
         String inputJson = "{" + "\"name\":\"" + "NEW" + "\"," +
             "\"password\":\"" + "NEW" + "\"}";
         doNothing().when(memberService)
-            .updateMember(member.getId(), new UpdateMemberRequest("NEW", "NEW"));
+            .updateMember(member.getId(), new UpdateMemberRequest("NEW", TEST_USER_PASSWORD, "NEW"));
         this.mockMvc.perform(put("/members/" + member.getId())
             .header("Authorization", "Bearer " + token.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON)
@@ -162,22 +160,6 @@ public class MemberControllerTest extends AcceptanceTest {
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(MemberDocumentation.updateMember());
-    }
-
-    @Test
-    @Disabled
-    void deleteUser() throws Exception {
-        when(memberService.createMember(member)).thenCallRealMethod();
-        doNothing().when(memberService).deleteMember(1L);
-        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        TokenResponse token = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-
-        this.mockMvc.perform(delete("/members/" + 1)
-            .header("Authorization", "bearer" + token.getAccessToken())
-        )
-            .andExpect(status().isNoContent())
-            .andDo(print())
-            .andDo(MemberDocumentation.deleteMember());
     }
 
     public TokenResponse login(String email, String password) {

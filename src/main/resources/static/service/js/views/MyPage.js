@@ -9,7 +9,8 @@ import Snackbar from "../../lib/snackbar/snackbar.js";
 function MyInfo() {
   const $email = document.querySelector("#email");
   const $name = document.querySelector("#name");
-  const $password = document.querySelector("#password");
+  const $prePassword = document.querySelector("#present-password");
+  const $newPassword = document.querySelector("#new-password");
   const $signOutButton = document.querySelector("#sign-out-button");
   const $updateButton = document.querySelector("#update-button");
 
@@ -32,18 +33,21 @@ function MyInfo() {
     event.preventDefault();
     const updatedInfo = {
       name: $name.value,
-      email: $email.value,
-      password: $password.value
+      password: $prePassword.value,
+      newPassword: $newPassword.value
     };
 
     const $userId = document.querySelector(".dropdown-menu");
     const id = $userId.dataset.id;
     api.member
       .update(id, updatedInfo)
-      .then(() => {
-        Snackbar.show({text: `${SUCCESS_MESSAGE.SAVE}`});
-      })
-      .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
+      .then((response) => {
+        if(!response.ok) {
+          alert(ERROR_MESSAGE.PASSWORD_CHECK);
+          return;
+        }
+        alert(SUCCESS_MESSAGE.SAVE);
+      });
   };
 
   const initMyInfo = () => {
@@ -52,6 +56,7 @@ function MyInfo() {
       .then(member => {
         $email.value = member.email;
         $name.value = member.name;
+
       })
       .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
   };

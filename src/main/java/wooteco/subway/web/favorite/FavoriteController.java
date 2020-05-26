@@ -25,7 +25,7 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity createFavorite(@RequestBody FavoriteRequest request, @LoginMember Member member){
+    public ResponseEntity createFavorite(@RequestBody FavoriteRequest request, @LoginMember Member member) {
         favoriteService.save(member, request.toFavoriteStation(member));
         return ResponseEntity.ok().build();
     }
@@ -38,7 +38,7 @@ public class FavoriteController {
 
     @DeleteMapping
     public ResponseEntity<Void> delete(@LoginMember Member member,
-        @RequestParam("source") String source, @RequestParam("target") String target){
+        @RequestParam("source") String source, @RequestParam("target") String target) {
         favoriteService.delete(member, source, target);
         return ResponseEntity.ok().build();
     }

@@ -2,10 +2,7 @@ package wooteco.subway.service.favorite;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.favorite.FavoriteStation;
@@ -25,7 +22,7 @@ public class FavoriteService {
     }
 
     public void save(Member member, FavoriteStation favoriteStation) {
-        if(member.contain(favoriteStation)) {
+        if (member.contain(favoriteStation)) {
             throw new IllegalArgumentException();
         }
         member.addFavoriteStation(favoriteStation);

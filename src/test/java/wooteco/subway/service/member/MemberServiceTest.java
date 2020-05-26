@@ -56,7 +56,7 @@ public class MemberServiceTest {
         when(memberRepository.findById(1L)).thenReturn(Optional.ofNullable(member));
         when(memberRepository.save(member)).thenReturn(member);
 
-        memberService.updateMember(1L, new UpdateMemberRequest("오렌지", "똑똑"));
+        memberService.updateMember(1L, new UpdateMemberRequest("오렌지", TEST_USER_PASSWORD, "똑똑"));
         assertThat(member).isEqualToComparingFieldByField(member);
     }
 
@@ -65,7 +65,7 @@ public class MemberServiceTest {
         doNothing().when(memberRepository).deleteById(1L);
         when(memberRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
         memberService.deleteMember(1L);
-        
+
         assertThatThrownBy(() -> {
             memberService.findById(1L);
         }).isInstanceOf(IllegalArgumentException.class);

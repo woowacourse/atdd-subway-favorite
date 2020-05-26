@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.domain.favorite.FavoriteStation;
-import wooteco.subway.service.favorite.FavoriteResponse;
 import wooteco.subway.service.favorite.FavoritesResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
@@ -81,7 +80,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void deleteFavorite(TokenResponse tokenResponse, String source, String target) throws Exception {
         mockMvc.perform(delete("/favorites")
-            .header("Authorization", "Bearer "+tokenResponse.getAccessToken())
+            .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
             .param("source", source)
             .param("target", target)
         )
