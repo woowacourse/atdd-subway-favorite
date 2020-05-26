@@ -122,11 +122,6 @@ public class MemberServiceTest {
         verify(memberRepository).deleteById(member.getId());
     }
 
-    // TODO: 2020/05/22 sendError와 controllerAdvice 선택해서 반영
-    // TODO: 2020/05/20 - Exception Handler 추가
-    // TODO: 2020/05/20 Dynamic Test 방식으로 변경
-    // TODO: 2020/05/25 MethodArgumentResolver, Interceptor Testing
-
     @DisplayName("즐겨찾기 생성 테스트")
     @Test
     void addFavorite() {

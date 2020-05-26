@@ -18,6 +18,8 @@ import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.exceptions.InvalidLoginException;
+import wooteco.subway.web.exceptions.MemberNotFoundException;
 
 @Service
 public class MemberService {
@@ -48,21 +50,23 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(MemberNotFoundException::new);
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new InvalidLoginException("잘못된 패스워드");
         }
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(MemberNotFoundException::new);
     }
 
     public void addFavorite(final Member member, final FavoriteRequest request) {
-        Station source = stationRepository.findById(request.getSource()).orElseThrow(NoSuchElementException::new);
-        Station target = stationRepository.findById(request.getTarget()).orElseThrow(NoSuchElementException::new);
+        Station source = stationRepository.findById(request.getSource())
+            .orElseThrow(NoSuchElementException::new);
+        Station target = stationRepository.findById(request.getTarget())
+            .orElseThrow(NoSuchElementException::new);
         member.addFavorite(new Favorite(source.getId(), target.getId()));
         memberRepository.save(member);
     }

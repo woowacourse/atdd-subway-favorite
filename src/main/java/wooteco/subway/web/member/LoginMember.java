@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.web.exceptions.InvalidAuthenticationException;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
