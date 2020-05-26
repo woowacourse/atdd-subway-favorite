@@ -89,6 +89,15 @@ const api = (() => {
         })
       });
     },
+    get(){
+      return request('/members/favorites', {
+        method : 'get',
+        headers : {
+          'content-type': 'application/json',
+          'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+        }
+      });
+    }
   }
 
   return {
