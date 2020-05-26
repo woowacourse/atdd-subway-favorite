@@ -16,11 +16,20 @@ public class FavoriteDocumentation {
             requestFields(
                 fieldWithPath("sourceId").type(JsonFieldType.STRING)
                     .description("The Favorite source-id").attributes(),
-                fieldWithPath("targetId").type(JsonFieldType.STRING).description("The Favorite targetId")
+                fieldWithPath("targetId").type(JsonFieldType.STRING)
+                    .description("The Favorite targetId")
             ),
             responseHeaders(
-                headerWithName("Location").description("The favorite path location which just created")
+                headerWithName("Location").description(
+                    "The favorite path location which just created")
             )
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteFavorite() {
+        return document("favorites/delete",
+            getDocumentRequest(),
+            getDocumentResponse()
         );
     }
 }

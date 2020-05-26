@@ -38,16 +38,20 @@ operation::members/duplicate-create[snippets='http-request,http-response,request
 ===== 패스워드 불일치
 operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
 
-[[resources-members-create]]
+[[resources-members-get]]
 === 회원 정보 조회
 
+[[resources-members-get-successful]]
 ==== 성공
 
+[[resources-members-get-successful-login]]
 ===== 로그인 후 조회
 operation::members/get[snippets='http-request,http-response']
 
+[[resources-members-get-fail]]
 ==== 실패
 
+[[resources-members-get-fail-not-login]]
 ===== 토큰이 존재하지 않음
 operation::members/not-exist-get[snippets='http-request,http-response']
 
@@ -55,22 +59,46 @@ operation::members/not-exist-get[snippets='http-request,http-response']
 [[resources-members-update]]
 === 회원 정보 수정
 
+[[resources-members-update-successful]]
 ==== 성공
 
+[[resources-members-update-successful-login]]
 ===== 로그인 후 올바른 패스워드로 수정
 operation::members/update[snippets='http-request,http-response,request-fields']
 
+[[resources-members-update-fail]]
 ==== 실패
 
+[[resources-members-update-fail-not-login]]
 ===== 토큰이 존재하지 않음
-operation::member/not-exist-token-update[snippets='http-request, http-response, request-fields, response-fields']
+operation::members/not-exist-token-update[snippets='http-request,http-response,request-fields,response-fields']
 
 [[resources-members-delete]]
 === 회원 탈퇴
 
+[[resources-members-delete-successful]]
 ==== 성공
 
+[[resources-members-delete-successful-login]]
 ===== 로그인 후 탈퇴
 operation::members/delete[snippets='http-request,http-response']
+
+[[resources-favorites]]
+== 즐겨찾기
+
+[[resources-favorites-create]]
+=== 즐겨찾기 추가
+
+[[resources-favorites-create-successful]]
+===== 성공
+operation::favorites/create[snippets='http-request,http-response,request-fields']
+
+[[resources-favorites-delete]]
+=== 즐겨찾기 삭제
+
+[[resources-favorites-delete-successful]]
+===== 성공
+operation::favorites/delete[snippets='http-request,http-response']
+
 
 

@@ -35,4 +35,12 @@ class MemberTest {
         member.addFavorite(favorite);
         assertThat(member.getFavorites()).hasSize(1);
     }
+
+    @Test
+    void deleteFavorite() {
+        Favorite favorite = new Favorite(1L, 1L, 2L);
+        member.addFavorite(favorite);
+        member.deleteFavorite(favorite.getId());
+        assertThat(member.getFavorites()).hasSize(0);
+    }
 }

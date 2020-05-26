@@ -38,6 +38,7 @@ public class FavoriteControllerTest {
 
     @MockBean
     private FavoriteService favoriteService;
+
     @MockBean
     private MemberService memberService;
 
@@ -78,5 +79,18 @@ public class FavoriteControllerTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(FavoriteDocumentation.addFavorite());
+    }
+
+    @Test
+    void deleteFavorite() throws Exception {
+        given(memberService.save(member)).willReturn(member);
+
+        this.mockMvc.perform(delete("/favorites/1")
+            .cookie(cookie)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(FavoriteDocumentation.deleteFavorite());
     }
 }

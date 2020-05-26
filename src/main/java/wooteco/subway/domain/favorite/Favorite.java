@@ -7,8 +7,11 @@ import org.springframework.data.annotation.Id;
 public class Favorite {
     @Id
     private Long id;
-    private final Long sourceId;
-    private final Long targetId;
+    private Long sourceId;
+    private Long targetId;
+
+    public Favorite() {
+    }
 
     public Favorite(Long id, Long sourceId, Long targetId) {
         this.id = id;
@@ -42,5 +45,9 @@ public class Favorite {
     @Override
     public int hashCode() {
         return Objects.hash(sourceId, targetId);
+    }
+
+    public boolean isSameId(Long id) {
+        return Objects.equals(this.id, id);
     }
 }

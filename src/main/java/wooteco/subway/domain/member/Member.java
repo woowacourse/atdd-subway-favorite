@@ -77,4 +77,11 @@ public class Member {
     public void addFavorite(Favorite favorite) {
         favorites.add(favorite);
     }
+
+    public void deleteFavorite(Long id) {
+        favorites.stream()
+            .filter(favorite -> favorite.isSameId(id))
+            .findFirst()
+            .ifPresent(favorites::remove);
+    }
 }

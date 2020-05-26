@@ -21,4 +21,9 @@ public class FavoriteService {
         member.addFavorite(favorite);
         return memberService.save(member);
     }
+
+    public void deleteById(Member member, Long id) {
+        member.deleteFavorite(id);
+        memberService.save(member);
+    }
 }

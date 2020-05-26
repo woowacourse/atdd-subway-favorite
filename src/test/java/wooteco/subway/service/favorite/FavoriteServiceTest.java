@@ -23,20 +23,33 @@ public class FavoriteServiceTest {
 
     private FavoriteService favoriteService;
     private Member member;
-    private FavoriteRequest request;
+    private FavoriteRequest request1;
+    private FavoriteRequest request2;
 
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(memberService);
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        request = new FavoriteRequest(1L, 2L);
+        request1 = new FavoriteRequest(1L, 2L);
+        request2 = new FavoriteRequest(1L, 4L);
     }
 
     @Test
     void addToMember() {
         given(memberService.save(any())).willReturn(member);
 
-        favoriteService.addToMember(member, request);
-        assertThat(member.getFavorites()).hasSize(1);
+        favoriteService.addToMember(member, request1);
+        favoriteService.addToMember(member, request2);
+        assertThat(member.getFavorites()).hasSize(2);
+    }
+
+    @Test
+    void deleteById() {
+        given(memberService.save(any())).willReturn(member);
+
+        favoriteService.addToMember(member, request1);
+
+        favoriteService.deleteById(member, null);
+        assertThat(member.getFavorites()).hasSize(0);
     }
 }

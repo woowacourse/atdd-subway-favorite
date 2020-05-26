@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberDetailResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.web.member.interceptor.Auth;
@@ -33,5 +34,11 @@ public class LoginMemberController {
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @IsAuth(isAuth = Auth.AUTH)
+    @GetMapping("/me/detail")
+    public ResponseEntity<MemberDetailResponse> getMemberDetailOfMineBasic(@LoginMember Member member) {
+        return ResponseEntity.ok().body(MemberDetailResponse.of(member));
     }
 }

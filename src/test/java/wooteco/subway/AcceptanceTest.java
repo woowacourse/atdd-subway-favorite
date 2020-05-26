@@ -20,6 +20,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.MemberDetailResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
@@ -291,11 +292,27 @@ public class AcceptanceTest {
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 cookie("token", token).
                 when().
-                get("/members?email="+email).
+                get("/me").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract().as(MemberResponse.class);
+    }
+
+
+    public MemberDetailResponse getDetailMember(String email) {
+        String token = jwtTokenProvider.createToken(email);
+        return
+            given().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                cookie("token", token).
+                when().
+                get("/me/detail").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(MemberDetailResponse.class);
     }
 
     public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
