@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.FavoriteExistResponse;
-import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -50,8 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favoriteResponse.get(0).getTargetName()).isEqualTo(stationResponse1.getName());
 
         // 4. 즐겨찾기 제거
-        removeFavorite(tokenResponse,
-            new FavoriteRequest(stationResponse.getId(), stationResponse1.getId()));
+        removeFavorite(tokenResponse, stationResponse.getId(), stationResponse1.getId());
         FavoriteExistResponse favoriteExistResponse = hasFavorite(tokenResponse,
             stationResponse.getId(), stationResponse1.getId());
         assertThat(favoriteExistResponse.isExist()).isFalse();
@@ -106,15 +104,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //@formatter:on
     }
 
-    private void removeFavorite(TokenResponse tokenResponse, FavoriteRequest favoriteRequest) {
+    private void removeFavorite(TokenResponse tokenResponse, Long sourceId, Long targetId) {
         //@formatter:off
         given()
             .auth()
             .oauth2(tokenResponse.getAccessToken())
-            .body(favoriteRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when()
-            .delete("/me/favorites")
+            .delete("/me/favorites/from/" + sourceId +"/to/" + targetId)
         .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());

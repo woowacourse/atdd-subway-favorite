@@ -74,12 +74,12 @@ public class MemberService {
         return memberRepository.findFavoritesById(member.getId());
     }
 
-    public void removeFavorite(Member member, Favorite favorite) {
-        member.removeFavorite(favorite);
+    public void removeFavorite(Member member, Long sourceId, Long targetId) {
+        member.removeFavorite(new Favorite(sourceId, targetId));
         memberRepository.save(member);
     }
 
     public boolean hasFavorite(Member member, Long sourceId, Long targetId) {
-         return member.hasFavorite(new Favorite(sourceId, targetId));
+        return member.hasFavorite(new Favorite(sourceId, targetId));
     }
 }

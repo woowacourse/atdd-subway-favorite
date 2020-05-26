@@ -74,10 +74,10 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(new FavoriteExistResponse(memberService.hasFavorite(member, sourceId, targetId)));
     }
 
-    @DeleteMapping("/me/favorites")
+    @DeleteMapping("/me/favorites/from/{sourceId}/to/{targetId}")
     public ResponseEntity<Void> deleteFavorite(@LoginMember Member member,
-        @RequestBody FavoriteRequest favoriteRequest) {
-        memberService.removeFavorite(member, favoriteRequest.toFavorite());
+        @PathVariable Long sourceId, @PathVariable Long targetId) {
+        memberService.removeFavorite(member, sourceId, targetId);
         return ResponseEntity.noContent().build();
     }
 }
