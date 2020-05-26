@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -101,8 +103,24 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    void readFavorites() {
-        // /favorites
+    void readFavorites() throws Exception {
+        Long id = 3L;
+        StationResponse source = new StationResponse(1L, "강남역", LocalDateTime.now());
+        StationResponse target = new StationResponse(2L, "역삼역", LocalDateTime.now());
+        List<FavoriteResponse> favoriteResponses = Arrays.asList(
+            new FavoriteResponse(id, source, target), new FavoriteResponse(id, source, target));
+        given(favoriteService.getFavorites(any())).willReturn(favoriteResponses);
+
+        String response = this.mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/favorites")
+                .header("Authorization", token)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(FavoriteDocumentation.getFavorites())
+            .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(response).isEqualTo(objectMapper.writeValueAsString(favoriteResponses));
     }
 
     @Test

@@ -36,8 +36,14 @@ public class FavoriteDocumentation {
                 parameterWithName("source").description("The source station id"),
                 parameterWithName("target").description("The target station id")
             ),
-            responseHeaders(
+            responseBody()
+        );
+    }
 
+    public static RestDocumentationResultHandler getFavorites() {
+        return document("favorites/read",
+            requestHeaders(
+                headerWithName("Authorization").description("The login token should be bearer type")
             ),
             responseBody()
         );

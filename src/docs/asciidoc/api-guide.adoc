@@ -43,3 +43,8 @@ operation::favorites/add[snippets='http-request,http-response']
 === 즐겨찾기 불러오기
 
 operation::favorites/get[snippets='http-request,http-response,path-parameters']
+
+[[resources-favorites-get]]
+=== 즐겨찾기 목록 불러오기
+
+operation::favorites/read[snippets='http-request,http-response']
