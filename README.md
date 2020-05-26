@@ -14,10 +14,19 @@
 - [x] 즐겨찾기 조회 기능
 - [x] 즐겨찾기 삭제 기능
 - [x] 즐겨찾기 페이지 연동
+- [ ] 회원 탈퇴 시 관련 즐겨찾기 모두 삭제
 
 ## 3. 사이드 케이스 처리
-- [ ] Custom Exception 정의
+- [ ] 백엔드 Custom Exception 정의 
+    - [ ] 이미 등록된 이메일로 회원가입을 요청할 경우 : ExistedEmailException
+    - [ ] 등록되지 않은 이메일로 로그인을 요청을 보낼 경우 : NotExistedEmailException
+    - [ ] 패스워드가 일치 하지 않는 경우 : WrongPasswordException
+    - [ ] 토큰이 유효하지 않은 경우 : InvalidAuthenticationException
+    - [ ] 이미 해당 유저에 등록된 즐겨찾기인 경우 : ExistedFavoritesException
 - [ ] Controller Advice로 예외 핸들링
+- [ ] 프론트 엔드 유효성 검증
+    - [ ] form이 다 채워지지 않은 채로 요청을 보내는 경우, 백엔드에서도 Dto로 검증 필요
+    - [ ] 회원 가입시 비밀 번호와 비밀번호 확인이 서로 일치 하지 않는 경우
 - [ ] 프론트에서 예외 메시지 처리
 
 ## 4. API 문서 자동화
