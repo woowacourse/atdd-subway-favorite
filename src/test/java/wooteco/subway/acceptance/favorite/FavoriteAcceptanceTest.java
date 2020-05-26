@@ -47,7 +47,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then : 즐겨찾기가 추가되었다.
         FavoriteResponse favoriteResponse = getFavorites(tokenResponse).get(0);
         assertThat(favoriteResponse.getPreStation().getName()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(favoriteResponse.getStation().getName()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        assertThat(favoriteResponse.getStation().getName()).isEqualTo(STATION_NAME_YEOKSAM);
 
         // when : 즐겨찾기 목록을 조회한다.
         List<FavoriteResponse> favoritesRespons = getFavorites(tokenResponse);

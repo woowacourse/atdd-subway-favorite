@@ -3,6 +3,8 @@ package wooteco.subway.domain.member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
@@ -59,6 +61,13 @@ public class Member {
             .filter(it -> it.getStation().equals(favorite.getStation()))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("해당하는 즐겨찾기가 없습니다."));
+    }
+
+    // Todo: 메서드 네이밍?
+    public List<Long> getStationIdsFromFavorites() {
+        return favorites.stream()
+            .flatMap(it -> Stream.of(it.getPreStation(), it.getStation()))
+            .collect(Collectors.toList());
     }
 
     public Long getId() {

@@ -3,6 +3,9 @@ package wooteco.subway.service.favorite;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +17,9 @@ import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class FavoriteServiceTest {
@@ -29,9 +34,12 @@ public class FavoriteServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private StationRepository stationRepository;
+
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(memberRepository);
+        favoriteService = new FavoriteService(memberRepository, stationRepository);
     }
 
     @DisplayName("즐겨찾기 추가 기능 테스트")
@@ -55,5 +63,32 @@ public class FavoriteServiceTest {
 
         assertThat(savedFavorite.getPreStation()).isEqualTo(preStation.getId());
         assertThat(savedFavorite.getStation()).isEqualTo(station.getId());
+    }
+
+    @DisplayName("즐겨찾기 목록 조회 기능 테스트")
+    @Test
+    void getFavorites() {
+        Station gangnam = new Station(1L, "강남역");
+        Station seolleung = new Station(2L, "선릉역");
+        Station yeoksam = new Station(3L, "역삼역");
+
+        Favorite favorite1 = new Favorite(gangnam.getId(), seolleung.getId());
+        Favorite favorite2 = new Favorite(yeoksam.getId(), gangnam.getId());
+
+        Member member = new Member(ID, EMAIL, NAME, PASSWORD);
+        member.addFavorite(favorite1);
+        member.addFavorite(favorite2);
+
+        when(stationRepository.findAllById(anyList())).thenReturn(
+            Arrays.asList(gangnam, seolleung, yeoksam));
+
+        List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
+
+        // Todo: 스트림으로인해 순서를 알 수 없는 경우 명확하게 테스트 할 수 있는 방법?
+        assertThat(favorites.size()).isEqualTo(2);
+        assertThat(favorites.get(0).getPreStation()).isIn(gangnam, yeoksam);
+        assertThat(favorites.get(1).getPreStation()).isIn(gangnam, yeoksam);
+        assertThat(favorites.get(0).getStation()).isIn(seolleung, gangnam);
+        assertThat(favorites.get(1).getStation()).isIn(seolleung, gangnam);
     }
 }
