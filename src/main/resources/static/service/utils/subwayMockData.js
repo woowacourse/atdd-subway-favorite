@@ -48,15 +48,15 @@ export const defaultSubwayLines = [
 
 export const defaultFavorites = [
   {
-    departureStation: '잠실역',
-    arrivalStation: '광교중앙역'
+    sourceStationName: '잠실역',
+    targetStationName: '광교중앙역'
   },
   {
-    departureStation: '잠실역',
-    arrivalStation: '인천공항역'
+    sourceStationName: '잠실역',
+    targetStationName: '인천공항역'
   },
   {
-    departureStation: '인천공항역',
-    arrivalStation: '김포공항역'
+    sourceStationName: '인천공항역',
+    targetStationName: '김포공항역'
   }
 ]
