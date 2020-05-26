@@ -18,8 +18,7 @@ public class FavoriteService {
 
     public FavoriteResponse addFavorite(Member member,
         FavoriteCreateRequest favoriteCreateRequest) {
-        member.addFavorite(favoriteCreateRequest.getDepartureId(),
-            favoriteCreateRequest.getDestinationId());
+        member.addFavorite(favoriteCreateRequest.toFavorite());
         memberRepository.save(member);
         return FavoriteResponse.of(member.findFavorite(favoriteCreateRequest.getDepartureId(),
             favoriteCreateRequest.getDestinationId()));
@@ -29,5 +28,10 @@ public class FavoriteService {
         Member persistMember = memberRepository.findById(member.getId())
             .orElseThrow(IllegalAccessError::new);
         return FavoriteListResponse.of(persistMember.getFavorites());
+    }
+
+    public void deleteFavorite(Member member, Long favoriteId) {
+        member.deleteFavorite(favoriteId);
+        memberRepository.save(member);
     }
 }

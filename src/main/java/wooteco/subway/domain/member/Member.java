@@ -63,8 +63,8 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public void addFavorite(long departureId, long destinationId) {
-        favorites.add(Favorite.of(departureId, destinationId));
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
     }
 
     public Favorite findFavorite(Long departureId, Long destinationId) {
@@ -73,5 +73,13 @@ public class Member {
             .filter(favorite -> Objects.equals(favorite.getDestinationId(), destinationId))
             .findFirst()
             .orElseThrow(AssertionError::new);
+    }
+
+    public void deleteFavorite(Long favoriteId) {
+        Favorite favoriteToRemove = favorites.stream()
+            .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
+            .findFirst()
+            .orElseThrow(AssertionError::new);
+        favorites.remove(favoriteToRemove);
     }
 }

@@ -51,12 +51,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        String accessToken = tokenResponse.getAccessToken();
+        String favoriteId = addFavorite(accessToken, gangnam.getId(), jamsil.getId());
 
-        addFavorite(tokenResponse.getAccessToken(), gangnam.getId(), jamsil.getId());
-
-        FavoriteListResponse favoriteListResponse = getFavorites(tokenResponse.getAccessToken());
+        FavoriteListResponse favoriteListResponse = getFavorites(accessToken);
         assertThat(favoriteListResponse.getFavoriteResponses().size()).isEqualTo(1);
 
+        deleteFavorite(accessToken, favoriteId);
+
+        FavoriteListResponse favoriteListResponseAfterDelete = getFavorites(accessToken);
+        assertThat(favoriteListResponseAfterDelete.getFavoriteResponses().size()).isEqualTo(0);
+    }
+
+    private void deleteFavorite(String token, String favoriteId) {
+        given()
+            .auth()
+            .oauth2(token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .delete("/members/favorites/" + favoriteId)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     private FavoriteListResponse getFavorites(String token) {
@@ -72,11 +88,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .extract().as(FavoriteListResponse.class);
     }
 
-    private void addFavorite(String token, Long departureId, Long destinationId) {
+    private String addFavorite(String token, Long departureId, Long destinationId) {
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(departureId,
             destinationId);
 
-        given().
+        String location = given().
             auth().
             oauth2(token).
             body(favoriteCreateRequest).
@@ -86,7 +102,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             post("/members/favorites").
             then().
             log().all().
-            statusCode(HttpStatus.CREATED.value());
+            statusCode(HttpStatus.CREATED.value()).extract().header("Location");
+        return location.split("/")[3];
     }
 }
 

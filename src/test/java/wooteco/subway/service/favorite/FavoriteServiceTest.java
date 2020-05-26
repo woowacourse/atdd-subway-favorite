@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
@@ -44,8 +45,8 @@ class FavoriteServiceTest {
 
     @Test
     void findFavorites() {
-        member.addFavorite(1L, 2L);
-        member.addFavorite(3L, 4L);
+        member.addFavorite(Favorite.of(1L, 2L));
+        member.addFavorite(Favorite.of(3L, 4L));
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
 
         FavoriteListResponse response = favoriteService.findFavorites(member);
@@ -53,4 +54,17 @@ class FavoriteServiceTest {
         assertThat(response.getFavoriteResponses().size()).isEqualTo(2);
     }
 
+    @Test
+    void deleteFavorite() {
+        //Given
+        Favorite favorite = new Favorite(1L, 1L, 2L);
+        member.addFavorite(favorite);
+        when(memberRepository.save(any())).thenReturn(member);
+
+        assertThat(member.getFavorites().size()).isEqualTo(1);
+        //When
+        favoriteService.deleteFavorite(member, favorite.getId());
+        //Then
+        assertThat(member.getFavorites().size()).isEqualTo(0);
+    }
 }
