@@ -48,4 +48,9 @@ public class FavoriteService {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("해당하는 역이 존재하지 않습니다."));
     }
+
+    public void deleteFavorite(Member member, Long favoriteId) {
+        member.removeFavoriteById(favoriteId);
+        memberRepository.save(member);
+    }
 }

@@ -33,4 +33,8 @@ public class Favorite {
     public Long getStation() {
         return station;
     }
+
+    public boolean isSameId(Long favoriteId) {
+        return this.id.equals(favoriteId);
+    }
 }

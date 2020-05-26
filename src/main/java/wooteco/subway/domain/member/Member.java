@@ -89,4 +89,13 @@ public class Member {
     public List<Favorite> getFavorites() {
         return favorites;
     }
+
+    public void removeFavoriteById(Long favoriteId) {
+        Favorite favoriteToRemove = favorites.stream()
+            .filter(favorite -> favorite.isSameId(favoriteId))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 id를 가진 즐겨찾기가 없습니다."));
+
+        favorites.remove(favoriteToRemove);
+    }
 }

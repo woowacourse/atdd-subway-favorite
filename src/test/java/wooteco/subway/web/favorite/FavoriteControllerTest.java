@@ -111,5 +111,21 @@ public class FavoriteControllerTest {
         assertThat(responses.get(1).getPreStation().getId()).isEqualTo(yeoksam.getId());
         assertThat(responses.get(1).getStation().getId()).isEqualTo(gangnam.getId());
     }
+
+    @DisplayName("즐겨찾기를 삭제하는 기능 테스트")
+    @Test
+    void deleteFavorite() throws Exception {
+        when(jwtTokenProvider.getSubject(anyString())).thenReturn(EMAIL);
+        when(memberService.findMemberByEmail(EMAIL)).thenReturn(
+            new Member(ID, EMAIL, NAME, PASSWORD));
+
+        doNothing().when(favoriteService).deleteFavorite(any(Member.class), anyLong());
+
+        Long favoriteId = 1L;
+
+        mockMvc.perform(delete("/members/favorites/" + favoriteId))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
 }
 

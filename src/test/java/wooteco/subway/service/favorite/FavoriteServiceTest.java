@@ -91,4 +91,28 @@ public class FavoriteServiceTest {
         assertThat(favorites.get(0).getStation()).isIn(seolleung, gangnam);
         assertThat(favorites.get(1).getStation()).isIn(seolleung, gangnam);
     }
+
+    @DisplayName("즐겨찾기를 삭제하는 기능 테스트")
+    @Test
+    void deleteFavorite() {
+        Station gangnam = new Station(1L, "강남역");
+        Station seolleung = new Station(2L, "선릉역");
+        Station yeoksam = new Station(3L, "역삼역");
+
+        Favorite favorite1 = new Favorite(1L, gangnam.getId(), seolleung.getId());
+        Favorite favorite2 = new Favorite(2L, yeoksam.getId(), gangnam.getId());
+
+        Member member = new Member(ID, EMAIL, NAME, PASSWORD);
+        member.addFavorite(favorite1);
+        member.addFavorite(favorite2);
+
+        Member updatedMember = new Member(ID, EMAIL, NAME, PASSWORD);
+        updatedMember.addFavorite(favorite2);
+
+        when(memberRepository.save(any(Member.class))).thenReturn(updatedMember);
+
+        favoriteService.deleteFavorite(member, 1L);
+
+        assertThat(member.getFavorites().size()).isEqualTo(1);
+    }
 }
