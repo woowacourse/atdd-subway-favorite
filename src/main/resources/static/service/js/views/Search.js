@@ -1,7 +1,7 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {EVENT_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
+import {PATH_TYPE, ERROR_MESSAGE} from '../../utils/constants.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -26,6 +26,11 @@ function Search() {
     $shortestDistanceTab.classList.add('active-tab')
     $minimumTimeTab.classList.remove('active-tab')
     getSearchResult(PATH_TYPE.DISTANCE)
+    setFavoriteButton();
+  }
+
+  function setFavoriteButton() {
+    //TODO
   }
 
   const onSearchMinimumTime = event => {
@@ -42,16 +47,36 @@ function Search() {
       type: pathType
     }
     api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+        .find(searchInput)
+        .then(data => showSearchResult(data))
+        .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onToggleFavorite = event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+    if (isFavorite) {
+      //TODO
+    } else {
+      const favoriteInfo = {
+        sourceStationName: $departureStationName.value,
+        targetStationName: $arrivalStationName.value
+      }
+      api.memberWithToken.addFavorite(favoriteInfo)
+          .then((data) => {
+            if (!data.ok) {
+              throw new Error(data.status)
+            }
+            toggleFavoriteButton(isFavorite)
+          })
+          .catch(error => {
+            alert(ERROR_MESSAGE.FAVORITE_ADD_FAIL)
+          })
+    }
+  }
 
+  function toggleFavoriteButton(isFavorite) {
+    const classList = $favoriteButton.classList
     if (isFavorite) {
       classList.add('mdi-star-outline')
       classList.add('text-gray-600')

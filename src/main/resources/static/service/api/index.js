@@ -19,9 +19,9 @@ const METHOD = {
       })
     }
   },
-  PUT_WITH_TOKEN(data) {
+  POST_WITH_TOKEN(data) {
     return {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': localStorage.getItem("tokenType") + " " + localStorage.getItem("accessToken")
@@ -34,6 +34,18 @@ const METHOD = {
   PUT() {
     return {
       method: 'PUT'
+    }
+  },
+  PUT_WITH_TOKEN(data) {
+    return {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("tokenType") + " " + localStorage.getItem("accessToken")
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
@@ -89,6 +101,9 @@ const api = (() => {
     },
     deleteMyInformation() {
       return request(`/me`, METHOD.DELETE_WITH_TOKEN())
+    },
+    addFavorite(params) {
+      return request(`/me/favorites`, METHOD.POST_WITH_TOKEN(params))
     }
   }
 
