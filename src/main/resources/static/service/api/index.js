@@ -29,6 +29,18 @@ const METHOD = {
       }
     }
   },
+  DELETE_WITH_PARAMS(data) {
+    return {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem("jwt") || ""
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    }
+  },
   POST(data) {
     return {
       method: 'POST',
@@ -87,10 +99,23 @@ const api = (() => {
     }
   }
 
+  const favorite = {
+    create(data) {
+      return request('/favorites', METHOD.POST(data))
+    },
+    find() {
+      return requestWithJsonData('/favorites', METHOD.AUTHORIZED_GET())
+    },
+    delete(data) {
+      return request('/favorites', METHOD.DELETE_WITH_PARAMS(data))
+    }
+  }
+
   return {
     line,
     path,
-    member
+    member,
+    favorite
   }
 })()
 
