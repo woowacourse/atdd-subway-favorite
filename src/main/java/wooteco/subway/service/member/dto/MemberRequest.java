@@ -7,7 +7,13 @@ public class MemberRequest {
     private String name;
     private String password;
 
-    private MemberRequest() {
+    public MemberRequest() {
+    }
+
+    public MemberRequest(final String email, final String name, final String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
     }
 
     public String getEmail() {

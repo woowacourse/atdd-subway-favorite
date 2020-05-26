@@ -14,22 +14,22 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
     void manageLineStation() {
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse 강남역 = createStation(STATION_NAME_KANGNAM);
+        StationResponse 역삼역 = createStation(STATION_NAME_YEOKSAM);
+        StationResponse 선릉역 = createStation(STATION_NAME_SEOLLEUNG);
 
-        LineResponse lineResponse = createLine("2호선");
+        LineResponse 이호선 = createLine("2호선");
 
-        addLineStation(lineResponse.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addLineStation(이호선.getId(), null, 강남역.getId());
+        addLineStation(이호선.getId(), 강남역.getId(), 역삼역.getId());
+        addLineStation(이호선.getId(), 역삼역.getId(), 선릉역.getId());
 
-        LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
+        LineDetailResponse lineDetailResponse = getLine(이호선.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
-        removeLineStation(lineResponse.getId(), stationResponse2.getId());
+        removeLineStation(이호선.getId(), 역삼역.getId());
 
-        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
+        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(이호선.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
 }

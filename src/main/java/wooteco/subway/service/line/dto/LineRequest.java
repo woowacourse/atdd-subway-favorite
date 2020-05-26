@@ -10,7 +10,14 @@ public class LineRequest {
     private LocalTime endTime;
     private int intervalTime;
 
-    private LineRequest() {
+    public LineRequest() {
+    }
+
+    public LineRequest(final String name, final LocalTime startTime, final LocalTime endTime, final int intervalTime) {
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.intervalTime = intervalTime;
     }
 
     public String getName() {
