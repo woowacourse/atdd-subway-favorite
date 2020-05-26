@@ -26,19 +26,22 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository,
-        StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
+                         StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public Member createMember(MemberRequest memberRequest) {
+        memberRepository.findByEmail(memberRequest.getEmail()).ifPresent(member -> {
+            throw new IllegalArgumentException("존재하는 이메일입니다.");
+        });
         return memberRepository.save(memberRequest.toMember());
     }
 
     public void updateMember(String email, Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id)
-            .orElseThrow(RuntimeException::new);
+                .orElseThrow(RuntimeException::new);
         if (!email.equals(member.getEmail())) {
             throw new IllegalAccessError("잘못된 접근입니다.");
         }
@@ -52,7 +55,7 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-            .orElseThrow(NotFoundUserException::new);
+                .orElseThrow(NotFoundUserException::new);
         if (!member.checkPassword(param.getPassword())) {
             throw new IllegalArgumentException("잘못된 패스워드 입니다.");
         }
@@ -62,14 +65,14 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-            .orElseThrow(NotFoundUserException::new);
+                .orElseThrow(NotFoundUserException::new);
     }
 
     public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
         Station source = stationRepository.findByName(favoriteRequest.getSource())
-            .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
         Station target = stationRepository.findByName(favoriteRequest.getTarget())
-            .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
         Favorite favorite = new Favorite(source.getId(), target.getId());
 
         member.addFavorite(favorite);
@@ -82,11 +85,11 @@ public class MemberService {
         Set<FavoriteResponse> favoriteResponses = new LinkedHashSet<>();
         for (Favorite favorite : favorites) {
             FavoriteResponse favoriteResponse = new FavoriteResponse(
-                favorite.getId(),
-                stationRepository.findById(favorite.getSourceStationId())
-                    .orElseThrow(IllegalArgumentException::new).getName(),
-                stationRepository.findById(favorite.getTargetStationId())
-                    .orElseThrow(IllegalArgumentException::new).getName()
+                    favorite.getId(),
+                    stationRepository.findById(favorite.getSourceStationId())
+                            .orElseThrow(IllegalArgumentException::new).getName(),
+                    stationRepository.findById(favorite.getTargetStationId())
+                            .orElseThrow(IllegalArgumentException::new).getName()
             );
             favoriteResponses.add(favoriteResponse);
         }

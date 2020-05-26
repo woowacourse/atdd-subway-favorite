@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -114,8 +115,8 @@ public class MemberServiceTest {
     @Test
     void deleteFavorites() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        member.addFavorite(new Favorite(1L,1L,2L));
-        member.addFavorite(new Favorite(2L,1L,3L));
+        member.addFavorite(new Favorite(1L, 1L, 2L));
+        member.addFavorite(new Favorite(2L, 1L, 3L));
         memberService.deleteFavorites(1L, member);
 
         assertThat(member.getFavorites().size()).isEqualTo(1);
