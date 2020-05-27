@@ -1,14 +1,13 @@
 package wooteco.subway.domain.member;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
-
 import wooteco.subway.domain.favorite.Favorite;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Member {
 	@Id
@@ -18,7 +17,7 @@ public class Member {
 	private String password;
 
 	@MappedCollection(keyColumn = "index")
-	private List<Favorite> favorites = new ArrayList<>();
+	private Set<Favorite> favorites = new LinkedHashSet<>();
 
 	public Member() {
 	}
@@ -52,7 +51,7 @@ public class Member {
 		return password;
 	}
 
-	public List<Favorite> getFavorites() {
+	public Set<Favorite> getFavorites() {
 		return favorites;
 	}
 
@@ -76,6 +75,6 @@ public class Member {
 	public void deleteFavorite(Favorite favorite) {
 		favorites = favorites.stream()
 			.filter(fav -> !fav.equals(favorite))
-			.collect(Collectors.toList());
+			.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 }

@@ -51,7 +51,7 @@ export const searchResultTemplate = result => {
     </div>
     <div class="relative pt-3 pb-10">
       <div class="px-2 py-1 w-full flex">
-        <div class="w-10/12 inline-block">
+        <div id="station-list" class="w-10/12 inline-block">
           ${pathResultTemplate}
         </div>
       </div>
@@ -63,7 +63,7 @@ export const pathStationTemplate = (name, index, lastIndex) => {
   ${
         index === 0 || index === lastIndex
             ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
-        <span class="font-bold">${name}</span>`
+        <span class="font-bold start-end-name">${name}</span>`
             : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
          <span class="text-gray-600">${name}</span>
         `
