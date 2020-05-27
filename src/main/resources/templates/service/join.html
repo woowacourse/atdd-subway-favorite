@@ -3,18 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <title>RunningMap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+    />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link href="/service/lib/snackbar/snackbar.css" rel="stylesheet" />
     <link href="/service/css/app.css" rel="stylesheet" />
   </head>
   <body class="bg-gray-200 h-screen">
-    <div class="flex justify-center items-center app-container py-10">
-      <div class="max-w-md width-350px rounded bg-white shadow-lg p-6">
+    <div class="flex justify-center items-center app-container">
+      <div class="max-w-md width-350px rounded bg-white shadow-lg p-6 relative">
         <div class="font-bold text-xl mb-4 text-center">회원가입</div>
         <form class="bg-white rounded mb-4">
           <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="email">
+            <label
+              class="block text-gray-600 text-sm font-bold mb-2"
+              for="email"
+            >
               email
             </label>
             <input
@@ -25,7 +38,10 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="name">
+            <label
+              class="block text-gray-600 text-sm font-bold mb-2"
+              for="name"
+            >
               name
             </label>
             <input
@@ -36,7 +52,10 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="password">
+            <label
+              class="block text-gray-600 text-sm font-bold mb-2"
+              for="password"
+            >
               password
             </label>
             <input
@@ -47,7 +66,10 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="password-check">
+            <label
+              class="block text-gray-600 text-sm font-bold mb-2"
+              for="password-check"
+            >
               password 확인
             </label>
             <input
@@ -58,17 +80,16 @@
             />
           </div>
           <button
+            id="join-button"
             class="w-full bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
             type="button"
           >
             회원가입
           </button>
         </form>
-        <div class="mt-5 flex subway-lines-container relative overflow-y-auto">
-          <div id="subway-line-list" class="w-full overflow-y-auto"></div>
-        </div>
       </div>
     </div>
     <script type="module" src="/service/js/App.js"></script>
+    <script type="module" src="/service/js/views/Join.js"></script>
   </body>
 </html>
