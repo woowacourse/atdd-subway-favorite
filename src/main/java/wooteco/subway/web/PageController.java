@@ -19,7 +19,7 @@ public class PageController {
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
-        return "admin/index";
+        return "service/index";
     }
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
@@ -57,6 +57,11 @@ public class PageController {
     @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
     public String loginPage() {
         return "service/login";
+    }
+
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPage() {
+        return "service/mypage-edit";
     }
 
     @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)

@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.auth;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
@@ -7,10 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 @Component
-public class AuthorizationExtractor {
+public class AuthorizationExtractor implements HeaderExtractor {
     public static final String AUTHORIZATION = "Authorization";
-    public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
+    public static final String ACCESS_TOKEN_TYPE = HeaderExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
 
+    @Override
     public String extract(HttpServletRequest request, String type) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         while (headers.hasMoreElements()) {

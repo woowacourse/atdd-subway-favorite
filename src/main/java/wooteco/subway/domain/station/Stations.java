@@ -1,6 +1,8 @@
 package wooteco.subway.domain.station;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Stations {
     private List<Station> stations;
@@ -15,8 +17,13 @@ public class Stations {
 
     public Station extractStationById(Long stationId) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
+                .filter(it -> it.getId().equals(stationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Map<Long, String> toMap() {
+        return stations.stream()
+                .collect(Collectors.toMap(Station::getId, Station::getName));
     }
 }

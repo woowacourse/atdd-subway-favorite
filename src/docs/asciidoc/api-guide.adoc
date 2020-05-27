@@ -7,8 +7,8 @@ endif::[]
 :toc: left
 :toclevels: 2
 :sectlinks:
-:operation-http-request-title: Example Request
-:operation-http-response-title: Example Response
+:operation-http-request-title: 요청 예시
+:operation-http-response-title: 응답 예시
 
 [[resources]]
 = Resources
@@ -19,4 +19,62 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources-login]]
+== Login
+
+[[resources-login-login]]
+=== 로그인
+
+operation::login/login[snippets='http-request,http-response,request-fields,request-body,response-fields']
+
+[[resources-login-loginFail]]
+=== 로그인 실패
+
+[[resources-login-loginFail-email]]
+==== 등록되지 않은 이메일
+
+operation::login/loginFail/email[snippets='http-response,response-fields']
+
+[[resources-login-loginFail-password]]
+==== 잘못된 패스워드
+
+operation::login/loginFail/password[snippets='http-response,response-fields']
+
+[[resources-me]]
+== Login-Member
+
+[[resources-me-getMyInfo]]
+=== 내 정보 조회
+
+operation::me/getMyInfo[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-me-updateMyInfo]]
+=== 내 정보 갱신
+
+operation::me/updateMyInfo[snippets='http-request,http-response,request-headers,request-fields,request-body']
+
+[[resources-me-deleteMyInfo]]
+=== 탈퇴
+
+operation::me/deleteMyInfo[snippets='http-request,http-response,request-headers']
+
+[[resources-me-favorites-getAll]]
+=== 즐겨찾기 전체 조회
+
+operation::me/favorites/getAll[snippets='http-request,http-response,request-headers,response-fields,response-body']
+
+[[resources-me-favorites-create]]
+=== 즐겨찾기 추가
+
+operation::me/favorites/create[snippets='http-request,http-response,request-headers,request-fields,request-body']
+
+[[resources-me-favorites-delete]]
+=== 즐겨찾기 제거
+
+operation::me/favorites/delete[snippets='http-request,http-response,request-headers,request-fields,request-body']
+
+
+
+
