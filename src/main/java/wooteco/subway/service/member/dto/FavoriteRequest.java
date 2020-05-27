@@ -11,6 +11,9 @@ public class FavoriteRequest {
     @NotNull(message = "도착역을 입력해야 합니다.")
     private Long targetStationId;
 
+    public FavoriteRequest() {
+    }
+
     public FavoriteRequest(Long sourceStationId, Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;

@@ -11,6 +11,9 @@ public class FavoriteResponse {
     private String sourceName;
     private String targetName;
 
+    public FavoriteResponse() {
+    }
+
     public FavoriteResponse(Long sourceId, Long targetId, String sourceName,
         String targetName) {
         this.sourceId = sourceId;

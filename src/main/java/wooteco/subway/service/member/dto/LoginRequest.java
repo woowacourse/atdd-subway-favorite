@@ -13,6 +13,9 @@ public class LoginRequest {
     @Pattern(regexp = "^\\S+$", message = "비밀번호에 공백이 포함될 수 없습니다.")
     private String password;
 
+    public LoginRequest() {
+    }
+
     public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
