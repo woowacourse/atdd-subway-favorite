@@ -3,14 +3,18 @@ package wooteco.subway;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -21,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
@@ -43,6 +48,12 @@ public class AcceptanceTest {
 
     @LocalServerPort
     public int port;
+
+    @Value("${security.jwt.token.secret-key}")
+    protected String secretKey;
+
+    @Value("${security.jwt.token.expire-length}")
+    protected Long validityInMilliseconds;
 
     @BeforeEach
     public void setUp() {
@@ -271,6 +282,7 @@ public class AcceptanceTest {
                 given().
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
+                        header("Authorization", "bearer " + createToken()).
                         get("/members?email=" + email).
                         then().
                         log().all().
@@ -278,7 +290,7 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
@@ -288,18 +300,70 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                header("Authorization", "bearer " + createToken()).
+                put("/members").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
+    public void deleteMember() {
         given().when().
-                delete("/members/" + memberResponse.getId()).
+                header("Authorization", "bearer " + createToken()).
+                delete("/members").
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public void createFavorite(String sourceName, String destinationName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", sourceName);
+        params.put("destinationName", destinationName);
+
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                header("Authorization", "bearer " + createToken()).
+                post("/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public List<FavoriteResponse> getFavorites() {
+        return
+                given().
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        header("Authorization", "bearer " + createToken()).
+                        get("/favorites").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().jsonPath().getList(".", FavoriteResponse.class);
+    }
+
+    public void deleteFavorite(String sourceName, String destinationName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceName", sourceName);
+        params.put("destinationName", destinationName);
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                header("Authorization", "bearer " + createToken()).
+                delete("/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    private String createToken() {
+        return new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL);
     }
 }
 

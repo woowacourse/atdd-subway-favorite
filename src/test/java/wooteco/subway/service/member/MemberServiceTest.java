@@ -12,6 +12,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -54,4 +55,18 @@ public class MemberServiceTest {
 
         verify(jwtTokenProvider).createToken(anyString());
     }
+
+    @Test
+    void findMember() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+
+        Member foundMember = memberService.findMemberByEmail(TEST_USER_EMAIL);
+
+        assertThat(foundMember.getEmail()).isEqualTo(TEST_USER_EMAIL);
+        assertThat(foundMember.getName()).isEqualTo(TEST_USER_NAME);
+        assertThat(foundMember.getPassword()).isEqualTo(TEST_USER_PASSWORD);
+    }
+
+    // TODO: 2020/05/20 update/remove에 대한 테스트는 어떻게 하나요? 질문해보기
 }
