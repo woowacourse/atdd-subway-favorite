@@ -63,3 +63,18 @@ operation::user/update[snippets='http-request,request-headers,request-fields,htt
 === 회원 탈퇴
 
 operation::user/delete[snippets='http-request,request-headers,http-response']
+
+[[resources-user-favorite-create]]
+=== 즐겨찾기 추가
+
+operation::user/favorite/create[snippets='http-request,request-headers,request-fields,http-response']
+
+[[resources-user-favorite-getAll]]
+=== 즐겨찾기 조회
+
+operation::user/favorite/getAll[snippets='http-request,request-headers,http-response,response-fields']
+
+[[resources-user-favorite-delete]]
+=== 즐겨찾기 삭제
+
+operation::user/favorite/delete[snippets='http-request,request-headers,request-fields,http-response']
