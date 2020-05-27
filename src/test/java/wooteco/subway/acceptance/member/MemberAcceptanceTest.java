@@ -9,7 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
-    // tOdo
     @DisplayName("회원 관리 기능")
     @Test
     void manageMember() {
