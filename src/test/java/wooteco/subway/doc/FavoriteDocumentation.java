@@ -8,7 +8,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 
 public class FavoriteDocumentation {
 	public static RestDocumentationResultHandler addFavorite() {
@@ -26,14 +27,11 @@ public class FavoriteDocumentation {
 		);
 	}
 
-	public static RestDocumentationResultHandler failToCreateMember() {
-		return document("members/create_fail");
-	}
-
-	public static RestDocumentationResultHandler readMember() {
-		return document("members/read",
-				requestParameters(
-						parameterWithName("email").description("User 이메일"))
+	public static RestDocumentationResultHandler readFavorites() {
+		return document("favorites/read",
+				pathParameters(
+						parameterWithName("id").description("즐겨찾기를 조회할 Member의 id")
+				)
 		);
 	}
 

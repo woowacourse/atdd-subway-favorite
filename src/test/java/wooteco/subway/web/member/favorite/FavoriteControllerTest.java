@@ -112,14 +112,14 @@ public class FavoriteControllerTest {
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
-		this.mockMvc.perform(get("/members/1/favorites")
+		this.mockMvc.perform(get("/members/{id}/favorites", 1L)
 				.session(session)
 				.header("authorization", "Bearer " + TEST_USER_TOKEN)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.favorites").isArray());
-//				.andDo(MemberDocumentation.readMember());
+				.andExpect(jsonPath("$.favorites").isArray())
+				.andDo(FavoriteDocumentation.readFavorites());
 	}
 
 	@DisplayName("즐겨찾기 삭제 컨트롤러")
