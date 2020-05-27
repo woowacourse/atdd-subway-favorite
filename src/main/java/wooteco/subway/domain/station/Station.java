@@ -2,6 +2,7 @@ package wooteco.subway.domain.station;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
 
@@ -34,5 +35,9 @@ public class Station {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public StationResponse toStationResponse() {
+        return new StationResponse(id, name, createdAt);
     }
 }

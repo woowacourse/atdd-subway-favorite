@@ -29,4 +29,7 @@ public class StationService {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
     }
+    public Station findStationById(Long id){
+        return stationRepository.findById(id).orElseThrow(NoSuchStationException::new);
+    }
 }

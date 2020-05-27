@@ -8,6 +8,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
+import wooteco.subway.service.favorite.dto.FavoriteReadRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -15,11 +16,6 @@ import wooteco.subway.web.member.DuplicateMemberException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 import wooteco.subway.web.member.NoSuchFavoriteException;
 import wooteco.subway.web.member.NoSuchMemberException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class MemberService {
@@ -66,6 +62,18 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
+    public FavoriteResponse findFavorite(FavoriteReadRequest request) {
+        Long sourceStationId = stationRepository.findIdByName(request.getSourceStationName());
+        Long targetStationId = stationRepository.findIdByName(request.getTargetStationName());
+        Favorite favorite = favoriteRepository.findByIds(sourceStationId, targetStationId).orElseThrow(NoSuchFavoriteException::new);
+        return favorite.toFavoriteResponse();
+    }
+
+    public FavoriteResponse findFavorite(Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(NoSuchFavoriteException::new);
+        return favorite.toFavoriteResponse();
     }
 
     public Member addFavorite(Long memberId, FavoriteCreateRequest request) {
