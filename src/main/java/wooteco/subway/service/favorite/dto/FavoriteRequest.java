@@ -2,8 +2,12 @@ package wooteco.subway.service.favorite.dto;
 
 import wooteco.subway.domain.favorite.Favorite;
 
+import javax.validation.constraints.NotNull;
+
 public class FavoriteRequest {
+    @NotNull
     private Long source;
+    @NotNull
     private Long target;
 
     private FavoriteRequest() {

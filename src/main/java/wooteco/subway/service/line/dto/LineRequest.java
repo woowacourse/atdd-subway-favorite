@@ -2,12 +2,18 @@ package wooteco.subway.service.line.dto;
 
 import wooteco.subway.domain.line.Line;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 public class LineRequest {
+    @NotEmpty
     private String name;
+    @NotNull
     private LocalTime startTime;
+    @NotNull
     private LocalTime endTime;
+    @NotNull
     private int intervalTime;
 
     public LineRequest() {
