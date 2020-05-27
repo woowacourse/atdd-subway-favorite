@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance.member;
 
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.web.Advice.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +83,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .log().all()
             .extract()
             .asString();
-        assertThat(message).contains("해당 이메일의 계정이 존재하지 않습니다.");
+        assertThat(message).contains(BAD_REQUEST_MESSAGE);
     }
 
     @DisplayName("회원 정보 관리 중 동일 이메일로 회원가입 요청 예외")
@@ -108,7 +109,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().
                 extract().asString();
-        assertThat(message).contains("동일한 이메일의 계정이 이미 존재합니다.");
+        assertThat(message).contains(BAD_REQUEST_MESSAGE);
     }
 
     @DisplayName("회원 정보 관리 중 맞지 않는 비밀번호로 로그인 요청 예외")
@@ -134,7 +135,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then()
                 .log().all()
                 .extract().asString();
-        assertThat(message).contains("잘못된 패스워드입니다.");
+        assertThat(message).contains(BAD_REQUEST_MESSAGE);
     }
 
     @DisplayName("회원 정보 관리 중 유효하지 않은 토큰으로 권한이 필요한 페이지 요청 예외")
