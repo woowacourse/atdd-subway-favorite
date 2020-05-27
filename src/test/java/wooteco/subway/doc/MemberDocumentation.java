@@ -54,7 +54,7 @@ public class MemberDocumentation {
     public static ResultHandler selectMember() {
         return document("members/select",
                 requestParameters(
-                        parameterWithName("email").description("이멜")
+                        parameterWithName("email").description("조회할 유저의 이메일")
                 ),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")

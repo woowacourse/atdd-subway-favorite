@@ -4,15 +4,20 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import wooteco.subway.DummyTestUserInfo;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
@@ -24,12 +29,14 @@ import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.MemberService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FavoriteControllerIntegrationTest {
@@ -48,8 +55,9 @@ public class FavoriteControllerIntegrationTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext) {
+    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(documentationConfiguration(restDocumentation))
                 .build();
         favoriteRepository.deleteAll();
         memberRepository.deleteAll();
@@ -110,9 +118,10 @@ public class FavoriteControllerIntegrationTest {
         String uri = "/favorites";
 
         //when
-        MvcResult mvcResult = mockMvc.perform(get(uri)
+        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get(uri)
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON))
+                .andDo(FavoriteDocumentation.select())
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();

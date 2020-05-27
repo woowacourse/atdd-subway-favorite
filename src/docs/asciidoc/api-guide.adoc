@@ -40,3 +40,11 @@ operation::members/update[snippets='curl-request,http-request,http-response,http
 === 회원 조회
 
 operation::members/select[snippets='curl-request,http-request,http-response,httpie-request,request-parameters,request-headers,response-body']
+
+[[resources-favorite]]
+== Favorite
+
+[[resources-favorite-select]]
+=== 회원 조회
+
+operation::favorite/select[snippets='curl-request,http-request,http-response,httpie-request,request-body,request-headers,response-body']
