@@ -38,7 +38,6 @@ public class FavoriteController {
 
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<Void> deleteFavorite(@CreateFavorite Favorite favorite) {
-        System.out.println(favorite);
         favoriteService.deleteFavorite(favorite);
         return ResponseEntity
                 .noContent()

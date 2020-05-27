@@ -33,7 +33,6 @@ public class FavoriteMethodArgumentResolver implements HandlerMethodArgumentReso
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        System.out.println("리졸버에 들어옵니다");
 
         String email = (String) webRequest.getAttribute("requestMemberEmail", SCOPE_REQUEST);
         validateMemberExist(email);
@@ -48,7 +47,6 @@ public class FavoriteMethodArgumentResolver implements HandlerMethodArgumentReso
         try {
             memberService.findMemberByEmail(email);
         } catch(NotExistMemberDataException e) {
-            System.out.println("durlfhs");
             throw new InvalidAuthenticationException();
         }
     }

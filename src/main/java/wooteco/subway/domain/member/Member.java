@@ -26,22 +26,6 @@ public class Member {
         this.password = password;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public void update(String name, String password) {
         if (StringUtils.isNotBlank(name)) {
             this.name = name;
@@ -57,6 +41,22 @@ public class Member {
 
     public boolean isNotEqualEmail(String email) {
         return this.email.equals(email) == false;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override

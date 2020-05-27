@@ -29,7 +29,6 @@ public class UpdateMemberMethodArgumentResolver implements HandlerMethodArgument
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        System.out.println("여기 로직 안타 ? ");
         String id = (String) webRequest.getAttribute("requestId", SCOPE_REQUEST);
         String email = (String) webRequest.getAttribute("requestMemberEmail", SCOPE_REQUEST);
 

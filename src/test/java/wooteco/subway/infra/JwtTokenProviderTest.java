@@ -32,12 +32,4 @@ class JwtTokenProviderTest {
         String actual = jwtTokenProvider.getSubject(token);
         assertThat(actual).isEqualTo(expected);
     }
-
-    @DisplayName("토큰 검증")
-    @Test
-    void validateToken() {
-        // given
-        // when
-        // then
-    }
 }

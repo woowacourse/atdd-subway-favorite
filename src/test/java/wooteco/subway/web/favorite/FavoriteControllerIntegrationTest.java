@@ -39,16 +39,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class FavoriteControllerIntegrationTest {
     private static final Gson gson = new Gson();
+
     @Autowired
     protected MockMvc mockMvc;
+
     @Autowired
     private FavoriteService favoriteService;
+
     @Autowired
     private FavoriteRepository favoriteRepository;
+
     @Autowired
     private MemberService memberService;
+
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -108,11 +114,15 @@ public class FavoriteControllerIntegrationTest {
         //given
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
         CreateFavoriteRequest favorite2 = new CreateFavoriteRequest("양재역", "판교역", DummyTestUserInfo.EMAIL);
+
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+
         favoriteService.save(favorite1, member.getEmail());
         favoriteService.save(favorite2, member.getEmail());
         memberService.createMember(member);
+
         String token = jwtTokenProvider.createToken(member.getEmail());
+
         String uri = "/favorites";
 
         //when
@@ -132,9 +142,9 @@ public class FavoriteControllerIntegrationTest {
     @DisplayName("토큰이 없는 상태에서 즐겨찾기 조회가 실패한다")
     @Test
     void findFavoriteFailTest() throws Exception {
-
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
         CreateFavoriteRequest favorite2 = new CreateFavoriteRequest("양재역", "판교역", DummyTestUserInfo.EMAIL);
+
         favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
         favoriteService.save(favorite2, DummyTestUserInfo.EMAIL);
 
@@ -151,6 +161,7 @@ public class FavoriteControllerIntegrationTest {
     void findFavoriteFailTest2() throws Exception {
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
         CreateFavoriteRequest favorite2 = new CreateFavoriteRequest("양재역", "판교역", DummyTestUserInfo.EMAIL);
+
         favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
         favoriteService.save(favorite2, DummyTestUserInfo.EMAIL);
 
@@ -189,11 +200,10 @@ public class FavoriteControllerIntegrationTest {
     @Test
     void deleteFavoriteFailTest() throws Exception {
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
-        Favorite present = favoriteService.save(favorite1, favorite1.getEmail());
-
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
-        memberService.createMember(member);
 
+        Favorite present = favoriteService.save(favorite1, favorite1.getEmail());
+        memberService.createMember(member);
         favoriteService.save(favorite1, member.getEmail());
 
         String uri = "/favorites/" + present.getId();
@@ -208,16 +218,14 @@ public class FavoriteControllerIntegrationTest {
     @Test
     void deleteFavoriteFailTest2() throws Exception {
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역", DummyTestUserInfo.EMAIL);
-        Favorite present = favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
-
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
-        memberService.createMember(member);
 
+        Favorite present = favoriteService.save(favorite1, DummyTestUserInfo.EMAIL);
+        memberService.createMember(member);
         favoriteService.save(favorite1, member.getEmail());
 
         String unExistEmailToken = jwtTokenProvider.createToken("wrong@gmail.com");
         String uri = "/favorites/?source=" + present.getSource() + "&target=" + present.getTarget();
-
 
         mockMvc.perform(get(uri)
                 .header("Authorization", "Bearer" + unExistEmailToken)

@@ -45,7 +45,6 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Favorite favorite) {
-        System.out.println(favorite.getId() + "아이디이");
         favoriteRepository.deleteById(favorite.getId());
     }
 }

@@ -97,6 +97,7 @@ public class FavoriteControllerTest {
     void selectFavoriteTest() throws Exception {
         Favorite favorite1 = new Favorite("강남역", "역삼역", "email@gmail.com");
         Member member = new Member("email@gmail.com", null, null);
+
         given(favoriteService.findAllByEmail(any())).willReturn(Arrays.asList(FavoriteResponse.of(favorite1), FavoriteResponse.of(favorite1)));
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
@@ -120,6 +121,7 @@ public class FavoriteControllerTest {
         Favorite favorite1 = new Favorite("강남역", "역삼역", DummyTestUserInfo.EMAIL);
         Favorite favorite2 = new Favorite("복정역", "역삼역", DummyTestUserInfo.EMAIL);
         Member member = new Member(DummyTestUserInfo.EMAIL, null, null);
+
         given(favoriteService.findAllByEmail(any())).willReturn(Arrays.asList(FavoriteResponse.of(favorite1), FavoriteResponse.of(favorite2)));
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);

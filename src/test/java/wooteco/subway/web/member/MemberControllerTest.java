@@ -62,12 +62,12 @@ public class MemberControllerTest {
     @Test
     void createMemberTest() throws Exception {
         Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
-        given(memberService.createMember(any())).willReturn(member);
-
         MemberRequest memberRequest = new MemberRequest("ramen6315@gmail.com", "ramen", "6315)");
 
-        String uri = "/members";
+        given(memberService.createMember(any())).willReturn(member);
+
         String content = gson.toJson(memberRequest);
+        String uri = "/members";
 
         mockMvc.perform(post(uri)
                 .content(content)
@@ -83,10 +83,11 @@ public class MemberControllerTest {
     void createMemberTestFail1() throws Exception {
         Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
         MemberRequest memberRequest = new MemberRequest("이메일형식X", "ramen", "6315)");
+
         given(memberService.createMember(any())).willReturn(member);
 
-        String uri = "/members";
         String content = gson.toJson(memberRequest);
+        String uri = "/members";
 
         mockMvc.perform(post(uri)
                 .content(content)
@@ -101,6 +102,7 @@ public class MemberControllerTest {
     void createMemberTestFail2() throws Exception {
         Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
         MemberRequest memberRequest = new MemberRequest("이메일형식X", "", "6315)");
+
         given(memberService.createMember(any())).willReturn(member);
 
         String uri = "/members";
@@ -119,6 +121,7 @@ public class MemberControllerTest {
     void createMemberTestFail3() throws Exception {
         Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "631");
         MemberRequest memberRequest = new MemberRequest("이메일형식X", "ramen", "631");
+
         given(memberService.createMember(any())).willReturn(member);
 
         String uri = "/members";
@@ -137,6 +140,7 @@ public class MemberControllerTest {
     void createMemberTestFail4() throws Exception {
         Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "631");
         MemberRequest memberRequest = new MemberRequest(null, null, null);
+
         given(memberService.createMember(any())).willReturn(member);
 
         String uri = "/members";
@@ -150,16 +154,15 @@ public class MemberControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    //docs추가
     @DisplayName("정보조회 테스트")
     @Test
     void getMemberByEmailTest() throws Exception {
         String email = "ramen@gmail.com";
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+
         given(memberService.findMemberByEmail(email)).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(email);
-        String uri = "/members?email=ramen@gmail.com";
 
         MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/members")
                 .param("email", email)
@@ -182,6 +185,7 @@ public class MemberControllerTest {
     void getMemberByEmailFailTest() throws Exception {
         String email = "ramen@gmail.com";
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+
         given(memberService.findMemberByEmail(email)).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
@@ -197,8 +201,10 @@ public class MemberControllerTest {
     @DisplayName("인증 정보 없는 수정하기 시 예외가 발생한다.")
     @Test
     void updateInfoTestFail() throws Exception {
-        given(memberService.updateMember(any(), any())).willReturn(1L);
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
+
+        given(memberService.updateMember(any(), any())).willReturn(1L);
+
         String updateData = gson.toJson(updateMemberRequest);
         String uri = "/members/1";
 
@@ -214,17 +220,15 @@ public class MemberControllerTest {
     @Test
     void updateInfoTestSuccess() throws Exception {
         Member member = new Member(1L, "ramen6315@gmail.com", "6315", "6315");
+
         given(memberService.updateMember(any(), any())).willReturn(1L);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(anyString())).willReturn("ramen6315@gmail.com");
-        given(memberService.findMemberById(anyLong()))
-                .willReturn(member);
+        given(memberService.findMemberById(anyLong())).willReturn(member);
 
         Long updateId = member.getId();
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
         String updateData = gson.toJson(updateMemberRequest);
-
-        String uri = "/members/1";
 
         mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", updateId)
                 .header("Authorization", "Bearer 아무토큰값")

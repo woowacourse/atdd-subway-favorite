@@ -50,11 +50,6 @@ public class MemberService {
                 .orElseThrow(() -> new NotExistMemberDataException(email));
     }
 
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
-    }
-
     public Member findMemberById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new NotExistMemberDataException(String.valueOf(id)));

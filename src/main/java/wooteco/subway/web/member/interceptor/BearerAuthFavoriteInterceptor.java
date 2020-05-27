@@ -28,10 +28,9 @@ public class BearerAuthFavoriteInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("Favorite 인터셉터 들어감");
 
-        if (request.getMethod().equals(HttpMethod.DELETE.name())) {
-            System.out.println("이건 델리트다.");
+
+        if (isDelete(request)) {
             final Map<String, String> pathVariables = (Map<String, String>) request
                     .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
@@ -40,18 +39,19 @@ public class BearerAuthFavoriteInterceptor implements HandlerInterceptor {
         }
 
         String bearer = authExtractor.extract(request, "Bearer");
-        System.out.println(bearer + " 베어맨");
         validateToken(bearer);
         String email = jwtTokenProvider.getSubject(bearer);
 
         request.setAttribute("requestMemberEmail", email);
-        System.out.println("여기는터지니 ?");
         return true;
+    }
+
+    private boolean isDelete(HttpServletRequest request) {
+        return HttpMethod.DELETE.matches(request.getMethod());
     }
 
     private void validateToken(String bearer) {
         if (bearer.isEmpty() || !jwtTokenProvider.validateToken(bearer)) {
-            System.out.println("에러 포인트 1");
             throw new InvalidAuthenticationException();
         }
     }

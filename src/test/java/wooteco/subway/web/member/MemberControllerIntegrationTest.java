@@ -70,13 +70,14 @@ public class MemberControllerIntegrationTest {
     @DisplayName("유저 정보 수정 시 이메일이 맞지 않을경우 익셉션이 발생한다")
     @Test
     void unAuthorizationUpdateRequestTest() throws Exception {
-        memberService.createMember(new Member(1L, "email@gmail.com", "ramen", "6315"));
-        String anotherEmail = "anotherEmail@gmail.com";
-
-        String token = jwtTokenProvider.createToken(anotherEmail);
-
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
+
+        memberService.createMember(new Member(1L, "email@gmail.com", "ramen", "6315"));
+
+        String anotherEmail = "anotherEmail@gmail.com";
+        String token = jwtTokenProvider.createToken(anotherEmail);
         String updateData = gson.toJson(updateMemberRequest);
+
         String uri = "/members/1";
 
         mockMvc.perform(put(uri)
@@ -92,10 +93,9 @@ public class MemberControllerIntegrationTest {
     @Test
     void deleteMemberDateSuccessTest() throws Exception {
         Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
-        Long deleteId = member.getId();
 
+        Long deleteId = member.getId();
         String token = jwtTokenProvider.createToken(member.getEmail());
-//        String uri = "/members/" + deleteId;
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", deleteId)
                 .header("Authorization", "Bearer" + token))
@@ -108,10 +108,9 @@ public class MemberControllerIntegrationTest {
     @Test
     void deleteMemberDateFailTest() throws Exception {
         Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
-
         Long deleteId = member.getId();
-        memberService.deleteMember(deleteId);
 
+        memberService.deleteMember(deleteId);
 
         String uri = "/members/" + deleteId;
 
@@ -126,8 +125,8 @@ public class MemberControllerIntegrationTest {
         Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
 
         Long wrongDeleteId = member.getId() + 10L;
-
         String memberEmailToken = jwtTokenProvider.createToken(String.valueOf(wrongDeleteId));
+
         String uri = "/members/" + member.getId();
 
         mockMvc.perform(delete(uri)
