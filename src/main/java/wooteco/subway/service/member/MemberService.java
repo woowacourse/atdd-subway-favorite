@@ -64,13 +64,6 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
-    public FavoriteResponse findFavorite(FavoriteReadRequest request) {
-        Long sourceStationId = stationRepository.findIdByName(request.getSourceStationName());
-        Long targetStationId = stationRepository.findIdByName(request.getTargetStationName());
-        Favorite favorite = favoriteRepository.findByIds(sourceStationId, targetStationId).orElseThrow(NoSuchFavoriteException::new);
-        return favorite.toFavoriteResponse();
-    }
-
     public FavoriteResponse findFavorite(Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(NoSuchFavoriteException::new);
         return favorite.toFavoriteResponse();

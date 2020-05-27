@@ -45,6 +45,9 @@ public class AcceptanceTest {
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
 
+    public static final String TEST_TOKEN = "yJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJod2FuZ2hlMTU5QG5hdmVyLmNvbSIsImlhdCI6MTU5MDQ5NTE4NSwiZXhwIjoxNTkwNDk4Nzg1fQ.__z-VmNMNY-GfzZt0O381h-48ml355qqxkHY68d8cfI";
+
+
     @LocalServerPort
     public int port;
 
