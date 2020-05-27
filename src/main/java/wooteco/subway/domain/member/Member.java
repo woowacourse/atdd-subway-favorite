@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +51,13 @@ public class Member {
 		}
 		Set<Favorite> newFavorites = new HashSet<>(this.favorites);
 		newFavorites.add(favorite);
+		return new Member(this.id, this.email, this.name, this.password, newFavorites);
+	}
+
+	public Member deleteFavorite(final Favorite favorite) {
+		Set<Favorite> newFavorites = this.favorites.stream()
+			.filter(it -> !it.equals(favorite))
+			.collect(toSet());
 		return new Member(this.id, this.email, this.name, this.password, newFavorites);
 	}
 

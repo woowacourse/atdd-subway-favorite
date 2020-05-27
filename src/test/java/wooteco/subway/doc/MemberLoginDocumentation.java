@@ -3,6 +3,7 @@ package wooteco.subway.doc;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -85,9 +86,21 @@ public class MemberLoginDocumentation {
 				fieldWithPath("[].targetStationId").type(JsonFieldType.NUMBER)
 					.description("The arrival station ID of Favorite."),
 				fieldWithPath("[].sourceStationName").type(JsonFieldType.STRING)
-					.description("The departure station ID of Favorite."),
+					.description("The departure station name of Favorite."),
 				fieldWithPath("[].targetStationName").type(JsonFieldType.STRING)
 					.description("The arrival station name of Favorite.")
 			));
+	}
+
+	public static RestDocumentationResultHandler deleteFavorite() {
+		return document("favorite-delete",
+			requestHeaders(
+				headerWithName("Authorization").description("The token for login which is Bearer Type.")
+			),
+			requestParameters(
+				parameterWithName("sourceId").description("The departure station ID of Favorite."),
+				parameterWithName("targetId").description("The arrival station ID of Favorite.")
+			),
+			responseHeaders());
 	}
 }

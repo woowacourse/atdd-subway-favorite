@@ -53,7 +53,7 @@ public class FavoriteServiceTest {
 		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of("잠실역")));
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(Station.of("강남역")));
 
-		favoriteService.createFavorite(member, favoriteRequest);
+		favoriteService.createFavorite(member, favoriteRequest.toFavorite());
 
 		verify(memberRepository).save(any());
 	}
@@ -66,7 +66,7 @@ public class FavoriteServiceTest {
 
 		when(stationRepository.findById(1L)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest))
+		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest.toFavorite()))
 			.isInstanceOf(NotFoundStationException.class)
 			.hasMessageContaining("출발역");
 	}
@@ -80,7 +80,7 @@ public class FavoriteServiceTest {
 		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of("잠실역")));
 		when(stationRepository.findById(2L)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest))
+		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest.toFavorite()))
 			.isInstanceOf(NotFoundStationException.class)
 			.hasMessageContaining("도착역");
 	}
@@ -96,7 +96,7 @@ public class FavoriteServiceTest {
 
 		final Member newMember = member.addFavorite(favoriteRequest.toFavorite());
 
-		assertThatThrownBy(() -> favoriteService.createFavorite(newMember, favoriteRequest))
+		assertThatThrownBy(() -> favoriteService.createFavorite(newMember, favoriteRequest.toFavorite()))
 			.isInstanceOf(DuplicateFavoriteException.class)
 			.hasMessageContaining("존재하는");
 	}
@@ -109,5 +109,16 @@ public class FavoriteServiceTest {
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(Station.of("강남역")));
 
 		assertThat(favoriteService.retrieveStationsBy(member.getFavorites())).hasSize(2);
+	}
+
+	@Test
+	void deleteFavorite() {
+		final Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD)
+			.addFavorite(Favorite.of(1L, 2L));
+		FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+
+		favoriteService.deleteFavorite(member, favoriteRequest.toFavorite());
+
+		verify(memberRepository).save(any());
 	}
 }

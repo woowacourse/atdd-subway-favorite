@@ -394,5 +394,19 @@ public class AcceptanceTest {
 			.extract()
 			.jsonPath().getList(".", FavoriteResponse.class);
 	}
-}
 
+	public void deleteFavorite(String token, Long sourceStationId, Long targetStationId) {
+		Map<String, Long> params = new HashMap<>();
+		params.put("sourceId", sourceStationId);
+		params.put("targetId", targetStationId);
+
+		given().auth()
+			.oauth2(token)
+			.params(params)
+			.when()
+			.delete("/favorites")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
+}

@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.MemberLoginDocumentation;
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -126,5 +127,20 @@ public class FavoriteControllerTest {
 			.andExpect(status().isOk())
 			.andDo(print())
 			.andDo(MemberLoginDocumentation.retrieveFavorites());
+	}
+
+	@Test
+	void deleteFavorite() throws Exception {
+		given(memberService.findMemberByEmail(any())).willReturn(member);
+		member.addFavorite(Favorite.of(1L, 2L));
+		member.addFavorite(Favorite.of(3L, 4L));
+
+		this.mockMvc.perform(delete("/favorites?sourceId=1&targetId=2")
+			.header("authorization", "Bearer " + token))
+			// .param("sourceId", "1")
+			// .param("targetId", "2"))
+			.andExpect(status().isNoContent())
+			.andDo(print())
+			.andDo(MemberLoginDocumentation.deleteFavorite());
 	}
 }

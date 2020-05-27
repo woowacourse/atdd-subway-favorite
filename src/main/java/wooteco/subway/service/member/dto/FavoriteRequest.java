@@ -15,7 +15,7 @@ public class FavoriteRequest {
 	@NotNull
 	private Long targetId;
 
-	public FavoriteRequest() {
+	private FavoriteRequest() {
 	}
 
 	public FavoriteRequest(Long sourceId, Long targetId) {
