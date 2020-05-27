@@ -43,6 +43,9 @@ public class Favorites {
     }
 
     public void delete(Favorite favorite) {
+        if (!favorites.contains(favorite)) {
+            throw new IllegalArgumentException("존재하지 않는 즐겨찾기 항목입니다.");
+        }
         favorites.remove(favorite);
     }
 }

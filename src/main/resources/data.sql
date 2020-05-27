@@ -37,3 +37,6 @@ INSERT INTO LINE_STATION(line, station_id, pre_station_id, distance, duration)
 VALUES (4, 9, 1, 600, 10);
 INSERT INTO LINE_STATION(line, station_id, pre_station_id, distance, duration)
 VALUES (4, 5, 9, 100, 11);
+
+INSERT INTO MEMBER(email, name, password)
+VALUES ('test@test.com', 'test', '1q2w3e');

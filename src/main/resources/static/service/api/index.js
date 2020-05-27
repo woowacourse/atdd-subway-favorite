@@ -82,10 +82,52 @@ const api = (() => {
         }
     };
 
+    const favorite = {
+        create(token, data) {
+            return fetch(`/members/favorites`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...data
+                })
+            })
+        },
+        find(token) {
+            return fetch(`/members/favorites`, {
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    alert('로그인을 다시 해주세요 :)');
+                    window.location.href = "/";
+                }
+                return response.json();
+            })
+        },
+        delete(token, data) {
+            return fetch(`/members/favorites`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...data
+                })
+            })
+        }
+    };
+
     return {
         line,
         path,
-        member
+        member,
+        favorite
     }
 })()
 
