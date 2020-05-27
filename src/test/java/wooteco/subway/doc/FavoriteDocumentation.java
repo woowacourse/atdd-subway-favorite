@@ -35,36 +35,13 @@ public class FavoriteDocumentation {
 		);
 	}
 
-	public static RestDocumentationResultHandler failToReadMemberOfEmail() {
-		return document("members/read_fail_email");
-	}
-
-	public static RestDocumentationResultHandler updateMember() {
-		return document("members/update",
+	public static RestDocumentationResultHandler deleteFavorite() {
+		return document("favorites/delete",
 				pathParameters(
-						parameterWithName("id").description("수정할 User id")
-				),
-				requestFields(
-						fieldWithPath("name").type(JsonFieldType.STRING).description("User의 새로운 이름"),
-						fieldWithPath("password").type(JsonFieldType.STRING).description("User의 새로운 비밀번호")
+						parameterWithName("memberId").description("즐겨찾기를 삭제할 Member의 id"),
+						parameterWithName("sourceId").description("삭제할 즐겨찾기 출발역 id"),
+						parameterWithName("targetId").description("삭제할 즐겨찾기 도착역 id")
 				)
 		);
 	}
-
-	public static RestDocumentationResultHandler deleteMember() {
-		return document("members/delete",
-				pathParameters(
-						parameterWithName("id").description("탈퇴할 User id")
-				)
-		);
-	}
-
-	public static RestDocumentationResultHandler failToAuthorizeMemberByToken() {
-		return document("members/authorize_fail_token");
-	}
-
-	public static RestDocumentationResultHandler failToAuthorizeMemberBySession() {
-		return document("members/authorize_fail_session");
-	}
-
 }

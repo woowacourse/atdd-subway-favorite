@@ -136,12 +136,12 @@ public class FavoriteControllerTest {
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
-		this.mockMvc.perform(delete("/members/1/favorites/source/1/target/2")
+		this.mockMvc.perform(delete("/members/{memberId}/favorites/source/{sourceId}/target/{targetId}", 1L, 1L, 2L)
 				.session(session)
 				.header("authorization", "Bearer " + TEST_USER_TOKEN)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-//				.andDo(MemberDocumentation.readMember());
+				.andExpect(status().isOk())
+				.andDo(FavoriteDocumentation.deleteFavorite());
 	}
 }
