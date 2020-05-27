@@ -77,6 +77,12 @@ const api = (() => {
     }
   }
 
+  const station = {
+    get(id) {
+      return requestWithJsonData(`/stations/${id}`)
+    }
+  }
+
   const path = {
     find(params) {
       return requestWithJsonData(`/paths?source=${params.source}&target=${params.target}&type=${params.type}`)
@@ -102,13 +108,20 @@ const api = (() => {
     deleteMyInformation() {
       return request(`/me`, METHOD.DELETE_WITH_TOKEN())
     },
+    getMyFavorites() {
+      return requestWithJsonData(`/me/favorites`, METHOD.GET_WITH_TOKEN())
+    },
     addFavorite(params) {
       return request(`/me/favorites`, METHOD.POST_WITH_TOKEN(params))
+    },
+    deleteFavorite(favoriteId) {
+      return request(`/me/favorites/${favoriteId}`, METHOD.DELETE_WITH_TOKEN())//TODO favoriteId안넣어줘도 잘작동하는지
     }
   }
 
   return {
     line,
+    station,
     path,
     memberWithoutToken,
     memberWithToken

@@ -26,11 +26,6 @@ function Search() {
     $shortestDistanceTab.classList.add('active-tab')
     $minimumTimeTab.classList.remove('active-tab')
     getSearchResult(PATH_TYPE.DISTANCE)
-    setFavoriteButton();
-  }
-
-  function setFavoriteButton() {
-    //TODO
   }
 
   const onSearchMinimumTime = event => {
@@ -56,7 +51,17 @@ function Search() {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     if (isFavorite) {
-      //TODO
+      const favoriteId = $favoriteButton.dataset.favoriteId
+      api.memberWithToken.deleteFavorite(favoriteId)
+          .then((data) => {
+            if (!data.ok) {
+              throw new Error(data.status)
+            }
+            toggleFavoriteButton(isFavorite)
+          })
+          .catch(error => {
+            alert(ERROR_MESSAGE.FAVORITE_DELETE_FAIL)
+          })
     } else {
       const favoriteInfo = {
         sourceStationName: $departureStationName.value,
@@ -90,6 +95,7 @@ function Search() {
       classList.add('mdi-star')
       classList.add('text-yellow-500')
     }
+
   }
 
   const initEventListener = () => {
