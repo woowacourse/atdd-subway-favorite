@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,12 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.AcceptanceTest.*;
@@ -46,6 +50,7 @@ public class MemberControllerTest {
 				.build();
 	}
 
+	@DisplayName("회원가입이 정상적으로 되는지 확인")
 	@Test
 	public void createMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -63,6 +68,25 @@ public class MemberControllerTest {
 				.andExpect(status().isCreated())
 				.andDo(print())
 				.andDo(MemberDocumentation.createMember());
+	}
+
+	@DisplayName("회원 정보가 정상적으로 수정되는지 확인")
+	@Test
+	public void updateMember() throws Exception {
+
+		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+				"\"name\":\"" + TEST_USER_NAME + "\"," +
+				"\"password\":\"" + TEST_USER_PASSWORD + "\"," +
+				"\"confirmPassword\":\"" + TEST_USER_PASSWORD + "\"}";
+
+		this.mockMvc.perform(put("/members/{id}", 1L)
+				                     .content(inputJson)
+				                     .contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(print())
+				.andDo(MemberDocumentation.updateMember());
+
+		verify(memberService).updateMember(anyLong(), any());
 	}
 }
 

@@ -281,42 +281,6 @@ public class AcceptanceTest {
                 extract().as(ExceptionResponse.class);
     }
 
-    public MemberResponse getMember(String email) {
-        return
-                given().
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        get("/members?email=" + email).
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(MemberResponse.class);
-    }
-
-    public void updateMember(MemberResponse memberResponse) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                put("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-    }
-
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-                delete("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
     public TokenResponse loginSuccessfully(String email, String password) {
         return login(email, password).
                 statusCode(HttpStatus.OK.value()).
