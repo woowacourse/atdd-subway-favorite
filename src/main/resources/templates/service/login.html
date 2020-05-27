@@ -3,19 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <title>RunningMap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+    />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link href="/service/lib/snackbar/snackbar.css" rel="stylesheet" />
     <link href="/service/css/app.css" rel="stylesheet" />
   </head>
   <body class="bg-gray-200 h-screen">
     <div class="flex justify-center items-center app-container">
-      <div class="max-w-md width-350px rounded bg-white shadow-lg p-6">
+      <div class="max-w-md width-350px rounded bg-white shadow-lg p-6 relative">
         <div class="font-bold text-xl mb-4 text-center">로그인</div>
         <div class="w-full">
           <form class="bg-white rounded mb-2">
             <div class="mb-4">
-              <label class="block text-gray-600 text-sm font-bold mb-2" for="email">
+              <label
+                class="block text-gray-600 text-sm font-bold mb-2"
+                for="email"
+              >
                 email
               </label>
               <input
@@ -26,7 +39,10 @@
               />
             </div>
             <div class="mb-4">
-              <label class="block text-gray-600 text-sm font-bold mb-2" for="password">
+              <label
+                class="block text-gray-600 text-sm font-bold mb-2"
+                for="password"
+              >
                 password
               </label>
               <input
@@ -44,7 +60,8 @@
               로그인
             </button>
             <div class="px-1 text-sm">
-              <span class="text-gray-800">계정이 없으신가요?</span> <a href="/join" class="text-blue-500">회원가입</a>
+              <span class="text-gray-800">계정이 없으신가요?</span>
+              <a href="/join" class="text-blue-500">회원가입</a>
             </div>
           </form>
         </div>

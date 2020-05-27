@@ -5,8 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.station.StationService;
+import wooteco.subway.web.member.LoginMember;
 
 @Controller
 public class PageController {
