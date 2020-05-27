@@ -26,10 +26,38 @@ public class FavoriteDocumentation {
         );
     }
 
+    public static RestDocumentationResultHandler addFavoriteFail(String url) {
+        return document(url,
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("sourceId").type(JsonFieldType.STRING)
+                    .description("The Favorite source-id").attributes(),
+                fieldWithPath("targetId").type(JsonFieldType.STRING)
+                    .description("The Favorite targetId")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The Error message")
+            )
+        );
+    }
+
     public static RestDocumentationResultHandler deleteFavorite() {
         return document("favorites/delete",
             getDocumentRequest(),
             getDocumentResponse()
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteFavoriteFail(String url) {
+        return document(url,
+            getDocumentRequest(),
+            getDocumentResponse(),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The Error message")
+            )
         );
     }
 }

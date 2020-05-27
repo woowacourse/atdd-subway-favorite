@@ -28,6 +28,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.web.exception.DuplicatedFavoriteException;
 import wooteco.subway.web.service.favorite.FavoriteService;
 import wooteco.subway.web.service.member.MemberService;
 
@@ -82,6 +83,40 @@ public class FavoriteControllerTest {
     }
 
     @Test
+    public void addFavoriteWithNoToken() throws Exception {
+        given(memberService.save(any())).willReturn(member);
+        given(favoriteService.addToMember(any(), any())).willReturn(member);
+
+        String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
+            "\"targetId\":\"" + 2L + "\"}";
+
+        this.mockMvc.perform(post("/favorites")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andDo(print())
+            .andDo(FavoriteDocumentation.addFavoriteFail("favorites/create-no-login"));
+    }
+
+    @Test
+    public void addDuplicatedFavorite() throws Exception {
+        given(favoriteService.addToMember(any(), any())).willThrow(new DuplicatedFavoriteException(1L, 2L));
+
+        String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
+            "\"targetId\":\"" + 2L + "\"}";
+
+        this.mockMvc.perform(post("/favorites")
+            .cookie(cookie)
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(FavoriteDocumentation.addFavoriteFail("favorites/create-duplicated"));
+    }
+
+    @Test
     void deleteFavorite() throws Exception {
         given(memberService.save(member)).willReturn(member);
 
@@ -92,5 +127,17 @@ public class FavoriteControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(FavoriteDocumentation.deleteFavorite());
+    }
+
+    @Test
+    void deleteFavoriteWithNoToken() throws Exception {
+        given(memberService.save(member)).willReturn(member);
+
+        this.mockMvc.perform(delete("/favorites/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andDo(print())
+            .andDo(FavoriteDocumentation.deleteFavoriteFail("favorites/delete-not-login"));
     }
 }

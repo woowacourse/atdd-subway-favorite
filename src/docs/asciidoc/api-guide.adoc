@@ -111,12 +111,29 @@ operation::members/delete-not-exist-token[snippets='http-request,http-response,r
 ===== 성공
 operation::favorites/create[snippets='http-request,http-response,request-fields']
 
+[[resources-favorites-create-fail]]
+==== 실패
+
+[[resources-favorites-create-fail-no-login]]
+===== 토큰이 존재하지 않음
+operation::favorites/create-no-login[snippets='http-request,http-response,request-fields,response-fields']
+
+===== 즐겨찾기 중복
+operation::favorites/create-duplicated[snippets='http-request,http-response,request-fields,response-fields']
+
 [[resources-favorites-delete]]
 === 즐겨찾기 삭제
 
 [[resources-favorites-delete-successful]]
 ===== 성공
 operation::favorites/delete[snippets='http-request,http-response']
+
+[[resources-favorites-delete-fail]]
+==== 실패
+
+[[resources-favorites-delete-fail-not-login]]
+===== 토큰이 존재하지 않음
+operation::favorites/delete-not-login[snippets='http-request,http-response, response-fields']
 
 
 
