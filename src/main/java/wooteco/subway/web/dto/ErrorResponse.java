@@ -5,21 +5,35 @@ import java.util.stream.Collectors;
 import org.springframework.validation.BindingResult;
 
 public class ErrorResponse {
+    private String code;
     private String message;
     private List<FieldError> errors;
 
-    public ErrorResponse(String message) {
+    public ErrorResponse(String code, String message) {
+        this.code = code;
         this.message = message;
     }
 
-    public ErrorResponse(String message,
+    public ErrorResponse(String code, String message,
             BindingResult bindingResult) {
-        this.message = message;
+        this(code, message);
         this.errors = bindingResult.getFieldErrors()
                 .stream()
                 .map(fieldError -> new FieldError(fieldError.getField(),
                         fieldError.getRejectedValue(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
+    }
+
+    public static ErrorResponse of(ErrorCode errorCode, BindingResult bindingResult) {
+        return new ErrorResponse(errorCode.name(), errorCode.getMessage(), bindingResult);
+    }
+
+    public static ErrorResponse of(ErrorCode errorCode) {
+        return new ErrorResponse(errorCode.name(), errorCode.getMessage());
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public String getMessage() {
