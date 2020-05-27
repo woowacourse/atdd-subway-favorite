@@ -45,6 +45,11 @@ operation::members/select[snippets='curl-request,http-request,http-response,http
 == Favorite
 
 [[resources-favorite-select]]
-=== 회원 조회
+=== 즐겨찾기 조회
 
 operation::favorite/select[snippets='curl-request,http-request,http-response,httpie-request,request-body,request-headers,response-body']
+
+[[resources-favorite-select]]
+=== 즐겨찾기 추가
+
+operation::favorite/create[snippets='curl-request,http-request,http-response,httpie-request,request-body,request-fields,request-headers,response-body']

@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.DummyTestUserInfo;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -73,7 +74,7 @@ public class FavoriteControllerTest {
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
         CreateFavoriteRequest favoriteRequest = new CreateFavoriteRequest(sourceStation, targetStation, member.getEmail());
 
-        given(favoriteService.save(any(), anyString())).willReturn(new Favorite(sourceStation, targetStation, DummyTestUserInfo.EMAIL));
+        given(favoriteService.save(any(), anyString())).willReturn(new Favorite(1L, sourceStation, targetStation, DummyTestUserInfo.EMAIL));
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(DummyTestUserInfo.EMAIL);
         given(memberService.findMemberByEmail(any())).willReturn(member);
@@ -87,6 +88,7 @@ public class FavoriteControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
+                .andDo(FavoriteDocumentation.create())
                 .andExpect(status().isCreated());
     }
 
