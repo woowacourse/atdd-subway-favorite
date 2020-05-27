@@ -51,3 +51,8 @@ VALUES
 ('c@email.com', '다', '3'),
 ('d@email.com', '라', '4'),
 ('e@email.com', '마', '5');
+
+INSERT INTO favorite (member, source_id, target_id)
+VALUES
+(1, 1, 7),
+(1, 1, 10);

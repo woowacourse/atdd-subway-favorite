@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -34,15 +34,19 @@ import wooteco.subway.service.member.dto.LoginRequest;
  *
  *    @author HyungJu An, MinWoo Yim
  */
-@SpringBootTest
+
 @ExtendWith(RestDocumentationExtension.class)
-@AutoConfigureMockMvc
+@WebMvcTest(controllers = {MemberController.class, LoginMemberController.class})
+@Import({JwtTokenProvider.class, AuthorizationExtractor.class})
 class LoginMemberControllerTest {
 	@MockBean
 	protected MemberService memberService;
 
 	@Autowired
 	protected JwtTokenProvider jwtTokenProvider;
+
+	@Autowired
+	protected AuthorizationExtractor authorizationExtractor;
 
 	protected MockMvc mockMvc;
 
@@ -189,53 +193,5 @@ class LoginMemberControllerTest {
 			.andExpect(status().isNoContent())
 			.andDo(print())
 			.andDo(MemberLoginDocumentation.deleteMemberOfMineBasic());
-	}
-
-	@Test
-	void addFavorite() throws Exception {
-		final String email = "a@email.com";
-		final String password = "1234";
-		final String name = "asdf";
-		final String token = jwtTokenProvider.createToken(email);
-		final Member member = Member.of(email, name, password).withId(1L);
-		final long sourceId = 1L;
-		final long targetId = 2L;
-		given(memberService.findMemberByEmail(any())).willReturn(member);
-
-		String inputJson = "{\"sourceId\":\"" + sourceId + "\"," +
-			"\"targetId\":\"" + targetId + "\"}";
-
-		this.mockMvc.perform(post("/favorites")
-			.header("authorization", "Bearer " + token)
-			.content(inputJson)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.contentType(MediaType.APPLICATION_JSON_VALUE))
-			.andExpect(status().isCreated())
-			.andDo(print())
-			.andDo(MemberLoginDocumentation.addFavorite());
-	}
-
-	@DisplayName("출발역이나 도착역 id가 null이면 예외처리한다.")
-	@Test
-	void addFavorite2() throws Exception {
-		final String email = "a@email.com";
-		final String password = "1234";
-		final String name = "asdf";
-		final String token = jwtTokenProvider.createToken(email);
-		final Member member = Member.of(email, name, password).withId(1L);
-		final Long sourceId = null;
-		final Long targetId = 2L;
-		given(memberService.findMemberByEmail(any())).willReturn(member);
-
-		String inputJson = "{\"sourceId\":\"" + sourceId + "\"," +
-			"\"targetId\":\"" + targetId + "\"}";
-
-		this.mockMvc.perform(post("/favorites")
-			.header("authorization", "Bearer " + token)
-			.content(inputJson)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.contentType(MediaType.APPLICATION_JSON_VALUE))
-			.andExpect(status().isBadRequest())
-			.andDo(print());
 	}
 }

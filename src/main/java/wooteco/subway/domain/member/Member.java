@@ -71,4 +71,8 @@ public class Member {
 	public String getPassword() {
 		return password;
 	}
+
+	public Set<Favorite> getFavorites() {
+		return favorites;
+	}
 }

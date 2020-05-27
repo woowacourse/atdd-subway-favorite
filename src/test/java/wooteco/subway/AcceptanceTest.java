@@ -18,6 +18,7 @@ import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
@@ -378,7 +379,20 @@ public class AcceptanceTest {
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.CREATED.value());
-		;
+	}
+
+	public List<FavoriteResponse> retrieveFavorites(String token) {
+		return given().auth()
+			.oauth2(token)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.get("/favorites")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.OK.value())
+			.extract()
+			.jsonPath().getList(".", FavoriteResponse.class);
 	}
 }
 

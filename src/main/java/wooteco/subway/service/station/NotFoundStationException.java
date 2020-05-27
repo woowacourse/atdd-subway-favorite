@@ -5,7 +5,7 @@ package wooteco.subway.service.station;
  *
  *    @author HyungJu An
  */
-public class NotFoundStationException extends RuntimeException {
+public class NotFoundStationException extends StationException {
 	public NotFoundStationException(final String message) {
 		super(message);
 	}

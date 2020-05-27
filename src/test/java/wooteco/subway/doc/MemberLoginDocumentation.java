@@ -73,4 +73,21 @@ public class MemberLoginDocumentation {
 			),
 			responseHeaders());
 	}
+
+	public static RestDocumentationResultHandler retrieveFavorites() {
+		return document("favorite-retrieve",
+			requestHeaders(
+				headerWithName("Authorization").description("The token for login which is Bearer Type.")
+			),
+			responseFields(
+				fieldWithPath("[].sourceStationId").type(JsonFieldType.NUMBER)
+					.description("The departure station ID of Favorite."),
+				fieldWithPath("[].targetStationId").type(JsonFieldType.NUMBER)
+					.description("The arrival station ID of Favorite."),
+				fieldWithPath("[].sourceStationName").type(JsonFieldType.STRING)
+					.description("The departure station ID of Favorite."),
+				fieldWithPath("[].targetStationName").type(JsonFieldType.STRING)
+					.description("The arrival station name of Favorite.")
+			));
+	}
 }

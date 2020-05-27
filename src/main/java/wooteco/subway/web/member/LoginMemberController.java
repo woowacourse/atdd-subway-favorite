@@ -1,7 +1,5 @@
 package wooteco.subway.web.member;
 
-import java.net.URI;
-
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
@@ -50,14 +47,5 @@ public class LoginMemberController {
 	public ResponseEntity<Void> deleteMemberOfMineBasic(@LoginMember Member member) {
 		memberService.deleteMember(member.getId());
 		return ResponseEntity.noContent().build();
-	}
-
-	@PostMapping("/favorites")
-	public ResponseEntity<Void> addFavorite(@LoginMember Member member,
-		@RequestBody @Valid FavoriteRequest favoriteRequest) {
-		memberService.createFavorite(member, favoriteRequest);
-		return ResponseEntity.created(
-			URI.create("/favorites/" + member.getId()))
-			.build();
 	}
 }
