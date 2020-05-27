@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
-import wooteco.subway.AcceptanceTest;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.service.member.dto.MemberDetailResponse;

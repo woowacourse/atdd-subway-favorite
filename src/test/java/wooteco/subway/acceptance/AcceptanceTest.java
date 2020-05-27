@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +22,7 @@ import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.exception.ErrorResponse;
 import wooteco.subway.web.service.member.dto.MemberDetailResponse;
 import wooteco.subway.web.service.member.dto.MemberResponse;
 import wooteco.subway.web.service.member.dto.TokenResponse;
@@ -285,6 +286,46 @@ public class AcceptanceTest {
                 extract().header("Location");
     }
 
+    public ErrorResponse createMemberWithNotMatchPasswordCheck(String email, String name, String password, String passwordCheck) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        params.put("password", password);
+        params.put("passwordCheck", passwordCheck);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                extract().as(ErrorResponse.class);
+    }
+
+    public ErrorResponse createMemberWithDuplicatedEmail(String email, String name, String password, String passwordCheck) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        params.put("password", password);
+        params.put("passwordCheck", passwordCheck);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                extract().as(ErrorResponse.class);
+    }
+
     public MemberResponse getMember(String email) {
         String token = jwtTokenProvider.createToken(email);
         return
@@ -315,6 +356,81 @@ public class AcceptanceTest {
                 extract().as(MemberDetailResponse.class);
     }
 
+    public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
+        return given()
+            .cookie("token", tokenResponse.getAccessToken())
+            .when()
+            .get("/me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(MemberResponse.class);
+    }
+
+    public ErrorResponse myInfoWithNoToken() {
+        return given()
+            .when()
+            .get("/me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.UNAUTHORIZED.value())
+            .extract().as(ErrorResponse.class);
+    }
+
+    public TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/login").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract().as(TokenResponse.class);
+    }
+
+    public ErrorResponse loginWithOtherPassword(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/login").
+                then().
+                log().all().
+                statusCode(HttpStatus.UNAUTHORIZED.value()).
+                extract().as(ErrorResponse.class);
+    }
+
+    public ErrorResponse loginWithOtherEmail(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+            given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/login").
+                then().
+                log().all().
+                statusCode(HttpStatus.UNAUTHORIZED.value()).
+                extract().as(ErrorResponse.class);
+    }
+
     public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
@@ -333,6 +449,43 @@ public class AcceptanceTest {
             statusCode(HttpStatus.OK.value());
     }
 
+    public ErrorResponse updateMemberWithNoToken(MemberResponse memberResponse) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("oldPassword", TEST_USER_PASSWORD);
+        params.put("newPassword", "NEW_" + TEST_USER_PASSWORD);
+
+        return given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            put("/members/" + memberResponse.getId()).
+            then().
+            log().all().
+            statusCode(HttpStatus.UNAUTHORIZED.value()).
+            extract().as(ErrorResponse.class);
+    }
+
+    public ErrorResponse updateMemberWithNotMatchPassword(MemberResponse memberResponse, TokenResponse tokenResponse) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("oldPassword", TEST_OTHER_USER_PASSWORD);
+        params.put("newPassword", "NEW_" + TEST_USER_PASSWORD);
+
+        return given().
+            cookie("token", tokenResponse.getAccessToken()).
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            put("/members/" + memberResponse.getId()).
+            then().
+            log().all().
+            statusCode(HttpStatus.UNAUTHORIZED.value()).
+            extract().as(ErrorResponse.class);
+    }
+
     public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
         given().when().
             cookie("token", tokenResponse.getAccessToken()).
@@ -341,5 +494,12 @@ public class AcceptanceTest {
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());
     }
-}
 
+    public void deleteMemberWithNoToken(MemberResponse memberResponse) {
+        given().when().
+            delete("/members/" + memberResponse.getId()).
+            then().
+            log().all().
+            statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+}
