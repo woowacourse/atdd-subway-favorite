@@ -41,9 +41,9 @@ create table if not exists MEMBER
 create table if not exists FAVORITE
 (
     member bigint auto_increment not null,
-    index int not null,
     source bigint not null,
-    target bigint not null
+    target bigint not null,
+    primary key (member, source, target)
 --  TODO foreign key 추가
 );
 

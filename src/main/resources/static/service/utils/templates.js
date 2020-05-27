@@ -1,3 +1,15 @@
+export const edgeItemTemplate = (favorite) => {
+    return `<li>
+        <span class="mdi mdi-subway-variant mr-2"></span>
+        <span>${favorite.source}</span>
+        <span class="mdi mdi-arrow-right text-gray-500"></span>
+        <span>${favorite.target}</span>
+        <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+            <span class="mdi mdi-delete"></span>
+        </button>
+    </li>`;
+};
+
 export const listItemTemplate = data =>
     `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
     ${data.name}

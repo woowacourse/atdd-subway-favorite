@@ -1,13 +1,14 @@
 package wooteco.subway.domain.member;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
-import wooteco.subway.domain.favorite.Favorite;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+
+import wooteco.subway.domain.favorite.Favorite;
 
 public class Member {
 	@Id
@@ -16,7 +17,7 @@ public class Member {
 	private String name;
 	private String password;
 
-	@MappedCollection(keyColumn = "index")
+	@MappedCollection(idColumn = "member")
 	private Set<Favorite> favorites = new LinkedHashSet<>();
 
 	public Member() {
