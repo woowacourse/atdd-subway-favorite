@@ -1,4 +1,4 @@
-package wooteco.subway.service.favorite;
+package wooteco.subway.service.favorite.dto;
 
 import wooteco.subway.domain.favorite.FavoriteStation;
 import wooteco.subway.domain.member.Member;

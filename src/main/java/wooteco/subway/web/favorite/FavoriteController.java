@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.service.favorite.FavoriteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.FavoriteService;
-import wooteco.subway.service.favorite.FavoritesResponse;
+import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.web.member.LoginMember;
 
 @RestController

@@ -9,6 +9,7 @@ import wooteco.subway.domain.favorite.FavoriteStation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.favorite.dto.FavoritesResponse;
 
 @Service
 public class FavoriteService {

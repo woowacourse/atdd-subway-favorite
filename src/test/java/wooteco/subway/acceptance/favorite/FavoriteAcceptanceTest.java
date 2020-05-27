@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.acceptance.favorite;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -21,10 +21,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import wooteco.subway.AcceptanceTest;
 import wooteco.subway.domain.favorite.FavoriteStation;
-import wooteco.subway.service.favorite.FavoritesResponse;
+import wooteco.subway.service.favorite.dto.FavoritesResponse;
+import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -48,13 +51,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
             }),
             DynamicTest.dynamicTest("지하철과 노선이 등록되어 있다.", () -> {
-                createLine("1호선");
-                createStation("gangnam");
-                createStation("bundang");
-                createStation("jamsil");
-                addLineStation(1L, null, 1L);
-                addLineStation(1L, 1L, 2L);
-                addLineStation(1L, 2L, 3L);
+                LineResponse lineResponse = createLine("1호선");
+                StationResponse stationResponse1 = createStation("gangnam");
+                StationResponse stationResponse2 = createStation("bundang");
+                StationResponse stationResponse3 = createStation("jamsil");
+                addLineStation(lineResponse.getId(), null, stationResponse1.getId());
+                addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
+                addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
             }),
             DynamicTest.dynamicTest("경로 조회 요청을 한다.", () -> {
                 PathResponse = findPath("gangnam", "jamsil", "DISTANCE");

@@ -35,7 +35,7 @@ import io.restassured.specification.RequestSpecification;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.FavoriteStation;
 import wooteco.subway.service.favorite.FavoriteService;
-import wooteco.subway.service.favorite.FavoritesResponse;
+import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 @ExtendWith(RestDocumentationExtension.class)

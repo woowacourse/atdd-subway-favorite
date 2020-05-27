@@ -1,4 +1,4 @@
-package wooteco.subway.service.favorite;
+package wooteco.subway.service.favorite.dto;
 
 import java.util.List;
 
