@@ -32,6 +32,11 @@ public class Favorites {
 				.collect(Collectors.toSet());
 	}
 
+	public boolean hasFavoriteOf(long sourceId, long targetId) {
+		return favorites.stream()
+				.anyMatch(favorite -> favorite.hasSourceId(sourceId) && favorite.hasTargetId(targetId));
+	}
+
 	public Set<Favorite> getFavorites() {
 		return favorites;
 	}

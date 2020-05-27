@@ -3,6 +3,7 @@ package wooteco.subway.domain.member;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
+import wooteco.subway.exception.DuplicatedFavoriteException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
 public class Member {
@@ -62,6 +63,12 @@ public class Member {
     public void validateId(Long id) {
         if (!this.id.equals(id)) {
             throw new InvalidAuthenticationException("니 아이디 아님");
+        }
+    }
+
+    public void validateDuplicatedFavorite(long sourceId, long targetId) {
+        if (favorites.hasFavoriteOf(sourceId, targetId)) {
+            throw new DuplicatedFavoriteException();
         }
     }
 

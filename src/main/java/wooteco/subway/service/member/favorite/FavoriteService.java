@@ -24,7 +24,7 @@ public class FavoriteService {
 	public Favorite addFavorite(long memberId, long sourceId, long targetId) {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(NoMemberExistException::new);
-
+		member.validateDuplicatedFavorite(sourceId, targetId);
 		Favorite favorite = Favorite.of(sourceId, targetId);
 		member.addFavorite(favorite);
 		memberRepository.save(member);
