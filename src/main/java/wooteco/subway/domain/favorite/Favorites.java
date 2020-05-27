@@ -11,10 +11,4 @@ public class Favorites {
     public Favorites(List<Favorite> favorites) {
         this.favorites = favorites;
     }
-
-    public List<FavoriteResponse> toFavoriteResponses() {
-        return favorites.stream()
-                .map(Favorite::toFavoriteResponse)
-                .collect(Collectors.toList());
-    }
 }

@@ -45,7 +45,7 @@ public class LineControllerTest {
 
         String uri = "/lines/detail";
 
-        //
+
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())
                 .andExpect(status().isOk())

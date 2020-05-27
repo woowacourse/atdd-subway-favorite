@@ -24,10 +24,6 @@ public class Favorite {
         this(null, sourceStationId, targetStationId);
     }
 
-    public FavoriteResponse toFavoriteResponse() {
-        return new FavoriteResponse(id, sourceStationId, targetStationId);
-    }
-
     public Long getId() {
         return id;
     }
