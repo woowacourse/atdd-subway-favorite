@@ -24,19 +24,29 @@ class MemberRepositoryTest {
         String email = "test@test.com";
         Member member = new Member(email, "testName", "testPassword");
         member = memberRepository.save(member);
-        member = memberRepository.findByEmail(email)
-            .orElseThrow(IllegalStateException::new);
 
         Station start = stationRepository.save(new Station("천호역"));
         Station end = stationRepository.save(new Station("강동구청역"));
 
-//        String name, LocalTime startTime, java.time.LocalTime endTime, int intervalTime
-
-//        Line line = new Line("8호선", LocalTime.now(), LocalTime.now(), 10);
-//        line.addLineStation(new LineStation(start.getId(), end.getId(), 10, 10));
-//        line = lineRepository.save(line);
         member.addFavoritePath(new FavoritePath(start, end));
         Member updated = memberRepository.save(member);
         assertThat(updated).isEqualTo(member);
+    }
+
+    @Test
+    void findByEmail() {
+        String email = "member@member.com";
+        Member expected = new Member(email, "testName", "testPassword");
+        expected = memberRepository.save(expected);
+
+        Station start = stationRepository.save(new Station("천호역"));
+        Station end = stationRepository.save(new Station("강동구청역"));
+
+        expected.addFavoritePath(new FavoritePath(start, end));
+        expected = memberRepository.save(expected);
+
+        Member member = memberRepository.findByEmail(expected.getEmail())
+            .orElseThrow(IllegalAccessError::new);
+        assertThat(member).isEqualTo(expected);
     }
 }

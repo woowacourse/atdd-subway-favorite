@@ -30,6 +30,7 @@ const METHOD = {
       }
     }
   },
+  //TODO: AUTH를 지우든가 해서 처리
   AUTH_POST(token, data) {
     return {
       method: 'POST',
@@ -55,15 +56,18 @@ const METHOD = {
       })
     }
   },
-  AUTH_DELETE(token) {
+  AUTH_DELETE(token, data) {
     return {
       method: 'DELETE',
       headers: {
         'authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
-  }
+  },
 };
 
 const api = (() => {
@@ -126,7 +130,8 @@ const api = (() => {
     register(token, data) {
       return request(`/favorites`, METHOD.AUTH_POST(token, data))
     },
-    unregister() {
+    unregister(token, data) {
+      return request(`/favorites`, METHOD.AUTH_DELETE(token, data))
 
     }
   };

@@ -58,7 +58,7 @@ export const searchResultTemplate = result => {
     </div>`
 }
 
-export const pathStationTemplate = (name, index, lastIndex) => {
+  export const pathStationTemplate = (name, index, lastIndex) => {
   if (index === 0) {
     return `<span id=\"start-station\" class=\"font-bold\">${name}</span>`
   }

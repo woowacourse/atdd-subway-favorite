@@ -3,7 +3,9 @@ package wooteco.subway.service.member;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 
@@ -74,5 +77,37 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.updateMember(member))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(MemberService.NOT_MANAGED_BY_REPOSITORY);
+    }
+
+    @Test
+    void removeFavoritePathSuccessCase() {
+        // given
+        Member mockMember = mock(Member.class);
+        Station startStation = new Station("신정역");
+        Station endStation = new Station("목동역");
+        when(mockMember.isNotPersistent()).thenReturn(false);
+        doNothing().when(mockMember).removeFavoritePath(startStation, endStation);
+
+        // when
+        memberService.removeFavoritePath(startStation, endStation, mockMember);
+
+        // then
+        verify(mockMember).removeFavoritePath(startStation, endStation);
+    }
+
+    @Test
+    void removeFavoritePathFailCase() {
+        // given
+        Member mockMember = mock(Member.class);
+        Station startStation = new Station("신정역");
+        Station endStation = new Station("목동역");
+        when(mockMember.isNotPersistent()).thenReturn(true);
+
+        // when & then
+        assertThatThrownBy(() -> memberService.removeFavoritePath(startStation, endStation, mockMember))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(MemberService.NOT_MANAGED_BY_REPOSITORY);
+        verify(mockMember, times(0))
+            .removeFavoritePath(startStation, endStation);
     }
 }

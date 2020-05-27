@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import wooteco.subway.domain.favoritepath.FavoritePath;
+import wooteco.subway.domain.station.Station;
 
 public class Member {
     @Id
@@ -136,4 +137,8 @@ public class Member {
         return Objects.hash(id, email, name, password, favoritePaths);
     }
 
+    public void removeFavoritePath(Station start, Station end) {
+        // set 에서 favorite path 를 찾아서 remove
+        this.favoritePaths.removeIf(favoritePath -> favoritePath.match(start, end));
+    }
 }

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,17 +32,22 @@ import wooteco.subway.service.favorite.FavoritePathService;
 @AutoConfigureMockMvc
 @SpringBootTest
 @Sql("/truncate.sql")
-public class FavoriteControllerTest {
+class FavoriteControllerTest {
 
     @MockBean
-    protected FavoritePathService favoritePathService;
+    private FavoritePathService favoritePathService;
     @MockBean
-    protected JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
+
+    private final String startStationName = "신정역";
+    private final String endStationName = "목동역";
+    private final String inputJson = "{\"startStationName\":\"" + startStationName + "\"," +
+        "\"endStationName\":\"" + endStationName + "\"}";
 
     @BeforeEach
-    public void setUp(
+    private void setUp(
         WebApplicationContext webApplicationContext,
         RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -51,12 +57,7 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    public void registerFavoritePath() throws Exception {
-        String startStationName = "신정역";
-        String endStationName = "목동역";
-        String inputJson = "{\"startStationName\":\"" + startStationName + "\"," +
-            "\"endStationName\":\"" + endStationName + "\"}";
-
+    void registerFavoritePath() throws Exception {
         Member member = new Member();
         doNothing().when(favoritePathService).register(startStationName, endStationName, member);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
@@ -71,4 +72,23 @@ public class FavoriteControllerTest {
 
         verify(favoritePathService).register(startStationName, endStationName, member);
     }
+
+    @Test
+    void deleteFavoritePath() throws Exception {
+        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
+        Member member = new Member();
+        doNothing().when(favoritePathService).delete(startStationName, endStationName, member);
+
+        this.mockMvc.perform(
+            delete("/favorites")
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNoContent())
+            .andDo(print());
+
+        verify(favoritePathService).delete(startStationName, endStationName, member);
+    }
+
+    // Todo: service 가 예외를 던지도록 mocking 하는 side test 해보고싶다.
 }

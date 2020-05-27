@@ -49,29 +49,26 @@ function Search() {
 
   const onToggleFavorite = event => {
     event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+    const isFavorite = $favoriteButton.classList.contains('mdi-star');
+    const classList = $favoriteButton.classList;
+    const token = cookieApi.getCookie("token");
+    const $startStationName = document.querySelector("#start-station");
+    const $endStationName = document.querySelector("#end-station");
 
+    const registerInput = {
+      startStationName: $startStationName.innerText,
+      endStationName: $endStationName.innerText
+    };
     if (isFavorite) {
       classList.add('mdi-star-outline')
       classList.add('text-gray-600')
       classList.add('bg-yellow-500')
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
+      api.favorite.unregister(token, registerInput)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
     } else {
-      const token = cookieApi.getCookie("token");
-      const $startStationName = document.querySelector("#start-station");
-      const $endStationName = document.querySelector("#end-station");
-
-      const registerInput = {
-        startStationName: $startStationName.innerText,
-        endStationName: $endStationName.innerText
-      };
-
-      console.log("##########")
-      console.log($endStationName);
-      console.log($endStationName.innerText);
-
       api.favorite
         .register(token, registerInput)
         .then(response => console.log(response))
@@ -94,6 +91,7 @@ function Search() {
 
   this.init = () => {
     initEventListener();
+    // Todo: 즐겨찾기 등록/삭제버튼 셋팅
   }
 }
 

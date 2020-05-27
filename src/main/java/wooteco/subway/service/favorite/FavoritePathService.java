@@ -27,4 +27,11 @@ public class FavoritePathService {
 
         memberService.updateMember(member);
     }
+
+    public void delete(String startStationName, String endStationName, Member member) {
+        Station startStation = stationService.findByName(startStationName);
+        Station endStation = stationService.findByName(endStationName);
+
+        memberService.removeFavoritePath(startStation, endStation, member);
+    }
 }

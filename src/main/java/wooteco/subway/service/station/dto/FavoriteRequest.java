@@ -1,10 +1,10 @@
 package wooteco.subway.service.station.dto;
 
-public class FavoriteRegisterRequest {
+public class FavoriteRequest {
     private String startStationName;
     private String endStationName;
 
-    public FavoriteRegisterRequest() {
+    public FavoriteRequest() {
     }
 
     public String getStartStationName() {

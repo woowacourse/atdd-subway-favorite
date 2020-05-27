@@ -4,6 +4,7 @@ import org.springframework.data.relational.core.conversion.DbActionExecutionExce
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -61,5 +62,13 @@ public class MemberService {
     public boolean loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
         return member.checkPassword(password);
+    }
+
+    public void removeFavoritePath(Station startStation, Station endStation, Member member) {
+        if (member.isNotPersistent()) {
+            throw new IllegalArgumentException(NOT_MANAGED_BY_REPOSITORY);
+        }
+        member.removeFavoritePath(startStation, endStation);
+        memberRepository.save(member);
     }
 }
