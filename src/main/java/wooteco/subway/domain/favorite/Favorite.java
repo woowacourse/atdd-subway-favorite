@@ -30,9 +30,9 @@ public class Favorite {
         if (!(o instanceof Favorite)) {
             return false;
         }
-        Favorite favorite = (Favorite)o;
+        Favorite favorite = (Favorite) o;
         return Objects.equals(sourceStationId, favorite.sourceStationId) &&
-            Objects.equals(targetStationId, favorite.targetStationId);
+                Objects.equals(targetStationId, favorite.targetStationId);
     }
 
     @Override

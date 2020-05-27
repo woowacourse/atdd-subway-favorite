@@ -2,7 +2,6 @@ package wooteco.subway.web.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.validation.BindingResult;
 
 public class ErrorResponse {
@@ -14,12 +13,13 @@ public class ErrorResponse {
     }
 
     public ErrorResponse(String message,
-        BindingResult bindingResult) {
+            BindingResult bindingResult) {
         this.message = message;
         this.errors = bindingResult.getFieldErrors()
-            .stream()
-            .map(fieldError -> new FieldError(fieldError.getField(), fieldError.getRejectedValue(),
-                fieldError.getDefaultMessage())).collect(Collectors.toList());
+                .stream()
+                .map(fieldError -> new FieldError(fieldError.getField(),
+                        fieldError.getRejectedValue(),
+                        fieldError.getDefaultMessage())).collect(Collectors.toList());
     }
 
     public String getMessage() {

@@ -1,10 +1,8 @@
 package wooteco.subway.service.member;
 
 import java.util.List;
-
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
@@ -22,7 +20,7 @@ public class MemberService {
     private JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository,
-        JwtTokenProvider jwtTokenProvider) {
+            JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -37,7 +35,7 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id)
-            .orElseThrow(NotFoundMemberException::new);
+                .orElseThrow(NotFoundMemberException::new);
         updateMember(member, param);
     }
 
@@ -52,7 +50,7 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-            .orElseThrow(NotFoundMemberException::new);
+                .orElseThrow(NotFoundMemberException::new);
         if (!member.checkPassword(param.getPassword())) {
             throw new IncorrectPasswordException();
         }
@@ -62,7 +60,7 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-            .orElseThrow(NotFoundMemberException::new);
+                .orElseThrow(NotFoundMemberException::new);
     }
 
     public void addFavorite(Member member, Favorite favorite) {

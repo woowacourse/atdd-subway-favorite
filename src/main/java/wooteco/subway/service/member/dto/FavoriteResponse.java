@@ -2,7 +2,6 @@ package wooteco.subway.service.member.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import wooteco.subway.domain.favorite.FavoriteDetail;
 
 public class FavoriteResponse {
@@ -15,7 +14,7 @@ public class FavoriteResponse {
     }
 
     public FavoriteResponse(Long sourceId, Long targetId, String sourceName,
-        String targetName) {
+            String targetName) {
         this.sourceId = sourceId;
         this.targetId = targetId;
         this.sourceName = sourceName;
@@ -24,13 +23,13 @@ public class FavoriteResponse {
 
     public FavoriteResponse(FavoriteDetail favoriteDetail) {
         this(favoriteDetail.getSourceId(), favoriteDetail.getTargetId(),
-            favoriteDetail.getSourceName(), favoriteDetail.getTargetName());
+                favoriteDetail.getSourceName(), favoriteDetail.getTargetName());
     }
 
     public static List<FavoriteResponse> of(List<FavoriteDetail> favorites) {
         return favorites.stream()
-            .map(FavoriteResponse::new)
-            .collect(Collectors.toList());
+                .map(FavoriteResponse::new)
+                .collect(Collectors.toList());
     }
 
     public Long getSourceId() {

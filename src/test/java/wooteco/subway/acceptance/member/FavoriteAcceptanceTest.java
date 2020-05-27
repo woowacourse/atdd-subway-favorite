@@ -1,16 +1,14 @@
 package wooteco.subway.acceptance.member;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.FavoriteExistResponse;
@@ -29,7 +27,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse1 = createStation("석촌역");
         addLineStation(lineResponse.getId(), null, stationResponse.getId(), 0, 0);
         addLineStation(lineResponse.getId(), stationResponse.getId(), stationResponse1.getId(), 10,
-            10);
+                10);
 
         // 회원 가입
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -51,21 +49,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // 4. 즐겨찾기 제거
         removeFavorite(tokenResponse, stationResponse.getId(), stationResponse1.getId());
         FavoriteExistResponse favoriteExistResponse = hasFavorite(tokenResponse,
-            stationResponse.getId(), stationResponse1.getId());
+                stationResponse.getId(), stationResponse1.getId());
         assertThat(favoriteExistResponse.isExist()).isFalse();
     }
 
     private FavoriteExistResponse hasFavorite(TokenResponse tokenResponse, Long sourceId,
-        Long targetId) {
+            Long targetId) {
         return given().auth()
-            .oauth2(tokenResponse.getAccessToken())
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/me/favorites/from/" + sourceId + "/to/" + targetId)
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(FavoriteExistResponse.class);
+                .oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/me/favorites/from/" + sourceId + "/to/" + targetId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(FavoriteExistResponse.class);
     }
 
     private void addFavorite(TokenResponse tokenResponse, Long sourceId, Long targetId) {

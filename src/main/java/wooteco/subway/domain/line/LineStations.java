@@ -1,6 +1,11 @@
 package wooteco.subway.domain.line;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class LineStations {
     private Set<LineStation> stations;
@@ -18,12 +23,14 @@ public class LineStations {
     }
 
     public void add(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getPreStationId(), targetLineStation.getStationId());
+        updatePreStationOfNextLineStation(targetLineStation.getPreStationId(),
+                targetLineStation.getStationId());
         stations.add(targetLineStation);
     }
 
     private void remove(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
+        updatePreStationOfNextLineStation(targetLineStation.getStationId(),
+                targetLineStation.getPreStationId());
         stations.remove(targetLineStation);
     }
 

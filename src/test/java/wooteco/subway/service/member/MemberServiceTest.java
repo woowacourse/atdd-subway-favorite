@@ -1,18 +1,19 @@
 package wooteco.subway.service.member;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
 
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -57,7 +58,7 @@ public class MemberServiceTest {
         given(memberRepository.save(any())).willThrow(DuplicateMemberException.class);
 
         assertThatExceptionOfType(DuplicateMemberException.class)
-            .isThrownBy(() -> memberService.createMember(member));
+                .isThrownBy(() -> memberService.createMember(member));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class MemberServiceTest {
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         assertThatExceptionOfType(NotFoundMemberException.class)
-            .isThrownBy(() -> memberService.createToken(loginRequest));
+                .isThrownBy(() -> memberService.createToken(loginRequest));
     }
 
     @Test
@@ -90,7 +91,7 @@ public class MemberServiceTest {
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, "incorrect");
 
         assertThatExceptionOfType(IncorrectPasswordException.class)
-            .isThrownBy(() -> memberService.createToken(loginRequest));
+                .isThrownBy(() -> memberService.createToken(loginRequest));
     }
 
     @Test
@@ -108,7 +109,7 @@ public class MemberServiceTest {
         given(memberRepository.findByEmail("invalid_email")).willReturn(Optional.empty());
 
         assertThatExceptionOfType(NotFoundMemberException.class)
-            .isThrownBy(() -> memberService.findMemberByEmail("invalid_email"));
+                .isThrownBy(() -> memberService.findMemberByEmail("invalid_email"));
     }
 
     @Test
@@ -118,7 +119,7 @@ public class MemberServiceTest {
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
 
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("updateName",
-            "updatePassword");
+                "updatePassword");
         memberService.updateMember(member.getId(), updateMemberRequest);
 
         verify(memberRepository).save(any());

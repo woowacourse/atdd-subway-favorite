@@ -1,20 +1,18 @@
 package wooteco.subway;
 
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -60,7 +58,7 @@ public class AcceptanceTest {
         params.put("name", name);
 
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -76,7 +74,7 @@ public class AcceptanceTest {
 
     public List<StationResponse> getStations() {
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                 when().
                         get("/stations").
@@ -105,7 +103,7 @@ public class AcceptanceTest {
         params.put("intervalTime", "10");
 
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -121,7 +119,7 @@ public class AcceptanceTest {
 
     public LineDetailResponse getLine(Long id) {
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                 when().
                         get("/lines/" + id).
@@ -152,7 +150,7 @@ public class AcceptanceTest {
 
     public List<LineResponse> getLines() {
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                 when().
                         get("/lines").
@@ -178,7 +176,7 @@ public class AcceptanceTest {
     }
 
     public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
-        Integer duration) {
+            Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
@@ -213,7 +211,7 @@ public class AcceptanceTest {
 
     public WholeSubwayResponse retrieveWholeSubway() {
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                 when().
                         get("/lines/detail").
@@ -225,7 +223,7 @@ public class AcceptanceTest {
 
     public PathResponse findPath(String source, String target, String type) {
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
@@ -238,6 +236,7 @@ public class AcceptanceTest {
         //@formatter:on
     }
 
+    //@formatter:off
     /**
      * 강남 - 역삼 - 선릉
      * |           |
@@ -245,6 +244,7 @@ public class AcceptanceTest {
      * |           |
      * 양재 - 매봉 - 도곡
      */
+    //@formatter:on
     public void initStation() {
         // 역 등록
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
@@ -259,31 +259,31 @@ public class AcceptanceTest {
         LineResponse lineResponse1 = createLine("2호선");
         addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
         addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5,
-            10);
+                10);
         addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5,
-            10);
+                10);
 
         // 분당선
         LineResponse lineResponse2 = createLine("분당선");
         addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
         addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5,
-            10);
+                10);
         addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5,
-            10);
+                10);
 
         // 3호선
         LineResponse lineResponse3 = createLine("3호선");
         addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
         addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5,
-            10);
+                10);
         addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5,
-            10);
+                10);
 
         // 신분당선
         LineResponse lineResponse4 = createLine("신분당선");
         addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(),
-            40, 3);
+                40, 3);
     }
 
     public String createMember(String email, String name, String password) {
@@ -293,7 +293,7 @@ public class AcceptanceTest {
         params.put("password", password);
 
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -309,7 +309,7 @@ public class AcceptanceTest {
 
     public MemberResponse getMember(String email) {
         return
-            //@formatter:off
+                //@formatter:off
                 given().
                         accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
@@ -351,7 +351,7 @@ public class AcceptanceTest {
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
         return
-            //@formatter:off
+                //@formatter:off
             given().
                 auth().
                 oauth2(tokenResponse.getAccessToken()).
@@ -371,7 +371,7 @@ public class AcceptanceTest {
         params.put("password", password);
 
         return
-            //@formatter:off
+                //@formatter:off
             given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).

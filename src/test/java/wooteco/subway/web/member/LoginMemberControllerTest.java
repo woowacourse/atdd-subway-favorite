@@ -1,16 +1,24 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static wooteco.subway.service.member.MemberServiceTest.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_EMAIL;
+import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
+import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +37,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import wooteco.subway.doc.LoginMemberDocumentation;
 import wooteco.subway.domain.favorite.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
@@ -60,11 +65,11 @@ public class LoginMemberControllerTest {
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
-        RestDocumentationContextProvider restDocumentation) {
+            RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .addFilter(new ShallowEtagHeaderFilter())
-            .apply(documentationConfiguration(restDocumentation))
-            .build();
+                .addFilter(new ShallowEtagHeaderFilter())
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
     }
 
     @Test
@@ -76,14 +81,14 @@ public class LoginMemberControllerTest {
         String inputJson = objectMapper.writeValueAsString(loginRequest);
 
         mockMvc.perform(post("/oauth/token")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.accessToken").value("token"))
-            .andExpect(jsonPath("$.tokenType").value("bearer"))
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.login());
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("token"))
+                .andExpect(jsonPath("$.tokenType").value("bearer"))
+                .andDo(print())
+                .andDo(LoginMemberDocumentation.login());
     }
 
     @DisplayName("로그인 실패 - 유효하지 않은 형식")
@@ -94,20 +99,20 @@ public class LoginMemberControllerTest {
         String inputJson = objectMapper.writeValueAsString(loginRequest);
 
         mockMvc.perform(post("/oauth/token")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isBadRequest())
-            .andDo(print());
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
     private static Stream<Arguments> provideInvalidLoginRequest() {
         return Stream.of(
-            Arguments.arguments("brownemail.com", "brown"),
-            Arguments.arguments("brownemailcom", "brown"),
-            Arguments.arguments("brown@email.com", "bro wn"),
-            Arguments.arguments("brown@email.com", ""),
-            Arguments.arguments("", "brown")
+                Arguments.arguments("brownemail.com", "brown"),
+                Arguments.arguments("brownemailcom", "brown"),
+                Arguments.arguments("brown@email.com", "bro wn"),
+                Arguments.arguments("brown@email.com", ""),
+                Arguments.arguments("", "brown")
         );
     }
 
@@ -119,12 +124,12 @@ public class LoginMemberControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         mockMvc.perform(get("/me")
-            .header("Authorization", "Bearer access_token"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(1L))
-            .andExpect(jsonPath("$.email").value(TEST_USER_EMAIL))
-            .andExpect(jsonPath("$.name").value(TEST_USER_NAME))
-            .andDo(LoginMemberDocumentation.getMemberOfMine());
+                .header("Authorization", "Bearer access_token"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.email").value(TEST_USER_EMAIL))
+                .andExpect(jsonPath("$.name").value(TEST_USER_NAME))
+                .andDo(LoginMemberDocumentation.getMemberOfMine());
     }
 
     @Test
@@ -133,7 +138,7 @@ public class LoginMemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(false);
 
         mockMvc.perform(get("/me"))
-            .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -144,16 +149,16 @@ public class LoginMemberControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("updateName",
-            "updatePassword");
+                "updatePassword");
         String inputJson = objectMapper.writeValueAsString(updateMemberRequest);
 
         mockMvc.perform(
-            patch("/me")
-                .header("Authorization", "Bearer access_token")
-                .content(inputJson)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andDo(LoginMemberDocumentation.updateMemberOfMine());
+                patch("/me")
+                        .header("Authorization", "Bearer access_token")
+                        .content(inputJson)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andDo(LoginMemberDocumentation.updateMemberOfMine());
     }
 
     @Test
@@ -162,13 +167,13 @@ public class LoginMemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(false);
 
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("updateName",
-            "updatePassword");
+                "updatePassword");
         String inputJson = objectMapper.writeValueAsString(updateMemberRequest);
 
         mockMvc.perform(patch("/me")
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isUnauthorized());
+                .content(inputJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isUnauthorized());
     }
 
     @DisplayName("내 정보 수정 실패 - 유효하지 않은 형식")
@@ -180,20 +185,20 @@ public class LoginMemberControllerTest {
         String inputJson = objectMapper.writeValueAsString(updateMemberRequest);
 
         mockMvc.perform(patch("/me")
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isBadRequest())
-            .andDo(print());
+                .content(inputJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
     private static Stream<Arguments> provideInvalidUpdateMemberRequest() {
         return Stream.of(
-            Arguments.arguments("", "bro wn"),
-            Arguments.arguments(" ", "brown"),
-            Arguments.arguments("브 라운", ""),
-            Arguments.arguments("브라운", " "),
-            Arguments.arguments(" ", " "),
-            Arguments.arguments("브 라운", "br own")
+                Arguments.arguments("", "bro wn"),
+                Arguments.arguments(" ", "brown"),
+                Arguments.arguments("브 라운", ""),
+                Arguments.arguments("브라운", " "),
+                Arguments.arguments(" ", " "),
+                Arguments.arguments("브 라운", "br own")
         );
     }
 
@@ -205,9 +210,9 @@ public class LoginMemberControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         mockMvc.perform(delete("/me")
-            .header("Authorization", "Bearer access_token"))
-            .andExpect(status().isNoContent())
-            .andDo(LoginMemberDocumentation.deleteMemberOfMine());
+                .header("Authorization", "Bearer access_token"))
+                .andExpect(status().isNoContent())
+                .andDo(LoginMemberDocumentation.deleteMemberOfMine());
     }
 
     @Test
@@ -216,7 +221,7 @@ public class LoginMemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(false);
 
         mockMvc.perform(delete("/me"))
-            .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -226,7 +231,7 @@ public class LoginMemberControllerTest {
         given(memberService.findMemberByEmail(any())).willThrow(NotFoundMemberException.class);
 
         mockMvc.perform(delete("/me"))
-            .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -236,12 +241,12 @@ public class LoginMemberControllerTest {
         String inputJson = objectMapper.writeValueAsString(new FavoriteRequest(1L, 2L));
 
         mockMvc.perform(post("/me/favorites")
-            .header("Authorization", "Bearer access_token")
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.createFavorite());
+                .header("Authorization", "Bearer access_token")
+                .content(inputJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(LoginMemberDocumentation.createFavorite());
     }
 
     @DisplayName("즐겨찾기 추가 실패 - 유효하지 않은 형식")
@@ -253,17 +258,17 @@ public class LoginMemberControllerTest {
         String inputJson = objectMapper.writeValueAsString(favoriteRequest);
 
         mockMvc.perform(post("/me/favorites")
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isBadRequest())
-            .andDo(print());
+                .content(inputJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
     private static Stream<Arguments> provideInvalidFavoriteRequest() {
         return Stream.of(
-            Arguments.arguments(null, null),
-            Arguments.arguments(null, 1L),
-            Arguments.arguments(1L, null)
+                Arguments.arguments(null, null),
+                Arguments.arguments(null, 1L),
+                Arguments.arguments(1L, null)
         );
     }
 
@@ -271,22 +276,22 @@ public class LoginMemberControllerTest {
     @DisplayName("즐겨찾기 조회")
     void getFavorites() throws Exception {
         List<FavoriteDetail> favoriteDetails = Lists.newArrayList(
-            new FavoriteDetail(1L, 2L, "잠실역", "삼성역"));
+                new FavoriteDetail(1L, 2L, "잠실역", "삼성역"));
 
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(memberService.getFavorites(any())).willReturn(favoriteDetails);
 
         mockMvc.perform(get("/me/favorites")
-            .header("Authorization", "Bearer access_token")
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("[0].sourceId").value(favoriteDetails.get(0).getSourceId()))
-            .andExpect(jsonPath("[0].targetId").value(favoriteDetails.get(0).getTargetId()))
-            .andExpect(jsonPath("[0].sourceName").value(favoriteDetails.get(0).getSourceName()))
-            .andExpect(jsonPath("[0].targetName").value(favoriteDetails.get(0).getTargetName()))
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.getFavorites());
+                .header("Authorization", "Bearer access_token")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("[0].sourceId").value(favoriteDetails.get(0).getSourceId()))
+                .andExpect(jsonPath("[0].targetId").value(favoriteDetails.get(0).getTargetId()))
+                .andExpect(jsonPath("[0].sourceName").value(favoriteDetails.get(0).getSourceName()))
+                .andExpect(jsonPath("[0].targetName").value(favoriteDetails.get(0).getTargetName()))
+                .andDo(print())
+                .andDo(LoginMemberDocumentation.getFavorites());
     }
 
     @Test
@@ -296,12 +301,12 @@ public class LoginMemberControllerTest {
         given(memberService.hasFavorite(any(), anyLong(), anyLong())).willReturn(true);
 
         mockMvc.perform(get("/me/favorites/from/{sourceId}/to/{targetId}", 1L, 2L)
-            .header("Authorization", "Bearer access_token")
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.exist").value(true))
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.hasFavorite());
+                .header("Authorization", "Bearer access_token")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.exist").value(true))
+                .andDo(print())
+                .andDo(LoginMemberDocumentation.hasFavorite());
     }
 
     @Test
@@ -310,9 +315,9 @@ public class LoginMemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         mockMvc.perform(delete("/me/favorites/from/{sourceId}/to/{targetId}", 1L, 2L)
-            .header("Authorization", "Bearer access_token"))
-            .andExpect(status().isNoContent())
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.deleteFavorite());
+                .header("Authorization", "Bearer access_token"))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(LoginMemberDocumentation.deleteFavorite());
     }
 }

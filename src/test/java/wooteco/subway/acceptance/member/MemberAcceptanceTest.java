@@ -1,10 +1,9 @@
 package wooteco.subway.acceptance.member;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
 

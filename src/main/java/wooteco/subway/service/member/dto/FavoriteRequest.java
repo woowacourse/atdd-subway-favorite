@@ -1,7 +1,6 @@
 package wooteco.subway.service.member.dto;
 
 import javax.validation.constraints.NotNull;
-
 import wooteco.subway.domain.favorite.Favorite;
 
 public class FavoriteRequest {

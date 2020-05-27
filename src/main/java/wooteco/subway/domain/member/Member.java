@@ -2,10 +2,8 @@ package wooteco.subway.domain.member;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
-
 import wooteco.subway.domain.favorite.Favorite;
 
 public class Member {
