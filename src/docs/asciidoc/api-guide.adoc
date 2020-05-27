@@ -20,9 +20,7 @@ endif::[]
 === 회원 가입
 
 [[resources-members-create-success]]
-==== 성공
-
-===== 올바른 가입
+===== 성공
 operation::members/create[snippets='http-request,http-response,request-fields']
 
 
@@ -38,14 +36,29 @@ operation::members/duplicate-create[snippets='http-request,http-response,request
 ===== 패스워드 불일치
 operation::members/not-match-password-create[snippets='http-request,http-response,request-fields']
 
+[[resources-members-login]]
+=== 로그인
+
+[[resources-members-login-successful]]
+===== 성공
+operation::members/login[snippets='http-request,http-response,request-fields']
+
+[[resources-members-login-fail]]
+==== 실패
+
+[[resources-members-login-fail-not-exist-email]]
+===== 존재하지 않는 이메일
+operation::members/login-with-not-exist-email[snippets='http-request,http-response,request-fields']
+
+[[resources-members-login-fail-not-match-password]]
+===== 비밀번호 불일치
+operation::members/login-with-wrong-password[snippets='http-request,http-response,request-fields']
+
 [[resources-members-get]]
 === 회원 정보 조회
 
 [[resources-members-get-successful]]
-==== 성공
-
-[[resources-members-get-successful-login]]
-===== 로그인 후 조회
+===== 성공
 operation::members/get[snippets='http-request,http-response']
 
 [[resources-members-get-fail]]
@@ -60,10 +73,7 @@ operation::members/not-exist-get[snippets='http-request,http-response']
 === 회원 정보 수정
 
 [[resources-members-update-successful]]
-==== 성공
-
-[[resources-members-update-successful-login]]
-===== 로그인 후 올바른 패스워드로 수정
+===== 성공
 operation::members/update[snippets='http-request,http-response,request-fields']
 
 [[resources-members-update-fail]]
@@ -77,11 +87,15 @@ operation::members/not-exist-token-update[snippets='http-request,http-response,r
 === 회원 탈퇴
 
 [[resources-members-delete-successful]]
-==== 성공
-
-[[resources-members-delete-successful-login]]
-===== 로그인 후 탈퇴
+===== 성공
 operation::members/delete[snippets='http-request,http-response']
+
+[[resources-members-delete-fail]]
+==== 실패
+
+[[resources-members-delete-not-login]]
+===== 토큰이 존재하지 않음
+operation::members/delete-not-exist-token[snippets='http-request,http-response,response-fields']
 
 [[resources-favorites]]
 == 즐겨찾기

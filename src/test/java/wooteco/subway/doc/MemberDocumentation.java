@@ -69,6 +69,62 @@ public class MemberDocumentation {
         );
     }
 
+    public static RestDocumentationResultHandler login() {
+        return document("members/login",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email")
+                    .attributes(getEmailFormat()),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("accessToken").type(JsonFieldType.STRING)
+                    .description("The user's accessToken"),
+                fieldWithPath("tokenType").type(JsonFieldType.STRING)
+                    .description("The type of accessToken")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler loginWithNotExistEmail() {
+        return document("members/login-with-not-exist-email",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email")
+                    .attributes(getEmailFormat()),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The exception message")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler loginWithWrongPassword() {
+        return document("members/login-with-wrong-password",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email")
+                    .attributes(getEmailFormat()),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The exception message")
+            )
+        );
+    }
+
     public static RestDocumentationResultHandler updateMember() {
         return document("members/update",
             getDocumentRequest(),
@@ -108,13 +164,6 @@ public class MemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler deleteMember() {
-        return document("members/delete",
-            getDocumentRequest(),
-            getDocumentResponse()
-        );
-    }
-
     public static RestDocumentationResultHandler notExistTokenUpdateMember() {
         return document("members/not-exist-token-update",
             getDocumentRequest(),
@@ -131,5 +180,24 @@ public class MemberDocumentation {
                     .description("The error message")
             )
         );
+    }
+
+    public static RestDocumentationResultHandler deleteMember() {
+        return document("members/delete",
+            getDocumentRequest(),
+            getDocumentResponse()
+        );
+    }
+
+    public static RestDocumentationResultHandler deleteMemberNotExistToken() {
+        return document("members/delete-not-exist-token",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            )
+        );
+
     }
 }

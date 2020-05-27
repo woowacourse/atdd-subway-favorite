@@ -12,6 +12,7 @@ import javax.servlet.http.Cookie;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.exception.InvalidTokenException;
 import wooteco.subway.web.exception.NotFoundMemberException;
+import wooteco.subway.web.exception.NotMatchPasswordException;
 import wooteco.subway.web.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -63,6 +65,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @DisplayName("Create Member test")
     public void createMember() throws Exception {
         given(memberService.save(any())).willReturn(member);
         given(memberService.isExistEmail(any())).willReturn(false);
@@ -130,6 +133,56 @@ public class MemberControllerTest {
     }
 
     @Test
+    void login() throws Exception {
+        given(memberService.createToken(any())).willReturn("token");
+
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.accessToken", Matchers.is("token")))
+            .andExpect(jsonPath("$.tokenType", Matchers.is("bearer")))
+            .andDo(print())
+            .andDo(MemberDocumentation.login());
+    }
+
+    @Test
+    void loginWithNotExistEmail() throws Exception {
+        given(memberService.createToken(any())).willThrow(new NotFoundMemberException());
+
+        String inputJson = "{\"email\":\"" + TEST_OTHER_USER_EMAIL + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isUnauthorized())
+            .andDo(print())
+            .andDo(MemberDocumentation.loginWithNotExistEmail());
+    }
+
+    @Test
+    void loginWithWrongPassword() throws Exception {
+        given(memberService.createToken(any())).willThrow(new NotMatchPasswordException());
+
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+            "\"password\":\"" + TEST_OTHER_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isUnauthorized())
+            .andDo(print())
+            .andDo(MemberDocumentation.loginWithWrongPassword());
+    }
+
+    @Test
     void getMember() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
@@ -147,7 +200,8 @@ public class MemberControllerTest {
 
     @Test
     void getNotExistMember() throws Exception {
-        given(memberService.findMemberByEmail(any())).willThrow(new NotFoundMemberException("이메일을 찾을 수 없습니다."));
+        given(memberService.findMemberByEmail(any())).willThrow(
+            new NotFoundMemberException("이메일을 찾을 수 없습니다."));
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         this.mockMvc.perform(get("/members")
@@ -178,7 +232,8 @@ public class MemberControllerTest {
 
     @Test
     void notExistTokenUpdateMember() throws Exception {
-        given(jwtTokenProvider.validateToken(any())).willThrow(new InvalidTokenException("토큰이 존재하지 않습니다."));
+        given(jwtTokenProvider.validateToken(any())).willThrow(
+            new InvalidTokenException("토큰이 존재하지 않습니다."));
         String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
             "\"oldPassword\":\"" + TEST_USER_PASSWORD + "\"," +
             "\"newPassword\":\"" + "NEW_" + TEST_USER_PASSWORD + "\"}";
@@ -200,5 +255,14 @@ public class MemberControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(MemberDocumentation.deleteMember());
+    }
+
+    @Test
+    void deleteMemberNotExistToken() throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        this.mockMvc.perform(delete("/members/" + 1L))
+            .andExpect(status().isUnauthorized())
+            .andDo(print())
+            .andDo(MemberDocumentation.deleteMemberNotExistToken());
     }
 }
