@@ -33,7 +33,8 @@ public class FavoriteDocumentation {
             ),
             responseFields(
                 fieldWithPath("[]").description("An array of favorites"),
-                fieldWithPath("[].id").type(JsonFieldType.NUMBER).description("An array of favorites"),
+                fieldWithPath("[].id").type(JsonFieldType.NUMBER)
+                    .description("An array of favorites"),
                 fieldWithPath("[].sourceStation").type(JsonFieldType.STRING)
                     .description("The favorite's source station name"),
                 fieldWithPath("[].targetStation").type(JsonFieldType.STRING)

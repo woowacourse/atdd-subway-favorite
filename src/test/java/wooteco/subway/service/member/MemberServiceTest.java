@@ -80,7 +80,7 @@ public class MemberServiceTest {
         verify(memberRepository).deleteById(any());
     }
 
-    @DisplayName("즐겨찾기에 경로를 추가한다")
+    @DisplayName("즐겨찾기에 경로 추가")
     @Test
     void saveFavorite() {
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
@@ -91,7 +91,7 @@ public class MemberServiceTest {
         assertThat(savedMember.getFavorites().size()).isEqualTo(1);
     }
 
-    @DisplayName("즐겨찾기에 있는 경로를 삭제한다")
+    @DisplayName("즐겨찾기에 있는 경로 삭제")
     @Test
     void deleteFavorite() {
         Favorite favorite = new Favorite(1L, 1L, 2L, 1L);
@@ -100,7 +100,7 @@ public class MemberServiceTest {
         verify(memberRepository).deleteFavoriteById(favorite.getId());
     }
 
-    @DisplayName("즐겨찾기에 있는 경로를 조회한다")
+    @DisplayName("즐겨찾기에 있는 경로 조회")
     @Test
     void findAll() {
         member.addFavorite(new Favorite(1L, 2L));

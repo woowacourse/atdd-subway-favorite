@@ -1,16 +1,12 @@
 package wooteco.subway.web.member;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.AcceptanceTest.*;
-import static wooteco.subway.AcceptanceTest.TEST_USER_EMAIL;
-import static wooteco.subway.AcceptanceTest.TEST_USER_NAME;
-import static wooteco.subway.AcceptanceTest.TEST_USER_PASSWORD;
-import static wooteco.subway.service.member.MemberServiceTest.*;
 
 import java.util.Arrays;
 
@@ -47,14 +43,13 @@ public class FavoriteControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
+    Member member;
     @MockBean
     private MemberService memberService;
     @MockBean
     private BearerAuthInterceptor bearerAuthInterceptor;
     @MockBean
     private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
-
-    Member member;
 
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext,
@@ -75,8 +70,7 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기에 경로를 추가한다")
     @Test
     void addFavorite() throws Exception {
-        String inputJson = "{\"sourceStationId\":" + 1 + "," +
-            "\"targetStationId\":" + 2 + "}";
+        String inputJson = "{\"sourceStationId\":" + 1 + "," + "\"targetStationId\":" + 2 + "}";
 
         this.mockMvc.perform(post("/me/favorites")
             .header("Authorization", "bearer brownToken")
@@ -91,15 +85,6 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기에 있는 경로를 삭제한다")
     @Test
     void deleteFavorites() throws Exception {
-        String inputJson = "{\"sourceStationId\":" + 1 + "," +
-            "\"targetStationId\":" + 2 + "}";
-
-        this.mockMvc.perform(post("/me/favorites")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON));
-
         this.mockMvc.perform(
             RestDocumentationRequestBuilders.delete("/me/favorites/{favoriteId}", 1)
                 .header("Authorization", "bearer brownToken")
@@ -113,17 +98,6 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기 목록을 조회한다")
     @Test
     void getFavorites() throws Exception {
-        String inputJson = "{\"sourceStationId\":\"" + 1 + "\"," +
-            "\"targetStationId\":\"" + 2 + "\"}";
-
-        this.mockMvc.perform(post("/me/favorites")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isCreated());
-
         given(memberService.findAllFavoritesByMember(any())).willReturn(
             Arrays.asList(new FavoriteResponse(1L, STATION_NAME_YANGJAE, STATION_NAME_YEOKSAM),
                 new FavoriteResponse(2L, STATION_NAME_KANGNAM, STATION_NAME_HANTI)));

@@ -19,7 +19,7 @@ import wooteco.subway.service.station.dto.StationResponse;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Test
-    @DisplayName("지하철 노선도 즐겨찾기 기능에 관한 인수테스트")
+    @DisplayName("지하철 노선도 즐겨찾기를 관리한다")
     void favorite() {
         /**
          * Feature: 지하철 노선 즐겨찾기 기능
@@ -45,7 +45,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         final TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        FavoriteRequest favoriteRequest = new FavoriteRequest(stationOne.getId(), stationTwo.getId());
+        FavoriteRequest favoriteRequest = new FavoriteRequest(stationOne.getId(),
+            stationTwo.getId());
         addFavorite(tokenResponse, favoriteRequest);
 
         final List<FavoriteResponse> favorite = getFavorite(tokenResponse);
@@ -79,7 +80,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .delete("/me/favorites/"+favoriteId)
+            .delete("/me/favorites/" + favoriteId)
             .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());

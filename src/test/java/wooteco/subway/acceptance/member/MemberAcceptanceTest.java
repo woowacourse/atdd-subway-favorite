@@ -49,7 +49,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
 
-        MemberResponse memberResponse = getMember(TEST_USER_EMAIL, tokenResponse);
         updateMemberWhenLoggedIn(tokenResponse.getAccessToken(), "NEW_NAME",
             "NEW_PASSWORD");
 

@@ -38,14 +38,13 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 public class LoginMemberControllerTest {
     @Autowired
     protected MockMvc mockMvc;
+    Member member;
     @MockBean
     private MemberService memberService;
     @MockBean
     private BearerAuthInterceptor bearerAuthInterceptor;
     @MockBean
     private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
-
-    Member member;
 
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext,

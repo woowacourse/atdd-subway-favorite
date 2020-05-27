@@ -46,13 +46,13 @@ public class AcceptanceTest {
     @LocalServerPort
     public int port;
 
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
+
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     public StationResponse createStation(String name) {
@@ -263,16 +263,16 @@ public class AcceptanceTest {
         params.put("name", name);
         params.put("password", password);
 
-         return   given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value()).
-                extract().statusCode();
+        return given().
+            body(params).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            post("/me").
+            then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value()).
+            extract().statusCode();
     }
 
     public MemberResponse getMember(String email) {
@@ -321,7 +321,8 @@ public class AcceptanceTest {
 
     public void deleteMember(TokenResponse tokenResponse) {
         given().
-            header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
+            header("Authorization",
+                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
             .when()
             .delete("/me")
             .then()
