@@ -81,7 +81,7 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(String.format("%s : 가입하지 않은 이메일입니다.", email), ErrorCode.UNSIGNED_EMAIL));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(LoginEmail loginEmail) {
         return getMember(loginEmail.getEmail());
     }
@@ -111,7 +111,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public FavoriteResponses getAllFavorites(final LoginEmail loginEmail) {
         Member member = getMember(loginEmail.getEmail());
         Favorites favorites = member.getFavorites();

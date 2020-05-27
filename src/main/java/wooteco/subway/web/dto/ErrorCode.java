@@ -1,6 +1,7 @@
 package wooteco.subway.web.dto;
 
 public enum ErrorCode {
+    UNEXPECTED(0, "서버 내부 에러."),
     MEMBER_DUPLICATED_EMAIL(1000, "중복된 이메일 가입시도."),
     UNSIGNED_EMAIL(1100, "등록되지 않은 이메일"),
     WRONG_PASSWORD(1200, "잘못된 패스워드"),
