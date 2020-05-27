@@ -360,11 +360,11 @@ public class AcceptanceTest {
 			.extract().jsonPath().getList(".", FavoriteResponse.class);
 	}
 
-	public void deleteFavorite(TokenResponse tokenResponse) {
+	public void deleteFavorite(TokenResponse tokenResponse, Long id) {
 		given()
 			.auth().oauth2(tokenResponse.getAccessToken())
 			.when()
-			.delete("/members/favorites")
+			.delete("/members/favorites/" + id)
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.NO_CONTENT.value());

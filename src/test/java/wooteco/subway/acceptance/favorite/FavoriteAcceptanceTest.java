@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -15,7 +14,6 @@ import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
-@Disabled
 @Sql("/truncate.sql")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 기능")
@@ -50,15 +48,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favoriteResponse.getStation().getName()).isEqualTo(STATION_NAME_YEOKSAM);
 
         // when : 즐겨찾기 목록을 조회한다.
-        List<FavoriteResponse> favoritesRespons = getFavorites(tokenResponse);
+        List<FavoriteResponse> favoritesResponses = getFavorites(tokenResponse);
 
         // then : 즐겨찾기 목록이 n개다.
-        assertThat(favoritesRespons.size()).isEqualTo(1);
+        assertThat(favoritesResponses.size()).isEqualTo(1);
 
         // when : 즐겨찾기를 삭제한다.
-        deleteFavorite(tokenResponse);
+        deleteFavorite(tokenResponse, favoritesResponses.get(0).getId());
 
         // then : 즐겨찾기가 삭제되었다.
-        assertThat(favoritesRespons.size()).isEqualTo(0);
+        List<FavoriteResponse> updatedFavorites = getFavorites(tokenResponse);
+        assertThat(updatedFavorites.size()).isEqualTo(0);
     }
 }

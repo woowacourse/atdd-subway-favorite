@@ -85,8 +85,8 @@ public class FavoriteControllerTest {
         Station seolleung = new Station(2L, "선릉역");
         Station yeoksam = new Station(3L, "역삼역");
 
-        FavoriteResponse favorite1 = new FavoriteResponse(gangnam, seolleung);
-        FavoriteResponse favorite2 = new FavoriteResponse(yeoksam, gangnam);
+        FavoriteResponse favorite1 = new FavoriteResponse(1L, gangnam, seolleung);
+        FavoriteResponse favorite2 = new FavoriteResponse(2L, yeoksam, gangnam);
 
         when(jwtTokenProvider.getSubject(anyString())).thenReturn(EMAIL);
         when(memberService.findMemberByEmail(EMAIL)).thenReturn(

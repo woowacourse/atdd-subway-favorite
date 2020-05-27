@@ -39,7 +39,7 @@ public class FavoriteController {
     }
 
     @GetMapping("/members/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorite(@LoginMember Member member) {
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
         List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
         return ResponseEntity
             .status(HttpStatus.OK)
