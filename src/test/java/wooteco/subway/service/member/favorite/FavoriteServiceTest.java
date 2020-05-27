@@ -1,10 +1,11 @@
 package wooteco.subway.service.member.favorite;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.member.favorite.Favorite;
@@ -14,10 +15,9 @@ import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Sql("/truncate.sql")
 class FavoriteServiceTest {
 
     private static final String TEST_EMAIL = "email@email.com";
@@ -33,7 +33,7 @@ class FavoriteServiceTest {
 
     private FavoriteService favoriteService;
 
-    @Mock
+    @Autowired
     private MemberRepository memberRepository;
 
     private Member member;
@@ -41,36 +41,36 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(memberRepository);
-        member = new Member(1L, TEST_EMAIL, TEST_NAME, TEST_PASSWORD);
-        member.addFavorite(new Favorite(1L, STATION_NAME_YEOKSAM, STATION_NAME_DOGOK));
-        member.addFavorite(new Favorite(2L, STATION_NAME_HANTI, STATION_NAME_YANGJAE));
-        member.addFavorite(new Favorite(3L, STATION_NAME_DOGOK, STATION_NAME_MAEBONG));
+        member = new Member(TEST_EMAIL, TEST_NAME, TEST_PASSWORD);
+        member.addFavorite(new Favorite(STATION_NAME_YEOKSAM, STATION_NAME_DOGOK));
+        member.addFavorite(new Favorite(STATION_NAME_HANTI, STATION_NAME_YANGJAE));
+        member.addFavorite(new Favorite(STATION_NAME_DOGOK, STATION_NAME_MAEBONG));
+        member = memberRepository.save(member);
+    }
+
+    @AfterEach
+    void tearDown() {
+        memberRepository.deleteAll();
     }
 
     @Test
     void createFavorite() {
         FavoriteRequest request = new FavoriteRequest(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG);
-        member.addFavorite(new Favorite(4L, request.getSource(), request.getTarget()));
-        when(memberRepository.save(any())).thenReturn(member);
-
-        FavoriteResponse favorite = favoriteService.createFavorite(member, request);
-
-        assertThat(favorite.getId()).isNotNull();
-        assertThat(favorite.getSource()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(favorite.getTarget()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        favoriteService.createFavorite(member, request);
+        assertThat(member.getFavorites()).contains(request.toFavorite());
     }
 
     @Test
     void findFavorites() {
         List<FavoriteResponse> favorites = favoriteService.findFavorites(member);
-
         assertThat(favorites).hasSize(3);
     }
 
     @Test
     void deleteFavorite() {
-        favoriteService.deleteFavorite(member, 1L);
 
+        FavoriteRequest request = new FavoriteRequest(STATION_NAME_YEOKSAM, STATION_NAME_DOGOK);
+        favoriteService.deleteFavorite(member, request);
         assertThat(favoriteService.findFavorites(member)).hasSize(2);
     }
 }

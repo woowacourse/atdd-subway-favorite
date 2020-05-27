@@ -17,22 +17,18 @@ public class FavoriteService {
         this.memberRepository = memberRepository;
     }
 
-    public FavoriteResponse createFavorite(Member member, FavoriteRequest request) {
+    public void createFavorite(Member member, FavoriteRequest request) {
         Favorite favorite = request.toFavorite();
         member.addFavorite(favorite);
-
-        Member savedMember = memberRepository.save(member);
-        Favorite savedFavorite = savedMember.findSameFavorite(favorite);
-
-        return FavoriteResponse.of(savedFavorite);
+        memberRepository.save(member);
     }
 
     public List<FavoriteResponse> findFavorites(Member member) {
         return FavoriteResponse.listOf(member.getFavorites());
     }
 
-    public void deleteFavorite(Member member, Long id) {
-        member.removeFavorite(id);
+    public void deleteFavorite(Member member, FavoriteRequest request) {
+        member.removeFavorite(request.toFavorite());
         memberRepository.save(member);
     }
 }

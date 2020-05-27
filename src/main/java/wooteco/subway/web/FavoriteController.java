@@ -8,7 +8,6 @@ import wooteco.subway.service.member.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.member.LoginMember;
 
-import java.net.URI;
 import java.util.List;
 
 @RequestMapping("/me/favorites")
@@ -22,9 +21,9 @@ public class FavoriteController {
 
     @PostMapping
     public ResponseEntity<Void> createFavorite(@LoginMember Member member, @RequestBody FavoriteRequest request) {
-        FavoriteResponse response = favoriteService.createFavorite(member, request);
+        favoriteService.createFavorite(member, request);
         return ResponseEntity
-                .created(URI.create("/me/favorites/" + response.getId()))
+                .noContent()
                 .build();
     }
 
@@ -36,9 +35,9 @@ public class FavoriteController {
                 .body(responses);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long id) {
-        favoriteService.deleteFavorite(member, id);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @RequestBody FavoriteRequest request) {
+        favoriteService.deleteFavorite(member, request);
         return ResponseEntity
                 .noContent()
                 .build();

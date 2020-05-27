@@ -53,7 +53,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favoriteResponse.get(0).getSource()).isEqualTo(STATION_NAME_KANGNAM);
         assertThat(favoriteResponse.get(0).getTarget()).isEqualTo(STATION_NAME_SEOLLEUNG);
 
-        deleteFavorite(favoriteResponse.get(0).getId(), token);
+        deleteFavorite(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, token);
         List<FavoriteResponse> deletedResponse = getFavorites(token);
         assertThat(deletedResponse).hasSize(1);
     }
@@ -71,7 +71,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .post("/me/favorites")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     private List<FavoriteResponse> getFavorites(TokenResponse token) {
@@ -86,12 +86,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract().jsonPath().getList(".", FavoriteResponse.class);
     }
 
-    private void deleteFavorite(Long id, TokenResponse token) {
+    private void deleteFavorite(String source, String target, TokenResponse token) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", source);
+        params.put("target", target);
+
         given()
                 .auth().oauth2(token.getAccessToken())
-                .pathParam("id", id)
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .delete("/me/favorites/{id}")
+                .delete("/me/favorites")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());

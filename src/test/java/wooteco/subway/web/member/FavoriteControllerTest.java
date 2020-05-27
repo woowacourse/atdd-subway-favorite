@@ -19,7 +19,6 @@ import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -55,20 +54,20 @@ class FavoriteControllerTest {
     @Test
     void createFavorite() throws Exception {
         FavoriteRequest request = new FavoriteRequest(SOURCE, TARGET);
-        given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
-        given(favoriteService.createFavorite(any(), any())).willReturn(new FavoriteResponse(1L, SOURCE, TARGET));
+        given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        doNothing().when(favoriteService).createFavorite(any(), any());
 
         mockMvc.perform(post("/me/favorites")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(GSON.toJson(request)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isNoContent());
     }
 
     @Test
     void getFavorite() throws Exception {
         given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        given(favoriteService.findFavorites(any())).willReturn(Arrays.asList(new FavoriteResponse(1L, SOURCE, TARGET)));
+        given(favoriteService.findFavorites(any())).willReturn(Arrays.asList(new FavoriteResponse(SOURCE, TARGET)));
 
         mockMvc.perform(get("/me/favorites")
                 .accept(MediaType.APPLICATION_JSON))
@@ -79,10 +78,14 @@ class FavoriteControllerTest {
 
     @Test
     void deleteFavorite() throws Exception {
-        given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        doNothing().when(favoriteService).deleteFavorite(any(), anyLong());
+        FavoriteRequest request = new FavoriteRequest(SOURCE, TARGET);
 
-        mockMvc.perform(delete("/me/favorites/{id}", 1L))
+        given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        doNothing().when(favoriteService).deleteFavorite(any(), any());
+
+        mockMvc.perform(delete("/me/favorites")
+                .content(GSON.toJson(request))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 }

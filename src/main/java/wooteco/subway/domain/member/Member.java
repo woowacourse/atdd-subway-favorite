@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import wooteco.subway.domain.member.favorite.Favorite;
 
 import java.util.LinkedHashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class Member {
@@ -67,19 +66,7 @@ public class Member {
         return favorites;
     }
 
-    public Favorite findSameFavorite(Favorite favorite) {
-        return favorites.stream()
-                .filter(item -> item.isSame(favorite))
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
-    }
-
-    public void removeFavorite(Long id) {
-        Favorite removedFavorite = favorites.stream()
-                .filter(favorite -> favorite.isSameId(id))
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
-
-        favorites.remove(removedFavorite);
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
     }
 }
