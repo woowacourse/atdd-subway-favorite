@@ -101,7 +101,7 @@ public class LoginMemberControllerTest {
 
     @Test
     void updateMe() throws Exception {
-        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest(TEST_USER_EMAIL,
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest(TEST_USER_NAME,
             TEST_USER_PASSWORD);
 
         this.mockMvc.perform(put("/me")

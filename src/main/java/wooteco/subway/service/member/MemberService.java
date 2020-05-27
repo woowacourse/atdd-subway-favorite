@@ -46,7 +46,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
             .orElseThrow(RuntimeException::new);
         if (!member.checkPassword(param.getPassword())) {
-            throw new IllegalArgumentException("잘못된 패스워드");
+            throw new IllegalArgumentException("잘못된 패스워드입니다!");
         }
 
         return jwtTokenProvider.createToken(String.valueOf(member.getId()));

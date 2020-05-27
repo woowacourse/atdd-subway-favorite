@@ -19,8 +19,8 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
 
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
-    public static final String TEST_USER_PASSWORD = "1234";
-    public static final String TEST_WRONG_PASSWORD = "1111";
+    public static final String TEST_USER_PASSWORD = "123412341234";
+    public static final String TEST_WRONG_PASSWORD = "111112341234";
     public static final String ME_URL = "/me";
 
     public static String createMember(String email, String name, String password) {
@@ -57,7 +57,7 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
             delete(ME_URL).
             then().
             log().all().
-            statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void updateMemberWithBearerAuth(TokenResponse tokenResponse) {
@@ -90,7 +90,7 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
             put(ME_URL).
             then().
             log().all().
-            statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("사용자 실패 CRUD 및 성공 CRUD")

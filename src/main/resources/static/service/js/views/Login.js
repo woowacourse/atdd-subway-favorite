@@ -25,12 +25,14 @@ function Login() {
       if (response.status === 200) {
         return response.json();
       }
-      throw new Error("로그인에 실패했습니다.");
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
     }).then(tokenResponse => {
       localStorage.setItem("Authorization",
         tokenResponse.tokenType + " " + tokenResponse.accessToken);
       return location.href = "/";
-    }).catch(error => alert(error.message));
+    }).catch(error => alert(error));
   }
 
   this.init = () => {

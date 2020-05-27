@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.favorite.FavoriteResponse;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;

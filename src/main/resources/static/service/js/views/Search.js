@@ -46,13 +46,15 @@ function Search() {
       if (response.status === 200) {
         return response.json();
       }
-      throw new Error("잘못된 요청입니다.");
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
     }).then(data => {
       showSearchResult(data);
       const sourceStation = data.stations[0];
       const targetStation = data.stations[data.stations.length - 1];
       hasFavorite(sourceStation.id, targetStation.id);
-    }).catch(error => alert(error.message));
+    }).catch(error => alert(error));
   }
 
   const hasFavorite = (source, target) => {
@@ -61,10 +63,12 @@ function Search() {
       if (response.status === 200) {
         toggle(true);
         return response.json();
-      } else {
-        toggle(false);
       }
-    });
+      toggle(false);
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).catch(error => alert(error));
   }
 
   const addFavorite = () => {
@@ -79,7 +83,10 @@ function Search() {
       if (response.status === 201) {
         toggle(true);
       }
-    });
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).catch(error => alert(error.message));
   }
 
   const removeFavorite = () => {
@@ -94,7 +101,10 @@ function Search() {
       if (response.status === 204) {
         toggle(false);
       }
-    });
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).catch(error => alert(error.message));
   }
 
   const toggle = (has) => {

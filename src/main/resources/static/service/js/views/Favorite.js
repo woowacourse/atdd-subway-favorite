@@ -23,7 +23,10 @@ function Favorite() {
         if (response.status === 204) {
           $favorite.remove();
         }
-      })
+        return response.json().then(error => {
+          throw new Error(error.message);
+        });
+      }).catch(error => alert(error));
     }
   }
 

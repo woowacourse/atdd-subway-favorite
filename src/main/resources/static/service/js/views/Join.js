@@ -32,10 +32,10 @@ function Join() {
       if (response.status === 201) {
         return location.href = "/login";
       }
-      if (response.status !== 201) {
-        alert("회원가입에 성공하지 못했습니다.")
-      }
-    })
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).catch(error => alert(error));
   }
 
   $joinForm.addEventListener(EVENT_TYPE.SUBMIT, onSubmitHandler);

@@ -22,7 +22,7 @@ import wooteco.subway.service.member.dto.MemberRequest;
 public class MemberServiceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
-    public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_USER_PASSWORD = "brown11111111111";
 
     private MemberService memberService;
 

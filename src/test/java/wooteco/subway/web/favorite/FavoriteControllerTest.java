@@ -31,9 +31,9 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.favorite.FavoriteRequest;
-import wooteco.subway.service.favorite.FavoriteResponse;
 import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 

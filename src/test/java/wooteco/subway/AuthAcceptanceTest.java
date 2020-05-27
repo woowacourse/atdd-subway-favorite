@@ -34,7 +34,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .get("/me")
             .then()
             .assertThat()
-            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     public static TokenResponse successLogin(String email, String password) {
@@ -68,7 +68,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             post("/oauth/token").
             then().
             log().all().
-            statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("Bearer Auth")
