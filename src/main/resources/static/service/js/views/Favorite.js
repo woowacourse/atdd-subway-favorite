@@ -9,34 +9,35 @@ function Favorite() {
     api.memberWithToken
         .getMyFavorites()
         .then(favorites => {
-          const totalHtml = favorites.map(favorite =>
-              constructFavoriteItemTemplate(favorite)
-          ).join("")
-          $favoriteList.innerHTML = totalHtml
+          $favoriteList.innerHTML = favorites.map(favorite => favoriteItemTemplate(favorite)).join("")
         })
         .catch(() => alert(ERROR_MESSAGE.FAVORITE_GET_FAIL))
+  }
 
-    function constructFavoriteItemTemplate(favorite) {
-      let data = api.station.get(favorite.sourceStationId).catch(e => console.log(e))
-      const sourceStationName = data.name
-      data = api.station.get(favorite.targetStationId).catch(e => console.log(e))
-      const targetStationName = data.name
-      const favoriteInfo = {
-        id: favorite.id,
-        sourceStationId: favorite.sourceStationId,
-        targetStationId: favorite.targetStationId,
-        sourceStationName: sourceStationName,
-        targetStationName: targetStationName
-      }
-      return favoriteItemTemplate(favoriteInfo)
+  const onDeleteFavoriteHandler = event => {
+    const $target = event.target
+    const isDeleteButton = $target.classList.contains('mdi-delete')
+    if (!isDeleteButton) {
+      return
     }
+    api.memberWithToken
+        .deleteFavorite($target.closest('.edge-item').dataset.favoriteId)
+        .then((data) => {
+          if (!data.ok) {
+            throw new Error(data.status)
+          }
+          $target.closest('.edge-item').remove()
+        })
+        .catch(() => alert(ERROR_MESSAGE.FAVORITE_DELETE_FAIL))
+  }
 
-    // edgeItemTemplate(favorite)).join('')
-    // $favoriteList.insertAdjacentHTML('beforeend', template)
+  const initEventListeners = () => {
+    $favoriteList.addEventListener("click", onDeleteFavoriteHandler)
   }
 
   this.init = () => {
     loadFavoriteList()
+    initEventListeners()
   }
 }
 

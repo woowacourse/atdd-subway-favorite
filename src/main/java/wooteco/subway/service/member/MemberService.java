@@ -5,6 +5,7 @@ import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
@@ -12,10 +13,15 @@ import wooteco.subway.service.favorite.dto.FavoriteReadRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.station.NoSuchStationException;
 import wooteco.subway.web.member.DuplicateMemberException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 import wooteco.subway.web.member.NoSuchFavoriteException;
 import wooteco.subway.web.member.NoSuchMemberException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class MemberService {
@@ -64,9 +70,17 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
-    public FavoriteResponse findFavorite(Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(NoSuchFavoriteException::new);
-        return favorite.toFavoriteResponse();
+    public List<FavoriteResponse> findAllFavoriteResponses(Member member) {
+        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+        Set<Favorite> favorites = member.getFavorites();
+        for (Favorite favorite : favorites) {
+            Station sourceStation = stationRepository.findById(favorite.getSourceStationId()).orElseThrow(NoSuchStationException::new);
+            Station targetStation = stationRepository.findById(favorite.getTargetStationId()).orElseThrow(NoSuchStationException::new);
+            String sourceStationName = sourceStation.getName();
+            String targetStationName = targetStation.getName();
+            favoriteResponses.add(FavoriteResponse.of(favorite, sourceStationName, targetStationName));
+        }
+        return favoriteResponses;
     }
 
     public Member addFavorite(Long memberId, FavoriteCreateRequest request) {

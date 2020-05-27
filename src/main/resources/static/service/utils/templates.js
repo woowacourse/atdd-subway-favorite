@@ -75,7 +75,7 @@ export const initNavigation = () => {
 }
 
 export const favoriteItemTemplate = edge => {
-  return `<li data-edge-id="${edge.id}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+  return `<li data-favorite-id="${edge.id}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
             <span class="mdi mdi-subway-variant mr-2"></span>
             <span data-source-station-id="${edge.sourceStationId}">${edge.sourceStationName}</span>
             <span class="mdi mdi-arrow-right text-gray-500"></span>
