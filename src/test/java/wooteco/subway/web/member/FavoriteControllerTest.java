@@ -6,6 +6,10 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static wooteco.subway.AcceptanceTest.*;
+import static wooteco.subway.AcceptanceTest.TEST_USER_EMAIL;
+import static wooteco.subway.AcceptanceTest.TEST_USER_NAME;
+import static wooteco.subway.AcceptanceTest.TEST_USER_PASSWORD;
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
 import java.util.Arrays;
@@ -121,8 +125,8 @@ public class FavoriteControllerTest {
             .andExpect(status().isCreated());
 
         given(memberService.findAllFavoritesByMember(any())).willReturn(
-            Arrays.asList(new FavoriteResponse(1L, "잠실역", "몽촌토성역"),
-                new FavoriteResponse(2L, "교대역", "잠실역")));
+            Arrays.asList(new FavoriteResponse(1L, STATION_NAME_YANGJAE, STATION_NAME_YEOKSAM),
+                new FavoriteResponse(2L, STATION_NAME_KANGNAM, STATION_NAME_HANTI)));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/me/favorites")
             .header("Authorization", "bearer brownToken")

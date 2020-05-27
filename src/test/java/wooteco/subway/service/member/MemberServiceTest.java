@@ -110,7 +110,8 @@ public class MemberServiceTest {
         given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
             new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
 
-        List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMember(member);
+        List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMember(
+            member);
 
         assertThat(allFavoritesByMemberId).isNotNull();
         assertThat(allFavoritesByMemberId).hasSize(3);

@@ -10,14 +10,14 @@ public class Lines {
         this.lines = lines;
     }
 
-    public List<Line> getLines() {
-        return lines;
-    }
-
     public List<Long> getStationIds() {
         return lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .map(it -> it.getStationId())
-                .collect(Collectors.toList());
+            .flatMap(it -> it.getStations().stream())
+            .map(LineStation::getStationId)
+            .collect(Collectors.toList());
+    }
+
+    public List<Line> getLines() {
+        return lines;
     }
 }

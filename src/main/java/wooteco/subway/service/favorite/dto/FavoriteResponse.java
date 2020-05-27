@@ -1,10 +1,5 @@
 package wooteco.subway.service.favorite.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import wooteco.subway.domain.favorite.Favorite;
-
 public class FavoriteResponse {
     private Long id;
     private String sourceStation;

@@ -34,8 +34,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(line.getIntervalTime()).isNotNull();
 
         // when
-        LocalTime startTime = LocalTime.of(8, 00);
-        LocalTime endTime = LocalTime.of(22, 00);
+        LocalTime startTime = LocalTime.of(8, 0);
+        LocalTime endTime = LocalTime.of(22, 0);
         updateLine(line.getId(), startTime, endTime);
         //then
         LineDetailResponse updatedLine = getLine(line.getId());

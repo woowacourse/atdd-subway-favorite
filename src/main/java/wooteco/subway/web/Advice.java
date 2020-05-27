@@ -8,10 +8,10 @@ import wooteco.subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class Advice {
-	@ExceptionHandler(SubwayException.class)
-	public ResponseEntity exceptionHandler(Exception e) {
-		return ResponseEntity
-			.ok()
-			.body(e.getMessage());
-	}
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<String> exceptionHandler(Exception e) {
+        return ResponseEntity
+            .ok()
+            .body(e.getMessage());
+    }
 }

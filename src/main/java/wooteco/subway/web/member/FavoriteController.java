@@ -20,7 +20,7 @@ import wooteco.subway.service.member.MemberService;
 @RestController
 @RequestMapping("/me/favorites")
 public class FavoriteController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public FavoriteController(final MemberService memberService) {
         this.memberService = memberService;
@@ -28,13 +28,12 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        return
-            ResponseEntity
-                .ok(memberService.findAllFavoritesByMember(member));
+        return ResponseEntity.ok(memberService.findAllFavoritesByMember(member));
     }
 
     @PostMapping
-    public ResponseEntity<Void> addFavorite(@LoginMember Member member, @RequestBody FavoriteRequest favoriteRequest) {
+    public ResponseEntity<Void> addFavorite(@LoginMember Member member,
+        @RequestBody FavoriteRequest favoriteRequest) {
         memberService.saveFavorite(member.getId(), favoriteRequest);
         String sourceStationName = memberService.findStationNameById(
             favoriteRequest.getSourceStationId());
@@ -50,7 +49,8 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{favoriteId}")
-    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable final Long favoriteId) {
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member,
+        @PathVariable final Long favoriteId) {
         memberService.deleteFavorite(member, favoriteId);
         return ResponseEntity.noContent().build();
     }

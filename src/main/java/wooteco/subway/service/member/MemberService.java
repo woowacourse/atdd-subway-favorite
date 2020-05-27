@@ -24,9 +24,9 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private StationRepository stationRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final StationRepository stationRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository,
         StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
@@ -59,7 +59,6 @@ public class MemberService {
         if (!member.checkPassword(param.getPassword())) {
             throw new WrongPasswordException();
         }
-
         return jwtTokenProvider.createToken(param.getEmail());
     }
 

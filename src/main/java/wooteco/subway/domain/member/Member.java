@@ -9,12 +9,12 @@ import org.springframework.data.annotation.Id;
 import wooteco.subway.domain.favorite.Favorite;
 
 public class Member {
+    Set<Favorite> favorites = new HashSet<>();
     @Id
     private Long id;
     private String email;
     private String name;
     private String password;
-    Set<Favorite> favorites = new HashSet<>();
 
     public Member() {
     }
@@ -50,12 +50,8 @@ public class Member {
     }
 
     public boolean doesNotHaveFavoriteWithId(Long favoriteId) {
-         return !favorites.stream()
-            .anyMatch(favorite -> favorite.getId().equals(favoriteId));
-    }
-
-    public Set<Favorite> getFavorites() {
-        return favorites;
+        return favorites.stream()
+            .noneMatch(favorite -> favorite.getId().equals(favoriteId));
     }
 
     public Long getId() {
@@ -74,13 +70,7 @@ public class Member {
         return password;
     }
 
-    @Override
-    public String toString() {
-        return "Member{" +
-            "id=" + id +
-            ", email='" + email + '\'' +
-            ", name='" + name + '\'' +
-            ", password='" + password + '\'' +
-            '}';
+    public Set<Favorite> getFavorites() {
+        return favorites;
     }
 }
