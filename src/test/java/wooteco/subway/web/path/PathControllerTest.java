@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import wooteco.subway.doc.PathDocumentation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.service.path.DuplicatedStationException;
 import wooteco.subway.service.path.NotExistedPathException;
@@ -88,7 +89,8 @@ class PathControllerTest {
                 ))
                 .andExpect(content().string(
                         containsString("\"duration\":100,\"distance\":100")
-                ));
+                ))
+                .andDo(PathDocumentation.findPath());
     }
 
     @DisplayName("경로가 존재하지 않는 경우")

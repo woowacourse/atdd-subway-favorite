@@ -51,6 +51,13 @@ operation::stations/getAll[snippets='http-request,http-response,response-body']
 === 지하철 역 삭제
 operation::stations/delete[snippets='http-request,http-response']
 
+[[resource-paths]]
+== Path
+
+[[resource-paths-find]]
+=== 경로 조회
+operation::paths/find[snippets='http-request,http-response,response-fields,response-body']
+
 [[resources-members]]
 == Member
 
