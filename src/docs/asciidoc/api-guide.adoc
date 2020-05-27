@@ -58,6 +58,19 @@ operation::myInfo/[snippets='http-request,http-response,request-headers,response
 [[resources-favorites-create]]
 === 즐겨찾기 추가
 
+operation::favorites/create/[snippets='http-request,http-response,request-fields,request-headers']
 
+[[resources-favorites-read]]
+=== 즐겨찾기 조회
 
+operation::favorites/read/[snippets='http-request,http-response,request-headers,response-fields']
 
+[[resources-favorites-remove]]
+=== 즐겨찾기 삭제
+
+operation::favorites/remove/[snippets='http-request,http-response,request-fields,request-headers']
+
+[[resources-favorites-ifexists]]
+=== 즐겨찾기 등록 확인
+
+operation::favorites/ifexists/[snippets='http-request,http-response,request-parameters,request-headers,response-fields']

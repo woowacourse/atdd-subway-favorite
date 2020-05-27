@@ -48,7 +48,7 @@ public class FavoriteDocumentation {
     }
 
     public static RestDocumentationResultHandler ifExists() {
-        return document("favorites/remove",
+        return document("favorites/ifexists",
                 requestParameters(
                         parameterWithName("source").description("The source station's name"),
                         parameterWithName("destination").description("The destination station's name")
