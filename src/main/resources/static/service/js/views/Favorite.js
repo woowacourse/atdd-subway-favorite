@@ -26,8 +26,9 @@ function Favorite() {
       return;
     }
     try {
-      const edgeId = $target.closest(".edge-item").dataset.edgeId;
-      await api.favorite.delete(edgeId);
+      const sourceId = $target.closest(".edge-item").querySelector(".source").dataset.sourceStationId;
+      const targetId = $target.closest(".edge-item").querySelector(".target").dataset.targetStationId;
+      await api.favorite.delete(sourceId, targetId);
       await initFavoriteList();
       showSnackbar(SUCCESS_MESSAGE.COMMON);
     } catch (e) {

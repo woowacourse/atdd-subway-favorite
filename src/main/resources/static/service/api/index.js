@@ -115,8 +115,8 @@ const api = (() => {
     getAll() {
       return requestWithJsonData(`/favorites`, METHOD.GET_WITH_AUTH());
     },
-    delete(id) {
-      return request(`/favorites/${id}`, METHOD.DELETE());
+    delete(sourceId, targetId) {
+      return request(`/favorites?sourceId=${sourceId}&targetId=${targetId}`, METHOD.DELETE());
     }
   };
 
