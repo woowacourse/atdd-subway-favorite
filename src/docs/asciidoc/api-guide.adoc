@@ -49,7 +49,12 @@ operation::members/select[snippets='curl-request,http-request,http-response,http
 
 operation::favorite/select[snippets='curl-request,http-request,http-response,httpie-request,request-body,request-headers,response-body']
 
-[[resources-favorite-select]]
+[[resources-favorite-create]]
 === 즐겨찾기 추가
 
 operation::favorite/create[snippets='curl-request,http-request,http-response,httpie-request,request-body,request-fields,request-headers,response-body']
+
+[[resources-favorite-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorite/delete[snippets='curl-request,http-request,http-response,httpie-request,request-headers']

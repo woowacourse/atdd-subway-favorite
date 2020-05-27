@@ -177,9 +177,10 @@ public class FavoriteControllerIntegrationTest {
         String uri = "/favorites/" + present.getId();
 
         //when
-        mockMvc.perform(delete(uri)
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/favorites/{id}", present.getId())
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON))
+                .andDo(FavoriteDocumentation.delete())
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
