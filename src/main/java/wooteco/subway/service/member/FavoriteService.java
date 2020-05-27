@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -24,7 +25,7 @@ public class FavoriteService {
     public void createFavorite(FavoriteRequest favoriteRequest, Member member) {
         Long sourceId = findStationByName(favoriteRequest.getSourceName());
         Long destinationId = findStationByName(favoriteRequest.getDestinationName());
-        member.addFavorite(sourceId, destinationId);
+        member.addFavorite(new Favorite(sourceId, destinationId));
         memberRepository.save(member);
     }
 

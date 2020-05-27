@@ -26,12 +26,12 @@ public class Favorites {
         return favorites;
     }
 
-    public void add(Long sourceId, Long destinationId) {
-        favorites.add(new Favorite(sourceId, destinationId));
+    public void add(Favorite favorite) {
+        favorites.add(favorite);
     }
 
-    public void removeById(Long sourceId, Long destinationId) {
-        favorites.remove(new Favorite(sourceId, destinationId));
+    public void remove(Favorite favorite) {
+        favorites.remove(favorite);
     }
 
     public List<FavoriteResponse> toFavoriteResponses(List<Station> stations) {
