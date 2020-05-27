@@ -8,9 +8,9 @@ function Favorite() {
   const initFavoriteList = async () => {
     try {
       const template = await api.favorite
-        .getAll()
+        .get(localStorage.getItem("memberId"))
         .then(favorites =>
-          favorites.map(edge => edgeItemTemplate(edge)).join("")
+          favorites["favorites"].map(edge => edgeItemTemplate(edge)).join("")
         );
       $favoriteList.innerHTML = template;
     } catch (e) {
@@ -24,8 +24,10 @@ function Favorite() {
       return;
     }
     try {
-      const edgeId = $target.closest(".edge-item").dataset.edgeId;
-      await api.favorite.delete(edgeId);
+      const memberId = $target.closest(".edge-item").dataset.memberId;
+      const sourceId = $target.closest(".edge-item").dataset.sourceId;
+      const targetId = $target.closest(".edge-item").dataset.targetId;
+      await api.favorite.delete(memberId, sourceId, targetId);
       await initFavoriteList();
       showSnackbar(SUCCESS_MESSAGE.COMMON);
     } catch (e) {
