@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.favorite.dto.AddFavoriteRequest;
 import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void favoriteAcceptanceTest() {
@@ -26,18 +26,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		Response response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
 		// when : 멤버가 즐겨찾기를 추가한다.
-		addFavorite(1L, new AddFavoriteRequest(1L, 2L), response);
-		addFavorite(1L, new AddFavoriteRequest(2L, 3L), response);
+		MemberResponse memberResponse = getMember(TEST_USER_EMAIL, response.getSessionId(), getTokenResponse(response));
+		addFavorite(memberResponse.getId(), new AddFavoriteRequest(1L, 2L), response);
+		addFavorite(memberResponse.getId(), new AddFavoriteRequest(2L, 3L), response);
 
 		// then : 즐겨찾기가 추가되었다.
-		FavoritesResponse favoritesResponse = readFavorite(1L, response);
+		FavoritesResponse favoritesResponse = readFavorite(memberResponse.getId(), response);
 		assertThat(favoritesResponse.getFavorites().size()).isEqualTo(2);
 
 		// when : 멤버가 즐겨찾기를 삭제한다.
-		removeFavorite(1L, 1L, 2L, response);
+		removeFavorite(memberResponse.getId(), 1L, 2L, response);
 
 		// then : 즐겨찾기가 삭제되었다.
-		favoritesResponse = readFavorite(1L, response);
+		favoritesResponse = readFavorite(memberResponse.getId(), response);
 		assertThat(favoritesResponse.getFavorites().size()).isEqualTo(1);
 	}
 

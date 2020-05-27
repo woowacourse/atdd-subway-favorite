@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
@@ -81,7 +82,7 @@ public class FavoriteControllerTest {
 		String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
 				"\"targetId\":\"" + 2L + "\"}";
 
-		this.mockMvc.perform(post("/members/1/favorites")
+		this.mockMvc.perform(post("/members/{id}/favorites", 1L)
 				.session(session)
 				.header("authorization", "Bearer " + TEST_USER_TOKEN)
 				.content(inputJson)
@@ -89,8 +90,8 @@ public class FavoriteControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.sourceId").value(1L))
-				.andExpect(jsonPath("$.targetId").value(2L));
-//				.andDo(MemberDocumentation.readMember());
+				.andExpect(jsonPath("$.targetId").value(2L))
+				.andDo(FavoriteDocumentation.addFavorite());
 	}
 
 	@DisplayName("즐겨찾기 조회 컨트롤러")
@@ -117,7 +118,7 @@ public class FavoriteControllerTest {
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.favoritesResponse").isArray());
+				.andExpect(jsonPath("$.favorites").isArray());
 //				.andDo(MemberDocumentation.readMember());
 	}
 

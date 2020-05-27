@@ -58,3 +58,11 @@ operation::members/authorize_fail_token[snippets='http-request,http-response']
 === 회원 권한 접근 실패 (세션)
 
 operation::members/authorize_fail_session[snippets='http-request,http-response']
+
+[[resources-favorites]]
+== 즐겨찾기
+
+[[resources-favorites-add]]
+=== 즐겨찾기 추가
+
+operation::favorites/add[snippets='http-request,path-parameters,request-fields,http-response']
