@@ -35,3 +35,8 @@ operation::members/delete[snippets='curl-request,http-request,http-response,http
 === 회원 수정
 
 operation::members/update[snippets='curl-request,http-request,http-response,httpie-request,path-parameters,request-body,request-fields,request-headers']
+
+[[resources-members-select]]
+=== 회원 조회
+
+operation::members/select[snippets='curl-request,http-request,http-response,httpie-request,request-parameters,request-headers,response-body']

@@ -9,8 +9,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
@@ -45,6 +44,17 @@ public class MemberDocumentation {
                 requestFields(
                         fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                         fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+                ),
+                requestHeaders(
+                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                )
+        );
+    }
+
+    public static ResultHandler selectMember() {
+        return document("members/select",
+                requestParameters(
+                        parameterWithName("email").description("이멜")
                 ),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")

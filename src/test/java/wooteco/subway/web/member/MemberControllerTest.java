@@ -161,11 +161,13 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(any())).willReturn(email);
         String uri = "/members?email=ramen@gmail.com";
 
-        MvcResult mvcResult = mockMvc.perform(get(uri)
-                .header("authorization","Bearer 토큰값")
+        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/members")
+                .param("email", email)
+                .header("authorization", "Bearer 토큰값")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
+                .andDo(MemberDocumentation.selectMember())
                 .andExpect(status().isOk())
                 .andReturn();
 
