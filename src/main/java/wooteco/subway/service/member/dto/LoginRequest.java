@@ -11,6 +11,9 @@ public class LoginRequest {
 	@NotBlank(message = "password은 필수 입력 값입니다.")
 	private String password;
 
+	private LoginRequest() {
+	}
+
 	public LoginRequest(String email, String password) {
 		this.email = email;
 		this.password = password;

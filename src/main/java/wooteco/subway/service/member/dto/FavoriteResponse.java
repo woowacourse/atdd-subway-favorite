@@ -11,12 +11,15 @@ import wooteco.subway.domain.station.Station;
  *    @author HyungJu An
  */
 public class FavoriteResponse {
-	private final Long sourceStationId;
-	private final Long targetStationId;
-	private final String sourceStationName;
-	private final String targetStationName;
+	private Long sourceStationId;
+	private Long targetStationId;
+	private String sourceStationName;
+	private String targetStationName;
 
-	FavoriteResponse(final Long sourceStationId, final Long targetStationId, final String sourceStationName,
+	private FavoriteResponse() {
+	}
+
+	private FavoriteResponse(final Long sourceStationId, final Long targetStationId, final String sourceStationName,
 		final String targetStationName) {
 		this.sourceStationId = sourceStationId;
 		this.targetStationId = targetStationId;
