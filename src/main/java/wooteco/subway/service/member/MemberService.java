@@ -50,11 +50,10 @@ public class MemberService {
 	public String createToken(LoginRequest param) {
 		String email = param.getEmail();
 		Member member = memberRepository.findByEmail(email).orElseThrow(() -> new InvalidEmailException(email));
-		if (!member.checkPassword(param.getPassword())) {
-			throw new InvalidPasswordException();
+		if (member.hasIdenticalPasswordWith(param.getPassword())) {
+			return jwtTokenProvider.createToken(email);
 		}
-
-		return jwtTokenProvider.createToken(email);
+		throw new InvalidPasswordException();
 	}
 
     public Member findMemberByEmail(String email) {

@@ -64,8 +64,8 @@ public class Member {
                 });
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public boolean hasIdenticalPasswordWith(String password) {
+        return Objects.equals(this.password, password);
     }
 
     public boolean hasNotPath(Long pathId) {
