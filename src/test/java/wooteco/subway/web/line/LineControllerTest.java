@@ -1,6 +1,13 @@
 package wooteco.subway.web.line;
 
-import org.junit.jupiter.api.Disabled;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
@@ -16,30 +24,26 @@ import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.web.LineController;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
+import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
 @WebMvcTest(controllers = LineController.class)
 @Import(ETagHeaderFilter.class)
-@Disabled
 public class LineControllerTest {
     @Autowired
     protected MockMvc mockMvc;
     @MockBean
     private LineService lineService;
+    @MockBean
+    private BearerAuthInterceptor bearerAuthInterceptor;
+    @MockBean
+    private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
 
     @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(
-                Arrays.asList(createMockResponse(), createMockResponse()));
+            Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.findLinesWithStations()).willReturn(response);
 
         String uri = "/lines/detail";
