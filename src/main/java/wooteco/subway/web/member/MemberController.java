@@ -44,7 +44,7 @@ public class MemberController {
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
-        @RequestBody UpdateMemberRequest param) {
+        @Valid @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }

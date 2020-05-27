@@ -121,8 +121,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원 정보 수정")
     void updateMember() throws Exception {
-        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("updated name",
-            "updated password");
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("updated_name",
+            "updated_password");
         String inputJson = objectMapper.writeValueAsString(updateMemberRequest);
 
         mockMvc.perform(put("/members/{id}", 1L)

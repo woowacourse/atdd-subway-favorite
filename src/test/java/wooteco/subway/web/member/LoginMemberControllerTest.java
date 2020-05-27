@@ -9,11 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -82,6 +86,31 @@ public class LoginMemberControllerTest {
             .andDo(LoginMemberDocumentation.login());
     }
 
+    @DisplayName("로그인 실패 - 유효하지 않은 형식")
+    @ParameterizedTest
+    @MethodSource("provideInvalidLoginRequest")
+    void login_failure_invalid_input(String email, String password) throws Exception {
+        LoginRequest loginRequest = new LoginRequest(email, password);
+        String inputJson = objectMapper.writeValueAsString(loginRequest);
+
+        mockMvc.perform(post("/oauth/token")
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+    }
+
+    private static Stream<Arguments> provideInvalidLoginRequest() {
+        return Stream.of(
+            Arguments.arguments("brownemail.com", "brown"),
+            Arguments.arguments("brownemailcom", "brown"),
+            Arguments.arguments("brown@email.com", "bro wn"),
+            Arguments.arguments("brown@email.com", ""),
+            Arguments.arguments("", "brown")
+        );
+    }
+
     @Test
     @DisplayName("내 정보 조회")
     void getMemberOfMine() throws Exception {
@@ -142,6 +171,32 @@ public class LoginMemberControllerTest {
             .andExpect(status().isUnauthorized());
     }
 
+    @DisplayName("내 정보 수정 실패 - 유효하지 않은 형식")
+    @ParameterizedTest
+    @MethodSource("provideInvalidUpdateMemberRequest")
+    void updateMemberOfMine_failure_invalid_input(String name, String password) throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest(name, password);
+        String inputJson = objectMapper.writeValueAsString(updateMemberRequest);
+
+        mockMvc.perform(patch("/me")
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+    }
+
+    private static Stream<Arguments> provideInvalidUpdateMemberRequest() {
+        return Stream.of(
+            Arguments.arguments("", "bro wn"),
+            Arguments.arguments(" ", "brown"),
+            Arguments.arguments("브 라운", ""),
+            Arguments.arguments("브라운", " "),
+            Arguments.arguments(" ", " "),
+            Arguments.arguments("브 라운", "br own")
+        );
+    }
+
     @Test
     @DisplayName("회원 탈퇴")
     void deleteMemberOfMine() throws Exception {
@@ -187,6 +242,29 @@ public class LoginMemberControllerTest {
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(LoginMemberDocumentation.createFavorite());
+    }
+
+    @DisplayName("즐겨찾기 추가 실패 - 유효하지 않은 형식")
+    @ParameterizedTest
+    @MethodSource("provideInvalidFavoriteRequest")
+    void createFavorite_failure_invalid_input(Long sourceId, Long targetId) throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId, targetId);
+        String inputJson = objectMapper.writeValueAsString(favoriteRequest);
+
+        mockMvc.perform(post("/me/favorites")
+            .content(inputJson)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+    }
+
+    private static Stream<Arguments> provideInvalidFavoriteRequest() {
+        return Stream.of(
+            Arguments.arguments(null, null),
+            Arguments.arguments(null, 1L),
+            Arguments.arguments(1L, null)
+        );
     }
 
     @Test

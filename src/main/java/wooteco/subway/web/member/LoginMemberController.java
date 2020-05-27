@@ -32,7 +32,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/oauth/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
@@ -58,7 +58,7 @@ public class LoginMemberController {
 
     @PostMapping("/me/favorites")
     public ResponseEntity<Void> createFavorite(@LoginMember Member member,
-        @RequestBody FavoriteRequest favoriteRequest) {
+        @Valid @RequestBody FavoriteRequest favoriteRequest) {
         memberService.addFavorite(member, favoriteRequest.toFavorite());
         return ResponseEntity.ok().build();
     }
