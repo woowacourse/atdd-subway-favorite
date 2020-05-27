@@ -67,6 +67,17 @@ public class AdminMemberControllerTest {
                 .andDo(print());
     }
 
+    @DisplayName("이메일로 회원 조회를 요청할때 OK 응답이 오는지 테스트")
+    @Test
+    void getMemberByEmailTest() throws Exception {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+
+        this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
     @DisplayName("회원 수정 요청을 보낼때 OK 응답이 오는지 테스트")
     @Test
     void updateMemberTest() throws Exception {
