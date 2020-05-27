@@ -2,25 +2,36 @@ package wooteco.subway.web.favorite;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
@@ -32,6 +43,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
 @Import(HttpEncodingAutoConfiguration.class)
+@ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(value = {FavoriteController.class, AuthorizationExtractor.class})
 public class FavoriteControllerTest {
 
@@ -54,11 +66,21 @@ public class FavoriteControllerTest {
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
+    @BeforeEach
+    public void setUp(
+        WebApplicationContext webApplicationContext,
+        RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .addFilter(new ShallowEtagHeaderFilter())
+            .apply(documentationConfiguration(restDocumentation))
+            .build();
+    }
+
     @DisplayName("즐겨찾기를 추가하는 기능 테스트")
     @Test
     void createFavorite() throws Exception {
-        Station preStation = new Station("강남역");
-        Station station = new Station("선릉역");
+        Station preStation = new Station(1L, "강남역");
+        Station station = new Station(2L, "선릉역");
 
         when(jwtTokenProvider.getSubject(anyString())).thenReturn(EMAIL);
         when(memberService.findMemberByEmail(EMAIL)).thenReturn(
@@ -75,15 +97,16 @@ public class FavoriteControllerTest {
             .header("authorization", "bearer" + TOKEN)
             .content(request))
             .andDo(print())
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andDo(FavoriteDocumentation.createFavorite());
     }
 
     @DisplayName("즐겨찾기 목록을 조회하는 기능 테스트")
     @Test
     void readFavorites() throws Exception {
-        Station gangnam = new Station(1L, "강남역");
-        Station seolleung = new Station(2L, "선릉역");
-        Station yeoksam = new Station(3L, "역삼역");
+        Station gangnam = new Station(1L, "강남역", LocalDateTime.now());
+        Station seolleung = new Station(2L, "선릉역", LocalDateTime.now());
+        Station yeoksam = new Station(3L, "역삼역", LocalDateTime.now());
 
         FavoriteResponse favorite1 = new FavoriteResponse(1L, gangnam, seolleung);
         FavoriteResponse favorite2 = new FavoriteResponse(2L, yeoksam, gangnam);
@@ -98,6 +121,7 @@ public class FavoriteControllerTest {
             .header("authorization", "bearer" + TOKEN)
             .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
+            .andDo(FavoriteDocumentation.readFavorites())
             .andReturn();
 
         String contentAsString = mvcResult.getResponse().getContentAsString();
@@ -123,9 +147,12 @@ public class FavoriteControllerTest {
 
         Long favoriteId = 1L;
 
-        mockMvc.perform(delete("/members/favorites/" + favoriteId))
+        mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/members/favorites/{id}", favoriteId)
+                .header("authorization", "bearer" + TOKEN))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isNoContent())
+            .andDo(FavoriteDocumentation.deleteFavorite());
     }
 }
 
