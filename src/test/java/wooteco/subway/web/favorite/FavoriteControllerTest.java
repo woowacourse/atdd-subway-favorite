@@ -1,16 +1,8 @@
 package wooteco.subway.web.favorite;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static wooteco.subway.web.member.MemberControllerTest.*;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,15 +20,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.FavoriteStation;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wooteco.subway.acceptance.AcceptanceTest.*;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -118,35 +117,35 @@ class FavoriteControllerTest {
             .andDo(FavoriteDocumentation.deleteFavorite());
     }
 
+    private void createMember() throws Exception {
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+            "\"name\":\"" + TEST_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/members")
+                .content(inputJson)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
     private TokenResponse login(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
 
         return
-            given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/oauth/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().as(TokenResponse.class);
-    }
-
-    private void createMember() throws Exception {
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"name\":\"" + TEST_USER_NAME + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
-
-        this.mockMvc.perform(post("/members")
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isCreated())
-            .andDo(print());
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/oauth/token").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(TokenResponse.class);
     }
 }

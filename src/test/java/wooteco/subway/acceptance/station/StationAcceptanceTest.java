@@ -1,14 +1,13 @@
 package wooteco.subway.acceptance.station;
 
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.station.dto.StationResponse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 관리한다")
