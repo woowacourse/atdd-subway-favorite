@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -110,7 +111,7 @@ public class MemberControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andDo(print())
-            .andDo(MemberDocumentation.createDuplicateMember());
+            .andDo(MemberDocumentation.createFail("members/duplicate-create"));
     }
 
     @Test
@@ -129,13 +130,12 @@ public class MemberControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andDo(print())
-            .andDo(MemberDocumentation.createNotMatchPasswordMember());
+            .andDo(MemberDocumentation.createFail("members/not-match-password-create"));
     }
 
     @Test
     void login() throws Exception {
         given(memberService.createToken(any())).willReturn("token");
-
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
@@ -153,7 +153,6 @@ public class MemberControllerTest {
     @Test
     void loginWithNotExistEmail() throws Exception {
         given(memberService.createToken(any())).willThrow(new NotFoundMemberException());
-
         String inputJson = "{\"email\":\"" + TEST_OTHER_USER_EMAIL + "\"," +
             "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
@@ -163,13 +162,12 @@ public class MemberControllerTest {
             .content(inputJson))
             .andExpect(status().isUnauthorized())
             .andDo(print())
-            .andDo(MemberDocumentation.loginWithNotExistEmail());
+            .andDo(MemberDocumentation.loginFail("members/login-with-not-exist-email"));
     }
 
     @Test
     void loginWithWrongPassword() throws Exception {
         given(memberService.createToken(any())).willThrow(new NotMatchPasswordException());
-
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"password\":\"" + TEST_OTHER_USER_PASSWORD + "\"}";
 
@@ -179,7 +177,7 @@ public class MemberControllerTest {
             .content(inputJson))
             .andExpect(status().isUnauthorized())
             .andDo(print())
-            .andDo(MemberDocumentation.loginWithWrongPassword());
+            .andDo(MemberDocumentation.loginFail("members/login-with-wrong-password"));
     }
 
     @Test
@@ -210,7 +208,7 @@ public class MemberControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andDo(print())
-            .andDo(MemberDocumentation.getNotExistMember());
+            .andDo(MemberDocumentation.getFail("members/not-exist-get"));
     }
 
     @Test
@@ -244,7 +242,27 @@ public class MemberControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andDo(print())
-            .andDo(MemberDocumentation.notExistTokenUpdateMember());
+            .andDo(MemberDocumentation.updateFail("members/not-exist-token-update"));
+    }
+
+    @Test
+    void notMatchPasswordUpdateMember() throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        Mockito.doThrow(new NotMatchPasswordException())
+            .when(memberService)
+            .updateMember(anyLong(), any());
+
+        String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
+            "\"oldPassword\":\"" + TEST_OTHER_USER_PASSWORD + "\"," +
+            "\"newPassword\":\"" + "NEW_" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(put("/members/" + 1L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andDo(print())
+            .andDo(MemberDocumentation.updateFail("members/not-match-password-update"));
     }
 
     @Test
@@ -263,6 +281,6 @@ public class MemberControllerTest {
         this.mockMvc.perform(delete("/members/" + 1L))
             .andExpect(status().isUnauthorized())
             .andDo(print())
-            .andDo(MemberDocumentation.deleteMemberNotExistToken());
+            .andDo(MemberDocumentation.deleteFail("members/delete-not-exist-token"));
     }
 }

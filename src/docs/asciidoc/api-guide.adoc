@@ -83,6 +83,10 @@ operation::members/update[snippets='http-request,http-response,request-fields']
 ===== 토큰이 존재하지 않음
 operation::members/not-exist-token-update[snippets='http-request,http-response,request-fields,response-fields']
 
+[[resources-members-update-fail-not-match-password]]
+===== 비밀번호가 올바르지 않
+operation::members/not-match-password-update[snippets='http-request,http-response,request-fields,response-fields']
+
 [[resources-members-delete]]
 === 회원 탈퇴
 

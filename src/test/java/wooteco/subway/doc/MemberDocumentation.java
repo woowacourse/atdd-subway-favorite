@@ -29,28 +29,8 @@ public class MemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler createDuplicateMember() {
-        return document("members/duplicate-create",
-            getDocumentRequest(),
-            getDocumentResponse(),
-            requestFields(
-                fieldWithPath("email").type(JsonFieldType.STRING)
-                    .description("The user's email address").attributes(getEmailFormat()),
-                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                fieldWithPath("password").type(JsonFieldType.STRING)
-                    .description("The user's password"),
-                fieldWithPath("passwordCheck").type(JsonFieldType.STRING)
-                    .description("The user's passwordCheck")
-            ),
-            responseFields(
-                fieldWithPath("message").type(JsonFieldType.STRING)
-                    .description("The error message")
-            )
-        );
-    }
-
-    public static RestDocumentationResultHandler createNotMatchPasswordMember() {
-        return document("members/not-match-password-create",
+    public static RestDocumentationResultHandler createFail(String url) {
+        return document(url,
             getDocumentRequest(),
             getDocumentResponse(),
             requestFields(
@@ -89,8 +69,8 @@ public class MemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler loginWithNotExistEmail() {
-        return document("members/login-with-not-exist-email",
+    public static RestDocumentationResultHandler loginFail(String url) {
+        return document(url,
             getDocumentRequest(),
             getDocumentResponse(),
             requestFields(
@@ -103,38 +83,6 @@ public class MemberDocumentation {
             responseFields(
                 fieldWithPath("message").type(JsonFieldType.STRING)
                     .description("The exception message")
-            )
-        );
-    }
-
-    public static RestDocumentationResultHandler loginWithWrongPassword() {
-        return document("members/login-with-wrong-password",
-            getDocumentRequest(),
-            getDocumentResponse(),
-            requestFields(
-                fieldWithPath("email").type(JsonFieldType.STRING)
-                    .description("The user's email")
-                    .attributes(getEmailFormat()),
-                fieldWithPath("password").type(JsonFieldType.STRING)
-                    .description("The user's password")
-            ),
-            responseFields(
-                fieldWithPath("message").type(JsonFieldType.STRING)
-                    .description("The exception message")
-            )
-        );
-    }
-
-    public static RestDocumentationResultHandler updateMember() {
-        return document("members/update",
-            getDocumentRequest(),
-            getDocumentResponse(),
-            requestFields(
-                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-                fieldWithPath("oldPassword").type(JsonFieldType.STRING)
-                    .description("The user's old password"),
-                fieldWithPath("newPassword").type(JsonFieldType.STRING)
-                    .description("The user's new password")
             )
         );
     }
@@ -153,8 +101,8 @@ public class MemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler getNotExistMember() {
-        return document("members/not-exist-get",
+    public static RestDocumentationResultHandler getFail(String url) {
+        return document(url,
             getDocumentRequest(),
             getDocumentResponse(),
             responseFields(
@@ -164,8 +112,22 @@ public class MemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler notExistTokenUpdateMember() {
-        return document("members/not-exist-token-update",
+    public static RestDocumentationResultHandler updateMember() {
+        return document("members/update",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+                fieldWithPath("oldPassword").type(JsonFieldType.STRING)
+                    .description("The user's old password"),
+                fieldWithPath("newPassword").type(JsonFieldType.STRING)
+                    .description("The user's new password")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler updateFail(String url) {
+        return document(url,
             getDocumentRequest(),
             getDocumentResponse(),
             requestFields(
@@ -189,8 +151,8 @@ public class MemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler deleteMemberNotExistToken() {
-        return document("members/delete-not-exist-token",
+    public static RestDocumentationResultHandler deleteFail(String url) {
+        return document(url,
             getDocumentRequest(),
             getDocumentResponse(),
             responseFields(
@@ -198,6 +160,5 @@ public class MemberDocumentation {
                     .description("The error message")
             )
         );
-
     }
 }
