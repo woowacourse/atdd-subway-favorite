@@ -5,6 +5,7 @@ import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.exception.WrongStationException;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
@@ -21,23 +22,15 @@ public class FavoriteService {
     }
 
     public void createFavorite(FavoriteRequest favoriteRequest, Member member) {
-        Long sourceId = stationRepository.findByName(favoriteRequest.getSourceName())
-                .orElseThrow(RuntimeException::new)
-                .getId();
-        Long destinationId = stationRepository.findByName(favoriteRequest.getDestinationName())
-                .orElseThrow(RuntimeException::new)
-                .getId();
+        Long sourceId = findStationByName(favoriteRequest.getSourceName());
+        Long destinationId = findStationByName(favoriteRequest.getDestinationName());
         member.addFavorite(sourceId, destinationId);
         memberRepository.save(member);
     }
 
     public void removeFavorite(FavoriteRequest favoriteRequest, Member member) {
-        Long sourceId = stationRepository.findByName(favoriteRequest.getSourceName())
-                .orElseThrow(RuntimeException::new)
-                .getId();
-        Long destinationId = stationRepository.findByName(favoriteRequest.getDestinationName())
-                .orElseThrow(RuntimeException::new)
-                .getId();
+        Long sourceId = findStationByName(favoriteRequest.getSourceName());
+        Long destinationId = findStationByName(favoriteRequest.getDestinationName());
         member.removeFavoriteById(sourceId, destinationId);
         memberRepository.save(member);
     }
@@ -50,12 +43,14 @@ public class FavoriteService {
 
     public boolean ifFavoriteExist(Member member, String source, String destination) {
         Favorites favorites = new Favorites(member.getFavorites());
-        Long sourceId = stationRepository.findByName(source)
-                .orElseThrow(RuntimeException::new)
-                .getId();
-        Long destinationId = stationRepository.findByName(destination)
-                .orElseThrow(RuntimeException::new)
-                .getId();
+        Long sourceId = findStationByName(source);
+        Long destinationId = findStationByName(destination);
         return favorites.findById(sourceId, destinationId).isPresent();
+    }
+
+    private Long findStationByName(String name) {
+        return stationRepository.findByName(name)
+                .orElseThrow(WrongStationException::new)
+                .getId();
     }
 }

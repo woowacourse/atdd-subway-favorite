@@ -59,5 +59,4 @@ public class Favorites {
                 .filter(favorite -> favorite.getSourceId().equals(sourceId) && favorite.getDestinationId().equals(destinationId))
                 .findFirst();
     }
-    //// TODO: 2020/05/25 생성 중복, 없는 것 삭제할 시 중복 처리?
 }
