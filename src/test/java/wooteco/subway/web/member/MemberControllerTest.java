@@ -17,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.service.member.ExistedEmailException;
 import wooteco.subway.service.member.MemberService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -66,6 +67,18 @@ public class MemberControllerTest {
         verify(memberService).createMember(any());
     }
 
+    @DisplayName("이미 존재하는 메일로 회원가입 요청")
+    @Test
+    public void createWithExistedEmail() throws Exception {
+        given(memberService.createMember(any())).willThrow(ExistedEmailException.class);
+        mvc.perform(post("/members")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"existed@email.com\", \"name\":\"existed\", \"password\":\"existed\"}"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
     @DisplayName("이메일로 회원 조회")
     @Test
     public void show() throws Exception {
@@ -95,8 +108,6 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.updateMember());
-        ;
-
         verify(memberService).updateMember(eq(member.getId()), any());
     }
 

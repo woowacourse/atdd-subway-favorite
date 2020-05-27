@@ -102,12 +102,14 @@ public class PathServiceTest {
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     void findPathWithSameSourceAndTarget() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
+        assertThrows(DuplicatedStationException.class,
+                () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
     }
 
     @DisplayName("출발역과 도착역이 연결이 되지 않은 경우")
     @Test
     void findPathWithNoPath() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
+        assertThrows(NotExistedStationException.class,
+                () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.NotExistedEmailException;
+import wooteco.subway.service.member.WrongPasswordException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -49,6 +51,32 @@ class LoginMemberControllerTest {
                 .andExpect(content().string("{\"accessToken\":\"this is accessToken\",\"tokenType\":\"Bearer\"}"));
 
         verify(memberService).createToken(any());
+    }
+
+    @DisplayName("등록되지 않은 이메일로 로그인")
+    @Test
+    public void loginWithNotExistedEmail() throws Exception {
+        given(memberService.createToken(any())).willThrow(NotExistedEmailException.class);
+
+        mvc.perform(post("/me/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"notExisted@email.com\",\"password\":\"dog\"}"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("잘못된 패스워드로 로그인")
+    @Test
+    public void loginWithWrongPassword() throws Exception {
+        given(memberService.createToken(any())).willThrow(WrongPasswordException.class);
+
+        mvc.perform(post("/me/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"bossdog@email.com\",\"password\":\"wrong password\"}"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("내 정보 불러오기")

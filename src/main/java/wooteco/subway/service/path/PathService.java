@@ -31,12 +31,12 @@ public class PathService {
 
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
-            throw new RuntimeException();
+            throw new DuplicatedStationException();
         }
 
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+        Station sourceStation = stationRepository.findByName(source).orElseThrow(NotExistedStationException::new);
+        Station targetStation = stationRepository.findByName(target).orElseThrow(NotExistedStationException::new);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);
