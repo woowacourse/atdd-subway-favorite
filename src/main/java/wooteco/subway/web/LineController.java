@@ -2,14 +2,11 @@ package wooteco.subway.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.service.line.LineService;
-import wooteco.subway.service.line.dto.LineDetailResponse;
-import wooteco.subway.service.line.dto.LineRequest;
-import wooteco.subway.service.line.dto.LineResponse;
-import wooteco.subway.service.line.dto.LineStationCreateRequest;
-import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.service.line.LineService;
+import wooteco.subway.service.line.dto.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -24,7 +21,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(
-            @RequestBody LineRequest request
+            @Valid @RequestBody LineRequest request
     ) {
         Line persistLine = lineService.save(request.toLine());
 
@@ -46,7 +43,7 @@ public class LineController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(
             @PathVariable Long id,
-            @RequestBody LineRequest request
+            @Valid @RequestBody LineRequest request
     ) {
         lineService.updateLine(id, request);
         return ResponseEntity.ok().build();
@@ -61,7 +58,7 @@ public class LineController {
     @PostMapping("/{id}/stations")
     public ResponseEntity<Void> addLineStation(
             @PathVariable Long id,
-            @RequestBody LineStationCreateRequest view
+            @Valid @RequestBody LineStationCreateRequest view
     ) {
         lineService.addLineStation(id, view);
         return ResponseEntity.ok().build();

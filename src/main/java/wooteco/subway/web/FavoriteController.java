@@ -8,6 +8,7 @@ import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.member.LoginMember;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity<Void> create(
             @LoginMember Member member,
-            @RequestBody FavoriteRequest request
+            @Valid @RequestBody FavoriteRequest request
     ) {
         FavoriteResponse response = favoriteService.addFavorite(member.getId(), request);
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();

@@ -2,11 +2,12 @@ package wooteco.subway.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.StationCreateRequest;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.domain.station.Station;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(
-            @RequestBody StationCreateRequest request
+            @Valid @RequestBody StationCreateRequest request
     ) {
         Station persistStation = stationService.createStation(request.toStation());
 
