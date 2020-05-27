@@ -92,6 +92,7 @@ export default (() => {
 
   return {
     login,
+    logout,
     getInfo,
     isLoggedIn,
     update,

@@ -41,6 +41,7 @@ function Favorite() {
   }
 
   this.init = () => {
+    !user.isLoggedIn() && location.replace('/login')
     loadFavoriteList()
     $favoriteList.addEventListener(EVENT_TYPE.CLICK, onRemoveHandler)
   }
