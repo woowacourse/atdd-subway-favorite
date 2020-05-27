@@ -7,11 +7,14 @@ import java.util.List;
 public class FavoritesResponse {
 	private List<FavoriteDetail> favorites;
 
+	public FavoritesResponse() {
+	}
+
 	public FavoritesResponse(List<FavoriteDetail> favorites) {
 		this.favorites = favorites;
 	}
 
-	public List<FavoriteDetail> getFavoritesResponse() {
+	public List<FavoriteDetail> getFavorites() {
 		return favorites;
 	}
 }

@@ -7,6 +7,9 @@ public class FavoriteDetailResponse {
 	private String sourceName;
 	private String targetName;
 
+	public FavoriteDetailResponse() {
+	}
+
 	public FavoriteDetailResponse(Long memberId, Long sourceId, Long targetId, String sourceName, String targetName) {
 		this.memberId = memberId;
 		this.sourceId = sourceId;
