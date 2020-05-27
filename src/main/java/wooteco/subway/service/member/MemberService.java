@@ -4,24 +4,18 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.service.station.NotFoundStationException;
 
 @Service
 public class MemberService {
 	private final MemberRepository memberRepository;
-	private final StationRepository stationRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 
 	public MemberService(final MemberRepository memberRepository,
-		final StationRepository stationRepository,
 		final JwtTokenProvider jwtTokenProvider) {
 		this.memberRepository = memberRepository;
-		this.stationRepository = stationRepository;
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
@@ -55,13 +49,5 @@ public class MemberService {
 	public Member findMemberByEmail(final String email) {
 		return memberRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundMemberException("해당하는 이메일을 찾을 수 없습니다. : " + email));
-	}
-
-	public void createFavorite(final Member member, final FavoriteRequest favoriteRequest) {
-		stationRepository.findById(favoriteRequest.getSourceId())
-			.orElseThrow(() -> new NotFoundStationException("출발역을 찾을 수 없습니다. : " + favoriteRequest.getSourceId()));
-		stationRepository.findById(favoriteRequest.getTargetId())
-			.orElseThrow(() -> new NotFoundStationException("도착역을 찾을 수 없습니다. : " + favoriteRequest.getTargetId()));
-		memberRepository.save(member.addFavorite(favoriteRequest.toFavorite()));
 	}
 }
