@@ -101,10 +101,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .header(AUTHORIZATION, token)
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE).
-        when()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
             .post("/members/favorites")
-            .then()
+        .then()
             .log().all()
             .statusCode(HttpStatus.OK.value());
     }

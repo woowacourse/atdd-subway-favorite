@@ -13,8 +13,8 @@ import java.util.List;
 
 @Service
 public class LineService {
-    private LineStationService lineStationService;
-    private LineRepository lineRepository;
+    private final LineStationService lineStationService;
+    private final LineRepository lineRepository;
 
     public LineService(LineStationService lineStationService, LineRepository lineRepository) {
         this.lineStationService = lineStationService;
@@ -28,11 +28,7 @@ public class LineService {
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
-
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
+    
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(request.toLine());
