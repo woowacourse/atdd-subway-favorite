@@ -147,6 +147,15 @@ function Search() {
   }
 
   this.init = () => {
+    const params = (new URL(document.location)).searchParams;
+    const source = params.get('source'); // is the string "Jonathan Smith".
+    const target = params.get('target');
+
+    if (source && target) {
+      $departureStationName.value = source
+      $arrivalStationName.value = target
+      getSearchResult(PATH_TYPE.DISTANCE)
+    }
     initEventListener()
   }
 }
