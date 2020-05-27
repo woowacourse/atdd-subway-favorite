@@ -14,13 +14,13 @@ public class ExceptionController {
 
 	@ResponseStatus(HttpStatus.CONFLICT)
 	@ExceptionHandler({DuplicatedEmailException.class, DuplicatedFavoritePathException.class})
-	public ExceptionResponse duplicatedEmail(RuntimeException e) {
+	public ExceptionResponse duplicated(RuntimeException e) {
 		return new ExceptionResponse(e.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler({NotExistStationException.class, NotExistFavoritePathException.class})
-	public ExceptionResponse notExistStation(RuntimeException e) {
+	public ExceptionResponse notExisted(RuntimeException e) {
 		return new ExceptionResponse(e.getMessage());
 	}
 
@@ -33,7 +33,7 @@ public class ExceptionController {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	@ExceptionHandler({InvalidPasswordException.class, InvalidEmailException.class,
 			InvalidAuthenticationException.class})
-	public ExceptionResponse invalidPassword(RuntimeException e) {
+	public ExceptionResponse invalidLogin(RuntimeException e) {
 		return new ExceptionResponse(e.getMessage());
 	}
 }
