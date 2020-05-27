@@ -29,7 +29,7 @@ public class MemberDocumentation {
     public static ResultHandler deleteMember() {
         return document("members/delete",
                 pathParameters(
-                        parameterWithName("id").description("아이디")
+                        parameterWithName("id").description("삭제할 아이디")
                 ),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
@@ -39,6 +39,9 @@ public class MemberDocumentation {
 
     public static RestDocumentationResultHandler updateMember() {
         return document("members/update",
+                pathParameters(
+                        parameterWithName("id").description("수정할 아이디")
+                ),
                 requestFields(
                         fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                         fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")

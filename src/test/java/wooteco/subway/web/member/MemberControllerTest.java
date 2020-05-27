@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -149,6 +150,7 @@ public class MemberControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
+    //docs추가
     @DisplayName("정보조회 테스트")
     @Test
     void getMemberByEmailTest() throws Exception {
@@ -209,21 +211,25 @@ public class MemberControllerTest {
     @DisplayName("수정하기 성공")
     @Test
     void updateInfoTestSuccess() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "6315", "6315");
         given(memberService.updateMember(any(), any())).willReturn(1L);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(anyString())).willReturn("ramen6315@gmail.com");
         given(memberService.findMemberById(anyLong()))
-                .willReturn(new Member(1L, "ramen6315@gmail.com", "6315", "6315"));
+                .willReturn(member);
 
+        Long updateId = member.getId();
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
         String updateData = gson.toJson(updateMemberRequest);
+
         String uri = "/members/1";
 
-        mockMvc.perform(put(uri)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", updateId)
                 .header("Authorization", "Bearer 아무토큰값")
                 .content(updateData)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
+                .andDo(MemberDocumentation.updateMember())
                 .andDo(print())
                 .andExpect(status().isOk());
     }

@@ -30,3 +30,8 @@ operation::login[snippets='curl-request,http-request,http-response,httpie-reques
 === 회원 탈퇴
 
 operation::members/delete[snippets='curl-request,http-request,http-response,httpie-request,path-parameters,request-headers']
+
+[[resources-members-update]]
+=== 회원 수정
+
+operation::members/update[snippets='curl-request,http-request,http-response,httpie-request,path-parameters,request-body,request-fields,request-headers']
