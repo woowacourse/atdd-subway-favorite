@@ -18,7 +18,7 @@ function Login() {
         email: $email.value,
         password: $password.value
       };
-      const jwt = await api.member.login(loginMember);
+      const jwt = await api.loginMember.login(loginMember);
       if (jwt) {
         localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
         location.href = "/";

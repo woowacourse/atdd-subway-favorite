@@ -24,7 +24,7 @@ export const memberInfo = member => {
           </a>
         </li>
         <li>
-          <a href="/me/favorites" class="hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
+          <a href="/favorites" class="hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
             <span class="mdi mdi-star mr-1"></span>
             즐겨찾기
           </a>
@@ -129,17 +129,11 @@ export const initNavigation = member => {
 };
 
 export const edgeItemTemplate = edge => {
-  return `<li data-edge-id="${
-    edge.id
-  }" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+    return `<li class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
             <span class="mdi mdi-subway-variant mr-2"></span>
-            <span data-source-station-id="${edge.sourceStationId}">${
-    edge.sourceStationName ? edge.sourceStationName : "출발역"
-  }</span>
+            <span class="edge-item-source">${edge.source}</span>
             <span class="mdi mdi-arrow-right text-gray-500"></span>
-            <span data-target-station-id="${edge.targetStationId}">${
-    edge.sourceStationName ? edge.sourceStationName : "도착역"
-  }</span>
+            <span class="edge-item-target">${edge.target}</span>
             <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
               <span class="mdi mdi-delete"></span>
             </button>
