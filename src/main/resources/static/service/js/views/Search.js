@@ -48,22 +48,43 @@ function Search() {
 
     const onToggleFavorite = event => {
         event.preventDefault();
-        const isFavorite = $favoriteButton.classList.contains('mdi-star');
-        const classList = $favoriteButton.classList;
+        const $stationList = document.querySelector('#station-list');
+        const $startEndStation = $stationList.getElementsByClassName("start-end-name");
 
-        if (isFavorite) {
-            classList.add('mdi-star-outline');
-            classList.add('text-gray-600');
-            classList.add('bg-yellow-500');
-            classList.remove('mdi-star');
-            classList.remove('text-yellow-500')
-        } else {
-            classList.remove('mdi-star-outline');
-            classList.remove('text-gray-600');
-            classList.remove('bg-yellow-500');
-            classList.add('mdi-star');
-            classList.add('text-yellow-500')
+        if ($startEndStation.length != 2) {
+            alert("시작역과 도착역이 올바르지 않습니다.")
+            return;
         }
+        const $startStationName = $startEndStation[0].textContent;
+        const $endStationName = $startEndStation[1].textContent;
+
+        // const isFavorite = $favoriteButton.classList.contains('mdi-star');
+        // const classList = $favoriteButton.classList;
+
+        // if (isFavorite) {
+        //     classList.add('mdi-star-outline');
+        //     classList.add('text-gray-600');
+        //     classList.add('bg-yellow-500');
+        //     classList.remove('mdi-star');
+        //     classList.remove('text-yellow-500')
+        // } else {
+        //     classList.remove('mdi-star-outline');
+        //     classList.remove('text-gray-600');
+        //     classList.remove('bg-yellow-500');
+        //     classList.add('mdi-star');
+        //     classList.add('text-yellow-500')
+        // }
+
+
+        const startStationName = $stationList.getElementsByClassName("start-end-name")[0].textContent;
+        const data = {
+            source: $startStationName,
+            target: $endStationName
+        }
+
+        api.favorite.create(data).then((response) => {
+            console.log(response);
+        });
     };
 
     const initEventListener = () => {

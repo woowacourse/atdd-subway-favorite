@@ -43,11 +43,35 @@ const METHOD = {
             }
         }
     },
+    DELETE_DATA(data) {
+        return {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getAccessTokenCookie()
+            },
+            body: JSON.stringify({
+                ...data
+            })
+        }
+    },
     POST(data) {
         return {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...data
+            })
+        }
+    },
+    POST_WITH_AUTH(data) {
+        return {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getAccessTokenCookie()
             },
             body: JSON.stringify({
                 ...data
@@ -99,10 +123,23 @@ const api = (() => {
         }
     };
 
+    const favorite = {
+        create(data) {
+            return request("/favorites/me", METHOD.POST_WITH_AUTH(data));
+        },
+        get() {
+            return request("/favorites/me", METHOD.GET());
+        },
+        delete(data) {
+            return request("/favorites/me", METHOD.DELETE_DATA(data));
+        }
+    };
+
     return {
         line,
         path,
-        member
+        member,
+        favorite
     }
 })();
 

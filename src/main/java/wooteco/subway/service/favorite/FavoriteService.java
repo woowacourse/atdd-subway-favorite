@@ -1,11 +1,7 @@
 package wooteco.subway.service.favorite;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -13,6 +9,10 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -45,7 +45,7 @@ public class FavoriteService {
 	public List<FavoriteResponse> find(Member member) {
 		Member persistMember = memberRepository.findById(member.getId())
 			.orElseThrow(IllegalArgumentException::new);
-		List<Favorite> favorites = persistMember.getFavorites();
+		Set<Favorite> favorites = persistMember.getFavorites();
 
 		return favorites.stream()
 			.map(this::toFavoriteResponse)
