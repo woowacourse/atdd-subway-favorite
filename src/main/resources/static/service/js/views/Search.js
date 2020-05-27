@@ -40,35 +40,23 @@ function Search() {
     getSearchResult(PATH_TYPE.DURATION)
   }
 
-  const getSearchResult = pathType => {
+  const getSearchResult = async pathType => {
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value,
       type: pathType
     }
-    api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
-  }
-
-  const onToggleFavorite = async event => {
-    event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
-
     try {
-      await user.addFavorite({
-        sourceStationId,
-        targetStationId
+      const path = await api.path.find(searchInput)
+      showSearchResult(path)
+
+      const { exist } = await user.hasFavorite({
+        sourceId: path.stations[0].id,
+        targetId: path.stations[path.stations.length - 1].id
       })
 
-      Snackbar.show({
-        text: SUCCESS_MESSAGE.ADD_FAVORITE,
-        pos: 'bottom-center',
-        showAction: false,
-        duration: 2000
-      })
+      exist ? setActiveOnFavorite() : setInactiveOnFavorite()
+
     }
     catch (error) {
       Snackbar.show({
@@ -78,18 +66,76 @@ function Search() {
         duration: 2000
       })
     }
-    if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
-    } else {
-      classList.remove('mdi-star-outline')
-      classList.remove('text-gray-600')
-      classList.remove('bg-yellow-500')
-      classList.add('mdi-star')
-      classList.add('text-yellow-500')
+  }
+
+  const setInactiveOnFavorite = () => {
+    const { classList } = $favoriteButton
+    classList.remove('mdi-star')
+    classList.remove('text-yellow-500')
+    classList.add('bg-yellow-500')
+    classList.add('mdi-star-outline')
+  }
+
+  const setActiveOnFavorite = () => {
+    const { classList } = $favoriteButton
+    classList.add('mdi-star')
+    classList.add('text-yellow-500')
+    classList.remove('bg-yellow-500')
+    classList.remove('mdi-star-outline')
+  }
+
+  const onToggleFavorite = async event => {
+    event.preventDefault()
+    if (!user.isLoggedIn()) {
+      Snackbar.show({
+        text: ERROR_MESSAGE.LOGIN_REQUIRED,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+      })
+      return
+    }
+    const isFavorite = $favoriteButton.classList.contains('mdi-star')
+
+    try {
+      if (isFavorite) {
+        await user.deleteFavorite({
+          sourceId: sourceStationId,
+          targetId: targetStationId
+        })
+
+        Snackbar.show({
+          text: SUCCESS_MESSAGE.DELETE_FAVORITE,
+          pos: 'bottom-center',
+          showAction: false,
+          duration: 2000
+        })
+
+        setInactiveOnFavorite()
+
+      } else {
+        await user.addFavorite({
+          sourceStationId,
+          targetStationId
+        })
+
+        Snackbar.show({
+          text: SUCCESS_MESSAGE.ADD_FAVORITE,
+          pos: 'bottom-center',
+          showAction: false,
+          duration: 2000
+        })
+
+        setActiveOnFavorite()
+      }
+    }
+    catch (error) {
+      Snackbar.show({
+        text: error.message,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+      })
     }
   }
 

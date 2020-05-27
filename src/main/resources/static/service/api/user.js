@@ -62,7 +62,7 @@ export default (() => {
     throw new Error("즐겨찾기를 불러오는데 실패했습니다.")
   })
 
-  const hasFavorite = ({ sourceId, targetId }) => request(`/me/favorites/from/${sourceId}/to/${targetId}`,
+  const hasFavorite = ({ sourceId, targetId }) => requestWithJsonData(`/me/favorites/from/${sourceId}/to/${targetId}`,
     {
       headers,
     }).catch(() => {
