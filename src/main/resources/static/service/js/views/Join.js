@@ -1,5 +1,6 @@
 import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 import api from "../../api/index.js";
+import { validateNotLogin } from '../../login/ValidateLogin.js'
 
 function Join() {
   const $joinButton = document.querySelector('#join-button')
@@ -32,5 +33,6 @@ function Join() {
   }
 }
 
+validateNotLogin()
 const join = new Join()
 join.init()

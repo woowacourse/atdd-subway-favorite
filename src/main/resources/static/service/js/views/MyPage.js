@@ -1,4 +1,5 @@
 import api from "../../api/index.js";
+import { validateLogin } from '../../login/ValidateLogin.js'
 
 function MyPage() {
     const $userEmail = document.querySelector("#mypage-email");
@@ -17,5 +18,6 @@ function MyPage() {
     }
 }
 
+validateLogin()
 const myPage = new MyPage()
 myPage.init()

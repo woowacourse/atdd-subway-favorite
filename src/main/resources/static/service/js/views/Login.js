@@ -1,5 +1,6 @@
 import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 import api from "../../api/index.js";
+import { validateNotLogin } from '../../login/ValidateLogin.js'
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')
@@ -17,13 +18,14 @@ function Login() {
       password: passwordValue
     }
 
-    await api.login
-        .login(userData)
+    await api.login.login(userData)
         .then(data => {
           sessionStorage.setItem("accessToken", data.accessToken)
-    })
-
-    window.location = "/mypage"
+          window.location = "/mypage"
+        }).catch(error => {
+          alert(error.message)
+          window.location = "/login"
+        })
   }
 
   this.init = () => {
@@ -31,5 +33,6 @@ function Login() {
   }
 }
 
+validateNotLogin()
 const login = new Login()
 login.init()

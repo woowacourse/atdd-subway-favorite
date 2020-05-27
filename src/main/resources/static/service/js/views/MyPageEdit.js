@@ -1,5 +1,6 @@
 import { EVENT_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 import api from "../../api/index.js";
+import { validateLogin } from "../../login/ValidateLogin.js";
 
 function MyPageEdit() {
   const $editButton = document.querySelector('#edit-button')
@@ -56,5 +57,6 @@ function MyPageEdit() {
   }
 }
 
+validateLogin()
 const myPageEdit = new MyPageEdit()
 myPageEdit.init()
