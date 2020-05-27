@@ -45,9 +45,6 @@ public class AcceptanceTest {
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
 
-    public static final String TEST_SOURCE = "강남역";
-    public static final String TEST_TARGET = "선릉역";
-
     @LocalServerPort
     public int port;
 
@@ -358,10 +355,7 @@ public class AcceptanceTest {
             statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public String createFavorite(TokenResponse tokenResponse) {
-        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(
-            TEST_SOURCE, TEST_TARGET);
-
+    public String createFavorite(TokenResponse tokenResponse, FavoriteCreateRequest favoriteCreateRequest) {
         return given().log().all().
             auth().
             oauth2(tokenResponse.getAccessToken()).
@@ -387,10 +381,7 @@ public class AcceptanceTest {
             getList(".", FavoriteResponse.class);
     }
 
-    public void deleteFavorite(TokenResponse tokenResponse) {
-        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(
-            TEST_SOURCE, TEST_TARGET);
-
+    public void deleteFavorite(TokenResponse tokenResponse, FavoriteDeleteRequest favoriteDeleteRequest) {
         given().log().all().
             auth().
             oauth2(tokenResponse.getAccessToken()).

@@ -43,7 +43,6 @@ create table if not exists FAVORITE
     member bigint not null,
     source bigint not null,
     target bigint not null
---  TODO foreign key 추가
 );
 
 -- INSERT INTO LINE (name, start_time, end_time, interval_time)
