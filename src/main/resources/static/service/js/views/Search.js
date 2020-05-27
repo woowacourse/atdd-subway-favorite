@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -12,6 +11,7 @@ function Search() {
   const $searchResult = document.querySelector('#search-result')
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
+
 
   const showSearchResult = data => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
@@ -67,8 +67,18 @@ function Search() {
     }
   }
 
+  const addFavorite = event => {
+    const $departureStationId = document.querySelector('#path-container').firstElementChild.dataset.id
+    const $arrivalStationId = document.querySelector('#path-container').lastElementChild.dataset.id
+
+    event.preventDefault()
+    api.favorite
+      .create(localStorage.getItem("memberId"), {sourceId: $departureStationId, targetId: $arrivalStationId})
+  }
+
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
+    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, addFavorite)
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
     $shortestDistanceTab.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
     $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime)

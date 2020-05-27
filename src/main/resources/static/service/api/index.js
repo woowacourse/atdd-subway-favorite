@@ -33,7 +33,8 @@ const METHOD = {
     return {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: localStorage.getItem("auth") || ""
       },
       body: JSON.stringify({
         ...data
@@ -66,7 +67,7 @@ const api = (() => {
       return request('/members', METHOD.POST(params))
     },
     login(params) {
-      return requestWithJsonData('/login', METHOD.POST(params))
+      return request('/login', METHOD.POST(params))
     },
     find() {
       return requestWithJsonData('/mypage', METHOD.GET_WITH_AUTH())
@@ -79,10 +80,23 @@ const api = (() => {
     }
   }
 
+  const favorite = {
+    create(id, addFavoriteRequest) {
+      return request(`/members/${id}/favorites`, METHOD.POST(addFavoriteRequest));
+    },
+    get(id) {
+      return requestWithJsonData(`/members/${id}/favorites`, METHOD.GET_WITH_AUTH());
+    },
+    delete(memberId, sourceId, targetId) {
+      return request(`/members/${memberId}/favorites/source/${sourceId}/target/${targetId}`, METHOD.DELETE());
+    }
+  };
+
   return {
     line,
     path,
     member,
+    favorite
   }
 })()
 

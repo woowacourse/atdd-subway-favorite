@@ -12,6 +12,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 import javax.servlet.http.HttpSession;
+import java.net.URI;
 
 @RestController
 public class LoginMemberController {
@@ -23,15 +24,14 @@ public class LoginMemberController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param, HttpSession session) {
-        // TODO: 2020/05/20 session 생성 주체 확인
-        if (!memberService.loginWithForm(param.getEmail(), param.getPassword())) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-        }
+        Member member = memberService.loginWithForm(param.getEmail(), param.getPassword());
 
         String token = memberService.createToken(param);
         session.setAttribute("loginMemberEmail", param.getEmail());
 
-        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+        return ResponseEntity.ok()
+                .location(URI.create("/members/" + member.getId()))
+                .body(new TokenResponse(token, "bearer"));
     }
 
     @GetMapping({"/mypage"})

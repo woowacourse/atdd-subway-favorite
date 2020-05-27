@@ -19,6 +19,11 @@ function Login() {
     }
 
     api.member.login(data)
+      .then(response => {
+        const location = response.headers.get('Location')
+        localStorage.setItem("memberId", `${location.split("/")[2]}`)
+        return response.json()
+      })
       .then(auth => {
         if (!!auth) {
           localStorage.setItem("auth", `${auth.tokenType} ${auth.accessToken}`)

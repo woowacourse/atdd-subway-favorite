@@ -3,7 +3,7 @@ INSERT INTO LINE (name, start_time, end_time, interval_time) VALUES('2호선', '
 INSERT INTO LINE (name, start_time, end_time, interval_time) VALUES('4호선', '05:00', '23:00', 10);
 INSERT INTO LINE (name, start_time, end_time, interval_time) VALUES('5호선', '05:00', '23:00', 10);
 INSERT INTO LINE (name, start_time, end_time, interval_time) VALUES('9호선', '05:00', '23:00', 9);
-INSERT INTO LINE (name, start_time, end_time, interval_time) VALUES('토늬', '05:00', '23:00', 9);
+INSERT INTO LINE (name, start_time, end_time, interval_time) VALUES('토안', '05:00', '23:00', 9);
 
 INSERT INTO STATION (name)
 VALUES
@@ -22,8 +22,8 @@ VALUES
 ('시청'),
 ('토니'),
 ('토늬'),
-('무니'),
-('무늬');
+('유안'),
+('유으');
 
 INSERT INTO LINE_STATION (line, pre_station_id, station_id, distance, duration)
 VALUES
@@ -58,3 +58,5 @@ VALUES
 (6, 14, 15, 10, 10),
 (6, 15, 16, 10, 10),
 (6, 16, 17, 10, 10);
+
+INSERT INTO MEMBER(email, name, password) VALUES('qkrtmddhks95@gmail.com', 'toney', '1');

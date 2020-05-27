@@ -46,8 +46,11 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(NoMemberExistException::new);
     }
 
-    public boolean loginWithForm(String email, String password) {
+    public Member loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+        if (!member.checkPassword(password)) {
+            throw new InvalidAuthenticationException("비번 틀렸어");
+        }
+        return member;
     }
 }
