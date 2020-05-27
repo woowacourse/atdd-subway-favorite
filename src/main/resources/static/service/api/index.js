@@ -43,7 +43,7 @@ const METHOD = {
 };
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config).then(response => {
+  const requestWithRedirect = (uri, config) => fetch(uri, config).then(response => {
     if (response.redirected) {
       window.location.href = response.url;
     }
@@ -51,9 +51,14 @@ const api = (() => {
   });
   const requestWithJsonData = (uri, config) =>
     fetch(uri, config).then(response => {
-      if (response.redirected) {
-        window.location.href = response.url;
+      if (!response.ok) {
+        return;
       }
+      return response.json();
+    });
+
+  const requestWithJsonDataAndRedirect = (uri, config) =>
+    fetch(uri, config).then(response => {
       if (!response.ok) {
         return;
       }
@@ -62,16 +67,16 @@ const api = (() => {
 
   const member = {
     get(id) {
-      return requestWithJsonData(`/members/${id}`);
+      return requestWithJsonDataAndRedirect(`/members/${id}`);
     },
     create(newMember) {
-      return request(`/members`, METHOD.POST(newMember));
+      return requestWithRedirect(`/members`, METHOD.POST(newMember));
     },
     update(id, updatedData) {
-      return request(`/members/${id}`, METHOD.PUT(updatedData));
+      return requestWithRedirect(`/members/${id}`, METHOD.PUT(updatedData));
     },
     delete(id) {
-      return request(`/members/${id}`, METHOD.DELETE());
+      return requestWithRedirect(`/members/${id}`, METHOD.DELETE());
     },
     login(loginInfo) {
       return requestWithJsonData(`/oauth/token`, METHOD.POST(loginInfo));
@@ -80,28 +85,28 @@ const api = (() => {
 
   const loginMember = {
     get() {
-      return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonData(`/me`, METHOD.GET_WITH_AUTH());
     },
     update(updatedInfo) {
-      return request(`/me`, METHOD.PUT(updatedInfo));
+      return requestWithRedirect(`/me`, METHOD.PUT(updatedInfo));
     },
     delete() {
-      return request(`/me`, METHOD.DELETE());
+      return requestWithRedirect(`/me`, METHOD.DELETE());
     }
   };
 
   const line = {
     getAll() {
-      return request(`/lines/detail`);
+      return requestWithRedirect(`/lines/detail`);
     },
     getAllDetail() {
-      return requestWithJsonData(`/lines/detail`);
+      return requestWithJsonDataAndRedirect(`/lines/detail`);
     }
   };
 
   const path = {
     find(params) {
-      return requestWithJsonData(
+      return requestWithJsonDataAndRedirect(
         `/paths?source=${params.source}&target=${params.target}&type=${params.type}`
       );
     }
@@ -109,16 +114,18 @@ const api = (() => {
 
   const favorite = {
     create(favoritePath) {
-      return request(`/me/favorites`, METHOD.POST(favoritePath));
+      return requestWithRedirect(`/me/favorites`, METHOD.POST(favoritePath));
     },
     get(sourceId, targetId) {
-      return requestWithJsonData(`/me/favorites/source/${sourceId}/target/${targetId}/existsPath`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonDataAndRedirect(`/me/favorites/source/${sourceId}/target/${targetId}/existsPath`,
+        METHOD.GET_WITH_AUTH());
     },
     getAll() {
-      return requestWithJsonData(`/me/favorites`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonDataAndRedirect(`/me/favorites`, METHOD.GET_WITH_AUTH());
     },
     delete(sourceId, targetId) {
-      return request(`/me/favorites/source/${sourceId}/target/${targetId}`, METHOD.DELETE());
+      return requestWithRedirect(`/me/favorites/source/${sourceId}/target/${targetId}`,
+        METHOD.DELETE());
     }
   };
 

@@ -1,12 +1,12 @@
 package wooteco.subway.service.favorite;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +15,6 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
@@ -33,9 +32,9 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> getFavorites(Member member) {
-        Set<Long> memberFavoriteStationIds = member.findAllFavoriteStationIds();
-        Map<Long, Station> stations = stationRepository.findAllById(memberFavoriteStationIds).stream()
-            .collect(Collectors.toMap(Station::getId, station -> station));
+        Set<Long> favoriteStationIds = member.findAllFavoriteStationIds();
+        Map<Long, Station> stations = stationRepository.findAllById(favoriteStationIds).stream()
+            .collect(toMap(Station::getId, station -> station));
 
         return member.getFavorites().stream()
             .map(favorite -> makeFavoriteResponse(favorite, stations))
@@ -55,15 +54,7 @@ public class FavoriteService {
     public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
         Favorite favorite = favoriteRequest.toFavorite();
         member.addFavorite(favorite);
-
-        try {
-            memberRepository.save(member);
-        } catch (DbActionExecutionException e) {
-            if (e.getCause() instanceof DuplicateKeyException) {
-                throw new DuplicateEmailException();
-            }
-            throw e;
-        }
+        memberRepository.save(member);
     }
 
     public void removeFavorite(Member member, Long sourceId, Long targetId) {

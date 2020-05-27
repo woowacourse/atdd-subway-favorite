@@ -2,6 +2,8 @@ package wooteco.subway.web.member;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +41,8 @@ public class MeController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateMember(@LoginMember Member request, @RequestBody UpdateMemberRequest param) {
+    public ResponseEntity<Void> updateMember(@LoginMember Member request,
+        @Valid @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(request.getId(), param);
         return ResponseEntity.ok().build();
     }
@@ -59,7 +62,7 @@ public class MeController {
 
     @PostMapping("/favorites")
     public ResponseEntity<Void> addFavorite(@LoginMember Member member,
-        @RequestBody FavoriteRequest favoriteRequest) {
+        @Valid @RequestBody FavoriteRequest favoriteRequest) {
         favoriteService.addFavorite(member, favoriteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

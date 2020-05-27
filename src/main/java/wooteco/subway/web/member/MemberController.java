@@ -2,6 +2,8 @@ package wooteco.subway.web.member;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
+    public ResponseEntity<Void> updateMember(@PathVariable Long id, @Valid @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }

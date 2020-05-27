@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
-import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {

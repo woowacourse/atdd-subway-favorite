@@ -1,6 +1,6 @@
 package wooteco.subway.web.member;
 
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,21 +23,12 @@ public class LoginMemberController {
     }
 
     @PostMapping("/oauth/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
         TokenResponse jwtToken = memberService.createJwtToken(request);
         return ResponseEntity.ok().body(jwtToken);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest request, HttpSession session) {
-        if (!memberService.loginWithForm(request)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-        }
-        session.setAttribute("loginMemberEmail", request.getEmail());
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
+    @GetMapping("/me/bearer")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member request) {
         return ResponseEntity.ok().body(MemberResponse.of(request));
     }
