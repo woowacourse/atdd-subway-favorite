@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
@@ -30,14 +31,9 @@ public class LineService {
         return lineRepository.findAll();
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
-    }
-
     public void updateLine(Long id, LineRequest lineRequest) {
         Line persistLine = lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new EntityNotFoundException("노선을 찾을 수 없습니다."));
         persistLine.update(lineRequest.toLine());
         lineRepository.save(persistLine);
     }
@@ -48,10 +44,10 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest lineStationCreateRequest) {
         Line line = lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new EntityNotFoundException("노선을 찾을 수 없습니다."));
         LineStation lineStation = new LineStation(lineStationCreateRequest.getPreStationId(),
-                lineStationCreateRequest.getStationId(),
-                lineStationCreateRequest.getDistance(), lineStationCreateRequest.getDuration());
+            lineStationCreateRequest.getStationId(),
+            lineStationCreateRequest.getDistance(), lineStationCreateRequest.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
@@ -59,7 +55,7 @@ public class LineService {
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId)
-                .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new EntityNotFoundException("노선을 찾을 수 없습니다."));
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }

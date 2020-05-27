@@ -33,9 +33,9 @@ public class MemberService {
 
     public String createToken(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(IllegalArgumentException::new);
         if (!member.checkPassword(loginRequest.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new IllegalArgumentException("잘못된 패스워드");
         }
 
         return jwtTokenProvider.createToken(loginRequest.getEmail());
@@ -43,7 +43,7 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
+            .orElseThrow(IllegalArgumentException::new);
     }
 
     public boolean loginWithForm(String email, String password) {

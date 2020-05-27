@@ -15,13 +15,6 @@ public class Stations {
 		return stations;
 	}
 
-	public Station extractStationById(Long stationId) {
-		return stations.stream()
-			.filter(station -> station.isSameId(stationId))
-			.findFirst()
-			.orElseThrow(RuntimeException::new);
-	}
-
 	public Map<Long, String> createStationIdNameMap() {
 		return stations.stream()
 			.collect(Collectors.toMap(Station::getId, Station::getName));
