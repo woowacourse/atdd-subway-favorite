@@ -46,7 +46,7 @@ public class AcceptanceTest {
     public static final String TEST_USER_PASSWORD = "brown";
 
     public static final String TEST_SOURCE = "강남역";
-    public static final String TEST_TARGET = "잠실역";
+    public static final String TEST_TARGET = "선릉역";
 
     @LocalServerPort
     public int port;
