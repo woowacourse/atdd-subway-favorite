@@ -132,13 +132,13 @@ public class FavoriteControllerTest {
 	@Test
 	void deleteFavorite() throws Exception {
 		given(memberService.findMemberByEmail(any())).willReturn(member);
-		member.addFavorite(Favorite.of(1L, 2L));
+		final Long sourceId = 1L;
+		final Long targetId = 2L;
+		member.addFavorite(Favorite.of(sourceId, targetId));
 		member.addFavorite(Favorite.of(3L, 4L));
 
-		this.mockMvc.perform(delete("/favorites?sourceId=1&targetId=2")
+		this.mockMvc.perform(delete("/favorites?sourceId=" + sourceId + "&targetId=" + targetId)
 			.header("authorization", "Bearer " + token))
-			// .param("sourceId", "1")
-			// .param("targetId", "2"))
 			.andExpect(status().isNoContent())
 			.andDo(print())
 			.andDo(MemberLoginDocumentation.deleteFavorite());

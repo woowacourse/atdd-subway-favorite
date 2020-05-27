@@ -54,4 +54,4 @@ operation::favorite-retrieve[snippets='http-request,http-response']
 [[resources-members-favorite-delete]]
 === 즐겨찾기 삭제
 
-operation::favorite-delete[snippets='http-request,http-response']
+operation::favorite-delete[snippets='http-request,request-parameters,http-response']
