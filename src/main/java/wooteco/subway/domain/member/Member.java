@@ -1,9 +1,15 @@
 package wooteco.subway.domain.member;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
+import wooteco.subway.domain.favorite.Favorite;
+
 public class Member {
+    Set<Favorite> favorites = new HashSet<>();
     @Id
     private Long id;
     private String email;
@@ -26,6 +32,28 @@ public class Member {
         this.password = password;
     }
 
+    public void update(String name, String password) {
+        if (StringUtils.isNotBlank(name)) {
+            this.name = name;
+        }
+        if (StringUtils.isNotBlank(password)) {
+            this.password = password;
+        }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public boolean doesNotHaveFavoriteWithId(Long favoriteId) {
+        return favorites.stream()
+            .noneMatch(favorite -> favorite.getId().equals(favoriteId));
+    }
+
     public Long getId() {
         return id;
     }
@@ -42,16 +70,7 @@ public class Member {
         return password;
     }
 
-    public void update(String name, String password) {
-        if (StringUtils.isNotBlank(name)) {
-            this.name = name;
-        }
-        if (StringUtils.isNotBlank(password)) {
-            this.password = password;
-        }
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public Set<Favorite> getFavorites() {
+        return favorites;
     }
 }
