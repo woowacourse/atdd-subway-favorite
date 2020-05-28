@@ -28,13 +28,10 @@ public class FavoriteService {
 
 	@Transactional
 	public void create(Member member, FavoriteCreateRequest favoriteCreateRequest) {
-		Member persistMember = memberRepository.findById(member.getId())
-			.orElseThrow(IllegalArgumentException::new);
+		Member persistMember = findMemberById(member);
 
-		Long source = stationRepository.findIdByName(favoriteCreateRequest.getSource())
-			.orElseThrow(IllegalArgumentException::new);
-		Long target = stationRepository.findIdByName(favoriteCreateRequest.getTarget())
-			.orElseThrow(IllegalArgumentException::new);
+		Long source = findStationIdByName(favoriteCreateRequest.getSource());
+		Long target = findStationIdByName(favoriteCreateRequest.getTarget());
 		Favorite favorite = new Favorite(source, target);
 
 		persistMember.addFavorite(favorite);
@@ -45,8 +42,7 @@ public class FavoriteService {
 
 	@Transactional(readOnly = true)
 	public List<FavoriteResponse> find(Member member) {
-		Member persistMember = memberRepository.findById(member.getId())
-			.orElseThrow(IllegalArgumentException::new);
+		Member persistMember = findMemberById(member);
 		Set<Favorite> favorites = persistMember.getFavorites();
 
 		return favorites.stream()
@@ -56,21 +52,33 @@ public class FavoriteService {
 
 	private FavoriteResponse toFavoriteResponse(Favorite favorite) {
 		return new FavoriteResponse(
-			stationRepository.findNameById(favorite.getSource())
-				.orElseThrow(IllegalArgumentException::new),
-			stationRepository.findNameById(favorite.getTarget())
-				.orElseThrow(IllegalArgumentException::new));
+			findStationNameById(favorite.getSource()),
+			findStationNameById(favorite.getTarget()));
 	}
 
 	@Transactional
 	public void delete(Member member, FavoriteDeleteRequest favoriteDeleteRequest) {
 		Favorite favorite = toFavorite(favoriteDeleteRequest);
-		Member persistMember = memberRepository.findById(member.getId())
-			.orElseThrow(IllegalArgumentException::new);
+		Member persistMember = findMemberById(member);
 
 		persistMember.removeFavorite(favorite);
 
 		memberRepository.save(persistMember);
+	}
+
+	private Member findMemberById(Member member) {
+		return memberRepository.findById(member.getId())
+			.orElseThrow(IllegalArgumentException::new);
+	}
+
+	private Long findStationIdByName(String stationName) {
+		return stationRepository.findIdByName(stationName)
+			.orElseThrow(IllegalArgumentException::new);
+	}
+
+	private String findStationNameById(long stationId) {
+		return stationRepository.findNameById(stationId)
+			.orElseThrow(IllegalArgumentException::new);
 	}
 
 	private Favorite toFavorite(FavoriteDeleteRequest favoriteDeleteRequest) {
