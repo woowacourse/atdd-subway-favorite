@@ -1,7 +1,5 @@
 package wooteco.subway.service.member;
 
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,15 +27,11 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        try {
-            Member member = memberRepository.save(request.toMember());
-            return MemberResponse.of(member);
-        } catch (DbActionExecutionException e) {
-            if (e.getCause() instanceof DuplicateKeyException) {
-                throw new DuplicateEmailException();
-            }
-            throw e;
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateEmailException();
         }
+        Member member = memberRepository.save(request.toMember());
+        return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, UpdateMemberRequest request) {
@@ -48,11 +42,14 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
+        if (memberRepository.existsById(id)) {
+            throw new EntityNotFoundException(id + "에 해당하는 회원이 없습니다.");
+        }
         memberRepository.deleteById(id);
     }
 
     public TokenResponse createJwtToken(LoginRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(LoginFailException::new);
         if (!member.checkPassword(request.getPassword())) {
             throw new LoginFailException();
         }

@@ -2,13 +2,17 @@ package wooteco.subway.domain.favorite;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+
+import wooteco.subway.exception.EntityNotFoundException;
 
 public class Favorites {
     private final Set<Favorite> favorites;
 
     public Favorites(Set<Favorite> favorites) {
-        this.favorites = favorites;
+        this.favorites = new LinkedHashSet<>(Objects.requireNonNull(favorites));
     }
 
     public Set<Long> findAllIds() {
@@ -33,6 +37,9 @@ public class Favorites {
     }
 
     public void removeFavorite(Favorite favorite) {
+        if (!favorites.contains(favorite)) {
+            throw new EntityNotFoundException("삭제할 즐겨찾기 경로가 존재하지 않습니다.");
+        }
         favorites.remove(favorite);
     }
 }

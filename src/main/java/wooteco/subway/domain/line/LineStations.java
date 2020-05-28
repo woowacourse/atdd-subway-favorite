@@ -1,16 +1,21 @@
 package wooteco.subway.domain.line;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class LineStations {
-    private Set<LineStation> stations;
+    private final Set<LineStation> stations;
 
     public LineStations(Set<LineStation> stations) {
-        this.stations = stations;
+        this.stations = new LinkedHashSet<>(Objects.requireNonNull(stations));
     }
 
     public static LineStations empty() {
-        return new LineStations(new HashSet<>());
+        return new LineStations(new LinkedHashSet<>());
     }
 
     public Set<LineStation> getStations() {

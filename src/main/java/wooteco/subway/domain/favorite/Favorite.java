@@ -2,13 +2,22 @@ package wooteco.subway.domain.favorite;
 
 import java.util.Objects;
 
+import wooteco.subway.exception.SameSourceTargetStationException;
+
 public class Favorite {
     private final Long sourceStationId;
     private final Long targetStationId;
 
-    public Favorite(long sourceStationId, long targetStationId) {
-        this.sourceStationId = sourceStationId;
-        this.targetStationId = targetStationId;
+    public Favorite(Long sourceStationId, Long targetStationId) {
+        validateStationId(sourceStationId, targetStationId);
+        this.sourceStationId = Objects.requireNonNull(sourceStationId);
+        this.targetStationId = Objects.requireNonNull(targetStationId);
+    }
+
+    private void validateStationId(Long sourceStationId, Long targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
+            throw new SameSourceTargetStationException();
+        }
     }
 
     public long getSourceStationId() {

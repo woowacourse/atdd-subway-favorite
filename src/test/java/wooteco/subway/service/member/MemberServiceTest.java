@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -54,6 +55,17 @@ public class MemberServiceTest {
         memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
+    }
+
+    @DisplayName("중복된 이메일로 회원가입 하는 경우, DuplicateEmailException을 던진다.")
+    @Test
+    void createMemberWithDuplicateEmail() {
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        when(memberRepository.existsByEmail(any())).thenReturn(true);
+        assertThatThrownBy(() -> memberService.createMember(memberRequest))
+            .isInstanceOf(DuplicateEmailException.class);
     }
 
     @DisplayName("로그인시 Jwt 토큰 발급 기능 수행시,  jwtTokenProvider의 토큰 생성 기능을 정상 호출한다.")

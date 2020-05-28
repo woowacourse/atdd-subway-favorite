@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,20 +21,15 @@ public class Member {
     @Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
     private Favorites favorites;
 
-    public Member() {
+    private Member() {
     }
 
     public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(null, email, name, password, new Favorites(new LinkedHashSet<>()));
     }
 
     public Member(Long id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(id, email, name, password, new Favorites(new LinkedHashSet<>()));
     }
 
     public Member(Long id, String email, String name, String password, Favorites favorites) {
@@ -54,6 +51,22 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public Set<Long> findAllFavoriteStationIds() {
+        return Collections.unmodifiableSet(favorites.findAllIds());
+    }
+
+    public boolean hasFavorite(Favorite favorite) {
+        return favorites.hasFavorite(favorite);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.addFavorite(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.removeFavorite(favorite);
     }
 
     public Long getId() {
@@ -92,31 +105,5 @@ public class Member {
     @Override
     public int hashCode() {
         return Objects.hash(id, email, name, password);
-    }
-
-    @Override
-    public String toString() {
-        return "Member{" +
-            "id=" + id +
-            ", email='" + email + '\'' +
-            ", name='" + name + '\'' +
-            ", password='" + password + '\'' +
-            '}';
-    }
-
-    public Set<Long> findAllFavoriteStationIds() {
-        return favorites.findAllIds();
-    }
-
-    public boolean hasFavorite(Favorite favorite) {
-        return favorites.hasFavorite(favorite);
-    }
-
-    public void addFavorite(Favorite favorite) {
-        favorites.addFavorite(favorite);
-    }
-
-    public void removeFavorite(Favorite favorite) {
-        favorites.removeFavorite(favorite);
     }
 }
