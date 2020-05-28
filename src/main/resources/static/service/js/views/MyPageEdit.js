@@ -63,7 +63,8 @@ function MypageEdit() {
   }
 
   const initMyPageEdit = () => {
-    api.member.find()
+    const id = localStorage.getItem("memberId")
+    api.member.find(id)
       .then(data => {
         $email.innerHTML = data.email
         $name.value = data.name

@@ -15,7 +15,8 @@ const initEventListeners = () => {
 }
 
 const initializeMainMenu = () => {
-  api.member.find()
+  const id = localStorage.getItem("memberId")
+  api.member.find(id)
     .then(data => {
       const isLogin = !!data.name;
       initMainMenu(isLogin)

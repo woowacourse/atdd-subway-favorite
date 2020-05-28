@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/members")
 public class MemberController {
     private MemberService memberService;
 
@@ -21,7 +22,7 @@ public class MemberController {
     }
 
     @NoValidate
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
@@ -29,12 +30,18 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping("/members")
+    @GetMapping
     public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@PathVariable Long id, @LoginMember Member member) {
+        member.validateId(id);
+        return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @PutMapping("/{id}")
     public ResponseEntity<MemberResponse> updateMember(
             @PathVariable Long id,
             @RequestBody UpdateMemberRequest param,
@@ -45,7 +52,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<MemberResponse> deleteMember(
             @PathVariable Long id,
             @LoginMember Member member

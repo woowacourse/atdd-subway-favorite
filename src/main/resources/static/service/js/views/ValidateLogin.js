@@ -2,7 +2,8 @@ import api from '../../api/index.js'
 
 function ValidateLogin() {
   const validate = () => {
-    api.member.find()
+    const id = localStorage.getItem("memberId")
+    api.member.find(id)
       .then(data => {
         if (data.status === 401) {
           alert("로그인 해주세요")

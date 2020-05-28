@@ -5,7 +5,8 @@ function Mypage() {
   const $memberNameValue = document.querySelector('#member-name')
 
   const initMyPage = () => {
-    api.member.find()
+    const id = localStorage.getItem("memberId")
+    api.member.find(id)
       .then(data => {
         $memberEmailValue.innerHTML = data.email
         $memberNameValue.innerHTML = data.name

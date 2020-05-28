@@ -69,8 +69,8 @@ const api = (() => {
     login(params) {
       return request('/login', METHOD.POST(params))
     },
-    find() {
-      return requestWithJsonData('/mypage', METHOD.GET_WITH_AUTH())
+    find(id) {
+      return requestWithJsonData(`/members/${id}`, METHOD.GET_WITH_AUTH())
     },
     edit(data) {
       return request(`/members/${data.id}`, METHOD.PUT(data))
