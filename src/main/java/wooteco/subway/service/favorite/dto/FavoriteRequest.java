@@ -3,6 +3,7 @@ package wooteco.subway.service.favorite.dto;
 import wooteco.subway.domain.favorite.Favorite;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class FavoriteRequest {
     @NotNull
@@ -28,5 +29,9 @@ public class FavoriteRequest {
 
     public Favorite toFavorite(final Long memberId) {
         return new Favorite(memberId, source, target);
+    }
+
+    public boolean isDuplicatedStation() {
+        return Objects.equals(source, target);
     }
 }

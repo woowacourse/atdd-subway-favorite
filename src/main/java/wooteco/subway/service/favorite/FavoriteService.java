@@ -7,6 +7,7 @@ import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.path.DuplicatedStationException;
 
 import java.util.List;
 
@@ -22,9 +23,12 @@ public class FavoriteService {
     }
 
     public FavoriteResponse addFavorite(final Long memberId, final FavoriteRequest request) {
-        if (favoriteRepository.existsByMemberIdAndSourceIdAndTargetId(
+        if (favoriteRepository.existsBy(
                 memberId, request.getSource(), request.getTarget())) {
             throw new ExistedFavoriteException();
+        }
+        if (request.isDuplicatedStation()) {
+            throw new DuplicatedStationException();
         }
         Favorite favorite = favoriteRepository.save(request.toFavorite(memberId));
         return FavoriteResponse.from(favorite);

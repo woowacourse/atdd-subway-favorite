@@ -10,6 +10,7 @@ import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.path.DuplicatedStationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +55,20 @@ class FavoriteServiceTest {
 
     @DisplayName("이미 등록된 즐겨찾기 추가할 경우 예외발생")
     @Test
-    public void addFavoriteWithDuplicatedAttributes() {
+    public void addFavoriteWithAlreadyRegisteredAttributes() {
         assertThatThrownBy(() -> {
-            when(favoriteRepository.existsByMemberIdAndSourceIdAndTargetId(any(), any(), any())).thenReturn(true);
+            when(favoriteRepository.existsBy(any(), any(), any())).thenReturn(true);
 
             favoriteService.addFavorite(63L, new FavoriteRequest(1L, 3L));
         }).isInstanceOf(ExistedFavoriteException.class);
+    }
+
+    @DisplayName("역 이름이 중복될 경우 예외 발생")
+    @Test
+    public void addFavoriteWithDuplicatedAttributes() {
+        assertThatThrownBy(() -> {
+            favoriteService.addFavorite(63L, new FavoriteRequest(2L, 2L));
+        }).isInstanceOf(DuplicatedStationException.class);
     }
 
     @DisplayName("즐겨찾기 조회 by 회원 ID")

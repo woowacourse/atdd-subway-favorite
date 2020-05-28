@@ -1,13 +1,19 @@
 package wooteco.subway.web;
 
 public class ExceptionResponse {
-    private final String errorSign;
+    private final String errorCode;
+    private final String message;
 
-    public ExceptionResponse(final String errorSign) {
-        this.errorSign = errorSign;
+    public ExceptionResponse(final String errorCode, final String message) {
+        this.errorCode = errorCode;
+        this.message = message;
     }
 
-    public String getErrorSign() {
-        return errorSign;
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

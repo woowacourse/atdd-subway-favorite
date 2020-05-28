@@ -1,9 +1,11 @@
 package wooteco.subway.web;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import wooteco.subway.service.favorite.ExistedFavoriteException;
 import wooteco.subway.service.member.ExistedEmailException;
 import wooteco.subway.service.member.NotExistedEmailException;
@@ -14,59 +16,34 @@ import wooteco.subway.service.path.NotExistedStationException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @RestControllerAdvice
-public class ExceptionAdvice {
+public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(DuplicatedStationException.class)
-    public ExceptionResponse handleDuplicatedStation() {
-        return new ExceptionResponse("DUPLICATED_STATION");
+    @ExceptionHandler(value = {DuplicatedStationException.class, NotExistedPathException.class,
+            ExistedEmailException.class, WrongPasswordException.class, ExistedFavoriteException.class})
+    public ResponseEntity<ExceptionResponse> handleBadRequest(BadRequestForResourcesException e) {
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(e.getErrorCode(), e.getMessage()));
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotExistedStationException.class)
-    public ExceptionResponse handleNotExistedStation() {
-        return new ExceptionResponse("NOT_EXISTED_STATION");
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NotExistedPathException.class)
-    public ExceptionResponse handleNotExistedPath() {
-        return new ExceptionResponse("NOT_EXISTED_PATH");
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ExistedEmailException.class)
-    public ExceptionResponse handleExistedEmail() {
-        return new ExceptionResponse("EXISTED_EMAIL");
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotExistedEmailException.class)
-    public ExceptionResponse handleNotExistedEmail() {
-        return new ExceptionResponse("NOT_EXISTED_EMAIL");
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(WrongPasswordException.class)
-    public ExceptionResponse handleWrongPassword() {
-        return new ExceptionResponse("WRONG_PASSWORD");
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidAuthenticationException.class)
-    public ExceptionResponse handleInvalidAuthentication() {
-        return new ExceptionResponse("INVALID_AUTHENTICATION");
+    public ResponseEntity<ExceptionResponse> handleUnauthorized(UserUnauthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ExceptionResponse(e.getErrorCode(), e.getMessage()));
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ExistedFavoriteException.class)
-    public ExceptionResponse handleExistedFavorite() {
-        return new ExceptionResponse("EXISTED_FAVORITE");
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(value = {NotExistedStationException.class, NotExistedEmailException.class})
+    public ResponseEntity<ExceptionResponse> handleNotFound(ResourcesNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ExceptionResponse(e.getErrorCode(), e.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ExceptionResponse handleGeneralServerError() {
-        return new ExceptionResponse("SERVER_ERROR");
+    public ResponseEntity<ExceptionResponse> handleGeneralServerError(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ExceptionResponse("SERVER_ERROR", e.getMessage()));
     }
 }

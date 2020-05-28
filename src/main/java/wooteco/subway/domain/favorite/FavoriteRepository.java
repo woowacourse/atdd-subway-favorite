@@ -17,8 +17,7 @@ public interface FavoriteRepository extends CrudRepository<Favorite, Long> {
 
     @Query("select count(*) > 0 from favorite where member_id = :memberId and " +
             "source_station_id = :sourceId and target_station_id = :targetId")
-    Boolean existsByMemberIdAndSourceIdAndTargetId(
-            @Param("memberId") Long memberId,
-            @Param("sourceId") Long sourceId,
-            @Param("targetId") Long targetId);
+    boolean existsBy(@Param("memberId") Long memberId,
+                     @Param("sourceId") Long sourceId,
+                     @Param("targetId") Long targetId);
 }

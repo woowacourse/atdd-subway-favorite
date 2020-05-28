@@ -2,9 +2,10 @@ package wooteco.subway.service.station;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.service.line.LineStationService;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.LineStationService;
+import wooteco.subway.service.path.NotExistedStationException;
 
 import java.util.List;
 
@@ -30,5 +31,14 @@ public class StationService {
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
+    }
+
+    public Station findByName(final String name) {
+        return stationRepository.findByName(name)
+                .orElseThrow(NotExistedStationException::new);
+    }
+
+    public List<Station> findAllById(final List<Long> stationIds) {
+        return stationRepository.findAllById(stationIds);
     }
 }

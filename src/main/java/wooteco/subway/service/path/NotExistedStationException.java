@@ -1,7 +1,11 @@
 package wooteco.subway.service.path;
 
-public class NotExistedStationException extends RuntimeException {
+import wooteco.subway.web.ResourcesNotFoundException;
+
+public class NotExistedStationException extends ResourcesNotFoundException {
+    private static final String ERROR_CODE = "NOT_EXISTED_STATION";
+
     public NotExistedStationException() {
-        super("존재하지 않는 역입니다.");
+        super(ERROR_CODE, "존재하지 않는 역입니다.");
     }
 }

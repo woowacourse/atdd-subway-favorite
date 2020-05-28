@@ -42,8 +42,7 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(NotExistedEmailException::new);
+        Member member = findMemberByEmail(param.getEmail());
         if (!member.checkPassword(param.getPassword())) {
             throw new WrongPasswordException();
         }

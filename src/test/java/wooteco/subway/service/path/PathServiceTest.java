@@ -6,24 +6,28 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,11 +41,9 @@ public class PathServiceTest {
     private static final String STATION_NAME6 = "서울역";
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
     @Mock
-    private LineRepository lineRepository;
-    @Mock
-    private GraphService graphService;
+    private LineService lineService;
 
     private PathService pathService;
 
@@ -55,9 +57,13 @@ public class PathServiceTest {
     private Line line1;
     private Line line2;
 
+    @Mock
+    private PathCalculator pathCalculator;
+
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationRepository, lineRepository, graphService);
+        MockitoAnnotations.initMocks(this);
+        pathService = new PathService(stationService, lineService);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -80,11 +86,10 @@ public class PathServiceTest {
     @DisplayName("일반적인 상황의 경로 찾기")
     @Test
     void findPath() {
-        when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2));
-        when(stationRepository.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
-        when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
-        when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
-        when(graphService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
+        when(lineService.findLines()).thenReturn(Lists.list(line1, line2));
+        when(stationService.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
+        when(stationService.findByName(STATION_NAME3)).thenReturn(station3);
+        when(stationService.findByName(STATION_NAME5)).thenReturn(station5);
 
         PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
 
@@ -109,7 +114,10 @@ public class PathServiceTest {
     @DisplayName("출발역과 도착역이 연결이 되지 않은 경우")
     @Test
     void findPathWithNoPath() {
-        assertThrows(NotExistedStationException.class,
-                () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
+        assertThatThrownBy(() -> {
+            when(lineService.findLines()).thenReturn(new ArrayList<>());
+            when(stationService.findByName(any())).thenReturn(new Station(1L, STATION_NAME3));
+            pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE);
+        }).isInstanceOf(NotExistedPathException.class);
     }
 }

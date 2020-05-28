@@ -5,8 +5,15 @@ import java.util.*;
 public class LineStations {
     private Set<LineStation> stations;
 
+    public LineStations() {
+    }
+
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;
+    }
+
+    public LineStations(final List<LineStation> stations) {
+        this.stations = new HashSet<>(stations);
     }
 
     public static LineStations empty() {
