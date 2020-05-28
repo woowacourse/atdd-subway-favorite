@@ -3,7 +3,7 @@ package wooteco.subway.service.member.dto;
 import javax.validation.constraints.Email;
 
 public class MemberRequest {
-    @Email(message = "이메일 형식이 잘못되었습니다.")
+    @Email
     private String email;
     private String name;
     private String password;

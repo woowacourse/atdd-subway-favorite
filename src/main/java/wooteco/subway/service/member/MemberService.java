@@ -22,7 +22,6 @@ import wooteco.subway.service.member.dto.FavoriteResponses;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.service.member.favorite.FavoriteService;
 import wooteco.subway.web.dto.ErrorCode;
 import wooteco.subway.web.member.exception.MemberException;
 
@@ -30,15 +29,12 @@ import wooteco.subway.web.member.exception.MemberException;
 public class MemberService {
     private MemberRepository memberRepository;
     private StationRepository stationRepository;
-    private FavoriteService favoriteService;
     private JwtTokenProvider jwtTokenProvider;
 
     public MemberService(final MemberRepository memberRepository,
-        final StationRepository stationRepository,
-        final FavoriteService favoriteService, final JwtTokenProvider jwtTokenProvider) {
+        final StationRepository stationRepository, final JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
-        this.favoriteService = favoriteService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -62,15 +58,17 @@ public class MemberService {
 
     @Transactional
     public void updateMember(UpdateMemberRequest param, LoginEmail loginEmail) {
-        Member member = getMember(loginEmail.getEmail());
+        Member member = getMember(loginEmail);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
-    @Transactional
     public String createToken(LoginRequest loginRequest) {
         String email = loginRequest.getEmail();
-        Member member = getMember(email);
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new MemberException(String.format("%s : 가입하지 않은 이메일입니다.", email),
+                ErrorCode.UNSIGNED_EMAIL));
+
         if (!member.checkPassword(loginRequest.getPassword())) {
             throw new MemberException(ErrorCode.WRONG_PASSWORD);
         }
@@ -78,32 +76,33 @@ public class MemberService {
         return jwtTokenProvider.createToken(loginRequest.getEmail());
     }
 
-    private Member getMember(final String email) {
+    private Member getMember(final LoginEmail loginEmail) {
+        String email = loginEmail.getEmail();
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new MemberException(String.format("%s : 가입하지 않은 이메일입니다.", email),
                 ErrorCode.UNSIGNED_EMAIL));
     }
 
-    @Transactional
-    public Member findMemberByEmail(LoginEmail loginEmail) {
-        return getMember(loginEmail.getEmail());
+    public Member findMemberByEmail(final LoginEmail loginEmail) {
+        return getMember(loginEmail);
     }
 
     @Transactional
     public void deleteByEmail(final LoginEmail loginEmail) {
-        Member member = getMember(loginEmail.getEmail());
+        Member member = getMember(loginEmail);
         memberRepository.delete(member);
     }
 
     @Transactional
     public void addFavorite(final FavoriteRequest favoriteRequest, LoginEmail loginEmail) {
-        Member member = getMember(loginEmail.getEmail());
+        Member member = getMember(loginEmail);
         Stations stations = new Stations(
             stationRepository.findAllById(Arrays.asList(favoriteRequest.getSourceStationId(),
                 favoriteRequest.getTargetStationId())));
         Station source = stations.extractStationById(favoriteRequest.getSourceStationId());
         Station target = stations.extractStationById(favoriteRequest.getTargetStationId());
-        favoriteService.addFavoriteToMember(member, source, target);
+        Favorite favorite = new Favorite(source.getId(), target.getId());
+        member.addFavorite(favorite);
         memberRepository.save(member);
     }
 
@@ -112,14 +111,13 @@ public class MemberService {
         final LoginEmail loginEmail) {
         Favorite favorite = new Favorite(deleteRequest.getSourceStationId(),
             deleteRequest.getTargetStationId());
-        Member member = getMember(loginEmail.getEmail());
-        favoriteService.removeFavoriteToMember(member, favorite);
+        Member member = getMember(loginEmail);
+        member.removeFavorite(favorite);
         memberRepository.save(member);
     }
 
-    @Transactional
     public FavoriteResponses getAllFavorites(final LoginEmail loginEmail) {
-        Member member = getMember(loginEmail.getEmail());
+        Member member = getMember(loginEmail);
         Favorites favorites = member.getFavorites();
         Stations stations = new Stations(stationRepository.findAllById(favorites.getStationIds()));
 

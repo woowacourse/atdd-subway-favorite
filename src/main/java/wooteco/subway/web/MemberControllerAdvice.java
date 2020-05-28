@@ -2,6 +2,7 @@ package wooteco.subway.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import wooteco.subway.web.member.auth.InvalidAuthenticationException;
 import wooteco.subway.web.member.exception.MemberException;
 
 @RestControllerAdvice
+@Order(1)
 public class MemberControllerAdvice {
     private static final Logger log = LoggerFactory.getLogger(MemberControllerAdvice.class);
 

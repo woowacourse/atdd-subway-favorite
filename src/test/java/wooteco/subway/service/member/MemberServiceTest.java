@@ -27,7 +27,6 @@ import wooteco.subway.service.member.dto.FavoriteResponses;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.service.member.favorite.FavoriteService;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -41,15 +40,12 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private StationRepository stationRepository;
-
-    private FavoriteService favoriteService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService();
-        this.memberService = new MemberService(memberRepository, stationRepository, favoriteService,
+        this.memberService = new MemberService(memberRepository, stationRepository,
             jwtTokenProvider);
     }
 
@@ -164,7 +160,7 @@ public class MemberServiceTest {
 
         //when
         FavoriteResponses allFavorites = memberService.getAllFavorites(loginEmail);
-       
+
         //then
         assertThat(allFavorites.getFavoriteResponses()).hasSize(2);
     }

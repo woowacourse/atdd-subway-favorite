@@ -22,6 +22,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.dto.DefaultResponse;
+import wooteco.subway.web.member.auth.BearerAuthentication;
 import wooteco.subway.web.member.auth.LoginMember;
 
 @RestController
@@ -36,7 +37,8 @@ public class LoginMemberController {
     public ResponseEntity<DefaultResponse<TokenResponse>> login(
         @Valid @RequestBody LoginRequest loginRequest) {
         String token = memberService.createToken(loginRequest);
-        return ResponseEntity.ok().body(DefaultResponse.of(new TokenResponse(token, "bearer")));
+        return ResponseEntity.ok().body(DefaultResponse.of(new TokenResponse(token,
+            BearerAuthentication.TOKEN_TYPE)));
     }
 
     @GetMapping("/me")

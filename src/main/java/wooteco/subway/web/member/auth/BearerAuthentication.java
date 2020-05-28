@@ -14,6 +14,8 @@ import wooteco.subway.web.dto.ErrorCode;
 
 @Component
 public class BearerAuthentication implements Authentication {
+    public static final String TOKEN_TYPE = "bearer";
+    private static final String LOGIN_MEMBER_EMAIL = "loginMemberEmail";
     private final HeaderExtractor headerExtractor;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -25,7 +27,7 @@ public class BearerAuthentication implements Authentication {
 
     @Override
     public void setAuthentication(final HttpServletRequest request) {
-        String token = headerExtractor.extract(request, "bearer");
+        String token = headerExtractor.extract(request, TOKEN_TYPE);
         if (token.isEmpty()) {
             return;
         }
@@ -36,12 +38,12 @@ public class BearerAuthentication implements Authentication {
         }
 
         String email = jwtTokenProvider.getSubject(token);
-        request.setAttribute("loginMemberEmail", email);
+        request.setAttribute(LOGIN_MEMBER_EMAIL, email);
     }
 
     @Override
     public <T> T getAuthentication(final NativeWebRequest request, final Class<T> tClass) {
-        Object rawAuth = request.getAttribute("loginMemberEmail", SCOPE_REQUEST);
+        Object rawAuth = request.getAttribute(LOGIN_MEMBER_EMAIL, SCOPE_REQUEST);
         T auth = tClass.cast(rawAuth);
         if (Objects.isNull(auth)) {
             throw new InvalidAuthenticationException("인증 정보가 비어있습니다.",

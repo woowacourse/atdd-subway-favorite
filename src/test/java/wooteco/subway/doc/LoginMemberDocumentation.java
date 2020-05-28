@@ -5,19 +5,17 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static wooteco.subway.doc.ApiDocumentUtils.*;
 
+import org.springframework.restdocs.headers.RequestHeadersSnippet;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.RequestFieldsSnippet;
 
 public class LoginMemberDocumentation {
     public static RestDocumentationResultHandler loginMember() {
         return document("login/login",
             getDocumentRequest(),
             getDocumentResponse(),
-            requestFields(
-                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
-                fieldWithPath("password").type(JsonFieldType.STRING)
-                    .description("The user's password")
-            ),
+            getRequestFields(),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("null").optional(),
                 fieldWithPath("message").type(JsonFieldType.STRING).description("null").optional(),
@@ -33,11 +31,7 @@ public class LoginMemberDocumentation {
         return document("login/loginFail/email",
             getDocumentRequest(),
             getDocumentResponse(),
-            requestFields(
-                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
-                fieldWithPath("password").type(JsonFieldType.STRING)
-                    .description("The user's password")
-            ),
+            getRequestFields(),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description(1100),
                 fieldWithPath("message").type(JsonFieldType.STRING).description("등록되지 않은 이메일"),
@@ -48,11 +42,7 @@ public class LoginMemberDocumentation {
 
     public static RestDocumentationResultHandler loginFailedPassword() {
         return document("login/loginFail/password",
-            requestFields(
-                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
-                fieldWithPath("password").type(JsonFieldType.STRING)
-                    .description("The user's password")
-            ),
+            getRequestFields(),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description(1200),
                 fieldWithPath("message").type(JsonFieldType.STRING).description("잘못된 패스워드"),
@@ -65,10 +55,7 @@ public class LoginMemberDocumentation {
         return document("me/getMyInfo",
             getDocumentRequest(),
             getDocumentResponse(),
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
-            ),
+            getAuthorization(),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NULL).description("null").optional(),
                 fieldWithPath("message").type(JsonFieldType.NULL).description("null").optional(),
@@ -85,19 +72,13 @@ public class LoginMemberDocumentation {
         return document("me/deleteMyInfo",
             getDocumentRequest(),
             getDocumentResponse(),
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
-            )
+            getAuthorization()
         );
     }
 
     public static RestDocumentationResultHandler updateMyInfo() {
         return document("me/updateMyInfo",
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
-            ),
+            getAuthorization(),
             requestFields(
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                 fieldWithPath("password").type(JsonFieldType.STRING)
@@ -110,10 +91,7 @@ public class LoginMemberDocumentation {
         return document("me/favorites/create",
             getDocumentRequest(),
             getDocumentResponse(),
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
-            ),
+            getAuthorization(),
             requestFields(
                 fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER).description("시작역 ID"),
                 fieldWithPath("targetStationId").type(JsonFieldType.NUMBER).description("종착역 ID")
@@ -125,10 +103,7 @@ public class LoginMemberDocumentation {
         return document("me/favorites/delete",
             getDocumentRequest(),
             getDocumentResponse(),
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
-            ),
+            getAuthorization(),
             requestFields(
                 fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER).description("시작역 ID"),
                 fieldWithPath("targetStationId").type(JsonFieldType.NUMBER).description("종착역 ID")
@@ -140,10 +115,7 @@ public class LoginMemberDocumentation {
         return document("me/favorites/getAll",
             getDocumentRequest(),
             getDocumentResponse(),
-            requestHeaders(
-                headerWithName("Authorization").description(
-                    "The token for login which is Bearer Type")
-            ),
+            getAuthorization(),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NULL).description("null").optional(),
                 fieldWithPath("message").type(JsonFieldType.NULL).description("null").optional(),
@@ -156,6 +128,21 @@ public class LoginMemberDocumentation {
                 fieldWithPath("data.favoriteResponses[0].targetStationName").type(
                     JsonFieldType.STRING).description("도착역 이름")
             )
+        );
+    }
+
+    private static RequestFieldsSnippet getRequestFields() {
+        return requestFields(
+            fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email"),
+            fieldWithPath("password").type(JsonFieldType.STRING)
+                .description("The user's password")
+        );
+    }
+
+    private static RequestHeadersSnippet getAuthorization() {
+        return requestHeaders(
+            headerWithName("Authorization").description(
+                "The token for login which is Bearer Type")
         );
     }
 }
