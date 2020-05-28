@@ -23,7 +23,7 @@ function MyPageEdit() {
     const onDelete = (event) => {
         event.preventDefault();
         api.member.delete().then(() => {
-            alert("삭제되었습니다.");
+            alert("탈퇴되었습니다.");
             location.href = "/";
         });
     }

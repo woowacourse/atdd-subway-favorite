@@ -1,9 +1,9 @@
 export const edgeItemTemplate = (favorite) => {
-    return `<li>
+    return `<li id="">
         <span class="mdi mdi-subway-variant mr-2"></span>
-        <span>${favorite.source}</span>
+        <span class="source-station">${favorite.source}</span>
         <span class="mdi mdi-arrow-right text-gray-500"></span>
-        <span>${favorite.target}</span>
+        <span class="target-station">${favorite.target}</span>
         <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
             <span class="mdi mdi-delete"></span>
         </button>
