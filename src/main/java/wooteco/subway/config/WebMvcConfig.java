@@ -1,8 +1,10 @@
-package wooteco.subway.web.member.login;
+package wooteco.subway.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import wooteco.subway.web.member.login.BearerAuthInterceptor;
+import wooteco.subway.web.member.login.LoginMemberMethodArgumentResolver;
 
 import java.util.List;
 

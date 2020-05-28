@@ -32,6 +32,12 @@ public class AdminMemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
+    @GetMapping("/members/{id}")
+    public ResponseEntity<MemberResponse> getMemberById(@PathVariable Long id) {
+        Member member = memberService.findMemberById(id);
+        return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(id, param);

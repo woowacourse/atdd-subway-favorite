@@ -4,15 +4,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import wooteco.subway.doc.AdminMemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
@@ -21,7 +24,6 @@ import wooteco.subway.web.member.login.AuthorizationExtractor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,7 +55,7 @@ public class AdminMemberControllerTest {
     @Test
     void createMemberTest() throws Exception {
 
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -64,18 +66,20 @@ public class AdminMemberControllerTest {
                 .content(inputJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(print())
+                .andDo(AdminMemberDocumentation.createMember());
     }
 
-    @DisplayName("이메일로 회원 조회를 요청할때 OK 응답이 오는지 테스트")
+    @DisplayName("id로 회원 조회를 요청할때 OK 응답이 오는지 테스트")
     @Test
-    void getMemberByEmailTest() throws Exception {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.findMemberByEmail(any())).willReturn(member);
+    void getMemberByIdTest() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberService.findMemberById(any())).willReturn(member);
 
-        this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/members/{id}",1))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(AdminMemberDocumentation.getMember());
     }
 
     @DisplayName("회원 수정 요청을 보낼때 OK 응답이 오는지 테스트")
@@ -86,11 +90,12 @@ public class AdminMemberControllerTest {
         String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
                 "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-        this.mockMvc.perform(put("/members/1")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}",1)
                 .content(inputJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(AdminMemberDocumentation.updateMember());
     }
 
     @DisplayName("회원 삭제 요청을 보낼때 NO_CONTENT 응답이 오는지 테스트")
@@ -99,8 +104,9 @@ public class AdminMemberControllerTest {
 
         doNothing().when(memberService).deleteMember(any());
 
-        this.mockMvc.perform(delete("/members/1"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}",1))
                 .andExpect(status().isNoContent())
-                .andDo(print());
+                .andDo(print())
+                .andDo(AdminMemberDocumentation.deleteMember());
     }
 }

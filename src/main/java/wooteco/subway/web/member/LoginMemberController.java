@@ -36,6 +36,7 @@ public class LoginMemberController {
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteOwnMember(@LoginMember Member member) {
+        System.out.println("ㅋㅋㅋ");
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }

@@ -2,6 +2,7 @@ package wooteco.subway.web.line;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +18,8 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.web.member.login.BearerAuthInterceptor;
+import wooteco.subway.web.member.login.LoginMemberMethodArgumentResolver;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LineControllerTest {
     @MockBean
     private LineService lineService;
-
+    @MockBean
+    private BearerAuthInterceptor bearerAuthInterceptor;
+    @MockBean
+    private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
     @Autowired
     protected MockMvc mockMvc;
 
@@ -44,7 +50,6 @@ public class LineControllerTest {
         given(lineService.findLinesWithStations()).willReturn(response);
 
         String uri = "/lines/detail";
-
 
         MvcResult mvcResult = mockMvc.perform(get(uri))
                 .andDo(print())

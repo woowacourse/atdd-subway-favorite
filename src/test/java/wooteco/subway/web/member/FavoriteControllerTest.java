@@ -81,18 +81,6 @@ public class FavoriteControllerTest {
                 .andDo(print());
     }
 
-//    @DisplayName("즐겨찾기 id로 즐겨찾기를 조회했을때 OK응답이 오는지 테스트")
-//    @Test
-//    void getFavoriteTest() throws Exception {
-//
-//        given(memberService.findFavorite(any())).willReturn(new FavoriteResponse());
-//
-//        this.mockMvc.perform(get("/me/favorites/1")
-//                .header("Authorization", "Bearer " + TEST_TOKEN))
-//                .andExpect(status().isOk())
-//                .andDo(print());
-//    }
-
     @DisplayName("즐겨찾기 id로 즐겨찾기를 삭제했을때 OK응답이 오는지 테스트")
     @Test
     void deleteFavoriteTest() throws Exception {
