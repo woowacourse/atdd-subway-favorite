@@ -22,7 +22,7 @@ public class MemberController {
 
     @NoValidate
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
@@ -48,7 +48,8 @@ public class MemberController {
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(
             @PathVariable Long id,
-            @LoginMember Member member) {
+            @LoginMember Member member
+    ) {
         member.validateId(id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();

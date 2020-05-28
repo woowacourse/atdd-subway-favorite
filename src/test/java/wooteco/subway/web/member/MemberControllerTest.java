@@ -50,7 +50,7 @@ public class MemberControllerTest {
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders
 				.webAppContextSetup(webApplicationContext)
-				.addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print()) // TODO: 2020/05/21 개꿀
+				.addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print())
 				.apply(documentationConfiguration(restDocumentation))
 				.build();
 	}
