@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -77,7 +78,7 @@ public class MemberControllerAdviceTest {
 			.header("Authorization", "bearer " + TOKEN)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
+			.andExpect(status().isUnauthorized())
 			.andExpect(content().string("비정상적인 로그인입니다."));
 	}
 }

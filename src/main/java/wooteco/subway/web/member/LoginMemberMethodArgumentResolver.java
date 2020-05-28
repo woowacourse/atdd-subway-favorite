@@ -11,6 +11,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.service.member.MemberService;
 
 @Component
