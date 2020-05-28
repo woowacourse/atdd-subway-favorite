@@ -40,3 +40,8 @@ VALUES (4, 5, 9, 100, 11);
 
 INSERT INTO MEMBER(email, name, password)
 VALUES ('test@test.com', 'test', '1q2w3e');
+
+INSERT INTO FAVORITE(member, favorite_key, depart_station_id, arrive_station_id) VALUES
+(1L, 1L, 1L, 2L),
+(1L, 2L, 1L, 3L),
+(1L, 3L, 2L, 9L);
