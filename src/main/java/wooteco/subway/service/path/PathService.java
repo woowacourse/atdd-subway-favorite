@@ -1,6 +1,8 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
@@ -27,6 +29,7 @@ public class PathService {
         this.graphService = graphService;
     }
 
+    @Transactional
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
             throw new RuntimeException();
@@ -40,8 +43,8 @@ public class PathService {
         List<Station> stations = stationRepository.findAllById(path);
 
         List<LineStation> lineStations = lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .flatMap(line -> line.getStations().stream())
+                .filter(station -> Objects.nonNull(station.getPreStationId()))
                 .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
@@ -49,7 +52,7 @@ public class PathService {
         int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
 
         List<Station> pathStation = path.stream()
-                .map(it -> extractStation(it, stations))
+                .map(lineStation -> extractStation(lineStation, stations))
                 .collect(Collectors.toList());
 
         return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
@@ -57,7 +60,7 @@ public class PathService {
 
     private Station extractStation(Long stationId, List<Station> stations) {
         return stations.stream()
-                .filter(it -> Objects.equals(it.getId(), stationId))
+                .filter(station -> Objects.equals(station.getId(), stationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
@@ -74,9 +77,9 @@ public class PathService {
 
             Long finalPreStationId = preStationId;
             LineStation lineStation = lineStations.stream()
-                    .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
+                    .filter(lineStationValue -> lineStationValue.isLineStationOf(finalPreStationId, stationId))
                     .findFirst()
-                    .orElseThrow(RuntimeException::new);
+                    .orElseThrow(() -> new IllegalArgumentException("해당 노선 경로가 없습니다."));
 
             paths.add(lineStation);
             preStationId = stationId;

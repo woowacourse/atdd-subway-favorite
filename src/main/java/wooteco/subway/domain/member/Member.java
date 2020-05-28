@@ -74,6 +74,6 @@ public class Member {
     public void deleteFavoriteBy(Long favoriteId) {
         this.favorites.remove(favorites.stream()
                 .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
-                .findFirst().orElseThrow(IllegalArgumentException::new));
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("즐겨찾기 항목이 존재하지 않습니다.")));
     }
 }

@@ -4,7 +4,9 @@ import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
@@ -32,16 +34,18 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(MemberRequest memberRequest) {
-        memberRepository.findByEmail(memberRequest.getEmail()).ifPresent(member -> {
-            throw new IllegalArgumentException("존재하는 이메일입니다.");
-        });
+        if(memberRepository.existsByEmail(memberRequest.getEmail())){
+            throw new DuplicateKeyException("존재하는 이메일입니다.");
+        }
         return memberRepository.save(memberRequest.toMember());
     }
 
+    @Transactional
     public void updateMember(String email, Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
         if (!email.equals(member.getEmail())) {
             throw new IllegalAccessError("잘못된 접근입니다.");
         }
@@ -49,10 +53,12 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
                 .orElseThrow(NotFoundUserException::new);

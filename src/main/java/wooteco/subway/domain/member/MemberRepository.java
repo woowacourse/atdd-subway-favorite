@@ -7,4 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface MemberRepository extends CrudRepository<Member, Long> {
     Optional<Member> findByEmail(@Param("email") String email);
+
+    boolean existsByEmail(@Param("email") String email);
 }
