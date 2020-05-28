@@ -1,3 +1,6 @@
+import Snackbar from "../lib/snackbar/snackbar.js";
+
+
 export const EVENT_TYPE = {
     CLICK: 'click'
 }
@@ -26,4 +29,22 @@ export const SUCCESS_MESSAGE = {
 export const PATH_TYPE = {
     DISTANCE: 'DISTANCE',
     DURATION: 'DURATION'
+}
+
+export const SUCCESS_SNACK_BAR = message => {
+    Snackbar.show({
+        text: SUCCESS_MESSAGE[message],
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+    });
+}
+
+export const ERROR_SNACK_BAR = message => {
+    Snackbar.show({
+        text: ERROR_MESSAGE[message],
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+    });
 }

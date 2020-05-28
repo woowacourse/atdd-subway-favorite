@@ -25,6 +25,12 @@ const METHOD = {
 const api = (() => {
     const request = (uri, config) => fetch(uri, config)
     const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+    const accessToken = localStorage.getItem("accessToken")
+    const tokenType = localStorage.getItem("tokenType")
+
+    function getToken() {
+        return tokenType + " " + accessToken;
+    }
 
     const line = {
         getAll() {
@@ -48,10 +54,10 @@ const api = (() => {
         login(data) {
             return request(`/oauth/token`, METHOD.POST(data));
         },
-        find(token) {
+        find() {
             return fetch(`/members`, {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': getToken(),
                     'Content-Type': 'application/json'
                 }
             }).then(response => {
@@ -62,32 +68,32 @@ const api = (() => {
                 return response.json();
             })
         },
-        update(token, data) {
+        update(data) {
             return fetch(`/members`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': token,
+                    'Authorization': getToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             })
         },
-        signOut(token) {
+        signOut() {
             return fetch(`/members`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': token
+                    'Authorization': getToken()
                 }
             })
         }
     };
 
     const favorite = {
-        create(token, data) {
+        create(data) {
             return fetch(`/members/favorites`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': token,
+                    'Authorization': getToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -95,10 +101,10 @@ const api = (() => {
                 })
             })
         },
-        find(token) {
+        find() {
             return fetch(`/members/favorites`, {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': getToken(),
                     'Content-Type': 'application/json'
                 }
             }).then(response => {
@@ -109,11 +115,11 @@ const api = (() => {
                 return response.json();
             })
         },
-        delete(token, data) {
+        delete(data) {
             return fetch(`/members/favorites`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': token,
+                    'Authorization': getToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({

@@ -1,23 +1,16 @@
 import {edgeItemTemplate} from '../../utils/templates.js'
 import api from '../../api/index.js'
-import {ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE} from "../../utils/constants.js"
+import {ERROR_SNACK_BAR, EVENT_TYPE, SUCCESS_SNACK_BAR} from "../../utils/constants.js"
 
 function Favorite() {
     const $favoriteList = document.querySelector('#favorite-list')
-    const accessToken = localStorage.getItem("accessToken")
-    const tokenType = localStorage.getItem("tokenType")
-
-    function createHeader() {
-        return tokenType + " " + accessToken;
-    }
 
     const loadFavoriteList = () => {
         api
             .favorite
-            .find(createHeader())
+            .find()
             .then(async favorites => {
-                const template = await favorites.map(edge => edgeItemTemplate(edge)).join('');
-                $favoriteList.innerHTML = template;
+                $favoriteList.innerHTML = await favorites.map(edge => edgeItemTemplate(edge)).join('');
             })
     }
 
@@ -32,21 +25,11 @@ function Favorite() {
                 "departStationId": $target.closest(".edge-item").dataset.departStationId,
                 "arriveStationId": $target.closest(".edge-item").dataset.arriveStationId
             };
-            await api.favorite.delete(createHeader(), edge)
+            await api.favorite.delete(edge)
             await loadFavoriteList()
-            Snackbar.show({
-                text: SUCCESS_MESSAGE.COMMON,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            SUCCESS_SNACK_BAR("COMMON");
         } catch (e) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.COMMON,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            ERROR_SNACK_BAR("COMMON");
         }
     }
 

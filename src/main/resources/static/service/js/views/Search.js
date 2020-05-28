@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
+import {ERROR_MESSAGE, ERROR_SNACK_BAR, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {searchResultTemplate} from '../../utils/templates.js'
 
@@ -11,12 +11,6 @@ function Search() {
     const $searchResult = document.querySelector('#search-result')
     const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
     const $minimumTimeTab = document.querySelector('#minimum-time-tab')
-    const accessToken = localStorage.getItem("accessToken");
-    const tokenType = localStorage.getItem("tokenType");
-
-    function createHeader() {
-        return tokenType + " " + accessToken;
-    }
 
     const showSearchResult = data => {
         const isHidden = $searchResultContainer.classList.contains('hidden')
@@ -54,7 +48,6 @@ function Search() {
             .find(searchInput)
             .then(data => {
                 showSearchResult(data)
-
             })
             .catch(error => alert(ERROR_MESSAGE.COMMON))
     }
@@ -78,15 +71,10 @@ function Search() {
             classList.remove('mdi-star')
             classList.remove('text-yellow-500')
         } else {
-            api.favorite.create(createHeader(), data)
+            api.favorite.create(data)
                 .then(response => {
                     if (!response.ok) {
-                        Snackbar.show({
-                            text: ERROR_MESSAGE.FAVORITE_SAVE_FAILED,
-                            pos: 'bottom-center',
-                            showAction: false,
-                            duration: 2000
-                        })
+                        ERROR_SNACK_BAR("FAVORITE_SAVE_FAILED");
                         return;
                     }
                     classList.remove('mdi-star-outline')

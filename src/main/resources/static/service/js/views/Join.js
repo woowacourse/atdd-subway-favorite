@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import {ERROR_SNACK_BAR, EVENT_TYPE} from '../../utils/constants.js'
 import {isSamePassword, isValidEmail, isValidJoinPasswordLength, isValidName} from '../../utils/validation.js'
 import api from '../../api/index.js'
 
@@ -12,39 +12,19 @@ function Join() {
         const passwordCheckValue = document.querySelector('#password-check').value
 
         if (!isValidEmail(emailValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.WRONG_EMAIL_FORMAT,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            ERROR_SNACK_BAR("WRONG_EMAIL_FORMAT");
             return;
         }
         if (!isValidName(nameValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.EMPTY_NAME,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            ERROR_SNACK_BAR("EMPTY_NAME");
             return;
         }
         if (!isSamePassword(passwordValue, passwordCheckValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.MISMATCH_PASSWORD,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            ERROR_SNACK_BAR("MISMATCH_PASSWORD");
             return;
         }
         if (!isValidJoinPasswordLength(passwordValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            ERROR_SNACK_BAR("INVALID_PASSWORD_LENGTH");
             return;
         }
 

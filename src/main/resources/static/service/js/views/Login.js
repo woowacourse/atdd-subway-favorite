@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
+import {ERROR_SNACK_BAR, EVENT_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js';
 import {isValidEmail, isValidJoinPasswordLength} from "../../utils/validation.js";
 
@@ -10,21 +10,11 @@ function Login() {
         const passwordValue = document.querySelector('#password').value;
 
         if (!isValidEmail(emailValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.WRONG_EMAIL_FORMAT,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            ERROR_SNACK_BAR("WRONG_EMAIL_FORMAT");
             return;
         }
         if (!isValidJoinPasswordLength(passwordValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+            ERROR_SNACK_BAR("INVALID_PASSWORD_LENGTH");
             return;
         }
 
@@ -37,12 +27,7 @@ function Login() {
             .login(request)
             .then(response => {
                 if (!response.ok) {
-                    Snackbar.show({
-                        text: ERROR_MESSAGE.LOGIN_FAIL,
-                        pos: 'bottom-center',
-                        showAction: false,
-                        duration: 2000
-                    })
+                    ERROR_SNACK_BAR("LOGIN_FAIL");
                     return;
                 }
                 response.json()
