@@ -9,6 +9,7 @@ import wooteco.subway.service.member.MemberService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Set;
 
 @RestController
 public class MemberController {
@@ -19,7 +20,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
@@ -56,7 +57,8 @@ public class MemberController {
     @RequiredAuth
     @GetMapping("/members/favorite")
     public ResponseEntity<MemberFavoriteResponse> getFavorite(@LoginMember Member member) {
-        MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member);
+        Set<FavoriteResponse> favoriteResponses = memberService.findFavorites(member);
+        MemberFavoriteResponse memberFavoriteResponse = MemberFavoriteResponse.of(member.getId(), favoriteResponses);
         return ResponseEntity.ok().body(memberFavoriteResponse);
     }
 

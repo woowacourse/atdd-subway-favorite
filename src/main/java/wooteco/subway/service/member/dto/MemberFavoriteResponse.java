@@ -1,7 +1,5 @@
 package wooteco.subway.service.member.dto;
 
-import wooteco.subway.domain.member.Member;
-
 import java.util.Set;
 
 public class MemberFavoriteResponse {
@@ -13,6 +11,10 @@ public class MemberFavoriteResponse {
     public MemberFavoriteResponse(Long id, Set<FavoriteResponse> favorites) {
         this.id = id;
         this.favorites = favorites;
+    }
+
+    public static MemberFavoriteResponse of(Long id, Set<FavoriteResponse> favorites) {
+        return new MemberFavoriteResponse(id, favorites);
     }
 
     public Long getId() {

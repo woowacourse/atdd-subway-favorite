@@ -56,7 +56,7 @@ public class MemberService {
         return member.checkPassword(password);
     }
 
-    public MemberFavoriteResponse findFavorites(Member member) {
+    public Set<FavoriteResponse> findFavorites(Member member) {
         Set<Favorite> favorites = member.getFavorites();
         Set<Long> stationIds = new HashSet<>();
         favorites.forEach(favorite -> {
@@ -70,14 +70,12 @@ public class MemberService {
 
         stations.forEach(station -> stationMap.put(station.getId(), station));
 
-        Set<FavoriteResponse> favoriteResponses = favorites.stream()
-                .map(it ->
-                        new FavoriteResponse(it.getId(),
-                                stationMap.get(it.getStartStationId()),
-                                stationMap.get(it.getEndStationId())))
+        return favorites.stream()
+                .map(favorite ->
+                        FavoriteResponse.of(favorite.getId(),
+                                stationMap.get(favorite.getStartStationId()),
+                                stationMap.get(favorite.getEndStationId())))
                 .collect(Collectors.toSet());
-
-        return new MemberFavoriteResponse(member.getId(), favoriteResponses);
     }
 
     public void addFavorite(Member member, FavoriteCreateRequest favoriteCreateRequest) {

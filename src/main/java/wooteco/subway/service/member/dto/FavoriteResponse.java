@@ -15,6 +15,10 @@ public class FavoriteResponse {
         this.endStation = endStation;
     }
 
+    public static FavoriteResponse of(Long id, Station startStation, Station endStation) {
+        return new FavoriteResponse(id, startStation, endStation);
+    }
+
     public Station getStartStation() {
         return startStation;
     }
