@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
-//@WebMvcTest(controllers = {MemberController.class, LoginMemberController.class})
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FavoriteControllerTest {

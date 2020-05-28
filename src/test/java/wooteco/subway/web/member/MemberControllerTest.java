@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
 @ExtendWith(RestDocumentationExtension.class)
-//@WebMvcTest(controllers = {MemberController.class, LoginMemberController.class})
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {

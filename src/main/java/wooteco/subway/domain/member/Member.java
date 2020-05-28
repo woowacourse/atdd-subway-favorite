@@ -62,7 +62,7 @@ public class Member {
 
     public void validateId(Long id) {
         if (!this.id.equals(id)) {
-            throw new InvalidAuthenticationException("니 아이디 아님");
+            throw new InvalidAuthenticationException("잘못된 로그인이에요.");
         }
     }
 
