@@ -1,6 +1,21 @@
 package wooteco.subway.web.member;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.doNothing;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.google.gson.Gson;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,29 +34,16 @@ import wooteco.subway.docs.AdminMemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.doNothing;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 public class AdminMemberControllerTest {
+    private static final Gson GSON = new Gson();
     private static final Long TEST_ID = 1L;
     private static final String TEST_EMAIL = "abc@naver.com";
     private static final String TEST_NAME = "brown";
     private static final String TEST_PASSWORD = "password";
     private static final String TEST_TOKEN = "this.is.token";
 
-    private Gson gson = new Gson();
     private Member member;
 
     @MockBean
@@ -72,7 +74,7 @@ public class AdminMemberControllerTest {
 
         mockMvc.perform(post("/admin/members").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(params)))
+                .content(GSON.toJson(params)))
                 .andExpect(status().isCreated())
                 .andDo(AdminMemberDocumentation.createMember());
     }
@@ -101,7 +103,7 @@ public class AdminMemberControllerTest {
                 .header("Authorization", "Bearer " + TEST_TOKEN)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(params)))
+                .content(GSON.toJson(params)))
                 .andExpect(status().isOk())
                 .andDo(AdminMemberDocumentation.updateMember());
     }
