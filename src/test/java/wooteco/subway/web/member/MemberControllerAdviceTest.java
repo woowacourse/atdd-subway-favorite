@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.web.member.MemberControllerTest.*;
 
+import java.util.HashMap;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +39,14 @@ public class MemberControllerAdviceTest {
 	@DisplayName("해당 이메일을 가진 회원이 등록되어 있지 않을 경우")
 	@Test
 	void login_nonExistentEMail() throws Exception {
-		LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+		HashMap<String, String> loginRequest = new HashMap<>();
+		loginRequest.put("email", EMAIL);
+		loginRequest.put("password", PASSWORD);
+
 		String request = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
-		when(memberService.createToken(any(LoginRequest.class))).thenThrow(new RuntimeException("해당 이메일이 존재하지 않습니다."));
+		when(memberService.createToken(any(LoginRequest.class))).thenThrow(
+			new RuntimeException("해당 이메일이 존재하지 않습니다."));
 
 		mockMvc.perform(post("/oauth/token")
 			.content(request)
@@ -53,10 +59,13 @@ public class MemberControllerAdviceTest {
 	@DisplayName("패스워드가 일치하지 않는 경우")
 	@Test
 	void login_wrongPassword() throws Exception {
-		LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+		HashMap<String, String> loginRequest = new HashMap<>();
+		loginRequest.put("email", EMAIL);
+		loginRequest.put("password", PASSWORD);
 		String request = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
-		when(memberService.createToken(any(LoginRequest.class))).thenThrow(new RuntimeException("패스워드가 일치하지 않습니다."));
+		when(memberService.createToken(any(LoginRequest.class))).thenThrow(
+			new RuntimeException("패스워드가 일치하지 않습니다."));
 
 		mockMvc.perform(post("/oauth/token")
 			.content(request)

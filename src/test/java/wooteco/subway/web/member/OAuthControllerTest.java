@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.web.member.MemberControllerTest.*;
 
+import java.util.HashMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +53,9 @@ class OAuthControllerTest {
 	@DisplayName("로그인 요청")
 	@Test
 	void login() throws Exception {
-		LoginRequest request = new LoginRequest(EMAIL, PASSWORD);
+		HashMap<String, String> request = new HashMap<>();
+		request.put("email", EMAIL);
+		request.put("password", PASSWORD);
 		String jsonRequest
 			= OBJECT_MAPPER.writeValueAsString(request);
 
@@ -66,5 +70,54 @@ class OAuthControllerTest {
 			.andExpect(jsonPath("$.tokenType").value("bearer"))
 			.andDo(OAuthDocumentation.login());
 	}
+
+
 	// @formatter:on
+
+	@DisplayName("예외테스트: null혹은 빈 값의 이메일, 비밀번호로 로그인 하는 경우")
+	@Test
+	void login_withNullOrEmptyValues() throws Exception {
+		//given
+		HashMap<String, String> nullRequest = new HashMap<>();
+		nullRequest.put("email", null);
+		nullRequest.put("password", null);
+		String nullJson = OBJECT_MAPPER.writeValueAsString(nullRequest);
+
+		//when, then
+		mockMvc.perform(post("/oauth/token")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(nullJson))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+
+		//given
+		HashMap<String, String> emptyRequest = new HashMap<>();
+		emptyRequest.put("email", "");
+		emptyRequest.put("password", "");
+		String emptyJson = OBJECT_MAPPER.writeValueAsString(emptyRequest);
+
+		//when, then
+		mockMvc.perform(post("/oauth/token")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(emptyJson))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@DisplayName("예외테스트: 적절한 형식이 아닌 이메일로 로그인하는 경우")
+	@Test
+	void login_withInvalidEmail() throws Exception {
+		//given
+		HashMap<String, String> invalidRequest = new HashMap<>();
+		invalidRequest.put("email", "chomily");
+		invalidRequest.put("password", "1234");
+		String invalidJson = OBJECT_MAPPER.writeValueAsString(invalidRequest);
+
+		//when, then
+		mockMvc.perform(post("/oauth/token")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(invalidJson))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
 }

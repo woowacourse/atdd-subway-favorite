@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +19,8 @@ public class OAuthController {
 	}
 
 	@PostMapping("/oauth/token")
-	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
-		String token = memberService.createToken(param);
+	public ResponseEntity<TokenResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
+		String token = memberService.createToken(loginRequest);
 		return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
 	}
 }

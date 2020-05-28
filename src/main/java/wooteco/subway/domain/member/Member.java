@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -17,8 +20,12 @@ import wooteco.subway.exception.DuplicateFavoriteException;
 public class Member {
     @Id
     private Long id;
+    @Email
+    @NotBlank
     private String email;
+    @NotBlank
     private String name;
+    @NotBlank
     private String password;
     @MappedCollection
     private List<Favorite> favorites = new ArrayList<>();
