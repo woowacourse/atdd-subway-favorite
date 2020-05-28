@@ -55,6 +55,24 @@ public class PageAcceptanceTest extends AcceptanceTest {
 		createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
+		join();
+
+		login();
+
+		mypageWithNoAuth();
+
+		mypage(tokenResponse);
+
+		mypageEditWithNoAuth();
+
+		mypageEdit(tokenResponse);
+
+		favoritesPageWithNoAuth();
+
+		favoritesPage(tokenResponse);
+	}
+
+	private void join() {
 		given().log().all().
 			accept(MediaType.TEXT_HTML_VALUE).
 			when().
@@ -62,7 +80,9 @@ public class PageAcceptanceTest extends AcceptanceTest {
 			then().log().all().
 			statusCode(HttpStatus.OK.value()).
 			body("html.head.title", containsString("회원가입"));
+	}
 
+	private void login() {
 		given().log().all().
 			accept(MediaType.TEXT_HTML_VALUE).
 			when().
@@ -70,48 +90,18 @@ public class PageAcceptanceTest extends AcceptanceTest {
 			then().log().all().
 			statusCode(HttpStatus.OK.value()).
 			body(TITLE_PATH, containsString("로그인"));
+	}
 
+	private void mypageWithNoAuth() {
 		given().log().all().
 			accept(MediaType.TEXT_HTML_VALUE).
 			when().
 			get("/mypage").
 			then().log().all().
 			statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
 
-		given().log().all().
-			auth().
-			oauth2(tokenResponse.getAccessToken()).
-			accept(MediaType.TEXT_HTML_VALUE).
-			when().
-			get("/mypage").
-			then().log().all().
-			statusCode(HttpStatus.OK.value()).
-			body(TITLE_PATH, containsString("마이페이지"));
-
-		given().log().all().
-			accept(MediaType.TEXT_HTML_VALUE).
-			when().
-			get("/mypage-edit").
-			then().log().all().
-			statusCode(HttpStatus.UNAUTHORIZED.value());
-
-		given().log().all().
-			auth().
-			oauth2(tokenResponse.getAccessToken()).
-			accept(MediaType.TEXT_HTML_VALUE).
-			when().
-			get("/mypage-edit").
-			then().log().all().
-			statusCode(HttpStatus.OK.value()).
-			body(TITLE_PATH, containsString("마이페이지 수정"));
-
-		given().log().all().
-			accept(MediaType.TEXT_HTML_VALUE).
-			when().
-			get("/favorites-page").
-			then().log().all().
-			statusCode(HttpStatus.UNAUTHORIZED.value());
-
+	private void favoritesPage(TokenResponse tokenResponse) {
 		given().log().all().
 			auth().
 			oauth2(tokenResponse.getAccessToken()).
@@ -121,5 +111,47 @@ public class PageAcceptanceTest extends AcceptanceTest {
 			then().log().all().
 			statusCode(HttpStatus.OK.value()).
 			body(TITLE_PATH, containsString("즐겨찾기"));
+	}
+
+	private void mypage(TokenResponse tokenResponse) {
+		given().log().all().
+			auth().
+			oauth2(tokenResponse.getAccessToken()).
+			accept(MediaType.TEXT_HTML_VALUE).
+			when().
+			get("/mypage").
+			then().log().all().
+			statusCode(HttpStatus.OK.value()).
+			body(TITLE_PATH, containsString("마이페이지"));
+	}
+
+	private void mypageEditWithNoAuth() {
+		given().log().all().
+			accept(MediaType.TEXT_HTML_VALUE).
+			when().
+			get("/mypage-edit").
+			then().log().all().
+			statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	private void mypageEdit(TokenResponse tokenResponse) {
+		given().log().all().
+			auth().
+			oauth2(tokenResponse.getAccessToken()).
+			accept(MediaType.TEXT_HTML_VALUE).
+			when().
+			get("/mypage-edit").
+			then().log().all().
+			statusCode(HttpStatus.OK.value()).
+			body(TITLE_PATH, containsString("마이페이지 수정"));
+	}
+
+	private void favoritesPageWithNoAuth() {
+		given().log().all().
+			accept(MediaType.TEXT_HTML_VALUE).
+			when().
+			get("/favorites-page").
+			then().log().all().
+			statusCode(HttpStatus.UNAUTHORIZED.value());
 	}
 }
