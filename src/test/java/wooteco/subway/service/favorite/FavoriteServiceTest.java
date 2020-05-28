@@ -19,6 +19,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.DuplicateFavoriteException;
+import wooteco.subway.exception.InvalidStationIdException;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
@@ -99,15 +100,33 @@ public class FavoriteServiceTest {
         // when, then
         assertThatThrownBy(() -> favoriteService.createFavorite(member, nullRequest))
             .isInstanceOf(NullPointerException.class)
-            .hasMessage("즐겨찾기: 출발역이 null일 수 없습니다.");
+            .hasMessage("출발역이 null일 수 없습니다.");
 
         assertThatThrownBy(() -> favoriteService.createFavorite(member, preStationNullRequest))
             .isInstanceOf(NullPointerException.class)
-            .hasMessage("즐겨찾기: 출발역이 null일 수 없습니다.");
+            .hasMessage("출발역이 null일 수 없습니다.");
 
         assertThatThrownBy(() -> favoriteService.createFavorite(member, stationNullRequest))
             .isInstanceOf(NullPointerException.class)
-            .hasMessage("즐겨찾기: 도착역이 null일 수 없습니다.");
+            .hasMessage("도착역이 null일 수 없습니다.");
+    }
+
+    @DisplayName("예외테스트: 존재하지 않는 역의 ID를 즐겨찾기에 등록하는 경우")
+    @Test
+    void createFavorite_withNotExistingStationIds() {
+        // given
+        Member member = new Member(ID, EMAIL, NAME, PASSWORD);
+
+        when(memberRepository.save(any(Member.class))).thenThrow(
+            new InvalidStationIdException("해당 역이 존재하지 않습니다."));
+
+        FavoriteRequest requestWithNotExistingStations = new FavoriteRequest(100L, 3000L);
+
+        // when, then
+        assertThatThrownBy(
+            () -> favoriteService.createFavorite(member, requestWithNotExistingStations))
+            .isInstanceOf(InvalidStationIdException.class)
+            .hasMessage("해당 역이 존재하지 않습니다.");
     }
 
     @DisplayName("즐겨찾기 목록 조회 기능 테스트")

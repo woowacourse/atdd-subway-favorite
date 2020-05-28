@@ -23,8 +23,13 @@ public class Favorite {
 
     public Favorite(Long id, Long preStation, Long station) {
         // Todo: NullPointerException advice 추가
-        Objects.requireNonNull(preStation, "즐겨찾기: 출발역이 null일 수 없습니다.");
-        Objects.requireNonNull(station, "즐겨찾기: 도착역이 null일 수 없습니다.");
+        Objects.requireNonNull(preStation, "출발역이 null일 수 없습니다.");
+        Objects.requireNonNull(station, "도착역이 null일 수 없습니다.");
+
+        if (Objects.deepEquals(preStation, station)) {
+            //Todo: IllegalArgumentException advice에 등록
+            throw new IllegalArgumentException("도착역과 출발역은 같을 수 없습니다. station - " + preStation);
+        }
 
         this.id = id;
         this.preStation = preStation;
