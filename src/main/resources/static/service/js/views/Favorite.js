@@ -8,8 +8,6 @@ function Favorite() {
     const loadFavoriteList = () => {
         api.favorite.get().then(async (data) => {
             const json = await data.json();
-            console.log(json);
-            console.log(json[0]);
             const template = json.map(edge => edgeItemTemplate(edge)).join('');
             $favoriteList.insertAdjacentHTML('beforeend', template);
         })
@@ -26,7 +24,6 @@ function Favorite() {
                 target: target
             }
             api.favorite.delete(data).then(() => {
-                alert("삭제되었습니다.");
                 $listItem.remove();
             });
         }

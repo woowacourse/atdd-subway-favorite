@@ -11,6 +11,37 @@ function Search() {
     const $searchResult = document.querySelector('#search-result');
     const $shortestDistanceTab = document.querySelector('#shortest-distance-tab');
     const $minimumTimeTab = document.querySelector('#minimum-time-tab');
+    const favoriteButtonClassList = $favoriteButton.classList;
+
+    const changeFavoriteButton = () => {
+        const isFavorite = $favoriteButton.classList.contains('mdi-star');
+        if (isFavorite) {
+            favoriteButtonClassList.remove('mdi-star-outline');
+            favoriteButtonClassList.remove('text-gray-600');
+            favoriteButtonClassList.remove('bg-yellow-500');
+            favoriteButtonClassList.add('mdi-star');
+            favoriteButtonClassList.add('text-yellow-500');
+        } else {
+            favoriteButtonClassList.add('mdi-star-outline');
+            favoriteButtonClassList.add('text-gray-600');
+            favoriteButtonClassList.add('bg-yellow-500');
+            favoriteButtonClassList.remove('mdi-star');
+            favoriteButtonClassList.remove('text-yellow-500')
+        }
+    }
+
+    const makeFavoriteButton = () => {
+        api.favorite.get().then(async (data) => {
+            const json = await data.json();
+            $favoriteButton.classList.remove("mdi-star");
+            json.filter(i => {
+                if (i.source === $departureStationName.value && (i.target === $arrivalStationName.value)) {
+                    $favoriteButton.classList.add("mdi-star");
+                }
+            });
+            changeFavoriteButton();
+        })
+    }
 
     const showSearchResult = data => {
         const isHidden = $searchResultContainer.classList.contains('hidden');
@@ -42,7 +73,10 @@ function Search() {
         };
         api.path
             .find(searchInput)
-            .then(data => showSearchResult(data))
+            .then(data => {
+                makeFavoriteButton();
+                showSearchResult(data);
+            })
             .catch(error => alert(ERROR_MESSAGE.COMMON))
     };
 
@@ -51,40 +85,31 @@ function Search() {
         const $stationList = document.querySelector('#station-list');
         const $startEndStation = $stationList.getElementsByClassName("start-end-name");
 
+        const $startStationName = $startEndStation[0].textContent;
+        const $endStationName = $startEndStation[1].textContent;
+
         if ($startEndStation.length != 2) {
             alert("시작역과 도착역이 올바르지 않습니다.")
             return;
         }
-        const $startStationName = $startEndStation[0].textContent;
-        const $endStationName = $startEndStation[1].textContent;
 
-        // const isFavorite = $favoriteButton.classList.contains('mdi-star');
-        // const classList = $favoriteButton.classList;
-
-        // if (isFavorite) {
-        //     classList.add('mdi-star-outline');
-        //     classList.add('text-gray-600');
-        //     classList.add('bg-yellow-500');
-        //     classList.remove('mdi-star');
-        //     classList.remove('text-yellow-500')
-        // } else {
-        //     classList.remove('mdi-star-outline');
-        //     classList.remove('text-gray-600');
-        //     classList.remove('bg-yellow-500');
-        //     classList.add('mdi-star');
-        //     classList.add('text-yellow-500')
-        // }
-
-
-        const startStationName = $stationList.getElementsByClassName("start-end-name")[0].textContent;
         const data = {
             source: $startStationName,
             target: $endStationName
         }
 
-        api.favorite.create(data).then((response) => {
-            console.log(response);
-        });
+        const isFavorite = $favoriteButton.classList.contains('mdi-star');
+        if (isFavorite) {
+            api.favorite.delete(data).then(() => {
+                $favoriteButton.classList.remove("mdi-star");
+                changeFavoriteButton();
+            });
+        } else {
+            api.favorite.create(data).then(() => {
+                $favoriteButton.classList.add("mdi-star");
+                changeFavoriteButton();
+            });
+        }
     };
 
     const initEventListener = () => {

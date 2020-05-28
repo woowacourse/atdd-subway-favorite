@@ -1,7 +1,6 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -21,7 +20,11 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        return memberRepository.save(member);
+        try{
+            return memberRepository.save(member);
+        } catch (Exception e){
+            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+        }
     }
 
     public void updateMember(Member member, UpdateMemberRequest param) {
