@@ -115,7 +115,7 @@ const api = (() => {
       return request(`/me/favorites`, METHOD.POST_WITH_TOKEN(params))
     },
     deleteFavorite(favoriteId) {
-      return request(`/me/favorites/${favoriteId}`, METHOD.DELETE_WITH_TOKEN())//TODO favoriteId안넣어줘도 잘작동하는지
+      return request(`/me/favorites/${favoriteId}`, METHOD.DELETE_WITH_TOKEN())
     }
   }
 

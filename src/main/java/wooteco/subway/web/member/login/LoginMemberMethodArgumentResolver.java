@@ -30,7 +30,6 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        System.out.println("리졸버");
         String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
             return new Member();

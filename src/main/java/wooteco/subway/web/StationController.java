@@ -35,7 +35,6 @@ public class StationController {
     @GetMapping("/stations/{id}")
     public ResponseEntity<StationResponse> getStation(@PathVariable Long id) {
         Station station = stationService.findStationById(id);
-        System.out.println("찾은 역 : "+station.toString());
         return ResponseEntity.ok().body(station.toStationResponse());
     }
 

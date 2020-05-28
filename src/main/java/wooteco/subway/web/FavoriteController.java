@@ -18,11 +18,9 @@ import java.util.Set;
 
 @RestController
 public class FavoriteController {
-    private final FavoriteService favoriteService;
     private final MemberService memberService;
 
-    public FavoriteController(FavoriteService favoriteService, MemberService memberService) {
-        this.favoriteService = favoriteService;
+    public FavoriteController(MemberService memberService) {
         this.memberService = memberService;
     }
 
