@@ -58,12 +58,28 @@ function Search() {
 
   const onToggleFavorite = async event => {
     event.preventDefault();
+    const isFavorite = $favoriteButton.classList.contains('mdi-star')
+    const classList = $favoriteButton.classList
+
+    if (isFavorite) {
+      classList.add('mdi-star-outline')
+      classList.add('text-gray-600')
+      classList.add('bg-yellow-500')
+      classList.remove('mdi-star')
+      classList.remove('text-yellow-500')
+    } else {
+      classList.remove('mdi-star-outline')
+      classList.remove('text-gray-600')
+      classList.remove('bg-yellow-500')
+      classList.add('mdi-star')
+      classList.add('text-yellow-500')
+    }
+
     try {
       const path = {
         preStationId: searchTargetStations[0].id,
         stationId: searchTargetStations[1].id
       };
-      // Todo: 즐겨찾기 추가 후에 별 색깔이 안 변해요...! (mdi-star class 관련 )
       await api.favorite.create(localStorage.getItem("token"), path);
       showSnackbar(SUCCESS_MESSAGE.FAVORITE);
     }

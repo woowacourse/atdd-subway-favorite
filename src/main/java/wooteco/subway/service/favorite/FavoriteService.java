@@ -42,7 +42,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> getFavorites(Member member) {
-        List<Long> stationIds = member.getStationIdsFromFavorites();
+        List<Long> stationIds = member.getStationIds();
         List<Station> stations = stationRepository.findAllById(stationIds);
         List<Favorite> favorites = member.getFavorites();
 

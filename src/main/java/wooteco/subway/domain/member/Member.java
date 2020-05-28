@@ -67,8 +67,7 @@ public class Member {
             .findFirst();
     }
 
-    // Todo: 메서드 네이밍?
-    public List<Long> getStationIdsFromFavorites() {
+    public List<Long> getStationIds() {
         return favorites.stream()
             .flatMap(it -> Stream.of(it.getPreStation(), it.getStation()))
             .collect(Collectors.toList());
