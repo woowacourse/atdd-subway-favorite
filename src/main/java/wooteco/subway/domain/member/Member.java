@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
 
+import wooteco.subway.web.exceptions.InvalidRegisterException;
+
 public class Member {
     @Id
     private Long id;
@@ -20,16 +22,21 @@ public class Member {
     }
 
     public Member(String email, String name, String password) {
+        this(null, email, name, password);
+    }
+
+    public Member(Long id, String email, String name, String password) {
+        validate(email, name, password);
+        this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
     }
 
-    public Member(Long id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
+    private void validate(final String email, final String name, final String password) {
+        if (StringUtils.isBlank(email) || StringUtils.isBlank(name) || StringUtils.isBlank(password)) {
+            throw new InvalidRegisterException("빈 값을 입력할 수 없습니다.");
+        }
     }
 
     public void addFavorite(final Favorite favorite) {

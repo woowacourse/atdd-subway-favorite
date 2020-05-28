@@ -32,6 +32,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationCreateRequest;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.exceptions.ErrorResponse;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -178,6 +179,12 @@ public class AcceptanceTest {
         return objectMapper.readValue(result, TokenResponse.class);
     }
 
+    public ErrorResponse loginError(String email, String password) throws Exception {
+        LoginRequest dto = new LoginRequest(email, password);
+        String result = parse(request(post("/oauth/token"), dto));
+        return objectMapper.readValue(result, ErrorResponse.class);
+    }
+
     public String createMember(String email, String name, String password) throws Exception {
         MemberRequest dto = new MemberRequest(email, name, password);
         return request(post("/members"), dto)
@@ -190,6 +197,13 @@ public class AcceptanceTest {
             .param("email", email)
             .header(AUTHORIZATION, tokenResponse)));
         return objectMapper.readValue(result, MemberResponse.class);
+    }
+
+    public ErrorResponse getMemberError(String email, TokenResponse tokenResponse) throws Exception {
+        String result = parse(request(get("/members")
+            .param("email", email)
+            .header(AUTHORIZATION, tokenResponse)));
+        return objectMapper.readValue(result, ErrorResponse.class);
     }
 
     public void updateMemberWithAuthentication(

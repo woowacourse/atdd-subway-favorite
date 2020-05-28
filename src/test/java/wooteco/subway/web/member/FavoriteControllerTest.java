@@ -38,10 +38,11 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.web.exceptions.GlobalExceptionHandler;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = FavoriteController.class)
-@Import({AuthorizationExtractor.class, JwtTokenProvider.class})
+@Import({AuthorizationExtractor.class, JwtTokenProvider.class, GlobalExceptionHandler.class})
 public class FavoriteControllerTest {
     @MockBean
     protected MemberService memberService;
@@ -87,6 +88,21 @@ public class FavoriteControllerTest {
             .content(body))
             .andExpect(status().isOk())
             .andDo(FavoriteDocumentation.addFavorite());
+    }
+
+    @DisplayName("미인증 즐겨찾기 추가 테스트")
+    @Test
+    void addFavoriteWithoutAuth() throws Exception {
+        given(jwtTokenProvider.getSubject(anyString())).willReturn("");
+
+        FavoriteRequest request = new FavoriteRequest(1L, 2L);
+        String body = objectMapper.writeValueAsString(request);
+        mockMvc.perform(post("/favorites")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+            .andExpect(status().isUnauthorized())
+            .andDo(FavoriteDocumentation.addFavoriteWithoutAuth());
     }
 
     @DisplayName("즐겨찾기 목록 조회 테스트")

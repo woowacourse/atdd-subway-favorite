@@ -1,16 +1,16 @@
 package wooteco.subway.doc;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static wooteco.subway.doc.ApiDocumentUtils.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
-        return document("members/create",
+        return docsTemplate("members/create",
             requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING).description("사용자의 이메일"),
                 fieldWithPath("name").type(JsonFieldType.STRING).description("사용자의 이름"),
@@ -22,8 +22,48 @@ public class MemberDocumentation {
         );
     }
 
+    public static RestDocumentationResultHandler createMemberWithEmptyFields() {
+        return docsTemplate("members/createWithEmptyFields",
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING).description("사용자의 이메일"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자의 이름"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("사용자의 비밀번호")
+            ),
+            responseFields(
+                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("에러 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("에러 메세지")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler login() {
+        return docsTemplate("members/login",
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING).description("사용자의 이메일"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("사용자의 비밀번호")
+            ),
+            responseFields(
+                fieldWithPath("tokenType").type(JsonFieldType.STRING).description("토큰 종류 (BEARER, BASIC...)"),
+                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("사용자 인증 토큰")
+            )
+        );
+    }
+
+    public static RestDocumentationResultHandler invalidLogin() {
+        return docsTemplate("members/invalidLogin",
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING).description("사용자의 이메일"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("사용자의 비밀번호")
+            ),
+            responseFields(
+                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("에러 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("에러 메세지")
+            )
+        );
+    }
+
     public static RestDocumentationResultHandler getMember() {
-        return document("members/findByEmail",
+        return docsTemplate("members/findByEmail",
             requestParameters(
                 parameterWithName("email").description("사용자의 이메일")
             ),
@@ -34,12 +74,23 @@ public class MemberDocumentation {
                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("사용자의 고유 id"),
                 fieldWithPath("email").type(JsonFieldType.STRING).description("사용자의 이메일"),
                 fieldWithPath("name").type(JsonFieldType.STRING).description("사용자의 이름")
-
             ));
     }
 
+    public static RestDocumentationResultHandler getMemberWithoutAuth() {
+        return docsTemplate("members/findByEmailWithoutAuth",
+            requestParameters(
+                parameterWithName("email").description("사용자의 이메일")
+            ),
+            responseFields(
+                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("에러 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("에러 메세지")
+            )
+        );
+    }
+
     public static RestDocumentationResultHandler updateMember() {
-        return document("members/update",
+        return docsTemplate("members/update",
             pathParameters(
                 parameterWithName("id").description("사용자의 고유 id")
             ),
@@ -54,7 +105,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler deleteMember() {
-        return document("members/delete",
+        return docsTemplate("members/delete",
             pathParameters(
                 parameterWithName("id").description("사용자의 고유 id")
             ),

@@ -1,16 +1,16 @@
 package wooteco.subway.doc;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static wooteco.subway.doc.ApiDocumentUtils.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 public class FavoriteDocumentation {
     public static RestDocumentationResultHandler addFavorite() {
-        return document("favorites/add",
+        return docsTemplate("favorites/add",
             requestHeaders(
                 headerWithName("Authorization").description("사용자의 JWT 토큰")
             ),
@@ -21,8 +21,21 @@ public class FavoriteDocumentation {
         );
     }
 
+    public static RestDocumentationResultHandler addFavoriteWithoutAuth() {
+        return docsTemplate("favorites/addWithoutAuth",
+            requestFields(
+                fieldWithPath("source").type(JsonFieldType.NUMBER).description("출발역의 ID"),
+                fieldWithPath("target").type(JsonFieldType.NUMBER).description("도착역의 ID")
+            ),
+            responseFields(
+                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("에러 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("에러 메세지")
+            )
+        );
+    }
+
     public static RestDocumentationResultHandler getAllFavorites() {
-        return document("favorites/getAll",
+        return docsTemplate("favorites/getAll",
             requestHeaders(
                 headerWithName("Authorization").description("사용자의 JWT 토큰")
             ),
@@ -37,7 +50,7 @@ public class FavoriteDocumentation {
     }
 
     public static RestDocumentationResultHandler removeFavorite() {
-        return document("favorites/remove",
+        return docsTemplate("favorites/remove",
             requestHeaders(
                 headerWithName("Authorization").description("사용자의 JWT 토큰")
             ),

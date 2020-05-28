@@ -29,13 +29,17 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.exceptions.GlobalExceptionHandler;
+import wooteco.subway.web.exceptions.InvalidLoginException;
+import wooteco.subway.web.exceptions.InvalidRegisterException;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = MemberController.class)
-@Import({AuthorizationExtractor.class, JwtTokenProvider.class})
+@Import({AuthorizationExtractor.class, JwtTokenProvider.class, GlobalExceptionHandler.class})
 public class MemberControllerTest {
 
     static final String AUTHORIZATION = "authorization";
@@ -88,6 +92,50 @@ public class MemberControllerTest {
             .andDo(MemberDocumentation.createMember());
     }
 
+    @DisplayName("빈 필드를 입력한 사용자 생성")
+    @Test
+    public void createMemberWithEmptyFields() throws Exception {
+        MemberRequest memberRequest = new MemberRequest("", "", "");
+        given(memberService.createMember(any())).willThrow(InvalidRegisterException.class);
+
+        String body = objectMapper.writeValueAsString(memberRequest);
+
+        mockMvc.perform(post("/members")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+            .andExpect(status().isBadRequest())
+            .andDo(MemberDocumentation.createMemberWithEmptyFields());
+    }
+
+    @DisplayName("사용자 로그인")
+    @Test
+    public void login() throws Exception {
+        given(memberService.createToken(any())).willReturn(TEST_USER_TOKEN);
+        String body = objectMapper.writeValueAsString(new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD));
+
+        mockMvc.perform(post("/oauth/token")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+            .andExpect(status().isOk())
+            .andDo(MemberDocumentation.login());
+    }
+
+    @DisplayName("사용자 로그인 실패")
+    @Test
+    public void invalidLogin() throws Exception {
+        given(memberService.createToken(any())).willThrow(new InvalidLoginException("잘못된 패스워드"));
+        String body = objectMapper.writeValueAsString(new LoginRequest(TEST_USER_EMAIL, "wrong password!!!"));
+
+        mockMvc.perform(post("/oauth/token")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+            .andExpect(status().isBadRequest())
+            .andDo(MemberDocumentation.invalidLogin());
+    }
+
     @DisplayName("사용자 조회")
     @Test
     void getMember() throws Exception {
@@ -103,6 +151,22 @@ public class MemberControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(MemberDocumentation.getMember());
+    }
+
+    @DisplayName("미인증 사용자 조회")
+    @Test
+    void getMemberWithoutAuthentication() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        // given(authorizationExtractor.extract(any(), anyString())).willReturn(TEST_USER_TOKEN);
+        given(jwtTokenProvider.validateToken(anyString())).willReturn(true);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+        given(memberService.findMemberByEmail(anyString())).willReturn(member);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/members")
+            .param("email", TEST_USER_EMAIL)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andDo(MemberDocumentation.getMemberWithoutAuth());
     }
 
     @DisplayName("사용자 수정")

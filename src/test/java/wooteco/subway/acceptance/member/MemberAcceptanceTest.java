@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.HttpStatus;
 
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -75,8 +76,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 MemberResponse updateMember = getMember(TEST_USER_EMAIL, token);
                 assertThat(updateMember.getName()).isEqualTo(updateDto.getName());
                 // and 기존의 비밀번호로는 로그인할 수 없다.
-                assertThatThrownBy(() -> login(TEST_USER_EMAIL, TEST_USER_PASSWORD))
-                    .isInstanceOf(Exception.class);
+                assertThat(loginError(TEST_USER_EMAIL, TEST_USER_PASSWORD).getStatusCode())
+                    .isEqualTo(HttpStatus.BAD_REQUEST.value());
             }),
             DynamicTest.dynamicTest("다른 사용자 인증으로 회원 정보 삭제", () -> {
                 // given
@@ -92,7 +93,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 // when
                 deleteMember(member, token);
                 // then
-                assertThatThrownBy(() -> getMember(TEST_USER_EMAIL, token));
+                assertThat(getMemberError(TEST_USER_EMAIL, token).getStatusCode())
+                    .isEqualTo(HttpStatus.NOT_FOUND.value());
+
             })
         );
     }
