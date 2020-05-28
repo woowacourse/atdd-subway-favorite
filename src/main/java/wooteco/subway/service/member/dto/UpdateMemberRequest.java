@@ -12,6 +12,12 @@ public class UpdateMemberRequest {
     public UpdateMemberRequest() {
     }
 
+    public UpdateMemberRequest(@NotBlank String name,
+        @NotBlank String password) {
+        this.name = name;
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }
