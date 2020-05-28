@@ -5,6 +5,7 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.service.exception.SameStationException;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.station.StationService;
@@ -22,6 +23,7 @@ public class FavoriteService {
     }
 
     public void createFavorite(FavoriteRequest favoriteRequest, Member member) {
+        validate(favoriteRequest);
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
         Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
         member.addFavorite(new Favorite(sourceId, destinationId));
@@ -29,6 +31,7 @@ public class FavoriteService {
     }
 
     public void removeFavorite(FavoriteRequest favoriteRequest, Member member) {
+        validate(favoriteRequest);
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
         Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
         member.removeFavoriteById(sourceId, destinationId);
@@ -41,10 +44,17 @@ public class FavoriteService {
         return favorites.toFavoriteResponses(stationService.findStations());
     }
 
-    public boolean ifFavoriteExist(Member member, String source, String destination) {
+    public boolean ifFavoriteExist(FavoriteRequest favoriteRequest, Member member) {
+        validate(favoriteRequest);
         Favorites favorites = new Favorites(member.getFavorites());
-        Long sourceId = stationService.findStationByName(source).getId();
-        Long destinationId = stationService.findStationByName(destination).getId();
+        Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
+        Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
         return favorites.findById(sourceId, destinationId).isPresent();
+    }
+
+    private void validate(FavoriteRequest favoriteRequest) {
+        if (favoriteRequest.getSourceName().equals(favoriteRequest.getDestinationName())) {
+            throw new SameStationException();
+        }
     }
 }

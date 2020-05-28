@@ -124,7 +124,7 @@ public class FavoriteControllerTest {
     public void ifExists() throws Exception {
         LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         given(memberService.createToken(any())).willReturn(new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL));
-        given(favoriteService.ifFavoriteExist(any(), any(), any())).willReturn(true);
+        given(favoriteService.ifFavoriteExist(any(), any())).willReturn(true);
 
         this.mockMvc.perform(get("/favorites/exists?source=양재역&destination=잠실역")
                 .header("Authorization", "bearer " + memberService.createToken(request)))
