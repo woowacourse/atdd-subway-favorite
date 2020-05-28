@@ -23,7 +23,6 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        // Todo: 리팩토링 필요
         if ("/members".equals(request.getRequestURI()) && request.getMethod().equals("POST")) {
             return true;
         }

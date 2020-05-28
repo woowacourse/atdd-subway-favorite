@@ -84,7 +84,6 @@ public class FavoriteServiceTest {
 
         List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
 
-        // Todo: 스트림으로인해 순서를 알 수 없는 경우 명확하게 테스트 할 수 있는 방법?
         assertThat(favorites.size()).isEqualTo(2);
         assertThat(favorites.get(0).getPreStation()).isIn(gangnam, yeoksam);
         assertThat(favorites.get(1).getPreStation()).isIn(gangnam, yeoksam);

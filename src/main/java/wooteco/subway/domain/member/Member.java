@@ -63,7 +63,6 @@ public class Member {
             .orElseThrow(() -> new IllegalArgumentException("해당하는 즐겨찾기가 없습니다."));
     }
 
-    // Todo: 메서드 네이밍?
     public List<Long> getStationIdsFromFavorites() {
         return favorites.stream()
             .flatMap(it -> Stream.of(it.getPreStation(), it.getStation()))
