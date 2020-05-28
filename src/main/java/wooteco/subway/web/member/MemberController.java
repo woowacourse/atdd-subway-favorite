@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,28 +32,27 @@ public class MemberController {
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = memberService.createMember(memberRequest.toMember());
         return ResponseEntity
-            .created(URI.create("/members/" + member.getId()))
-            .build();
+                .created(URI.create("/members/" + member.getId()))
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestAttribute("loginMemberEmail") String email) {
-        Member member = memberService.findMemberByEmail(email);
+    public ResponseEntity<MemberResponse> getMember(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @PutMapping
     public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member,
-        @RequestBody UpdateMemberRequest updateMemberRequest) {
+            @RequestBody UpdateMemberRequest updateMemberRequest) {
         memberService.updateMember(member, updateMemberRequest);
         return ResponseEntity.ok()
-            .build();
+                .build();
     }
 
     @DeleteMapping
     public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
         memberService.deleteMember(member);
         return ResponseEntity.noContent()
-            .build();
+                .build();
     }
 }

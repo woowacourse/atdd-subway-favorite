@@ -1,25 +1,27 @@
-import api from '../../api/index.js';
+import {ERROR_MESSAGE} from "../../utils/constants.js";
+import api from "../../api/index.js";
+import showSnackbar from "../../lib/snackbar/index.js";
 
-function MyPage() {
-    const $emailValue = document.querySelector('#email');
-    const $nameValue = document.querySelector('#name');
+function MyInfo() {
+    const $email = document.querySelector("#email");
+    const $name = document.querySelector("#name");
 
-    const onLoad = () => {
-        const accessToken = localStorage.getItem("accessToken");
-        const tokenType = localStorage.getItem("tokenType");
-        const headers = tokenType + " " + accessToken;
-        api.member
-            .find(headers)
-            .then(data => {
-                $emailValue.textContent = data.email;
-                $nameValue.textContent = data.name;
-            })
+    const initMyInfo = async () => {
+        try {
+            const member = await api.loginMember.get();
+            if (member) {
+                $email.innerText = member.email;
+                $name.innerText = member.name;
+            }
+        } catch (e) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
+        }
     };
 
     this.init = () => {
-        onLoad();
-    }
+        initMyInfo();
+    };
 }
 
-const myPage = new MyPage();
-myPage.init();
+const myInfo = new MyInfo();
+myInfo.init();

@@ -1,62 +1,45 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
-import api from '../../api/index.js';
-import {isValidEmail, isValidJoinPasswordLength} from "../../utils/validation.js";
+import {ERROR_MESSAGE, EVENT_TYPE} from "../../utils/constants.js";
+import showSnackbar from "../../lib/snackbar/index.js";
+import api from "../../api/index.js";
 
 function Login() {
-    const $loginButton = document.querySelector('#login-button');
-    const onLogin = event => {
+    const $loginButton = document.querySelector("#login-button");
+    const $email = document.querySelector("#email");
+    const $password = document.querySelector("#password");
+
+    const onLogin = async event => {
         event.preventDefault();
-        const emailValue = document.querySelector('#email').value;
-        const passwordValue = document.querySelector('#password').value;
-
-        if (!isValidEmail(emailValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.WRONG_EMAIL_FORMAT,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+        if (!isValid()) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
             return;
         }
-        if (!isValidJoinPasswordLength(passwordValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
-            return;
+        try {
+            const loginMember = {
+                email: $email.value,
+                password: $password.value
+            };
+            const jwt = await api.member.login(loginMember);
+            console.log(jwt);
+            if (jwt) {
+                localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
+                location.href = "/";
+                return;
+            }
+            showSnackbar(ERROR_MESSAGE.COMMON);
+        } catch (e) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
         }
+    };
 
-        const request = {
-            email: emailValue,
-            password: passwordValue
-        };
-
-        api.member
-            .login(request)
-            .then(response => {
-                if (!response.ok) {
-                    Snackbar.show({
-                        text: ERROR_MESSAGE.LOGIN_FAIL,
-                        pos: 'bottom-center',
-                        showAction: false,
-                        duration: 2000
-                    })
-                    return;
-                }
-                response.json()
-                    .then(token => {
-                        localStorage.setItem("accessToken", token.accessToken);
-                        localStorage.setItem("tokenType", token.tokenType);
-                        window.location.href = '/';
-                    });
-            })
+    const isValid = () => {
+        const email = $email.value;
+        const password = $password.value;
+        return email && password;
     };
 
     this.init = () => {
-        $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin)
-    }
+        $loginButton.addEventListener(EVENT_TYPE.CLICK, onLogin);
+    };
 }
 
 const login = new Login();

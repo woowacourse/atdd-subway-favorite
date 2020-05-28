@@ -1,69 +1,52 @@
-import {ERROR_MESSAGE, EVENT_TYPE} from '../../utils/constants.js'
-import {isSamePassword, isValidEmail, isValidJoinPasswordLength, isValidName} from '../../utils/validation.js'
-import api from '../../api/index.js'
+import {ERROR_MESSAGE, EVENT_TYPE} from "../../utils/constants.js";
+import showSnackbar from "../../lib/snackbar/index.js";
+import api from "../../api/index.js";
 
 function Join() {
-    const $joinButton = document.querySelector('#join-button')
-    const onJoin = event => {
-        event.preventDefault()
-        const emailValue = document.querySelector('#email').value
-        const nameValue = document.querySelector('#name').value
-        const passwordValue = document.querySelector('#password').value
-        const passwordCheckValue = document.querySelector('#password-check').value
+    const $joinButton = document.querySelector("#join-button");
+    const $email = document.querySelector("#email");
+    const $name = document.querySelector("#name");
+    const $password = document.querySelector("#password");
+    const $passwordCheck = document.querySelector("#password-check");
 
-        if (!isValidEmail(emailValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.WRONG_EMAIL_FORMAT,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
+    const onJoinHandler = async event => {
+        event.preventDefault();
+        if (!isValid()) {
             return;
         }
-        if (!isValidName(nameValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.EMPTY_NAME,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
-            return;
+        try {
+            const newMember = {
+                email: $email.value,
+                name: $name.value,
+                password: $password.value
+            };
+            await api.member.create(newMember);
+            location.href = "/login";
+        } catch (e) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
         }
-        if (!isSamePassword(passwordValue, passwordCheckValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.MISMATCH_PASSWORD,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
-            return;
-        }
-        if (!isValidJoinPasswordLength(passwordValue)) {
-            Snackbar.show({
-                text: ERROR_MESSAGE.INVALID_PASSWORD_LENGTH,
-                pos: 'bottom-center',
-                showAction: false,
-                duration: 2000
-            })
-            return;
-        }
+    };
 
-        const request = {
-            email: emailValue,
-            name: nameValue,
-            password: passwordValue
-        };
-        api.member.create(request).then(response => {
-            if (response.ok) {
-                window.location.href = '/';
-            }
-        })
-    }
+    const isValid = () => {
+        const email = $email.value;
+        const name = $name.value;
+        const password = $password.value;
+        const passwordCheck = $passwordCheck.value;
+        if (!email || !name || !password) {
+            showSnackbar(ERROR_MESSAGE.COMMON);
+            return false;
+        }
+        if (password !== passwordCheck) {
+            showSnackbar(ERROR_MESSAGE.PASSWORD_CHECK);
+            return false;
+        }
+        return true;
+    };
 
     this.init = () => {
-        $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoin)
-    }
+        $joinButton.addEventListener(EVENT_TYPE.CLICK, onJoinHandler);
+    };
 }
 
-const join = new Join()
-join.init()
+const join = new Join();
+join.init();
