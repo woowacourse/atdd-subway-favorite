@@ -43,7 +43,7 @@ public class LoginMemberController {
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
         memberService.deleteMember(member);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/me/favorites")

@@ -1,34 +1,25 @@
 package wooteco.subway.web.member;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import wooteco.subway.service.station.NoExistStationException;
 
 @ControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler(NoExistStationException.class)
-    public ResponseEntity<String> NoExistStationExceptionHandler(NoExistStationException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<String> BadRequestExceptionHandler(BadRequestException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(InvalidAuthenticationException.class)
-    public ResponseEntity<String> InvalidAuthenticationExceptionHandler(InvalidAuthenticationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<String> ForbiddenExceptionHandler(ForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
-    @ExceptionHandler(InvalidRegisterException.class)
-    public ResponseEntity<String> InvalidRegisterExceptionHandler(InvalidRegisterException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(InvalidUpdateException.class)
-    public ResponseEntity<String> InvalidUpdateExceptionHandler(InvalidUpdateException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(NoExistMemberException.class)
-    public ResponseEntity<String> NoSuchMemberExceptionHandler(NoExistMemberException e) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

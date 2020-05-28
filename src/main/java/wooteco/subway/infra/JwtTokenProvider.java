@@ -36,17 +36,17 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public boolean isInvalidToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
             if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
+                return true;
             }
 
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
             return false;
+        } catch (JwtException | IllegalArgumentException e) {
+            return true;
         }
     }
 }

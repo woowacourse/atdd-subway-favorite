@@ -18,6 +18,7 @@ import wooteco.subway.service.station.StationService;
 import wooteco.subway.web.member.InvalidRegisterException;
 import wooteco.subway.web.member.InvalidUpdateException;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,21 +69,11 @@ public class MemberServiceTest {
         verify(jwtTokenProvider).createToken(anyString());
     }
 
-    @DisplayName("이메일 형식이 아닌 경우 예외 처리")
-    @Test
-    void createTokenNotEmailFormat() {
-        Member member = new Member("abc", "abc", "abc");
-
-        assertThatThrownBy(() -> memberService.createMember(member))
-                .isInstanceOf(InvalidRegisterException.class)
-                .hasMessage(InvalidRegisterException.INVALID_EMAIL_FORMAT_MSG);
-    }
-
     @DisplayName("이메일이 중복되는 경우 예외 처리")
     @Test
     void createTokenEmailDuplicate() {
         Member member = new Member("abc@abc.com", "abc", "abc");
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        lenient().when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
 
         assertThatThrownBy(() -> memberService.createMember(member))
                 .isInstanceOf(InvalidRegisterException.class)
@@ -110,8 +101,7 @@ public class MemberServiceTest {
 
         memberService.addFavorite(member, favoriteCreateRequest);
 
-        when(stationService.findStationById(1L)).thenReturn(new Station("왕십리"));
-        when(stationService.findStationById(3L)).thenReturn(new Station("구의"));
+        when(stationService.findStations()).thenReturn(Arrays.asList(new Station(1L, "왕십리"), new Station(3L, "구의")));
 
         assertThat(memberService.findAllFavorites(member)).isNotNull();
         assertThat(memberService.findAllFavorites(member).size()).isEqualTo(1);

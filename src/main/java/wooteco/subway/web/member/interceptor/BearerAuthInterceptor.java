@@ -3,9 +3,9 @@ package wooteco.subway.web.member.interceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.InvalidTokenException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,20 +15,18 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     public static final String BEARER = "bearer";
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
-    private MemberRepository memberRepository;
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
+    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
         this.authExtractor = authExtractor;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberRepository = memberRepository;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
         String token = authExtractor.extract(request, BEARER);
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효한 토큰 값이 아닙니다.");
+        if (jwtTokenProvider.isInvalidToken(token)) {
+            throw new InvalidTokenException();
         }
         String email = jwtTokenProvider.getSubject(token);
 

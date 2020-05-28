@@ -3,6 +3,8 @@ package wooteco.subway.domain.member;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,8 +12,12 @@ import java.util.stream.Collectors;
 public class Member {
     @Id
     private Long id;
+    @NotEmpty
+    @Email
     private String email;
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String password;
     private Set<Favorite> favorites = new HashSet<>();
 
@@ -84,5 +90,9 @@ public class Member {
                 .filter(favorite -> !favorite.getSourceStationId().equals(id)
                         && !favorite.getTargetStationId().equals(id))
                 .collect(Collectors.toSet());
+    }
+
+    public boolean isNotSameUser(Member targetmember) {
+        return !this.email.equals(targetmember.email);
     }
 }
