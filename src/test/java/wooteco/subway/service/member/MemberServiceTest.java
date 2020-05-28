@@ -25,6 +25,7 @@ import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.exceptions.InvalidLoginException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -70,7 +71,7 @@ public class MemberServiceTest {
     void createToken() {
         // given
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         // when
@@ -78,6 +79,19 @@ public class MemberServiceTest {
 
         // then
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @DisplayName("토큰 생성 실패 테스트")
+    @Test
+    void createTokenException() {
+        // given
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
+        String wrongPassword = "turtle";
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, wrongPassword);
+
+        assertThatThrownBy(() -> memberService.createToken(loginRequest))
+                .isInstanceOf(InvalidLoginException.class);
     }
 
     @DisplayName("회원 정보 조회 테스트")
