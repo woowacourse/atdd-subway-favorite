@@ -34,21 +34,21 @@ public class MemberController {
 
     @RequiredAuth
     @PutMapping("/members")
-    public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member, @RequestBody @Valid UpdateMemberRequest param) {
+    public ResponseEntity<Void> updateMember(@LoginMember Member member, @RequestBody @Valid UpdateMemberRequest param) {
         memberService.updateMember(member.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @RequiredAuth
     @DeleteMapping("/members")
-    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
+    public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 
     @RequiredAuth
     @PostMapping("/members/favorite")
-    public ResponseEntity createFavorite(@LoginMember Member member, @RequestBody FavoriteCreateRequest request) {
+    public ResponseEntity<Void> createFavorite(@LoginMember Member member, @RequestBody FavoriteCreateRequest request) {
         memberService.addFavorite(member, request);
         return ResponseEntity.ok().build();
     }
@@ -62,7 +62,7 @@ public class MemberController {
 
     @RequiredAuth
     @DeleteMapping("/members/favorite/{id}")
-    public ResponseEntity<MemberFavoriteResponse> deleteFavoriteById(@LoginMember Member member, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteFavoriteById(@LoginMember Member member, @PathVariable Long id) {
         memberService.deleteFavoriteById(member, id);
         return ResponseEntity.noContent().build();
     }
