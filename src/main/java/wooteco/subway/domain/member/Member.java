@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
 import wooteco.subway.exception.DuplicatedFavoriteException;
-import wooteco.subway.web.member.InvalidAuthenticationException;
+import wooteco.subway.exception.InvalidAuthenticationException;
 
 public class Member {
     @Id

@@ -4,11 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.MemberRequest;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.member.dto.*;
 import wooteco.subway.web.member.interceptor.NoValidate;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -60,5 +59,18 @@ public class MemberController {
         member.validateId(id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @NoValidate
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param, HttpSession session) {
+        Member member = memberService.loginWithForm(param.getEmail(), param.getPassword());
+
+        String token = memberService.createToken(param);
+        session.setAttribute("loginMemberEmail", param.getEmail());
+
+        return ResponseEntity.ok()
+                .location(URI.create("/members/" + member.getId()))
+                .body(new TokenResponse(token, "bearer"));
     }
 }

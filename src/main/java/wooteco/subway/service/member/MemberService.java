@@ -3,11 +3,11 @@ package wooteco.subway.service.member;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.exception.NoMemberExistException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Service
 public class MemberService {

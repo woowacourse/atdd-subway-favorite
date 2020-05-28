@@ -67,7 +67,7 @@ const api = (() => {
       return request('/members', METHOD.POST(params))
     },
     login(params) {
-      return request('/login', METHOD.POST(params))
+      return request('/members/login', METHOD.POST(params))
     },
     find(id) {
       return requestWithJsonData(`/members/${id}`, METHOD.GET_WITH_AUTH())

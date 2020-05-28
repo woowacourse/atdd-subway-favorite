@@ -20,6 +20,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.NoMemberExistException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.web.member.interceptor.AuthorizationExtractor;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

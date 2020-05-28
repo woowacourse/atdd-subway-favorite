@@ -321,7 +321,7 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/login");
+                post("/members/login");
     }
 
     public TokenResponse getTokenResponse(Response response) {
