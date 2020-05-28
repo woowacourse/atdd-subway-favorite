@@ -80,7 +80,7 @@ public class MemberService {
     }
 
     public void addFavorite(Member member, FavoriteCreateRequest favoriteCreateRequest) {
-        member.addFavorite(new Favorite(favoriteCreateRequest.getStartStationId(),
+        member.addFavorite(Favorite.of(favoriteCreateRequest.getStartStationId(),
                 favoriteCreateRequest.getEndStationId()));
         memberRepository.save(member);
     }

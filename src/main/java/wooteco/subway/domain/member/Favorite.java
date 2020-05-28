@@ -20,6 +20,10 @@ public class Favorite {
         this.endStationId = endStationId;
     }
 
+    public static Favorite of(Long startStationId, Long endStationId) {
+        return new Favorite(startStationId, endStationId);
+    }
+
     public Long getId() {
         return id;
     }
