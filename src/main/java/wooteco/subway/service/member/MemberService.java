@@ -35,8 +35,7 @@ public class MemberService {
 	}
 
 	public String createToken(LoginRequest param) {
-		Member member = memberRepository.findByEmail(param.getEmail())
-			.orElseThrow(() -> new InvalidAuthenticationException("존재하지 않는 회원입니다."));
+		Member member = findMemberByEmail(param.getEmail());
 		if (!member.checkPassword(param.getPassword())) {
 			throw new RuntimeException("잘못된 패스워드입니다.");
 		}
@@ -44,7 +43,9 @@ public class MemberService {
 		return jwtTokenProvider.createToken(param.getEmail());
 	}
 
-	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+	private Member findMemberByEmail(String email) {
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new InvalidAuthenticationException(
+				email + "은 존재하지 않는 회원입니다."));
 	}
 }
