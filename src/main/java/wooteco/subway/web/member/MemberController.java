@@ -48,7 +48,7 @@ public class MemberController {
 
     @RequiredAuth
     @PostMapping("/members/favorite")
-    public ResponseEntity createFavorite(@LoginMember Member member, @RequestBody FavoriteCreateRequest request) {
+    public ResponseEntity<Void> createFavorite(@LoginMember Member member, @RequestBody FavoriteCreateRequest request) {
         memberService.addFavorite(member, request);
         return ResponseEntity.ok().build();
     }

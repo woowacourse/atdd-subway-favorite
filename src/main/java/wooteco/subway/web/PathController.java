@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.service.path.PathService;
+import wooteco.subway.service.path.dto.PathResponse;
 
 @RestController
 public class PathController {
@@ -16,9 +17,9 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity findPath(@RequestParam String source,
-                                   @RequestParam String target,
-                                   @RequestParam PathType type) {
+    public ResponseEntity<PathResponse> findPath(@RequestParam String source,
+                                                 @RequestParam String target,
+                                                 @RequestParam PathType type) {
         return ResponseEntity.ok(pathService.findPath(source, target, type));
     }
 }
