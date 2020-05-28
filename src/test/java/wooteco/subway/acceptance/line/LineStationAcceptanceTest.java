@@ -1,19 +1,20 @@
 package wooteco.subway.acceptance.line;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.AcceptanceTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
-    void manageLineStation() {
+    void manageLineStation() throws Exception {
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
         StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
         StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);

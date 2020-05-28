@@ -7,16 +7,83 @@ endif::[]
 :toc: left
 :toclevels: 2
 :sectlinks:
-:operation-http-request-title: Example Request
-:operation-http-response-title: Example Response
+:operation-path-parameters-title: 경로 파라미터
+:operation-request-headers-title: 요청 헤더
+:operation-request-body-title: 요청 바디
+:operation-request-fields-title: 요청 필드
+:operation-request-parameters-title: 요청 파라미터
+:operation-http-request-title: 요청 예시
+:operation-http-response-title: 응답 예시
 
 [[resources]]
-= Resources
+= 우아한지하철 서비스 어드민
 
 [[resources-members]]
-== Member
+== 회원 관리
 
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='request-fields,request-body,http-request,http-response']
+
+[[resources-members-createWithEmptyFields]]
+==== 필드에 빈 값을 입력한 경우
+
+operation::members/createWithEmptyFields[snippets='request-body,http-response']
+
+[[resources-members-login]]
+=== 로그인
+
+operation::members/login[snippets='request-fields,request-body,http-request,http-response']
+
+[[resources-members-invalidLogin]]
+==== 로그인 실패
+
+operation::members/invalidLogin[snippets='request-body,http-response']
+
+[[resources-members-findByEmail]]
+=== 회원 정보 조회
+
+operation::members/findByEmail[snippets='request-headers,request-parameters,http-request,http-response']
+
+[[resources-members-update]]
+=== 회원 정보 수정
+
+operation::members/update[snippets='request-headers,path-parameters,request-fields,request-body,http-request,http-response']
+
+[[resources-member-delete]]
+=== 회원 정보 삭제
+
+operation::members/delete[snippets='request-headers,path-parameters,http-request,http-response']
+
+[[resources-members-findByEmailWithoutAuth]]
+=== 회원 정보 공통 오류
+
+==== 인증 토큰이 없거나 잘못된 경우
+
+operation::members/findByEmailWithoutAuth[snippets='http-response']
+
+[[resources-favorites]]
+== 즐겨찾기 관리
+
+[[resources-favorites-add]]
+=== 즐겨찾기 추가
+
+operation::favorites/add[snippets='request-headers,request-fields,request-body,http-request,http-response']
+
+[[resources-favorites-getAll]]
+=== 즐겨찾기 목록 조회
+
+operation::favorites/getAll[snippets='request-headers,http-request,http-response']
+
+[[resources-favorites-remove]]
+=== 즐겨찾기 제거
+
+operation::favorites/remove[snippets='request-headers,path-parameters,http-request,http-response']
+
+[[resources-members-addWithoutAuth]]
+=== 즐겨찾기 공통 오류
+
+==== 인증 토큰이 없거나 잘못된 경우
+
+operation::favorites/addWithoutAuth[snippets='http-response']

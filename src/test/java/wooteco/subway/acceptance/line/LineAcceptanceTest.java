@@ -1,20 +1,22 @@
 package wooteco.subway.acceptance.line;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.service.line.dto.LineDetailResponse;
-import wooteco.subway.service.line.dto.LineResponse;
-import wooteco.subway.AcceptanceTest;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.line.dto.LineDetailResponse;
+import wooteco.subway.service.line.dto.LineResponse;
 
 public class LineAcceptanceTest extends AcceptanceTest {
+
     @DisplayName("지하철 노선을 관리한다")
     @Test
-    void manageLine() {
+    void manageLine() throws Exception {
         // when
         createLine(LINE_NAME_SINBUNDANG);
         createLine(LINE_NAME_BUNDANG);
