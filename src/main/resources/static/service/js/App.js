@@ -3,7 +3,12 @@ import user from '../api/user.js'
 
 function SubwayApp() {
   this.init = async () => {
-    initNavigation(user.isLoggedIn() && await user.getInfo())
+    let memberInfo = null
+    try {
+      memberInfo = user.isLoggedIn() && await user.getInfo()
+    } finally {
+      initNavigation(memberInfo)
+    }
   }
 }
 
