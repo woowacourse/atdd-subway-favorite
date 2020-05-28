@@ -67,7 +67,6 @@ class FavoriteServiceTest {
 
     @Test
     void deleteFavorite() {
-
         FavoriteRequest request = new FavoriteRequest(STATION_NAME_YEOKSAM, STATION_NAME_DOGOK);
         favoriteService.deleteFavorite(member, request);
         assertThat(favoriteService.findFavorites(member)).hasSize(2);
