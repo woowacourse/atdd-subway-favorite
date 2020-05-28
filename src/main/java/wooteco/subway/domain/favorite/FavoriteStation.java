@@ -1,22 +1,22 @@
 package wooteco.subway.domain.favorite;
 
-import java.util.Objects;
-
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.util.Objects;
 
 @Table("FAVORITE")
 public class FavoriteStation {
 
     @Column("member")
     private Long memberId;
-    private String source;
-    private String target;
+    private Long source;
+    private Long target;
 
     public FavoriteStation() {
     }
 
-    public FavoriteStation(Long memberId, String source, String target) {
+    public FavoriteStation(Long memberId, Long source, Long target) {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
@@ -26,24 +26,22 @@ public class FavoriteStation {
         return memberId;
     }
 
-    public String getSource() {
+    public Long getSource() {
         return source;
     }
 
-    public String getTarget() {
+    public Long getTarget() {
         return target;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        FavoriteStation that = (FavoriteStation)o;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FavoriteStation that = (FavoriteStation) o;
         return Objects.equals(memberId, that.memberId) &&
-            Objects.equals(source, that.source) &&
-            Objects.equals(target, that.target);
+                Objects.equals(source, that.source) &&
+                Objects.equals(target, that.target);
     }
 
     @Override

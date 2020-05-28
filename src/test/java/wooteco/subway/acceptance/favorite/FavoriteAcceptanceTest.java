@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import wooteco.subway.acceptance.AuthAcceptanceTest;
-import wooteco.subway.domain.favorite.FavoriteStation;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
@@ -33,11 +33,17 @@ public class FavoriteAcceptanceTest extends AuthAcceptanceTest {
     TokenResponse tokenResponse;
     PathResponse PathResponse;
 
+    private StationResponse stationResponse1;
+    private StationResponse stationResponse2;
+    private StationResponse stationResponse3;
+    private LineResponse lineResponse;
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
 
     @TestFactory
     Stream<DynamicTest> mangeFavorite() {
@@ -49,10 +55,10 @@ public class FavoriteAcceptanceTest extends AuthAcceptanceTest {
                     tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
                 }),
                 DynamicTest.dynamicTest("지하철과 노선이 등록되어 있다.", () -> {
-                    LineResponse lineResponse = createLine("1호선");
-                    StationResponse stationResponse1 = createStation("gangnam");
-                    StationResponse stationResponse2 = createStation("bundang");
-                    StationResponse stationResponse3 = createStation("jamsil");
+                    lineResponse = createLine("1호선");
+                    stationResponse1 = createStation("gangnam");
+                    stationResponse2 = createStation("bundang");
+                    stationResponse3 = createStation("jamsil");
                     addLineStation(lineResponse.getId(), null, stationResponse1.getId());
                     addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
                     addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
@@ -67,12 +73,12 @@ public class FavoriteAcceptanceTest extends AuthAcceptanceTest {
                     assertThat(getFavorites(tokenResponse).getFavoriteStations()).hasSize(1);
                 }),
                 DynamicTest.dynamicTest("즐겨찾기 페이지에서 재조회를 요청한다", () -> {
-                    List<FavoriteStation> favoriteStations = getFavorites(tokenResponse).getFavoriteStations();
-                    findPath(favoriteStations.get(0).getSource(), favoriteStations.get(0).getTarget(), "DISTANCE");
+                    List<FavoriteResponse> favoriteStations = getFavorites(tokenResponse).getFavoriteStations();
+                    findPath(favoriteStations.get(0).getSource().getName(),
+                            favoriteStations.get(0).getTarget().getName(), "DISTANCE");
                 }),
                 DynamicTest.dynamicTest("즐겨찾기 목록에서 삭제할 수 있다.", () -> {
-                    List<FavoriteStation> favoriteStations = getFavorites(tokenResponse).getFavoriteStations();
-                    deleteFavorite(tokenResponse, favoriteStations.get(0).getSource(), favoriteStations.get(0).getTarget());
+                    deleteFavorite(tokenResponse, stationResponse1.getId(), stationResponse3.getId());
                     assertThat(getFavorites(tokenResponse).getFavoriteStations()).hasSize(0);
                 })
         );
@@ -104,11 +110,11 @@ public class FavoriteAcceptanceTest extends AuthAcceptanceTest {
         return objectMapper.readValue(result, FavoritesResponse.class);
     }
 
-    private void deleteFavorite(TokenResponse tokenResponse, String source, String target) throws Exception {
+    private void deleteFavorite(TokenResponse tokenResponse, Long source, Long target) throws Exception {
         mockMvc.perform(delete("/favorites")
                 .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
-                .param("source", source)
-                .param("target", target)
+                .param("source", String.valueOf(source))
+                .param("target", String.valueOf(target))
         )
                 .andExpect(status().isOk());
     }

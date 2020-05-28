@@ -29,10 +29,6 @@ operation::members/find[snippets='http-request,http-response']
 
 operation::members/update[snippets='http-request,http-response']
 
-=== 회원 삭제
-
-operation::members/delete[snippets='http-request,http-response']
-
 [[resources-favorites]]
 == Favorites
 

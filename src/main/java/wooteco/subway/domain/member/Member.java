@@ -1,13 +1,12 @@
 package wooteco.subway.domain.member;
 
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
-
 import wooteco.subway.domain.favorite.FavoriteStation;
 import wooteco.subway.domain.favorite.FavoriteStations;
+
+import java.util.Set;
 
 public class Member {
     @Id
@@ -72,7 +71,7 @@ public class Member {
         return favoriteStations.getFavorites();
     }
 
-    public FavoriteStation findByNames(String source, String target) {
+    public FavoriteStation findByNames(Long source, Long target) {
         return favoriteStations.findByNames(source, target);
     }
 

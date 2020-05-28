@@ -22,12 +22,12 @@ public class FavoriteStations {
         favorites.add(favoriteStation);
     }
 
-    public FavoriteStation findByNames(String source, String target) {
+    public FavoriteStation findByNames(Long source, Long target) {
         return favorites.stream()
-            .filter(favoriteStation -> favoriteStation.getSource().equals(source) &&
-                favoriteStation.getTarget().equals(target))
-            .findFirst()
-            .orElseThrow(AssertionError::new);
+                .filter(favoriteStation -> favoriteStation.getSource().equals(source) &&
+                        favoriteStation.getTarget().equals(target))
+                .findFirst()
+                .orElseThrow(AssertionError::new);
     }
 
     public void deleteFavoriteStation(FavoriteStation favoriteStation) {

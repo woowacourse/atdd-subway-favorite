@@ -22,9 +22,13 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.FavoriteStation;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.station.StationService;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,23 +55,31 @@ class FavoriteControllerTest {
     @MockBean
     private FavoriteService favoriteService;
 
+    @MockBean
+    private StationService stationService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     private FavoriteStation favoriteStation;
     private TokenResponse response;
+    private Station source;
+    private Station target;
+
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
-        RestDocumentationContextProvider restDocumentation) throws Exception {
+                      RestDocumentationContextProvider restDocumentation) throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .addFilter(new ShallowEtagHeaderFilter())
-            .apply(documentationConfiguration(restDocumentation))
-            .build();
+                .addFilter(new ShallowEtagHeaderFilter())
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
         RestAssured.port = port;
-        favoriteStation = new FavoriteStation(1L, "gangnam", "jamsil");
+        favoriteStation = new FavoriteStation(1L, 1L, 3L);
         createMember();
         response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        source = new Station(1L, "gangnam");
+        target = new Station(3L, "jamsil");
     }
 
     public static RequestSpecification given() {
@@ -76,6 +88,7 @@ class FavoriteControllerTest {
 
     @Test
     void create() throws Exception {
+        when(stationService.findByName(any())).thenReturn(source);
         doNothing().when(favoriteService).save(any(), any());
 
         mockMvc.perform(post("/favorites")
@@ -92,7 +105,8 @@ class FavoriteControllerTest {
     @Test
     void showAll() throws Exception {
         when(favoriteService.findAll(any())).thenReturn(
-            new FavoritesResponse(Arrays.asList(new FavoriteStation(1L, "gangnam", "jamsil"))));
+                new FavoritesResponse(Arrays.asList(
+                        new FavoriteResponse(1L, StationResponse.of(source), StationResponse.of(target)))));
 
         mockMvc.perform(get("/favorites")
             .header("Authorization", "Bearer " + response.getAccessToken())
@@ -104,17 +118,17 @@ class FavoriteControllerTest {
     }
 
     @Test
-    void deleteByNames() throws Exception {
-        doNothing().when(favoriteService).delete(any(), any(), any());
+    void deleteByIds() throws Exception {
+        doNothing().when(favoriteService).delete(any(), anyLong(), anyLong());
 
         mockMvc.perform(delete("/favorites")
-            .param("source", "gangnam")
-            .param("target", "jamsil")
-            .header("Authorization", "Bearer " + response.getAccessToken())
+                .param("source", "1")
+                .param("target", "3")
+                .header("Authorization", "Bearer " + response.getAccessToken())
         )
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(FavoriteDocumentation.deleteFavorite());
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(FavoriteDocumentation.deleteFavorite());
     }
 
     private void createMember() throws Exception {

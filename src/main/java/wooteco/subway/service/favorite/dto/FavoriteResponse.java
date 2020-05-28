@@ -1,21 +1,27 @@
 package wooteco.subway.service.favorite.dto;
 
-import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.station.dto.StationResponse;
 
 public class FavoriteResponse {
-    private final String source;
-    private final String target;
+    private final Long memberId;
+    private final StationResponse source;
+    private final StationResponse target;
 
-    public FavoriteResponse(Station source, Station target) {
-        this.source = source.getName();
-        this.target = target.getName();
+    public FavoriteResponse(Long memberId, StationResponse source, StationResponse target) {
+        this.memberId = memberId;
+        this.source = source;
+        this.target = target;
     }
 
-    public String getSource() {
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public StationResponse getSource() {
         return source;
     }
 
-    public String getTarget() {
+    public StationResponse getTarget() {
         return target;
     }
 }

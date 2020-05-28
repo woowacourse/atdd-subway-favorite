@@ -49,7 +49,4 @@ insert into member (id, email, name, password)
 values (1, 'asd@asd', 'asd', 'asd');
 
 insert into FAVORITE (member, source, target)
-values (1, '잠실', '삼전');
-
-insert into FAVORITE (member, source, target)
-values (1, '잠실새내', '부산');
+values (1, 1, 3);

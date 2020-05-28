@@ -1,7 +1,6 @@
-import { edgeItemTemplate } from '../../utils/templates.js'
+import {edgeItemTemplate} from '../../utils/templates.js'
 import api from '../../api/index.js';
-import { EVENT_TYPE } from '../../utils/constants.js';
-import { SUCCESS_MESSAGE } from '../../utils/constants.js';
+import {EVENT_TYPE, SUCCESS_MESSAGE} from '../../utils/constants.js';
 
 function Favorite() {
   const $favoriteList = document.querySelector('#favorite-list')
@@ -24,8 +23,6 @@ function Favorite() {
       source: $target.closest(".edge-item").dataset.source,
       target: $target.closest(".edge-item").dataset.target,
     };
-
-    console.log(favoriteInput);
     api.favorite.delete(favoriteInput);
     alert(SUCCESS_MESSAGE.SAVE);
     window.location="/favorite-page";

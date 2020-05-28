@@ -2,23 +2,21 @@ package wooteco.subway.service.favorite.dto;
 
 import java.util.List;
 
-import wooteco.subway.domain.favorite.FavoriteStation;
-
 public class FavoritesResponse {
-    private List<FavoriteStation> favoriteStations;
+    private List<FavoriteResponse> favoriteStations;
 
     public FavoritesResponse() {
     }
 
-    public FavoritesResponse(List<FavoriteStation> favoriteStations) {
+    public FavoritesResponse(List<FavoriteResponse> favoriteStations) {
         this.favoriteStations = favoriteStations;
     }
 
-    public static FavoritesResponse of(List<FavoriteStation> favoriteStations) {
+    public static FavoritesResponse of(List<FavoriteResponse> favoriteStations) {
         return new FavoritesResponse(favoriteStations);
     }
 
-    public List<FavoriteStation> getFavoriteStations() {
+    public List<FavoriteResponse> getFavoriteStations() {
         return favoriteStations;
     }
 }

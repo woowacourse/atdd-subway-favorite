@@ -1,11 +1,11 @@
 export const edgeItemTemplate = edge => {
-  return `<li data-source="${edge.source}" data-target="${edge.target}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+  return `<li data-source = "${edge.source.id}" data-target = "${edge.target.id}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
             <span class="mdi mdi-subway-variant mr-2"></span>
             <span>
-          ${edge.source}
+          ${edge.source.name}
     </span>
             <span class="mdi mdi-arrow-right text-gray-500"></span>
-            <span>${edge.target}</span>
+            <span>${edge.target.name}</span>
             <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
               <span class="mdi mdi-delete"></span>
             </button>

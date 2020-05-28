@@ -2,7 +2,6 @@ package wooteco.subway.service.member;
 
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicateEmailException;
@@ -52,7 +51,8 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchMemberException("존재하지 않는 유저입니다."));
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchMemberException("존재하지 않는 유저입니다."));
     }
 
     public boolean isExistMember(String email) {
