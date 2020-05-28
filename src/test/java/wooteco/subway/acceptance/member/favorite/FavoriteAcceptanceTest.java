@@ -1,19 +1,17 @@
 package wooteco.subway.acceptance.member.favorite;
 
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.favorite.dto.AddFavoriteRequest;
-import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+	@DisplayName("즐겨찾기 추가, 삭제에 관한 인수테스트")
 	@Test
 	void favoriteAcceptanceTest() {
 		// given : 역이 존재한다
@@ -40,52 +38,5 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		// then : 즐겨찾기가 삭제되었다.
 		favoritesResponse = readFavorite(memberResponse.getId(), response);
 		assertThat(favoritesResponse.getFavorites().size()).isEqualTo(1);
-	}
-
-	private RequestSpecification setAuthorization(Response loginResponse) {
-		String sessionId = loginResponse.getSessionId();
-		TokenResponse tokenResponse = getTokenResponse(loginResponse);
-
-		return
-				given().
-						cookie("JSESSIONID", sessionId).
-						header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken());
-	}
-
-	private FavoriteResponse addFavorite(Long memberId, AddFavoriteRequest addFavoriteRequest, Response loginResponse) {
-		return
-				setAuthorization(loginResponse).
-						body(addFavoriteRequest).
-						accept(MediaType.APPLICATION_JSON_VALUE).
-						contentType(MediaType.APPLICATION_JSON_VALUE).
-						when().
-						post("/members/" + memberId + "/favorites").
-						then().
-						log().all().
-						statusCode(HttpStatus.CREATED.value()).
-						extract().as(FavoriteResponse.class);
-	}
-
-	private FavoritesResponse readFavorite(Long memberId, Response loginResponse) {
-		return
-				setAuthorization(loginResponse).
-						accept(MediaType.APPLICATION_JSON_VALUE).
-						contentType(MediaType.APPLICATION_JSON_VALUE).
-						when().
-						get("/members/" + memberId + "/favorites").
-						then().
-						log().all().
-						statusCode(HttpStatus.OK.value()).
-						extract().
-						as(FavoritesResponse.class);
-	}
-
-	private void removeFavorite(Long memberId, Long sourceId, Long targetId, Response loginResponse) {
-		setAuthorization(loginResponse).
-				when().
-				delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
-				then().
-				log().all().
-				statusCode(HttpStatus.OK.value());
 	}
 }

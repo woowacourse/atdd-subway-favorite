@@ -14,6 +14,9 @@ import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.favorite.dto.AddFavoriteRequest;
+import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -331,6 +334,53 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 and().
                 extract().as(TokenResponse.class);
+    }
+
+
+    public void addFavorite(Long memberId, AddFavoriteRequest addFavoriteRequest, Response loginResponse) {
+        setAuthorization(loginResponse).
+                body(addFavoriteRequest).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members/" + memberId + "/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value()).
+                extract().as(FavoriteResponse.class);
+    }
+
+    public RequestSpecification setAuthorization(Response loginResponse) {
+        String sessionId = loginResponse.getSessionId();
+        TokenResponse tokenResponse = getTokenResponse(loginResponse);
+
+        return
+                given().
+                        cookie("JSESSIONID", sessionId).
+                        header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken());
+    }
+
+    public FavoritesResponse readFavorite(Long memberId, Response loginResponse) {
+        return
+                setAuthorization(loginResponse).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/members/" + memberId + "/favorites").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().
+                        as(FavoritesResponse.class);
+    }
+
+    public void removeFavorite(Long memberId, Long sourceId, Long targetId, Response loginResponse) {
+        setAuthorization(loginResponse).
+                when().
+                delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
     }
 }
 

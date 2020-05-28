@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-	@DisplayName("Session Bearer 둘다")
+	@DisplayName("Session와 Bearer 방식 모두에 대한 인수테스트")
 	@Test
 	void AuthorizeSessionAndBearer() {
 		String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -31,8 +31,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	}
 
 
-	public MemberResponse myInfoAuth(TokenResponse tokenResponse, String sessionId, String memberId) {
-
+	private MemberResponse myInfoAuth(TokenResponse tokenResponse, String sessionId, String memberId) {
 		return given().
 				cookie("JSESSIONID", sessionId).
 				header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
