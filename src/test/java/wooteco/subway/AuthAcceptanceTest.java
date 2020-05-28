@@ -8,6 +8,17 @@ import wooteco.subway.service.member.dto.TokenResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+    // Feature: 인증
+    //
+    // Scenario: Bearer 인증을 한다.
+    // Given 멤버가 생성되어있는 상태이다.
+    //
+    // When 로그인 요청을 한다.
+    // Then 토큰을 받아온다.
+    //
+    // When 토큰으로 멤버 정보를 요청한다.
+    // Then 멤버 정보를 받아온다.
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
