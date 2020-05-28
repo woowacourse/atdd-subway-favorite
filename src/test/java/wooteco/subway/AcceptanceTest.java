@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -29,17 +30,17 @@ import wooteco.subway.service.station.dto.StationResponse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
-	public static final String TITLE_PATH = "html.head.title";
+    public static final String TITLE_PATH = "html.head.title";
 
-	public static final String STATION_NAME_KANGNAM = "강남역";
-	public static final String STATION_NAME_YEOKSAM = "역삼역";
-	public static final String STATION_NAME_SEOLLEUNG = "선릉역";
-	public static final String STATION_NAME_HANTI = "한티역";
-	public static final String STATION_NAME_DOGOK = "도곡역";
-	public static final String STATION_NAME_MAEBONG = "매봉역";
-	public static final String STATION_NAME_YANGJAE = "양재역";
+    public static final String 강남역 = "강남역";
+    public static final String 역삼역 = "역삼역";
+    public static final String 선릉역 = "선릉역";
+    public static final String STATION_NAME_HANTI = "한티역";
+    public static final String STATION_NAME_DOGOK = "도곡역";
+    public static final String STATION_NAME_MAEBONG = "매봉역";
+    public static final String STATION_NAME_YANGJAE = "양재역";
 
-	public static final String LINE_NAME_2 = "2호선";
+    public static final String LINE_NAME_2 = "2호선";
     public static final String LINE_NAME_3 = "3호선";
     public static final String LINE_NAME_BUNDANG = "분당선";
     public static final String LINE_NAME_SINBUNDANG = "신분당선";
@@ -225,9 +226,9 @@ public class AcceptanceTest {
      */
     public void initStation() {
         // 역 등록
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse stationResponse1 = createStation(강남역);
+        StationResponse stationResponse2 = createStation(역삼역);
+        StationResponse stationResponse3 = createStation(선릉역);
         StationResponse stationResponse4 = createStation(STATION_NAME_HANTI);
         StationResponse stationResponse5 = createStation(STATION_NAME_DOGOK);
         StationResponse stationResponse6 = createStation(STATION_NAME_MAEBONG);
@@ -237,7 +238,7 @@ public class AcceptanceTest {
         LineResponse lineResponse1 = createLine("2호선");
         addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
         addLineStation(lineResponse1.getId(), stationResponse1.getId(),
-                stationResponse2.getId(), 5, 10);
+            stationResponse2.getId(), 5, 10);
         addLineStation(lineResponse1.getId(), stationResponse2.getId(),
                 stationResponse3.getId(), 5, 10);
 
@@ -358,8 +359,9 @@ public class AcceptanceTest {
             statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public String createFavorite(TokenResponse tokenResponse, FavoriteCreateRequest favoriteCreateRequest) {
-        return given().log().all().
+    public void createFavorite(TokenResponse tokenResponse,
+        FavoriteCreateRequest favoriteCreateRequest) {
+        given().log().all().
             auth().
             oauth2(tokenResponse.getAccessToken()).
             body(favoriteCreateRequest).
@@ -368,7 +370,7 @@ public class AcceptanceTest {
             post("/favorites/me").
             then().log().all().
             statusCode(HttpStatus.CREATED.value()).
-            extract().header("location");
+            header("location", Matchers.equalTo("/favorites/me"));
     }
 
     public List<FavoriteResponse> getFavorites(TokenResponse tokenResponse) {

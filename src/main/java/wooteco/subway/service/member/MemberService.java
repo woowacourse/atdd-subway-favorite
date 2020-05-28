@@ -43,7 +43,7 @@ public class MemberService {
 		return jwtTokenProvider.createToken(param.getEmail());
 	}
 
-	private Member findMemberByEmail(String email) {
+	public Member findMemberByEmail(String email) {
 		return memberRepository.findByEmail(email)
 			.orElseThrow(() -> new InvalidAuthenticationException(
 				email + "은 존재하지 않는 회원입니다."));

@@ -1,12 +1,13 @@
 package wooteco.subway.acceptance.member;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     //        Feature: 회원관리
@@ -34,7 +35,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME,
-                TEST_USER_PASSWORD);
+            TEST_USER_PASSWORD);
         assertThat(location).matches("^/members/[1-9][0-9]*$");
 
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);

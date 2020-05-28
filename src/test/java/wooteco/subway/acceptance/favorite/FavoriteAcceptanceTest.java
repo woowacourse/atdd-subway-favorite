@@ -1,16 +1,17 @@
 package wooteco.subway.acceptance.favorite;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     // Feature: 즐겨찾기
@@ -36,47 +37,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 기능")
     @Test
     void manageFavorite() {
-        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        prepareData();
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        createStation(STATION_NAME_KANGNAM);
-        createStation(STATION_NAME_YEOKSAM);
-        createStation(STATION_NAME_SEOLLEUNG);
-
-
-        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(STATION_NAME_KANGNAM, STATION_NAME_YEOKSAM);
-
-        String location = createFavorite(tokenResponse, favoriteCreateRequest);
-
-        assertThat(location).isEqualTo("/favorites/me");
+        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(강남역, 역삼역);
+        createFavorite(tokenResponse, favoriteCreateRequest);
 
         List<FavoriteResponse> favoriteResponses = getFavorites(tokenResponse);
-
         assertThat(favoriteResponses).hasSize(1);
-        assertThat(favoriteResponses.get(0).getSource()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(favoriteResponses.get(0).getTarget()).isEqualTo(STATION_NAME_YEOKSAM);
+        assertThat(favoriteResponses.get(0).getSource()).isEqualTo(강남역);
+        assertThat(favoriteResponses.get(0).getTarget()).isEqualTo(역삼역);
 
-
-        FavoriteCreateRequest favoriteCreateRequest2 = new FavoriteCreateRequest(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG);
-
-        String location2 = createFavorite(tokenResponse, favoriteCreateRequest2);
-
-        assertThat(location2).isEqualTo("/favorites/me");
+        FavoriteCreateRequest favoriteCreateRequest2
+            = new FavoriteCreateRequest(강남역, 선릉역);
+        createFavorite(tokenResponse, favoriteCreateRequest2);
 
         List<FavoriteResponse> favoriteResponses2 = getFavorites(tokenResponse);
-
         assertThat(favoriteResponses2.size()).isEqualTo(2);
-        assertThat(favoriteResponses2.get(1).getSource()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(favoriteResponses2.get(1).getTarget()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        assertThat(favoriteResponses2.get(1).getSource()).isEqualTo(강남역);
+        assertThat(favoriteResponses2.get(1).getTarget()).isEqualTo(선릉역);
 
-        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(STATION_NAME_KANGNAM, STATION_NAME_YEOKSAM);
-
+        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(강남역, 역삼역);
         deleteFavorite(tokenResponse, favoriteDeleteRequest);
 
         List<FavoriteResponse> favoriteResponses3 = getFavorites(tokenResponse);
-
         assertThat(favoriteResponses3).hasSize(1);
-        assertThat(favoriteResponses3.get(0).getSource()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(favoriteResponses3.get(0).getTarget()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        assertThat(favoriteResponses3.get(0).getSource()).isEqualTo(강남역);
+        assertThat(favoriteResponses3.get(0).getTarget()).isEqualTo(선릉역);
+    }
+
+    private void prepareData() {
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        createStation(강남역);
+        createStation(역삼역);
+        createStation(선릉역);
     }
 }
