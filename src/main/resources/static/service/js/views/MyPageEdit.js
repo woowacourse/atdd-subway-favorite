@@ -1,8 +1,4 @@
-import {
-  EVENT_TYPE,
-  ERROR_MESSAGE,
-  SUCCESS_MESSAGE
-} from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE } from "../../utils/constants.js";
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 
@@ -10,6 +6,7 @@ function MyInfo() {
   const $email = document.querySelector("#email");
   const $name = document.querySelector("#name");
   const $password = document.querySelector("#password");
+  const $passwordCheck = document.querySelector("#password-check");
   const $signOutButton = document.querySelector("#sign-out-button");
   const $updateButton = document.querySelector("#update-button");
 
@@ -29,6 +26,9 @@ function MyInfo() {
 
   const onUpdateHandler = async event => {
     event.preventDefault();
+    if (!isValid()) {
+      return;
+    }
     try {
       const updatedInfo = {
         name: $name.value,
@@ -37,10 +37,27 @@ function MyInfo() {
       };
       await api.loginMember.update(updatedInfo);
       showSnackbar(SUCCESS_MESSAGE.SAVE);
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
+
+  const isValid = () => {
+    const email = $email.value;
+    const name = $name.value;
+    const password = $password.value;
+    const passwordCheck = $passwordCheck.value;
+    if (!email || !name || !password) {
+      showSnackbar(ERROR_MESSAGE.COMMON);
+      return false;
+    }
+    if (password !== passwordCheck) {
+      showSnackbar(ERROR_MESSAGE.PASSWORD_CHECK);
+      return false;
+    }
+    return true;
+  }
 
   const initMyInfo = async () => {
     try {
@@ -48,9 +65,9 @@ function MyInfo() {
       if (member) {
         $email.value = member.email;
         $name.value = member.name;
-        $password.value = member.password;
       }
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };

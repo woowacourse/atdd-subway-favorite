@@ -30,7 +30,7 @@ export const memberInfo = member => {
           </a>
         </li>
         <li>
-          <a href="/logout" class="rounded-b hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap">
+          <a href="/logout" class="rounded-b hover:bg-gray-400 py-3 px-5 block whitespace-no-wrap" id="logout">
           <span class="mdi mdi-logout mr-1"></span>
           로그아웃
           </a>
