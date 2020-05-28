@@ -2,6 +2,7 @@ package wooteco.subway.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +12,12 @@ import wooteco.subway.service.exception.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class ExceptionHandlingController {
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<ErrorResponse> handleLoginFailException(MethodArgumentNotValidException error) {
+        System.err.println("MethodArgumentNotValidException: " + error.getMessage());
+        return new ResponseEntity<>(ErrorResponse.of("올바른 입력이 아닙니다."), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({LoginFailException.class})
     public ResponseEntity<ErrorResponse> handleLoginFailException(LoginFailException error) {
         System.err.println("LoginFailException: " + error.getMessage());

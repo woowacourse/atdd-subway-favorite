@@ -63,9 +63,10 @@ const METHOD = {
 
 const api = (() => {
   const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => {
+  const requestWithJsonData = (uri, config) => fetch(uri, config).then(async data => {
     if (!data.ok) {
-      throw new Error(data)
+      const errorData = await data.json()
+      throw new Error(errorData.message)
     }
     return data.json()
   })

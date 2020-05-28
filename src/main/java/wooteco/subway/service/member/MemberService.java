@@ -7,6 +7,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.EntityNotFoundException;
+import wooteco.subway.exception.LoginFailException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.*;
 
@@ -40,9 +41,9 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(() -> new EntityNotFoundException("해당 email를 찾을 수 없습니다."));
+        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(() -> new LoginFailException("해당 email를 찾을 수 없습니다."));
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new LoginFailException("잘못된 패스워드");
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
