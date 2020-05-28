@@ -29,7 +29,6 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
-//@WebMvcTest(controllers = MemberController.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 @Sql("/truncate.sql")

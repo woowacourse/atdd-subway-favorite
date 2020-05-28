@@ -18,5 +18,22 @@ endif::[]
 
 [[resources-members-create]]
 === 회원 가입
-
 operation::members/create[snippets='http-request,http-response']
+
+[[resources-favorite-paths]]
+== FavoritePaths
+
+[[resources-favorite-paths-show-all]]
+=== 즐겨찾기 전체 조회
+
+operation::favorite-paths/show-all[snippets='http-request,http-response']
+
+[[resources-favorite-paths-register-favorite-path]]
+=== 즐겨찾기 등록
+
+operation::favorite-paths/register-favorite-path[snippets='http-request,http-response']
+
+[[resources-favorite-paths-delete-favorite-path]]
+=== 즐겨찾기 삭제
+
+operation::favorite-paths/delete-favorite-path[snippets='http-request,http-response']

@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import wooteco.subway.doc.FavoritePathDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoritePathService;
@@ -72,9 +73,11 @@ class FavoriteControllerTest {
 
         MvcResult mvcResult = this.mockMvc.perform(
             get("/favoritePaths")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA2NjQ2NjIsImV4cCI6MTU5MDY2ODI2Mn0.oYE1kJY5wEYGofLv83SvPDe9zQbWCryyLLqQrdIybj8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
+            .andDo(FavoritePathDocumentation.showAll())
             .andReturn();
 
         String expected = "[{\"startStationName\":\"start station\",\"endStationName\":\"end station\"}]";
@@ -92,10 +95,12 @@ class FavoriteControllerTest {
         this.mockMvc.perform(
             post("/favoritePaths")
                 .content(inputJson)
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA2NjQ2NjIsImV4cCI6MTU5MDY2ODI2Mn0.oYE1kJY5wEYGofLv83SvPDe9zQbWCryyLLqQrdIybj8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
-            .andDo(print());
+            .andDo(print())
+            .andDo(FavoritePathDocumentation.registerFavoritePath());
 
         verify(favoritePathService).register(startStationName, endStationName, member);
     }
@@ -109,10 +114,12 @@ class FavoriteControllerTest {
         this.mockMvc.perform(
             delete("/favoritePaths")
                 .content(inputJson)
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA2NjQ2NjIsImV4cCI6MTU5MDY2ODI2Mn0.oYE1kJY5wEYGofLv83SvPDe9zQbWCryyLLqQrdIybj8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent())
-            .andDo(print());
+            .andDo(print())
+            .andDo(FavoritePathDocumentation.deleteFavoritePath());
 
         verify(favoritePathService).delete(startStationName, endStationName, member);
     }
