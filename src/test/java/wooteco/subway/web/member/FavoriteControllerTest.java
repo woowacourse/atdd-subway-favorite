@@ -17,9 +17,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.docs.FavoriteDocumentation;
-import wooteco.subway.service.member.favorite.FavoriteService;
-import wooteco.subway.service.member.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.FavoriteService;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import java.util.Arrays;
 

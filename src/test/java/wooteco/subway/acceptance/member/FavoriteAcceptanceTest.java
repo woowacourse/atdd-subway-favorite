@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.member.favorite;
+package wooteco.subway.domain.member;
 
 import java.util.Objects;
 

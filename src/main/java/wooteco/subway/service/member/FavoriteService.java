@@ -1,11 +1,11 @@
-package wooteco.subway.service.member.favorite;
+package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.member.favorite.Favorite;
-import wooteco.subway.service.member.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
+import wooteco.subway.domain.member.Favorite;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import java.util.List;
 

@@ -1,14 +1,17 @@
-package wooteco.subway.web;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import wooteco.subway.domain.member.Member;
-import wooteco.subway.service.member.favorite.FavoriteService;
-import wooteco.subway.service.member.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
-import wooteco.subway.web.member.LoginMember;
+package wooteco.subway.web.member;
 
 import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.service.member.FavoriteService;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 
 @RequestMapping("/me/favorites")
 @RestController

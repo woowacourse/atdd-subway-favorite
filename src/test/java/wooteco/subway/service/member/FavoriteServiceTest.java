@@ -1,5 +1,8 @@
-package wooteco.subway.service.member.favorite;
+package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,13 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.member.favorite.Favorite;
-import wooteco.subway.service.member.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import wooteco.subway.domain.member.Favorite;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 
 @SpringBootTest
 @Sql("/truncate.sql")
