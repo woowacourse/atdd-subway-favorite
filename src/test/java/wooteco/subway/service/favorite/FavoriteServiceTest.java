@@ -18,6 +18,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.DuplicateFavoriteException;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
@@ -63,6 +64,50 @@ public class FavoriteServiceTest {
 
         assertThat(savedFavorite.getPreStation()).isEqualTo(preStation.getId());
         assertThat(savedFavorite.getStation()).isEqualTo(station.getId());
+    }
+
+    @DisplayName("예외테스트: 이미 존재하는 즐겨찾기를 추가하는 경우")
+    @Test
+    void createFavorite_withExistingFavorite() {
+        //given
+        Station preStation = new Station(1L, "강남역");
+        Station station = new Station(2L, "선릉역");
+
+        Favorite favorite = new Favorite(preStation.getId(), station.getId());
+
+        Member member = new Member(ID, EMAIL, NAME, PASSWORD);
+        member.addFavorite(favorite);
+
+        FavoriteRequest favoriteRequest = new FavoriteRequest(preStation.getId(), station.getId());
+
+        // when, then
+        assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest))
+            .isInstanceOf(DuplicateFavoriteException.class)
+            .hasMessage("이미 존재하는 즐겨찾기를 추가할 수 없습니다.");
+    }
+
+    @DisplayName("예외테스트: 추가하려는 즐겨찾기에 출발역, 도착역 정보가 비어있는 경우")
+    @Test
+    void createFavorite_withoutIds() {
+        // given
+        Member member = new Member(ID, EMAIL, NAME, PASSWORD);
+
+        FavoriteRequest nullRequest = new FavoriteRequest(null, null);
+        FavoriteRequest preStationNullRequest = new FavoriteRequest(null, 1L);
+        FavoriteRequest stationNullRequest = new FavoriteRequest(1L, null);
+
+        // when, then
+        assertThatThrownBy(() -> favoriteService.createFavorite(member, nullRequest))
+            .isInstanceOf(NullPointerException.class)
+            .hasMessage("즐겨찾기: 출발역이 null일 수 없습니다.");
+
+        assertThatThrownBy(() -> favoriteService.createFavorite(member, preStationNullRequest))
+            .isInstanceOf(NullPointerException.class)
+            .hasMessage("즐겨찾기: 출발역이 null일 수 없습니다.");
+
+        assertThatThrownBy(() -> favoriteService.createFavorite(member, stationNullRequest))
+            .isInstanceOf(NullPointerException.class)
+            .hasMessage("즐겨찾기: 도착역이 null일 수 없습니다.");
     }
 
     @DisplayName("즐겨찾기 목록 조회 기능 테스트")

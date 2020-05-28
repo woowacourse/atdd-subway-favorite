@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,7 @@ public class FavoriteController {
 
     @PostMapping("/members/favorites")
     public ResponseEntity<Void> createFavorite(@LoginMember Member member,
-        @RequestBody FavoriteRequest favoriteRequest) {
+        @Validated @RequestBody FavoriteRequest favoriteRequest) {
         Favorite favorite = favoriteService.createFavorite(member, favoriteRequest);
 
         return ResponseEntity

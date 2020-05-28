@@ -24,11 +24,11 @@ public class FavoriteService {
     }
 
     public Favorite createFavorite(Member member, FavoriteRequest favoriteRequest) {
-        Favorite favorite = new Favorite(favoriteRequest.getPreStationId(),
-            favoriteRequest.getStationId());
+        Favorite favorite = favoriteRequest.toFavorite();
         member.addFavorite(favorite);
         Member updatedMember = memberRepository.save(member);
-        return updatedMember.findEqualFavoriteTo(favorite);
+        return updatedMember.findFavorite(favorite)
+            .orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 추가되지 않았습니다."));
     }
 
     public List<FavoriteResponse> getFavorites(Member member) {

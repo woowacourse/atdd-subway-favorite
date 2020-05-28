@@ -15,11 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -28,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +40,6 @@ import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
-@Import(HttpEncodingAutoConfiguration.class)
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(value = {FavoriteController.class, AuthorizationExtractor.class})
 public class FavoriteControllerTest {
@@ -54,7 +51,6 @@ public class FavoriteControllerTest {
     static final Long ID = 1L;
     static final String TOKEN = "You are authorized!";
 
-    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -71,6 +67,7 @@ public class FavoriteControllerTest {
         WebApplicationContext webApplicationContext,
         RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .addFilter(new CharacterEncodingFilter("UTF-8", true))
             .addFilter(new ShallowEtagHeaderFilter())
             .apply(documentationConfiguration(restDocumentation))
             .build();
@@ -93,12 +90,31 @@ public class FavoriteControllerTest {
         String request = OBJECT_MAPPER.writeValueAsString(favoriteRequest);
 
         mockMvc.perform(post("/members/favorites")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .header("authorization", "bearer" + TOKEN)
             .content(request))
             .andDo(print())
             .andExpect(status().isCreated())
             .andDo(FavoriteDocumentation.createFavorite());
+    }
+
+    // Todo: docs?
+    @DisplayName("예외테스트: 추가하려는 즐겨찾기에 출발역, 도착역 정보가 비어있는 경우")
+    @Test
+    void createFavorite_withoutIds() throws Exception {
+        when(jwtTokenProvider.getSubject(anyString())).thenReturn(EMAIL);
+        when(memberService.findMemberByEmail(EMAIL)).thenReturn(
+            new Member(ID, EMAIL, NAME, PASSWORD));
+
+        FavoriteRequest favoriteRequest = new FavoriteRequest();
+        String request = OBJECT_MAPPER.writeValueAsString(favoriteRequest);
+
+        mockMvc.perform(post("/members/favorites")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("authorization", "bearer" + TOKEN)
+            .content(request))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @DisplayName("즐겨찾기 목록을 조회하는 기능 테스트")

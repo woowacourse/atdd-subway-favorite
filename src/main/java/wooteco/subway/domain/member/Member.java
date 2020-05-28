@@ -3,6 +3,7 @@ package wooteco.subway.domain.member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,6 +12,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
 import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.exception.DuplicateFavoriteException;
 
 public class Member {
     @Id
@@ -48,6 +50,9 @@ public class Member {
 
     public void addFavorite(Favorite favorite) {
         Objects.requireNonNull(favorite);
+        if (findFavorite(favorite).isPresent()) {
+            throw new DuplicateFavoriteException("이미 존재하는 즐겨찾기를 추가할 수 없습니다.");
+        }
         favorites.add(favorite);
     }
 
@@ -55,12 +60,11 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public Favorite findEqualFavoriteTo(Favorite favorite) {
+    public Optional<Favorite> findFavorite(Favorite favorite) {
         return favorites.stream()
             .filter(it -> it.getPreStation().equals(favorite.getPreStation()))
             .filter(it -> it.getStation().equals(favorite.getStation()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 즐겨찾기가 없습니다."));
+            .findFirst();
     }
 
     // Todo: 메서드 네이밍?
