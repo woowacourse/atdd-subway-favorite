@@ -56,7 +56,7 @@ public class Member {
         }
     }
 
-    public boolean checkPassword(String password) {
+    public boolean isInvalidPassword(String password) {
         return this.password.equals(password);
     }
 

@@ -39,7 +39,7 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(NoMemberExistException::new);
-        if (!member.checkPassword(param.getPassword())) {
+        if (!member.isInvalidPassword(param.getPassword())) {
             throw new InvalidAuthenticationException("잘못된 패스워드");
         }
 
@@ -52,7 +52,7 @@ public class MemberService {
 
     public Member loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
-        if (!member.checkPassword(password)) {
+        if (!member.isInvalidPassword(password)) {
             throw new InvalidAuthenticationException("비번 틀렸어");
         }
         return member;
