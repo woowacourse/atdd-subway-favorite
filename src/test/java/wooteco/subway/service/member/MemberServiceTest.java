@@ -19,7 +19,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
-import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -38,11 +38,11 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
+    private TokenProvider tokenProvider;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, tokenProvider);
     }
 
     @DisplayName("회원 가입시 repository의 save 메서드를 정상 호출한다.")
@@ -77,7 +77,7 @@ public class MemberServiceTest {
 
         memberService.createJwtToken(loginRequest);
 
-        verify(jwtTokenProvider).createToken(anyString());
+        verify(tokenProvider).createToken(anyString());
     }
 
     @DisplayName("회원정보 업데이트시, 요청한 정보대로 회원의 정보가 변경된다.")
@@ -96,9 +96,18 @@ public class MemberServiceTest {
     @DisplayName("회원정보 삭제시, memberRepository의 deleteById를 정상 호출한다.")
     @Test
     void deleteMember() {
+        when(memberRepository.existsById(any())).thenReturn(true);
         memberService.deleteMember(1L);
 
         verify(memberRepository).deleteById(any());
+    }
+
+    @DisplayName("존재하지 않는 회원정보 삭제시, EntityNotFoundException 예외를 던진다.")
+    @Test
+    void deleteMemberNotExistingMemberId() {
+        when(memberRepository.existsById(any())).thenReturn(false);
+        assertThatThrownBy(() -> memberService.deleteMember(1L))
+            .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("이메일을 통한 회원 정보 조회시, memberRepository의 findByEmail을 정상 호출한다.")

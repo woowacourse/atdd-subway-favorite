@@ -32,6 +32,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
 
@@ -51,13 +52,13 @@ public class MemberControllerTest {
 	MockMvc mockMvc;
 
 	@Autowired
-	JwtTokenProvider jwtTokenProvider;
+	TokenProvider tokenProvider;
 
 	private String token;
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-		token = "bearer " + jwtTokenProvider.createToken(TIGER_EMAIL);
+		token = "bearer " + tokenProvider.createToken(TIGER_EMAIL);
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.addFilter(new ShallowEtagHeaderFilter())

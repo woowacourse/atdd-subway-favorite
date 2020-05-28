@@ -8,7 +8,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.exception.LoginFailException;
-import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -19,11 +19,11 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository, TokenProvider tokenProvider) {
         this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -42,7 +42,7 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
-        if (memberRepository.existsById(id)) {
+        if (!memberRepository.existsById(id)) {
             throw new EntityNotFoundException(id + "에 해당하는 회원이 없습니다.");
         }
         memberRepository.deleteById(id);
@@ -54,7 +54,7 @@ public class MemberService {
             throw new LoginFailException();
         }
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        String token = tokenProvider.createToken(request.getEmail());
         return new TokenResponse(token, "bearer");
     }
 

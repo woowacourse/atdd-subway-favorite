@@ -34,6 +34,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MeDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteExistenceResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
@@ -62,13 +63,13 @@ public class MeControllerTest {
     FavoriteService favoriteService;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    TokenProvider tokenProvider;
 
     private String token;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        token = "bearer " + jwtTokenProvider.createToken(TIGER_EMAIL);
+        token = "bearer " + tokenProvider.createToken(TIGER_EMAIL);
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .addFilter(new ShallowEtagHeaderFilter())

@@ -13,29 +13,30 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import wooteco.subway.config.ETagHeaderFilter;
+import wooteco.subway.config.WebMvcConfig;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.LineController;
-import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
+import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
-@WebMvcTest(controllers = LineController.class)
-@Import({ETagHeaderFilter.class, AuthorizationExtractor.class, JwtTokenProvider.class})
+@WebMvcTest(controllers = LineController.class,
+    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+        classes = {WebMvcConfig.class, BearerAuthInterceptor.class, LoginMemberMethodArgumentResolver.class}))
+@Import(ETagHeaderFilter.class)
 public class LineControllerTest {
     @MockBean
     private LineService lineService;
-
-    @MockBean
-    private MemberService memberService;
 
     @Autowired
     protected MockMvc mockMvc;

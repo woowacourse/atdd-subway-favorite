@@ -22,7 +22,7 @@ public class Line {
     @LastModifiedDate
     private LocalDateTime updatedAt;
     @Embedded.Empty
-    private final LineStations stations = LineStations.empty();
+    private LineStations stations = LineStations.empty();
 
     public Line() {
     }

@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import wooteco.subway.exception.InvalidAuthenticationException;
-import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
     private final AuthorizationExtractor authExtractor;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
+    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, TokenProvider tokenProvider) {
         this.authExtractor = authExtractor;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -33,14 +33,14 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         if (isInvalidToken(authHeaderValue)) {
             throw new InvalidAuthenticationException("유효하지 않은 토큰입니다.");
         }
-        String email = jwtTokenProvider.getSubject(authHeaderValue);
+        String email = tokenProvider.getSubject(authHeaderValue);
 
         request.setAttribute("loginMemberEmail", email);
         return true;
     }
 
     private boolean isInvalidToken(String authHeaderValue) {
-        return !jwtTokenProvider.validateToken(authHeaderValue);
+        return !tokenProvider.validateToken(authHeaderValue);
     }
 
     private boolean isCreateMember(HttpServletRequest request) {
