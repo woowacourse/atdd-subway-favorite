@@ -1,5 +1,5 @@
 import { ERROR_MESSAGE, EVENT_TYPE } from '../../utils/constants.js'
-import api from '../../api/index.js';
+import api from '../../api/index.js'
 
 function Join() {
   const $joinButton = document.querySelector('#join-button')

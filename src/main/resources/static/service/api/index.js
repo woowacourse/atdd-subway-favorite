@@ -1,5 +1,5 @@
 import { ERROR_MESSAGE } from '../utils/constants.js'
-import { request, requestWithJsonData } from './request.js';
+import { request, requestWithJsonData } from './request.js'
 
 const METHOD = {
   PUT() {

@@ -1,6 +1,6 @@
 import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE, SUCCESS_MESSAGE } from '../../utils/constants.js'
 import api from '../../api/index.js'
-import user from '../../api/user.js';
+import user from '../../api/user.js'
 import { searchResultTemplate } from '../../utils/templates.js'
 
 function Search() {
@@ -13,8 +13,9 @@ function Search() {
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
 
-  let sourceStationId;
-  let targetStationId;
+  let sourceStationId
+  let targetStationId
+
   const showSearchResult = data => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
@@ -147,9 +148,9 @@ function Search() {
   }
 
   this.init = () => {
-    const params = (new URL(document.location)).searchParams;
-    const source = params.get('source'); // is the string "Jonathan Smith".
-    const target = params.get('target');
+    const params = (new URL(document.location)).searchParams
+    const source = params.get('source')
+    const target = params.get('target')
 
     if (source && target) {
       $departureStationName.value = source

@@ -1,4 +1,4 @@
-export const request = (uri, config) => fetch(uri, config).then(async response => {
+export const request = (uri, config) => fetch(uri, config).then(response => {
   if (response.ok) {
     return response
   }

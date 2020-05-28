@@ -70,9 +70,9 @@ function Join() {
   this.init = async () => {
     !user.isLoggedIn() && location.replace('/login')
 
-    const { email, name } = await user.getInfo();
-    $email.value = email;
-    $name.value = name;
+    const { email, name } = await user.getInfo()
+    $email.value = email
+    $name.value = name
 
     $saveButton.addEventListener(EVENT_TYPE.CLICK, onSave)
     $deleteAccountButton.addEventListener(EVENT_TYPE.CLICK, onDelete)

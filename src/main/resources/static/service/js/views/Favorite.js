@@ -1,12 +1,12 @@
 import { edgeItemTemplate } from '../../utils/templates.js'
-import user from '../../api/user.js';
-import { EVENT_TYPE, SUCCESS_MESSAGE } from '../../utils/constants.js';
+import user from '../../api/user.js'
+import { EVENT_TYPE, SUCCESS_MESSAGE } from '../../utils/constants.js'
 
 function Favorite() {
   const $favoriteList = document.querySelector('#favorite-list')
 
   const loadFavoriteList = async () => {
-    const favorites = await user.getFavorites();
+    const favorites = await user.getFavorites()
     const template = favorites.map(edge => edgeItemTemplate(edge)).join('')
     $favoriteList.insertAdjacentHTML('beforeend', template)
   }

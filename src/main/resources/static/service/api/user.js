@@ -1,4 +1,4 @@
-import { request, requestWithJsonData } from './request.js';
+import { request, requestWithJsonData } from './request.js'
 
 export default (() => {
   let headers = {}
@@ -21,7 +21,8 @@ export default (() => {
 
   const getInfo = () => requestWithJsonData('/me', {
     headers
-  }).catch(() => {
+  }).catch(e => {
+    logout()
     throw new Error("정보를 불러오는데 실패했습니다.")
   })
 

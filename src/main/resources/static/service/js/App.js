@@ -1,5 +1,5 @@
 import { initNavigation } from '../utils/templates.js'
-import user from '../api/user.js';
+import user from '../api/user.js'
 
 function SubwayApp() {
   this.init = async () => {
