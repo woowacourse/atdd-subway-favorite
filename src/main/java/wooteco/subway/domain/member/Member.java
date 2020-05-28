@@ -1,17 +1,26 @@
 package wooteco.subway.domain.member;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.relational.core.mapping.Embedded;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import wooteco.subway.domain.member.favorite.Favorite;
+import wooteco.subway.domain.member.favorite.Favorites;
 
 public class Member {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Id
     private Long id;
     private String email;
     private String name;
     private String password;
 
-    public Member() {
-    }
+    @Embedded.Empty
+    private Favorites favorites = Favorites.empty();
 
     public Member(String email, String name, String password) {
         this.email = email;
@@ -24,6 +33,37 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    @PersistenceConstructor
+    public Member(final Long id, final String email, final String name, final String password,
+        final Favorites favorites) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.favorites = favorites;
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add((favorite));
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
+    }
+
+    public void update(String name, String password) {
+        if (StringUtils.isNotBlank(name)) {
+            this.name = name;
+        }
+        if (StringUtils.isNotBlank(password)) {
+            this.password = password;
+        }
     }
 
     public Long getId() {
@@ -42,16 +82,22 @@ public class Member {
         return password;
     }
 
-    public void update(String name, String password) {
-        if (StringUtils.isNotBlank(name)) {
-            this.name = name;
-        }
-        if (StringUtils.isNotBlank(password)) {
-            this.password = password;
-        }
+    public Favorites getFavorites() {
+        return favorites;
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Member member = (Member)o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

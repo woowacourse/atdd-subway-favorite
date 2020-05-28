@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.station.StationService;
 
@@ -19,7 +20,7 @@ public class PageController {
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
-        return "admin/index";
+        return "service/index";
     }
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
@@ -57,6 +58,11 @@ public class PageController {
     @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
     public String loginPage() {
         return "service/login";
+    }
+
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPage() {
+        return "service/mypage-edit";
     }
 
     @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)

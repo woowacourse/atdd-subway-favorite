@@ -4,7 +4,7 @@ public class UpdateMemberRequest {
     private String name;
     private String password;
 
-    public UpdateMemberRequest() {
+    private UpdateMemberRequest() {
     }
 
     public UpdateMemberRequest(String name, String password) {

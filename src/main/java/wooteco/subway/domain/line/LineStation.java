@@ -15,6 +15,11 @@ public class LineStation {
         this.duration = duration;
     }
 
+    public boolean isLineStationOf(Long preStationId, Long stationId) {
+        return this.preStationId == preStationId && this.stationId == stationId
+            || this.preStationId == stationId && this.stationId == preStationId;
+    }
+
     public Long getPreStationId() {
         return preStationId;
     }
@@ -35,20 +40,17 @@ public class LineStation {
         this.preStationId = preStationId;
     }
 
-    public boolean isLineStationOf(Long preStationId, Long stationId) {
-        return this.preStationId == preStationId && this.stationId == stationId
-                || this.preStationId == stationId && this.stationId == preStationId;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LineStation that = (LineStation) o;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        LineStation that = (LineStation)o;
         return distance == that.distance &&
-                duration == that.duration &&
-                Objects.equals(preStationId, that.preStationId) &&
-                Objects.equals(stationId, that.stationId);
+            duration == that.duration &&
+            Objects.equals(preStationId, that.preStationId) &&
+            Objects.equals(stationId, that.stationId);
     }
 
     @Override
