@@ -128,11 +128,13 @@ const api = (() => {
 
   const favorite = {
     register(token, data) {
-      return request(`/favorites`, METHOD.AUTH_POST(token, data))
+      return request(`/favoritePaths`, METHOD.AUTH_POST(token, data))
     },
     unregister(token, data) {
-      return request(`/favorites`, METHOD.AUTH_DELETE(token, data))
-
+      return request(`/favoritePaths`, METHOD.AUTH_DELETE(token, data))
+    },
+    findAll(token) {
+      return requestWithJsonData(`/favoritePaths`, METHOD.AUTH_GET(token))
     }
   };
 

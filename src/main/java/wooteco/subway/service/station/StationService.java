@@ -8,6 +8,7 @@ import wooteco.subway.service.line.LineStationService;
 
 @Service
 public class StationService {
+    public static final String STATION_NOT_FOUND_MESSAGE = "존재하지 않는 역 입니다.";
     private LineStationService lineStationService;
     private StationRepository stationRepository;
 
@@ -31,6 +32,12 @@ public class StationService {
 
     public Station findByName(String stationName) {
         return stationRepository.findByName(stationName)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역 입니다."));
+            .orElseThrow(() -> new IllegalArgumentException(STATION_NOT_FOUND_MESSAGE));
+    }
+
+    public String findNameById(Long stationId) {
+        Station station = stationRepository.findById(stationId).orElseThrow(() ->
+            new IllegalArgumentException(STATION_NOT_FOUND_MESSAGE));
+        return station.getName();
     }
 }

@@ -1,7 +1,11 @@
 package wooteco.subway.service.member;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
@@ -70,5 +74,10 @@ public class MemberService {
         }
         member.removeFavoritePath(startStation, endStation);
         memberRepository.save(member);
+    }
+
+    public List<FavoritePath> findFavoritePathsOf(Member member) {
+        List<FavoritePath> favoritePaths = new ArrayList<>(member.getFavoritePaths());
+        return Collections.unmodifiableList(favoritePaths);
     }
 }

@@ -1,13 +1,17 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.station.dto.FavoritePathResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private final static String START_STATION_NAME = "신정역";
@@ -43,9 +47,32 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
         .when()
             .log().all()
-            .delete("/favorites")
+            .delete("/favoritePaths")
         .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void showFavoritePaths() {
+        registerFavorite();
+
+        List<FavoritePathResponse> responseBody =
+            given()
+                .header("Authorization",
+                    "Bearer " + tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+                .log().all()
+                .get("/favoritePaths")
+            .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath().getList(".", FavoritePathResponse.class);
+
+        FavoritePathResponse favoritePathResponse = responseBody.get(0);
+        assertThat(favoritePathResponse.getStartStationName()).isEqualTo(START_STATION_NAME);
+        assertThat(favoritePathResponse.getEndStationName()).isEqualTo(END_STATION_NAME);
     }
 
     private Response registerFavorite() {
@@ -63,6 +90,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .log().all()
-            .post("/favorites");
+            .post("/favoritePaths");
     }
 }

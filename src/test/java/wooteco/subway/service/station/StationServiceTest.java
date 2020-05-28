@@ -34,4 +34,17 @@ public class StationServiceTest {
         Station station = stationService.findByName(stationName);
         assertThat(station).isEqualTo(expected);
     }
+
+    @Test
+    void findNameById() {
+        Long id = 1L;
+        String name = "잠실역";
+        Station mockStation = mock(Station.class);
+        when(mockStation.getId()).thenReturn(id);
+        when(mockStation.getName()).thenReturn(name);
+
+        when(stationRepository.findById(id)).thenReturn(Optional.of(mockStation));
+
+        assertThat(stationService.findNameById(id)).isEqualTo(name);
+    }
 }

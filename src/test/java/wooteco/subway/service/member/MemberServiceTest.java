@@ -1,5 +1,6 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -9,12 +10,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
@@ -109,5 +115,17 @@ public class MemberServiceTest {
             .hasMessage(MemberService.NOT_MANAGED_BY_REPOSITORY);
         verify(mockMember, times(0))
             .removeFavoritePath(startStation, endStation);
+    }
+
+    @Test
+    void findFavoritePathsOf() {
+        Set<FavoritePath> expected = Collections
+            .singleton(new FavoritePath(new Station("신정역"), new Station("잠실역")));
+        Member mockMember = mock(Member.class);
+        when(mockMember.getFavoritePaths()).thenReturn(expected);
+
+        List<FavoritePath> favoritePaths = memberService.findFavoritePathsOf(mockMember);
+
+        assertThat(favoritePaths).isEqualTo(Collections.unmodifiableList(new ArrayList<>(expected)));
     }
 }

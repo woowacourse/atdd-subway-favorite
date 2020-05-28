@@ -1,10 +1,15 @@
 package wooteco.subway.service.station.dto;
 
-public class FavoriteRequest {
+public class FavoritePathResponse {
     private String startStationName;
     private String endStationName;
 
-    public FavoriteRequest() {
+    public FavoritePathResponse() {
+    }
+
+    public FavoritePathResponse(String startStationName, String endStationName) {
+        this.startStationName = startStationName;
+        this.endStationName = endStationName;
     }
 
     public String getStartStationName() {
