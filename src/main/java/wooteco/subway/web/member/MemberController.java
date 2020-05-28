@@ -43,7 +43,7 @@ public class MemberController {
     @PutMapping("/{id}")
     public ResponseEntity<MemberResponse> updateMember(
             @PathVariable Long id,
-            @RequestBody UpdateMemberRequest param,
+            @RequestBody @Valid UpdateMemberRequest param,
             @LoginMember Member member
     ) {
         member.validateId(id);
@@ -63,7 +63,7 @@ public class MemberController {
 
     @NoValidate
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param, HttpSession session) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest param, HttpSession session) {
         Member member = memberService.loginWithForm(param.getEmail(), param.getPassword());
 
         String token = memberService.createToken(param);
