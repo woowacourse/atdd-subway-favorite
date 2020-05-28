@@ -33,7 +33,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 
 		String email = (String)webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
 		if (StringUtils.isBlank(email)) {
-			return new Member();
+			throw new InvalidAuthenticationException("비정상적인 로그인입니다.");
 		}
 		try {
 			return memberService.findMemberByEmail(email);

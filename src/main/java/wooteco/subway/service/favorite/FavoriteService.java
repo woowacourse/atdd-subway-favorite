@@ -68,7 +68,7 @@ public class FavoriteService {
 		Member persistMember = memberRepository.findById(member.getId())
 			.orElseThrow(IllegalArgumentException::new);
 
-		persistMember.deleteFavorite(favorite);
+		persistMember.removeFavorite(favorite);
 
 		memberRepository.save(persistMember);
 	}

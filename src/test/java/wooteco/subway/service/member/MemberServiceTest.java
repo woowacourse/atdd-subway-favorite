@@ -37,7 +37,7 @@ public class MemberServiceTest {
 
 	@Test
 	void createMember() {
-		Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
 		memberService.createMember(member);
 
@@ -46,7 +46,7 @@ public class MemberServiceTest {
 
 	@Test
 	void createToken() {
-		Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
 		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
@@ -57,7 +57,7 @@ public class MemberServiceTest {
 
 	@Test
 	void findMemberByEmail() {
-		Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(
 			Optional.of(member));
 

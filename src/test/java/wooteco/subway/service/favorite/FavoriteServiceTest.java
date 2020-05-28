@@ -41,7 +41,7 @@ class FavoriteServiceTest {
 	@DisplayName("즐겨찾기 추가")
 	@Test
 	void create() {
-		Member member = new Member(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
 		when(stationRepository.findIdByName("강남역")).thenReturn(Optional.of(1L));
@@ -57,7 +57,7 @@ class FavoriteServiceTest {
 	@DisplayName("즐겨찾기 조회")
 	@Test
 	void find() {
-		Member member = new Member(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
 		member.addFavorite(new Favorite(1L, 2L));
 
 		List<FavoriteResponse> expect = Lists.newArrayList(
@@ -75,7 +75,7 @@ class FavoriteServiceTest {
 	@DisplayName("즐겨찾기 삭제")
 	@Test
 	void delete() {
-		Member member = new Member(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
 		member.addFavorite(new Favorite(1L, 2L));
 
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
