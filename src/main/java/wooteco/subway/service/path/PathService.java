@@ -49,13 +49,13 @@ public class PathService {
         List<Station> stations = stationRepository.findAllById(path);
 
         List<LineStation> lineStations = lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
                 .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+        int duration = paths.stream().mapToInt(LineStation::getDuration).sum();
+        int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
 
         List<Station> pathStation = path.stream()
                 .map(it -> extractStation(it, stations))
@@ -66,7 +66,7 @@ public class PathService {
 
     private Station extractStation(Long stationId, List<Station> stations) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
+                .filter(station -> station.getId().equals(stationId))
                 .findFirst()
                 .orElseThrow(NoStationExistsException::new);
     }
@@ -82,12 +82,12 @@ public class PathService {
             }
 
             Long finalPreStationId = preStationId;
-            LineStation lineStation = lineStations.stream()
-                    .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
+            LineStation foundLineStation = lineStations.stream()
+                    .filter(lineStation -> lineStation.isLineStationOf(finalPreStationId, stationId))
                     .findFirst()
                     .orElseThrow(NoLineStationExistsException::new);
 
-            paths.add(lineStation);
+            paths.add(foundLineStation);
             preStationId = stationId;
         }
 

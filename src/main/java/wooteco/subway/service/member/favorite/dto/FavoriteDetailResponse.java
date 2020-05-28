@@ -7,7 +7,7 @@ public class FavoriteDetailResponse {
 	private String sourceName;
 	private String targetName;
 
-	public FavoriteDetailResponse() {
+	private FavoriteDetailResponse() {
 	}
 
 	public FavoriteDetailResponse(Long memberId, Long sourceId, Long targetId, String sourceName, String targetName) {

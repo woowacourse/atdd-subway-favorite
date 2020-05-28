@@ -17,13 +17,16 @@ public class GraphService {
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         lines.stream()
-                .flatMap(it -> it.getStationIds().stream())
-                .forEach(it -> graph.addVertex(it));
+                .flatMap(line -> line.getStationIds().stream())
+                .forEach(graph::addVertex);
 
         lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
-                .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), type.findWeightOf(it)));
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+                .forEach(lineStation -> graph.setEdgeWeight(
+                        graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()),
+                        type.findWeightOf(lineStation)
+                ));
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         return dijkstraShortestPath.getPath(source, target).getVertexList();

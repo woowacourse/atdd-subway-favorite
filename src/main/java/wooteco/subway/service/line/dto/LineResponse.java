@@ -16,6 +16,9 @@ public class LineResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private LineResponse() {
+    }
+
     public static LineResponse of(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getStartTime(), line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt());
     }
@@ -24,9 +27,6 @@ public class LineResponse {
         return lines.stream()
                 .map(it -> LineResponse.of(it))
                 .collect(Collectors.toList());
-    }
-
-    public LineResponse() {
     }
 
     public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt) {

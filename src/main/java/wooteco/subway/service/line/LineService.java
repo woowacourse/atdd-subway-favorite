@@ -31,11 +31,13 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NoLineExistException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(NoLineExistException::new);
     }
 
     public void updateLine(Long id, LineRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(NoLineExistException::new);
+        Line persistLine = lineRepository.findById(id)
+                .orElseThrow(NoLineExistException::new);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
     }
@@ -45,15 +47,18 @@ public class LineService {
     }
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(NoLineExistException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(), request.getDistance(), request.getDuration());
+        Line line = lineRepository.findById(id)
+                .orElseThrow(NoLineExistException::new);
+        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+                request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 
         lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(NoLineExistException::new);
+        Line line = lineRepository.findById(lineId)
+                .orElseThrow(NoLineExistException::new);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
