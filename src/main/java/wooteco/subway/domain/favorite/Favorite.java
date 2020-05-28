@@ -3,19 +3,19 @@ package wooteco.subway.domain.favorite;
 import java.util.Objects;
 
 public class Favorite {
-	private Long source;
-	private Long target;
+	private final long source;
+	private final long target;
 
-	public Favorite(Long source, Long target) {
+	public Favorite(long source, long target) {
 		this.source = source;
 		this.target = target;
 	}
 
-	public Long getSource() {
+	public long getSource() {
 		return source;
 	}
 
-	public Long getTarget() {
+	public long getTarget() {
 		return target;
 	}
 
