@@ -1,5 +1,7 @@
 package wooteco.subway.web.member;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,15 +13,15 @@ import wooteco.subway.service.member.dto.TokenResponse;
 
 @RestController
 public class LoginMemberController {
-	private final MemberService memberService;
+    private final MemberService memberService;
 
-	public LoginMemberController(MemberService memberService) {
-		this.memberService = memberService;
-	}
+    public LoginMemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
-	@PostMapping("/oauth/token")
-	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
-		String token = memberService.createToken(param);
-		return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
-	}
+    @PostMapping("/oauth/token")
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest param) {
+        String token = memberService.createToken(param);
+        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+    }
 }
