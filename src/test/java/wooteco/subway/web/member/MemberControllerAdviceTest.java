@@ -18,6 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.exception.EmailNotFoundException;
+import wooteco.subway.service.member.exception.InvalidAuthenticationException;
+import wooteco.subway.service.member.exception.WrongPasswordException;
 
 @Import(HttpEncodingAutoConfiguration.class)
 @WebMvcTest(value = {OAuthController.class, MemberController.class, AuthorizationExtractor.class, JwtTokenProvider
@@ -39,7 +42,7 @@ public class MemberControllerAdviceTest {
 		LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
 		String request = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
-		when(memberService.createToken(any(LoginRequest.class))).thenThrow(new RuntimeException("해당 이메일이 존재하지 않습니다."));
+		when(memberService.createToken(any(LoginRequest.class))).thenThrow(new EmailNotFoundException());
 
 		mockMvc.perform(post("/oauth/token")
 			.content(request)
@@ -55,7 +58,7 @@ public class MemberControllerAdviceTest {
 		LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
 		String request = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
-		when(memberService.createToken(any(LoginRequest.class))).thenThrow(new RuntimeException("패스워드가 일치하지 않습니다."));
+		when(memberService.createToken(any(LoginRequest.class))).thenThrow(new WrongPasswordException());
 
 		mockMvc.perform(post("/oauth/token")
 			.content(request)
@@ -69,9 +72,7 @@ public class MemberControllerAdviceTest {
 	@Test
 	void getMember_abnormalLogin() throws Exception {
 		when(jwtTokenProvider.getSubject(anyString())).thenReturn(EMAIL);
-		when(memberService.findMemberByEmail(EMAIL)).thenThrow(
-			new InvalidAuthenticationException("비정상적인 로그인입니다.")
-		);
+		when(memberService.findMemberByEmail(EMAIL)).thenThrow(new InvalidAuthenticationException());
 
 		mockMvc.perform(get("/members")
 			.header("Authorization", "bearer " + TOKEN)

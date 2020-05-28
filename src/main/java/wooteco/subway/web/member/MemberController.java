@@ -2,6 +2,8 @@ package wooteco.subway.web.member;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/members")
-	public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
+	public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest view) {
 		Member member = memberService.createMember(view.toMember());
 		return ResponseEntity
 			.created(URI.create("/members/" + member.getId()))

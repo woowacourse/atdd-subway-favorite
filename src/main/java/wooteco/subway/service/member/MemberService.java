@@ -7,6 +7,9 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.member.exception.EmailNotFoundException;
+import wooteco.subway.service.member.exception.MemberNotFoundException;
+import wooteco.subway.service.member.exception.WrongPasswordException;
 
 @Service
 public class MemberService {
@@ -27,7 +30,7 @@ public class MemberService {
 	}
 
 	public Member updateMemberByAdmin(Long id, UpdateMemberRequest updateMemberRequest) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
 		return updateMember(member, updateMemberRequest);
 	}
 
@@ -50,15 +53,15 @@ public class MemberService {
 
 	public String createToken(LoginRequest param) {
 		Member member = memberRepository.findByEmail(param.getEmail())
-			.orElseThrow(() -> new RuntimeException("해당 이메일이 존재하지 않습니다."));
+			.orElseThrow(EmailNotFoundException::new);
 		if (!member.checkPassword(param.getPassword())) {
-			throw new RuntimeException("패스워드가 일치하지 않습니다.");
+			throw new WrongPasswordException();
 		}
 
 		return jwtTokenProvider.createToken(param.getEmail());
 	}
 
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("해당 이메일이 존재하지 않습니다."));
+		return memberRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
 	}
 }
