@@ -23,7 +23,8 @@ public class SubwayControllerAdvice {
 			SourceEqualsTargetException.class,
 			InvalidPasswordException.class,
 			MethodArgumentNotValidException.class,
-			DuplicatedFavoriteException.class
+			DuplicatedFavoriteException.class,
+			DuplicatedEmailException.class
 	})
 	public ResponseEntity<ExceptionResponse> handleBadRequestException(RuntimeException e) {
 		LOGGER.error(e);

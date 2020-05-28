@@ -3,6 +3,7 @@ package wooteco.subway.service.member;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.DuplicatedEmailException;
 import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.exception.NoMemberExistException;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -20,6 +21,9 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
+        if (memberRepository.existsByEmail(member.getEmail())) {
+            throw new DuplicatedEmailException();
+        }
         return memberRepository.save(member);
     }
 

@@ -14,14 +14,17 @@ const initEventListeners = () => {
   }
 }
 
-const initializeMainMenu = () => {
+const initializeMainMenu = async () => {
   const id = localStorage.getItem("memberId")
-  api.member.find(id)
-    .then(data => {
-      const isLogin = !!data.name;
-      initMainMenu(isLogin)
-      initEventListeners()
-    })
+  let isLogin = false
+  if (id) {
+    await api.member.find(id)
+      .then(data => {
+        isLogin = !!data.name;
+      })
+  }
+  await initMainMenu(isLogin)
+  await initEventListeners()
 }
 
 function SubwayApp() {

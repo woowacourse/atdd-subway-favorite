@@ -49,7 +49,13 @@ function Join() {
     }
 
     api.member.create(validData)
-      .then(() => location.href = '/');
+      .then(response => {
+        if (!response.ok) {
+          alert(ERROR_MESSAGE.JOIN_FAIL)
+        } else {
+          location.href = '/'
+        }
+      })
   }
 
   this.init = () => {

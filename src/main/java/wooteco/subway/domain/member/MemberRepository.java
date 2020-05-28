@@ -9,4 +9,11 @@ import java.util.Optional;
 public interface MemberRepository extends CrudRepository<Member, Long> {
     @Query("select * from member where email = :email")
     Optional<Member> findByEmail(@Param("email") String email);
+
+    default boolean existsByEmail(String email) {
+        return countByEmail(email) != 0L;
+    }
+
+    @Query("select count(*) from member where email = :email")
+    long countByEmail(@Param("email") String email);
 }
