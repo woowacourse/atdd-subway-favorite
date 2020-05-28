@@ -22,6 +22,14 @@ public class Favorite {
         this.station = station;
     }
 
+	public boolean isSameId(Long favoriteId) {
+		return this.id.equals(favoriteId);
+	}
+
+	public boolean hasSameStationsAs(Favorite favorite) {
+		return this.preStation.equals(favorite.preStation) && this.station.equals(favorite.station);
+	}
+
     public Long getId() {
         return id;
     }
@@ -32,9 +40,5 @@ public class Favorite {
 
     public Long getStation() {
         return station;
-    }
-
-    public boolean isSameId(Long favoriteId) {
-        return this.id.equals(favoriteId);
     }
 }

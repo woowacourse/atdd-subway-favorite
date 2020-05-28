@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +57,8 @@ public class FavoriteServiceTest {
         updatedMember.addFavorite(favorite);
 
         when(memberRepository.save(any(Member.class))).thenReturn(updatedMember);
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(preStation));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(station));
 
         FavoriteRequest favoriteRequest = new FavoriteRequest(preStation.getId(), station.getId());
 

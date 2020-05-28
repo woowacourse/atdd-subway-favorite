@@ -12,45 +12,65 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.favorite.exception.StationNotFoundException;
+import wooteco.subway.service.favorite.exception.TargetEqualsSourceException;
 
 @Service
 public class FavoriteService {
-    private MemberRepository memberRepository;
-    private StationRepository stationRepository;
+	private MemberRepository memberRepository;
+	private StationRepository stationRepository;
 
-    public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
-        this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
-    }
+	public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
+		this.memberRepository = memberRepository;
+		this.stationRepository = stationRepository;
+	}
 
-    public Favorite createFavorite(Member member, FavoriteRequest favoriteRequest) {
-        Favorite favorite = new Favorite(favoriteRequest.getPreStationId(),
-            favoriteRequest.getStationId());
-        member.addFavorite(favorite);
-        Member updatedMember = memberRepository.save(member);
-        return updatedMember.findEqualFavoriteTo(favorite);
-    }
+	public Favorite createFavorite(Member member, FavoriteRequest favoriteRequest) {
+		validateStationsId(favoriteRequest);
 
-    public List<FavoriteResponse> getFavorites(Member member) {
-        List<Long> stationIds = member.getStationIdsFromFavorites();
-        List<Station> stations = stationRepository.findAllById(stationIds);
-        List<Favorite> favorites = member.getFavorites();
+		Favorite favorite = new Favorite(favoriteRequest.getPreStationId(),
+			favoriteRequest.getStationId());
+		member.addFavorite(favorite);
+		Member updatedMember = memberRepository.save(member);
+		return updatedMember.findEqualFavoriteTo(favorite);
+	}
 
-        return favorites.stream()
-            .map(it -> FavoriteResponse.of(it.getId(), mapStationById(stations, it.getPreStation()),
-                mapStationById(stations, it.getStation())))
-            .collect(Collectors.toList());
-    }
+	private void validateStationsId(FavoriteRequest favoriteRequest) {
+		Long preStationId = favoriteRequest.getPreStationId();
+		Long stationId = favoriteRequest.getStationId();
 
-    private Station mapStationById(List<Station> stations, Long stationId) {
-        return stations.stream()
-            .filter(station -> station.getId().equals(stationId))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("해당하는 역이 존재하지 않습니다."));
-    }
+		if (preStationId.equals(stationId)) {
+			throw new TargetEqualsSourceException();
+		}
 
-    public void deleteFavorite(Member member, Long favoriteId) {
-        member.removeFavoriteById(favoriteId);
-        memberRepository.save(member);
-    }
+		stationRepository.findById(preStationId).orElseThrow(StationNotFoundException::new);
+		stationRepository.findById(stationId).orElseThrow(StationNotFoundException::new);
+	}
+
+	public List<FavoriteResponse> getFavorites(Member member) {
+		List<Long> stationIds = member.getStationIdsFromFavorites();
+		List<Station> stations = stationRepository.findAllById(stationIds);
+		List<Favorite> favorites = member.getFavorites();
+
+		return favorites.stream()
+			.map(it -> FavoriteResponse.of(it.getId(), mapStationById(stations, it.getPreStation()),
+				mapStationById(stations, it.getStation())))
+			.collect(Collectors.toList());
+	}
+
+	private Station mapStationById(List<Station> stations, Long stationId) {
+		return stations.stream()
+			.filter(station -> station.getId().equals(stationId))
+			.findFirst()
+			.orElseThrow(StationNotFoundException::new);
+	}
+
+	public void deleteFavorite(Member member, Long favoriteId) {
+		try {
+			member.removeFavoriteById(favoriteId);
+			memberRepository.save(member);
+		} catch (RuntimeException e) {
+			System.out.println(e);
+		}
+	}
 }

@@ -3,6 +3,8 @@ package wooteco.subway.web.favorite;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,7 @@ public class FavoriteController {
 
     @PostMapping("/members/favorites")
     public ResponseEntity<Void> createFavorite(@LoginMember Member member,
-        @RequestBody FavoriteRequest favoriteRequest) {
+        @RequestBody @Valid FavoriteRequest favoriteRequest) {
         Favorite favorite = favoriteService.createFavorite(member, favoriteRequest);
 
         return ResponseEntity
