@@ -4,22 +4,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import wooteco.subway.doc.FavoriteDocumentation;
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.FavoriteController;
 import wooteco.subway.web.member.login.BearerAuthInterceptor;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -28,19 +35,18 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.AcceptanceTest.*;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = FavoriteController.class)
+@SpringBootTest
 public class FavoriteControllerTest {
 
     @MockBean
-    private FavoriteService favoriteService;
-    @MockBean
     private MemberService memberService;
     @MockBean
-    private BearerAuthInterceptor bearerAuthInterceptor;
+    private JwtTokenProvider jwtTokenProvider;
 
     private MockMvc mockMvc;
 
@@ -55,19 +61,26 @@ public class FavoriteControllerTest {
     @DisplayName("본인의 모든 즐겨찾기 목록을 요청했을때 OK 응답이 오는지 테스트")
     @Test
     void getFavoritesTest() throws Exception {
-
-        given(memberService.findAllFavoriteResponses(any())).willReturn(Collections.emptyList());
+        FavoriteResponse response = new FavoriteResponse(1L, 1L, 2L, STATION_NAME_KANGNAM, STATION_NAME_DOGOK);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+        given(memberService.findAllFavoriteResponses(any())).willReturn(Arrays.asList(response));
 
         this.mockMvc.perform(get("/me/favorites")
-                .header("Authorization", "Bearer " + TEST_TOKEN))
+                .header("Authorization", "Bearer " + TEST_TOKEN)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(FavoriteDocumentation.getFavorites());
     }
 
     @DisplayName("본인의 계정에 즐겨찾기를 추가했을때 OK 응답이 오는지 테스트")
     @Test
     void addFavoriteTest() throws Exception {
 
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+        given(memberService.findMemberByEmail(any())).willReturn(new Member());
         given(memberService.addFavorite(any(), any())).willReturn(new Member());
 
         String inputJson = "{\"sourceStationName\":\"" + STATION_NAME_KANGNAM + "\"," +
@@ -78,18 +91,23 @@ public class FavoriteControllerTest {
                 .content(inputJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(FavoriteDocumentation.addFavorite());
     }
 
     @DisplayName("즐겨찾기 id로 즐겨찾기를 삭제했을때 OK응답이 오는지 테스트")
     @Test
     void deleteFavoriteTest() throws Exception {
 
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+        given(memberService.findMemberByEmail(any())).willReturn(new Member());
         doNothing().when(memberService).deleteMember(any());
 
-        this.mockMvc.perform(delete("/me/favorites/1")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me/favorites/{id}", 1L)
                 .header("Authorization", "Bearer " + TEST_TOKEN))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(FavoriteDocumentation.deleteFavorite());
     }
 }

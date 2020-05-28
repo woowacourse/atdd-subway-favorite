@@ -8,8 +8,7 @@ import sun.awt.image.IntegerComponentRaster;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 
@@ -20,6 +19,9 @@ public class AdminMemberDocumentation {
                         fieldWithPath("email").type(JsonFieldType.STRING).description("생성할 멤버의 이메일"),
                         fieldWithPath("name").type(JsonFieldType.STRING).description("생성할 멤버의 이름"),
                         fieldWithPath("password").type(JsonFieldType.STRING).description("생성할 멤버의 비밀번호")
+                ),
+                responseHeaders(
+                        headerWithName("Location").description("생성된 멤버의 Location")
                 )
         );
     }
