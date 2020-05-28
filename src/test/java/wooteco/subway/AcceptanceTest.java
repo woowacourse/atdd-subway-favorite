@@ -1,13 +1,20 @@
 package wooteco.subway;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
@@ -19,24 +26,20 @@ import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
 public class AcceptanceTest {
-    public static final String STATION_NAME_KANGNAM = "강남역";
-    public static final String STATION_NAME_YEOKSAM = "역삼역";
-    public static final String STATION_NAME_SEOLLEUNG = "선릉역";
-    public static final String STATION_NAME_HANTI = "한티역";
-    public static final String STATION_NAME_DOGOK = "도곡역";
-    public static final String STATION_NAME_MAEBONG = "매봉역";
-    public static final String STATION_NAME_YANGJAE = "양재역";
+	public static final String TITLE_PATH = "html.head.title";
 
-    public static final String LINE_NAME_2 = "2호선";
+	public static final String STATION_NAME_KANGNAM = "강남역";
+	public static final String STATION_NAME_YEOKSAM = "역삼역";
+	public static final String STATION_NAME_SEOLLEUNG = "선릉역";
+	public static final String STATION_NAME_HANTI = "한티역";
+	public static final String STATION_NAME_DOGOK = "도곡역";
+	public static final String STATION_NAME_MAEBONG = "매봉역";
+	public static final String STATION_NAME_YANGJAE = "양재역";
+
+	public static final String LINE_NAME_2 = "2호선";
     public static final String LINE_NAME_3 = "3호선";
     public static final String LINE_NAME_BUNDANG = "분당선";
     public static final String LINE_NAME_SINBUNDANG = "신분당선";
