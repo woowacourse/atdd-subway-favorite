@@ -17,6 +17,9 @@ import java.util.Optional;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+    public static final int ID_INDEX = 0;
+    public static final int EMAIL_INDEX = 1;
+
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -28,17 +31,40 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        RequiredAuth annotation = getAnnotation((HandlerMethod)handler, RequiredAuth.class);
-        if(Objects.isNull(annotation) || annotation.isAuth() == Auth.NONE) {
+        RequiredAuth annotation = getAnnotation((HandlerMethod) handler, RequiredAuth.class);
+        if (Objects.isNull(annotation) || annotation.type() == Auth.NONE) {
             return true;
         }
         String token = authExtractor.extract(request, "bearer");
-        if (jwtTokenProvider.validateToken(token)) {
-            String email = jwtTokenProvider.getSubject(token);
-            request.setAttribute("loginMemberEmail", email);
-            return true;
+        if (!jwtTokenProvider.validateToken(token)) {
+            return false;
         }
-        return false;
+
+        String tokenValue = jwtTokenProvider.getSubject(token);
+        Long id = Long.parseLong(tokenValue.split(":")[ID_INDEX]);
+        String email = tokenValue.split(":")[EMAIL_INDEX];
+
+        request.setAttribute("loginMemberEmail", email);
+        request.setAttribute("loginMemberId", id);
+
+        if(annotation.type() == Auth.AUTH_BY_ID) {
+            Long inputId = getId(request);
+            return id.equals(inputId);
+        }
+
+        if(annotation.type() == Auth.AUTH_BY_EMAIL) {
+            return email.equals(request.getParameter("email"));
+        }
+
+        return true;
+    }
+
+    private long getId(HttpServletRequest request) {
+        String test = request.getRequestURI().split("/members/")[1];
+        if (test.contains("/")) {
+            return Long.parseLong(test.split("/")[0]);
+        }
+        return Long.parseLong(test);
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {

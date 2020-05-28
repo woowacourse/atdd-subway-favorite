@@ -18,8 +18,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,21 +80,25 @@ public class MemberServiceTest {
 
     @Test
     void findFavoriteByMemberId() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(1L, 2L);
-        memberService.addFavorite(member, favoriteCreateRequest);
-        MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
 
+        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(1L, 2L);
+        memberService.addFavorite(member.getId(), favoriteCreateRequest);
+
+        MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member.getId());
         assertThat(memberFavoriteResponse.getFavorites().size()).isEqualTo(1);
     }
 
     @Test
     void deleteFavoriteById() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+
         member.addFavorite(new Favorite(1L, 1L, 2L));
 
-        memberService.deleteFavoriteById(member, 1L);
-        MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member);
+        memberService.deleteFavoriteById(member.getId(), 1L);
+        MemberFavoriteResponse memberFavoriteResponse = memberService.findFavorites(member.getId());
 
         assertThat(memberFavoriteResponse.getFavorites().size()).isEqualTo(0);
     }

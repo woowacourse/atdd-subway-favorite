@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.dto.MemberFavoriteResponse;
+import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -32,9 +34,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * And 즐겨 찾기 추가 요청을 보낸다.
      * <p>
      * Then 즐겨 찾기 목록을 응답 받는다.
-     *
+     * <p>
      * When 즐겨찾기 삭제 요청을 보낸다.
-     *
+     * <p>
      * Then 삭제를 확인한다.
      */
 
@@ -42,18 +44,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void favoriteTest() {
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        MemberResponse member = getMember(tokenResponse, TEST_USER_EMAIL);
 
         List<StationResponse> stations = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE").getStations();
 
         StationResponse startStation = stations.get(0);
         StationResponse endStation = stations.get(stations.size() - 1);
-        createFavorite(tokenResponse, startStation.getId(), endStation.getId());
+        createFavorite(tokenResponse, member.getId(), startStation.getId(), endStation.getId());
 
-        MemberFavoriteResponse memberFavoriteResponse1 = findFavoriteById(tokenResponse);
+        MemberFavoriteResponse memberFavoriteResponse1 = findFavoriteById(tokenResponse, member.getId());
         assertThat(memberFavoriteResponse1.getFavorites().size()).isEqualTo(1);
 
-        deleteFavoriteById(tokenResponse, 1L);
-        MemberFavoriteResponse memberFavoriteResponse2 = findFavoriteById(tokenResponse);
+        deleteFavoriteById(tokenResponse, member.getId(),1L);
+        MemberFavoriteResponse memberFavoriteResponse2 = findFavoriteById(tokenResponse, member.getId());
         assertThat(memberFavoriteResponse2.getFavorites().size()).isEqualTo(0);
     }
 }

@@ -16,17 +16,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMember() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();
-        MemberResponse memberResponse = getMember(TEST_USER_EMAIL);
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        MemberResponse memberResponse = getMember(tokenResponse, TEST_USER_EMAIL);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
-        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        updateMember(tokenResponse);
-        MemberResponse updatedMember = getMember(TEST_USER_EMAIL);
+        updateMember(tokenResponse, memberResponse.getId());
+        MemberResponse updatedMember = getMember(tokenResponse, TEST_USER_EMAIL);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(tokenResponse);
+        deleteMember(tokenResponse, memberResponse.getId());
     }
 }

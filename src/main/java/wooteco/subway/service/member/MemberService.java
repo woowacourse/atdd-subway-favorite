@@ -44,7 +44,7 @@ public class MemberService {
             throw new RuntimeException("잘못된 패스워드");
         }
 
-        return jwtTokenProvider.createToken(param.getEmail());
+        return jwtTokenProvider.createToken(member.getId() + ":" + param.getEmail());
     }
 
     public Member findMemberByEmail(String email) {
@@ -56,7 +56,9 @@ public class MemberService {
         return member.checkPassword(password);
     }
 
-    public MemberFavoriteResponse findFavorites(Member member) {
+    public MemberFavoriteResponse findFavorites(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+
         Set<Favorite> favorites = member.getFavorites();
         Set<Long> stationIds = new HashSet<>();
         favorites.forEach(favorite -> {
@@ -80,15 +82,17 @@ public class MemberService {
         return new MemberFavoriteResponse(member.getId(), favoriteResponses);
     }
 
-    public void addFavorite(Member member, FavoriteCreateRequest favoriteCreateRequest) {
+    public void addFavorite(Long id, FavoriteCreateRequest favoriteCreateRequest) {
+        Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         member.addFavorite(new Favorite(favoriteCreateRequest.getStartStationId(),
                 favoriteCreateRequest.getEndStationId()));
         memberRepository.save(member);
     }
 
 
-    public void deleteFavoriteById(Member member, Long id) {
-        member.removeFavorite(id);
+    public void deleteFavoriteById(Long memberId, Long favoriteId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+        member.removeFavorite(favoriteId);
         memberRepository.save(member);
     }
 }

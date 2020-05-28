@@ -40,6 +40,7 @@ public class AcceptanceTest {
     public static final String LINE_NAME_BUNDANG = "분당선";
     public static final String LINE_NAME_SINBUNDANG = "신분당선";
 
+    public static final Long TEST_USER_ID = 1L;
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
@@ -275,9 +276,11 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(String email) {
+    public MemberResponse getMember(TokenResponse tokenResponse, String email) {
         return
-                given().
+                given().auth().
+                        oauth2(tokenResponse.getAccessToken()).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
                         get("/members?email=" + email).
@@ -287,7 +290,7 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(TokenResponse tokenResponse) {
+    public void updateMember(TokenResponse tokenResponse, Long id) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
@@ -298,23 +301,23 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members").
+                put("/members/" + id).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(TokenResponse tokenResponse) {
+    public void deleteMember(TokenResponse tokenResponse, Long id) {
         given().auth().
                 oauth2(tokenResponse.getAccessToken()).
                 when().
-                delete("/members").
+                delete("/members/" + id).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public void createFavorite(TokenResponse tokenResponse, Long startStationId, Long endStationId) {
+    public void createFavorite(TokenResponse tokenResponse, Long memberId, Long startStationId, Long endStationId) {
         Map<String, String> params = new HashMap<>();
         params.put("startStationId", startStationId.toString());
         params.put("endStationId", endStationId.toString());
@@ -325,31 +328,31 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/members/favorite").
+                post("/members/"+ memberId +"/favorite").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
+                statusCode(HttpStatus.CREATED.value());
     }
 
-    public MemberFavoriteResponse findFavoriteById(TokenResponse tokenResponse) {
+    public MemberFavoriteResponse findFavoriteById(TokenResponse tokenResponse, Long id) {
         return
                 given().auth().
                         oauth2(tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/members/favorite").
+                        get("/members/"+ id +"/favorite").
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberFavoriteResponse.class);
     }
 
-    public void deleteFavoriteById(TokenResponse tokenResponse, Long id) {
+    public void deleteFavoriteById(TokenResponse tokenResponse, Long memberId, Long favoriteId) {
         given().auth().
                 oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                delete("/members/favorite/" + id).
+                delete("/members/"+ memberId + "/favorite/" + favoriteId).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());

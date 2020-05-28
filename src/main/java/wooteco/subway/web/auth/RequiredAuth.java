@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequiredAuth {
-    Auth isAuth() default Auth.AUTH;
+    Auth type() default Auth.AUTH;
 }
 

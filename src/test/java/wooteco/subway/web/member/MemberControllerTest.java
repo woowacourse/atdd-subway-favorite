@@ -45,7 +45,7 @@ public class MemberControllerTest {
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
@@ -115,10 +115,10 @@ public class MemberControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
         String inputJson =
                 "{\"name\":\"" + "NEW" + TEST_USER_NAME + "\"," +
-                "\"password\":\"" + "NEW" + TEST_USER_PASSWORD + "\"}";
-        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
-        this.mockMvc.perform(put("/members")
-                .header("Authorization", "bearer "+token)
+                        "\"password\":\"" + "NEW" + TEST_USER_PASSWORD + "\"}";
+        String token = jwtTokenProvider.createToken(TEST_USER_ID + ":" + TEST_USER_EMAIL);
+        this.mockMvc.perform(put("/members/" + member.getId())
+                .header("Authorization", "bearer " + token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -133,9 +133,9 @@ public class MemberControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
         String inputJson = "{\"name\":\"" + TEST_INVALID_USER_NAME + "\"," +
                 "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
-        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
-        this.mockMvc.perform(put("/members")
-                .header("Authorization", "bearer "+token)
+        String token = jwtTokenProvider.createToken(TEST_USER_ID + ":" + TEST_USER_EMAIL);
+        this.mockMvc.perform(put("/members/" + member.getId())
+                .header("Authorization", "bearer " + token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -146,9 +146,9 @@ public class MemberControllerTest {
     @Test
     void deleteMember() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
-        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
-        this.mockMvc.perform(delete("/members")
-                .header("Authorization", "bearer "+token)
+        String token = jwtTokenProvider.createToken(TEST_USER_ID + ":" + TEST_USER_EMAIL);
+        this.mockMvc.perform(delete("/members/" + member.getId())
+                .header("Authorization", "bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
@@ -159,17 +159,17 @@ public class MemberControllerTest {
     @Test
     void createFavorite() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
-        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
+        String token = jwtTokenProvider.createToken(TEST_USER_ID + ":" + TEST_USER_EMAIL);
 
         String inputJson = "{\"startStationId\":\"" + TEST_START_STATION_ID + "\"," +
                 "\"endStationId\":\"" + TEST_END_STATION_ID + "\"}";
 
-        this.mockMvc.perform(post("/members/favorite")
+        this.mockMvc.perform(post("/members/" + member.getId() + "/favorite")
                 .header("Authorization", "bearer " + token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(MemberDocumentation.createFavorite());
     }
@@ -177,8 +177,9 @@ public class MemberControllerTest {
     @Test
     void findFavorite() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
-        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
-        this.mockMvc.perform(get("/members/favorite")
+        String token = jwtTokenProvider.createToken(TEST_USER_ID + ":" + TEST_USER_EMAIL);
+
+        this.mockMvc.perform(get("/members/" + member.getId() + "/favorite")
                 .header("Authorization", "bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -190,9 +191,10 @@ public class MemberControllerTest {
     @Test
     void deleteFavorite() throws Exception {
         given(memberService.findMemberByEmail(any())).willReturn(member);
-        String token = jwtTokenProvider.createToken(TEST_USER_EMAIL);
-        this.mockMvc.perform(delete("/members/favorite/" + 1L)
-                .header("Authorization", "bearer "+token)
+        String token = jwtTokenProvider.createToken(TEST_USER_ID + ":" + TEST_USER_EMAIL);
+
+        this.mockMvc.perform(delete("/members/" + member.getId() + "/favorite/" + 1L)
+                .header("Authorization", "bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
