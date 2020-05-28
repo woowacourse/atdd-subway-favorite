@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicatedEmailException;
@@ -20,6 +21,7 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         if (memberRepository.existsByEmail(member.getEmail())) {
             throw new DuplicatedEmailException();
@@ -27,33 +29,41 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(NoMemberExistException::new);
+    }
+
+    @Transactional
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(NoMemberExistException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(NoMemberExistException::new);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(NoMemberExistException::new);
+        Member member = memberRepository.findByEmail(param.getEmail())
+                .orElseThrow(NoMemberExistException::new);
         if (!member.isInvalidPassword(param.getPassword())) {
-            throw new InvalidAuthenticationException("잘못된 패스워드");
+            throw new InvalidAuthenticationException("잘못된 패스워드에요.");
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(NoMemberExistException::new);
-    }
-
+    @Transactional(readOnly = true)
     public Member loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
         if (!member.isInvalidPassword(password)) {
-            throw new InvalidAuthenticationException("비번 틀렸어");
+            throw new InvalidAuthenticationException("비밀번호가 틀렸어요.");
         }
         return member;
     }

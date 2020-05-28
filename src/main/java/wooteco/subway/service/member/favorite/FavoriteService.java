@@ -2,6 +2,7 @@ package wooteco.subway.service.member.favorite;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.*;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.domain.station.Stations;
@@ -21,6 +22,7 @@ public class FavoriteService {
 		this.stationRepository = stationRepository;
 	}
 
+	@Transactional
 	public Favorite addFavorite(long memberId, long sourceId, long targetId) {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(NoMemberExistException::new);
@@ -32,6 +34,7 @@ public class FavoriteService {
 		return favorite;
 	}
 
+	@Transactional(readOnly = true)
 	public List<FavoriteDetail> readFavorites(long memberId) {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(NoMemberExistException::new);
@@ -49,6 +52,7 @@ public class FavoriteService {
 				.collect(Collectors.toList());
 	}
 
+	@Transactional
 	public void removeFavorite(long memberId, long sourceId, long targetId) {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(NoMemberExistException::new);
