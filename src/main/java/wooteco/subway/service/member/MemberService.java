@@ -108,10 +108,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    private Station findStationById(List<Station> stations, Long Id) {
+    private Station findStationById(List<Station> stations, Long id) {
         return stations.stream()
             .filter(station -> Objects.equals(id, station.getId()))
             .findFirst()
-            .orElseThrow(() -> new NoSuchElementException("해당 역을 찾을 수 없습니다.")).getName(),
+            .orElseThrow(() -> new NoSuchElementException("해당 역을 찾을 수 없습니다."));
     }
 }

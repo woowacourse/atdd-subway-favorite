@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.JwtException;
+
 @Component
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
@@ -32,7 +34,7 @@ public class AuthorizationExtractor {
 
     private String validation(String authHeaderValue) {
         if (authHeaderValue.equals("null")) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new JwtException("로그인을 해주세요.");
         }
         return authHeaderValue;
     }

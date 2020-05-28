@@ -14,9 +14,9 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.web.member.AuthorizationExtractor;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    private static final String AUTHORIZATION = "Authorization";
 
     @Override
     @BeforeEach
@@ -70,7 +70,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     // @formatter:off
     private void deleteFavorite(String token, Long favoriteId) {
         given()
-            .header(AUTHORIZATION, token)
+            .header(AuthorizationExtractor.AUTHORIZATION, token)
         .when()
             .delete("/members/favorites/" + favoriteId)
         .then()
@@ -81,7 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     // @formatter:off
     private List<FavoriteResponse> getFavorites(String token) {
         return given()
-                    .header(AUTHORIZATION, token)
+                    .header(AuthorizationExtractor.AUTHORIZATION, token)
                 .when()
                     .get("/members/favorites")
                 .then()
@@ -98,7 +98,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         params.put("target", target);
 
         given()
-            .header(AUTHORIZATION, token)
+            .header(AuthorizationExtractor.AUTHORIZATION, token)
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
