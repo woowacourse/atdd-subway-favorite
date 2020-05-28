@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.restcontroller.member;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +13,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.restcontroller.member.methodargumentresolver.LoginMemberId;
 
 @RestController
 public class LoginMemberController {

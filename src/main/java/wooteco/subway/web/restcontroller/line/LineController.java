@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.restcontroller.line;
 
 import java.net.URI;
 import java.util.List;

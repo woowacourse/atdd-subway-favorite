@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.restcontroller.member;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;

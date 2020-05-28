@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.restcontroller.member;
 
 import java.net.URI;
 

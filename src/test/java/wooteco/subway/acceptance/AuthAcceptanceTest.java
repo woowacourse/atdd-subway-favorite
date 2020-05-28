@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 import static wooteco.subway.acceptance.member.MyInfoAcceptanceTest.*;

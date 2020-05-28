@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.pagecontroller;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

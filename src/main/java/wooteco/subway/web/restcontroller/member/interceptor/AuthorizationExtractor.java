@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.restcontroller.member.interceptor;
 
 import java.util.Enumeration;
 

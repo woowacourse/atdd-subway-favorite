@@ -1,4 +1,4 @@
-package wooteco.subway.web.member.interceptor;
+package wooteco.subway.web.restcontroller.member.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,7 +8,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.web.member.AuthorizationExtractor;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {

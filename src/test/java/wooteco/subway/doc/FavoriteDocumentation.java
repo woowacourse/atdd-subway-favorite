@@ -51,14 +51,14 @@ public class FavoriteDocumentation {
 
     public static RestDocumentationResultHandler removeFavorite() {
         return document("favorites/delete",
-                requestHeaders(
-                    headerWithName("Authorization").description("The login token should be bearer type")
-                ),
-                pathParameters(
-                    parameterWithName("source").description("The source station id of favorite"),
-                    parameterWithName("target").description("The target station id of favorite")
-                )
-            );
+            requestHeaders(
+                headerWithName("Authorization").description("The login token should be bearer type")
+            ),
+            pathParameters(
+                parameterWithName("source").description("The source station id of favorite"),
+                parameterWithName("target").description("The target station id of favorite")
+            )
+        );
     }
 
     public static RestDocumentationResultHandler removeFavoriteById() {

@@ -1,4 +1,4 @@
-package wooteco.subway.web.line;
+package wooteco.subway.web.restcontroller.line;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.web.LineController;
+import wooteco.subway.web.restcontroller.member.interceptor.AuthorizationExtractor;
 
-@Disabled
 @WebMvcTest(controllers = LineController.class)
-@Import(ETagHeaderFilter.class)
+@Import({ETagHeaderFilter.class, AuthorizationExtractor.class, JwtTokenProvider.class})
 public class LineControllerTest {
     @Autowired
     protected MockMvc mockMvc;

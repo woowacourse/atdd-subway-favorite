@@ -1,7 +1,7 @@
 package wooteco.subway.acceptance.favorite;
 
 import static org.assertj.core.api.Assertions.*;
-import static wooteco.subway.AuthAcceptanceTest.*;
+import static wooteco.subway.acceptance.AuthAcceptanceTest.*;
 import static wooteco.subway.acceptance.member.MyInfoAcceptanceTest.*;
 
 import java.util.HashMap;
@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.favorite.FavoriteResponse;
+import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;

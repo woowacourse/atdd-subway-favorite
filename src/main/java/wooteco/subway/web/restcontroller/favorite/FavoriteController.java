@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.restcontroller.favorite;
 
 import java.net.URI;
 import java.util.List;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.service.favorite.FavoriteRequest;
-import wooteco.subway.service.favorite.FavoriteResponse;
 import wooteco.subway.service.favorite.FavoriteService;
-import wooteco.subway.web.member.LoginMemberId;
+import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.web.restcontroller.member.methodargumentresolver.LoginMemberId;
 
 @RestController
 public class FavoriteController {
