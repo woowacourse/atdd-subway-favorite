@@ -86,5 +86,5 @@
             - 토큰의 유효성 검사와 본인 여부를 판단하는 로직 추가(interceptor, argument resolver)
         - [ ] side case에 대한 예외처리 필수
             - [ ] 비정상적인 로그인인 경우
-            - [ ] 요청한 id에 해당하는 favorite이 없는 경우
+            - [x] 요청한 id에 해당하는 favorite이 없는 경우
         - [x] 페이지 연동

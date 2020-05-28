@@ -179,4 +179,26 @@ public class FavoriteServiceTest {
 
         assertThat(member.getFavorites().size()).isEqualTo(1);
     }
+
+    @DisplayName("예외테스트: 존재하지 않는 즐겨찾기를 삭제하는 경우")
+    @Test
+    void deleteFavorite_withNotExistingFavoriteId() {
+        Station gangnam = new Station(1L, "강남역");
+        Station seolleung = new Station(2L, "선릉역");
+        Station yeoksam = new Station(3L, "역삼역");
+
+        Favorite favorite1 = new Favorite(1L, gangnam.getId(), seolleung.getId());
+        Favorite favorite2 = new Favorite(2L, yeoksam.getId(), gangnam.getId());
+
+        Member member = new Member(ID, EMAIL, NAME, PASSWORD);
+        member.addFavorite(favorite1);
+        member.addFavorite(favorite2);
+
+        Member updatedMember = new Member(ID, EMAIL, NAME, PASSWORD);
+        updatedMember.addFavorite(favorite2);
+
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(member, 3L))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("해당하는 id를 가진 즐겨찾기가 없습니다.");
+    }
 }
