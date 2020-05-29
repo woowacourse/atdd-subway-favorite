@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.ResultHandler;
  */
 public class FavoriteDocumentation {
 	public static ResultHandler addFavorite() {
-		return document("/favorite/add",
+		return document("favorite/add",
 			requestFields(
 				fieldWithPath("departStationId").type(JsonFieldType.STRING).description("The depart station's id"),
 				fieldWithPath("arriveStationId").type(JsonFieldType.STRING).description("The arrive station's id")
@@ -26,7 +26,7 @@ public class FavoriteDocumentation {
 	}
 
 	public static ResultHandler getFavorites() {
-		return document("/favorite/get",
+		return document("favorite/get",
 			requestHeaders(
 				headerWithName("Authorization").description("The token for login which is Bearer Type")
 			),
@@ -40,7 +40,7 @@ public class FavoriteDocumentation {
 	}
 
 	public static ResultHandler deleteFavorite() {
-		return document("/favorite/delete",
+		return document("favorite/delete",
 			requestFields(
 				fieldWithPath("departStationId").type(JsonFieldType.STRING).description("The depart station's id"),
 				fieldWithPath("arriveStationId").type(JsonFieldType.STRING).description("The arrive station's id")
