@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.service.member.MemberException;
 import wooteco.subway.service.station.StationException;
 import wooteco.subway.web.dto.ErrorResponse;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 /**
  *    예외처리를 담당하는 컨트롤러 클래스입니다.
@@ -30,6 +31,11 @@ public class ExceptionAdvice {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handlerMethodException(MethodArgumentNotValidException e) {
 		return ResponseEntity.badRequest().body(ErrorResponse.of(e.getMessage()));
+	}
+
+	@ExceptionHandler(InvalidAuthenticationException.class)
+	public ResponseEntity<ErrorResponse> handlerAuthException(InvalidAuthenticationException e) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.of(e.getMessage()));
 	}
 
 	@ExceptionHandler(Exception.class)

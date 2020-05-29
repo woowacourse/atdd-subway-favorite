@@ -13,6 +13,8 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+	private static final String LOGIN_MEMBER_EMAIL = "loginMemberEmail";
+
 	private final AuthorizationExtractor authExtractor;
 	private final JwtTokenProvider jwtTokenProvider;
 
@@ -30,7 +32,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 		}
 		String email = jwtTokenProvider.getSubject(bearer);
 
-		request.setAttribute("loginMemberEmail", email);
+		request.setAttribute(LOGIN_MEMBER_EMAIL, email);
 		return true;
 	}
 

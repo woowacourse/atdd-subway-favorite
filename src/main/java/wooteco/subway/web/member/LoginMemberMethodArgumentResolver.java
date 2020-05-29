@@ -15,6 +15,8 @@ import wooteco.subway.service.member.MemberService;
 
 @Component
 public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentResolver {
+	private static final String EMAIL_ATTRIBUTE_NAME = "loginMemberEmail";
+
 	private final MemberService memberService;
 
 	public LoginMemberMethodArgumentResolver(MemberService memberService) {
@@ -29,9 +31,9 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-		String email = (String)webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
+		String email = (String)webRequest.getAttribute(EMAIL_ATTRIBUTE_NAME, SCOPE_REQUEST);
 		if (StringUtils.isBlank(email)) {
-			return Member.of("", "", "");
+			return Member.EMPTY;
 		}
 		try {
 			return memberService.findMemberByEmail(email);

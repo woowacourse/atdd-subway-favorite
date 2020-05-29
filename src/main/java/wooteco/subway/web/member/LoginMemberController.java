@@ -19,6 +19,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @RestController
 public class LoginMemberController {
+	private static final String TOKEN_BEARER = "bearer";
 	private final MemberService memberService;
 
 	public LoginMemberController(MemberService memberService) {
@@ -28,7 +29,7 @@ public class LoginMemberController {
 	@PostMapping("/oauth/token")
 	public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest param) {
 		String token = memberService.createToken(param);
-		return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+		return ResponseEntity.ok().body(new TokenResponse(token, TOKEN_BEARER));
 	}
 
 	@GetMapping("/me")

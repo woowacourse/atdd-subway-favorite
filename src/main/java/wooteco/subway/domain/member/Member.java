@@ -11,6 +11,8 @@ import org.springframework.data.annotation.Id;
 import wooteco.subway.service.station.DuplicateFavoriteException;
 
 public class Member {
+	public static final Member EMPTY = new Member(null, "", "", "", new HashSet<>());
+
 	@Id
 	private final Long id;
 	private final String email;

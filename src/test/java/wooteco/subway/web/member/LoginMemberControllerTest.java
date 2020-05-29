@@ -158,6 +158,17 @@ class LoginMemberControllerTest {
 	}
 
 	@Test
+	void getMemberOfMineBasicWithException() throws Exception {
+		final String email = "a@email.com";
+		final String password = "1234";
+
+		this.mockMvc.perform(get("/me")
+			.header("authorization", "Bearer abc"))
+			.andExpect(status().isForbidden())
+			.andDo(print());
+	}
+
+	@Test
 	void updateMemberOfMineBasic() throws Exception {
 		final String email = "a@email.com";
 		final String password = "1234";

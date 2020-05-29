@@ -13,8 +13,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 
-	public MemberService(final MemberRepository memberRepository,
-		final JwtTokenProvider jwtTokenProvider) {
+	public MemberService(final MemberRepository memberRepository, final JwtTokenProvider jwtTokenProvider) {
 		this.memberRepository = memberRepository;
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
@@ -37,8 +36,7 @@ public class MemberService {
 	}
 
 	public String createToken(final LoginRequest param) {
-		Member member = memberRepository.findByEmail(param.getEmail())
-			.orElseThrow(() -> new NotFoundMemberException("해당하는 이메일을 찾을 수 없습니다. : " + param.getEmail()));
+		Member member = findMemberByEmail(param.getEmail());
 		if (!member.checkPassword(param.getPassword())) {
 			throw new IllegalPasswordException("잘못된 패스워드");
 		}
