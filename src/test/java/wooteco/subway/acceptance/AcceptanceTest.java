@@ -9,6 +9,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -280,6 +281,18 @@ public class AcceptanceTest {
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberResponse.class);
+    }
+
+    public ExceptionResponse failToGetMember(String email) {
+        return
+                given().
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/members?email=" + email).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.UNAUTHORIZED.value()).
+                        extract().as(ExceptionResponse.class);
     }
 
     public void updateMember(MemberResponse memberResponse, String sessionId, TokenResponse tokenResponse) {

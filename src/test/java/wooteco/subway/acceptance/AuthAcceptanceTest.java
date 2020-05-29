@@ -15,24 +15,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Session Bearer 둘다")
 	@Test
 	void AuthorizeSessionAndBearer() {
+		// given 회원가입 된 유저가 있다
 		String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		String id = location.split("/")[2];
+
+		// and 유저가 로그인을 했다
 		Response response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-
 		String sessionId = response.getSessionId();
-
 		TokenResponse tokenResponse = getTokenResponse(response);
 
-		MemberResponse memberResponse = myInfoAuth(tokenResponse, sessionId, id);
+		// when 유저가 자기 정보를 인증 정보를 이용하여 조회한다
+		MemberResponse memberResponse = readMyInfoWithAuth(tokenResponse, sessionId, id);
 
-		assertThat(memberResponse.getId()).isNotNull();
+		//then 자기 정보가 조회되었다
+		assertThat(memberResponse.getId()).isEqualTo(Long.parseLong(id));
 		assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
 		assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 	}
 
-
-	public MemberResponse myInfoAuth(TokenResponse tokenResponse, String sessionId, String memberId) {
-
+	public MemberResponse readMyInfoWithAuth(TokenResponse tokenResponse, String sessionId, String memberId) {
 		return given().
 				cookie("JSESSIONID", sessionId).
 				header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).

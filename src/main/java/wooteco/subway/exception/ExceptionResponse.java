@@ -3,7 +3,10 @@ package wooteco.subway.exception;
 public class ExceptionResponse {
 	private String message;
 
-	private ExceptionResponse(String message) {
+	public ExceptionResponse() {
+	}
+
+	public ExceptionResponse(String message) {
 		this.message = message;
 	}
 
