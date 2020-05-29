@@ -30,10 +30,6 @@ public class LineService {
         return lineRepository.findAll();
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(request.toLine());
@@ -46,7 +42,7 @@ public class LineService {
 
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+        LineStation lineStation = LineStation.of(request.getPreStationId(), request.getStationId(),
             request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
 

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +15,10 @@ import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
-public class GraphServiceTest {
+public class GraphsTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
     private static final String STATION_NAME3 = "선릉역";
@@ -23,7 +26,7 @@ public class GraphServiceTest {
     private static final String STATION_NAME5 = "양재시민의숲역";
     private static final String STATION_NAME6 = "서울역";
 
-    private GraphService graphService;
+    private Graphs graphs;
 
     private Station station1;
     private Station station2;
@@ -37,7 +40,7 @@ public class GraphServiceTest {
 
     @BeforeEach
     void setUp() {
-        graphService = new GraphService();
+        graphs = new Graphs();
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -46,22 +49,27 @@ public class GraphServiceTest {
         station5 = new Station(5L, STATION_NAME5);
         station6 = new Station(6L, STATION_NAME6);
 
-        line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line1.addLineStation(new LineStation(null, 1L, 10, 10));
-        line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line1 = Line.of(1L, "2호선", "green", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line1.addLineStation(LineStation.of(null, 1L, 10, 10));
+        line1.addLineStation(LineStation.of(1L, 2L, 10, 10));
+        line1.addLineStation(LineStation.of(2L, 3L, 10, 10));
 
-        line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line2.addLineStation(new LineStation(null, 1L, 10, 10));
-        line2.addLineStation(new LineStation(1L, 4L, 10, 10));
-        line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+        line2 = Line.of(2L, "신분당선", "deep-red", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line2.addLineStation(LineStation.of(null, 1L, 10, 10));
+        line2.addLineStation(LineStation.of(1L, 4L, 10, 10));
+        line2.addLineStation(LineStation.of(4L, 5L, 10, 10));
+
+        graphs.initialize(Lists.list(line1, line2),
+            Lists.list(station1, station2, station3, station4, station5, station6));
     }
 
     @Test
     void findPath() {
-        List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(),
-            station5.getId(), PathType.DISTANCE);
+        PathResponse path = graphs.findPath(station3.getId(), station5.getId(), PathType.DISTANCE);
 
+        List<Long> stationIds = path.getStations().stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
         assertThat(stationIds).hasSize(5);
         assertThat(stationIds.get(0)).isEqualTo(3L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
@@ -73,8 +81,7 @@ public class GraphServiceTest {
     @Test
     void findPathWithNoPath() {
         assertThrows(IllegalArgumentException.class, () ->
-            graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(),
-                PathType.DISTANCE)
+            graphs.findPath(station3.getId(), station6.getId(), PathType.DISTANCE)
         );
 
     }
@@ -83,9 +90,8 @@ public class GraphServiceTest {
     void findPathWithDisconnected() {
         line2.removeLineStationById(station1.getId());
 
-        assertThrows(IllegalArgumentException.class, () ->
-            graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(),
-                PathType.DISTANCE)
+        assertThrows(IllegalArgumentException.class,
+            () -> graphs.findPath(station3.getId(), station6.getId(), PathType.DISTANCE)
         );
     }
 }

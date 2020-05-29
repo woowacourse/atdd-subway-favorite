@@ -6,6 +6,7 @@ import wooteco.subway.domain.line.Line;
 
 public class LineRequest {
     private String name;
+    private String color;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
@@ -15,6 +16,10 @@ public class LineRequest {
 
     public String getName() {
         return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public LocalTime getStartTime() {
@@ -30,6 +35,6 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return new Line(name, startTime, endTime, intervalTime);
+        return Line.withoutId(name, color, startTime, endTime, intervalTime);
     }
 }

@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class LineControllerTest {
 
     private LineDetailResponse createMockResponse() {
         List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(new Line(), stations);
+        return LineDetailResponse.of(Line.of(2L, "신분당선", "deep-red", LocalTime.of(05, 30), LocalTime.of(22, 30), 5), stations);
     }
 }
 

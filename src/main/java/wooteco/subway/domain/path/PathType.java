@@ -5,16 +5,24 @@ import java.util.function.Function;
 import wooteco.subway.domain.line.LineStation;
 
 public enum PathType {
-    DISTANCE(lineStation -> lineStation.getDistance()),
-    DURATION(lineStation -> lineStation.getDuration());
+    DISTANCE(LineStation::getDistance),
+    DURATION(LineStation::getDuration);
 
-    private Function<LineStation, Integer> expression;
+    private Function<LineStation, Integer> function;
 
-    PathType(Function<LineStation, Integer> expression) {
-        this.expression = expression;
+    public static PathType of(String name) {
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException ie) {
+            return DISTANCE;
+        }
     }
 
-    public int findWeightOf(LineStation lineStation) {
-        return expression.apply(lineStation);
+    PathType(Function<LineStation, Integer> function) {
+        this.function = function;
+    }
+
+    public int getWeight(LineStation lineStation) {
+        return function.apply(lineStation);
     }
 }

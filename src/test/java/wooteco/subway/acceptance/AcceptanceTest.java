@@ -86,6 +86,7 @@ public class AcceptanceTest {
     public LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
+        params.put("color", "green");
         params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
@@ -114,6 +115,8 @@ public class AcceptanceTest {
 
     public void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
         Map<String, String> params = new HashMap<>();
+        params.put("name", "hello역");
+        params.put("color", "blue");
         params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
@@ -190,7 +193,7 @@ public class AcceptanceTest {
                 extract().as(WholeSubwayResponse.class);
     }
 
-    public PathResponse findPath(String source, String target, String type) {
+    public PathResponse findPath(Long source, Long target, String type) {
         return
             given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).

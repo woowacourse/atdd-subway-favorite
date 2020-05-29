@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -17,13 +18,52 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        initStation();
     }
 
     @DisplayName("거리 기준으로 경로 조회")
     @Test
     public void findPathByDistance() {
-        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE");
+        // 역 등록
+        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
+        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
+        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse stationResponse4 = createStation(STATION_NAME_HANTI);
+        StationResponse stationResponse5 = createStation(STATION_NAME_DOGOK);
+        StationResponse stationResponse6 = createStation(STATION_NAME_MAEBONG);
+        StationResponse stationResponse7 = createStation(STATION_NAME_YANGJAE);
+
+        // 2호선
+        LineResponse lineResponse1 = createLine("2호선");
+        addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5,
+            10);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5,
+            10);
+
+        // 분당선
+        LineResponse lineResponse2 = createLine("분당선");
+        addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5,
+            10);
+        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5,
+            10);
+
+        // 3호선
+        LineResponse lineResponse3 = createLine("3호선");
+        addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
+        addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5,
+            10);
+        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5,
+            10);
+
+        // 신분당선
+        LineResponse lineResponse4 = createLine("신분당선");
+        addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
+        addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(),
+            40, 3);
+
+        // 경로 조회
+        PathResponse pathResponse = findPath(stationResponse1.getId(), stationResponse5.getId(), "DISTANCE");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(5);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
@@ -36,7 +76,47 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("소요시간 기준으로 경로 조회")
     @Test
     public void findPathByDuration() {
-        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DURATION");
+        // 역 등록
+        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
+        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
+        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse stationResponse4 = createStation(STATION_NAME_HANTI);
+        StationResponse stationResponse5 = createStation(STATION_NAME_DOGOK);
+        StationResponse stationResponse6 = createStation(STATION_NAME_MAEBONG);
+        StationResponse stationResponse7 = createStation(STATION_NAME_YANGJAE);
+
+        // 2호선
+        LineResponse lineResponse1 = createLine("2호선");
+        addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5,
+            10);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5,
+            10);
+
+        // 분당선
+        LineResponse lineResponse2 = createLine("분당선");
+        addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5,
+            10);
+        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5,
+            10);
+
+        // 3호선
+        LineResponse lineResponse3 = createLine("3호선");
+        addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
+        addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5,
+            10);
+        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5,
+            10);
+
+        // 신분당선
+        LineResponse lineResponse4 = createLine("신분당선");
+        addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
+        addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(),
+            40, 3);
+
+        // 경로 조회
+        PathResponse pathResponse = findPath(stationResponse1.getId(), stationResponse5.getId(), "DURATION");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(4);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
