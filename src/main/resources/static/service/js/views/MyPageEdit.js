@@ -68,7 +68,10 @@ function Join() {
   }
 
   this.init = async () => {
-    !user.isLoggedIn() && location.replace('/login')
+    if (!user.isLoggedIn()) {
+      location.replace('/login')
+      return
+    }
 
     const { email, name } = await user.getInfo()
     $email.value = email

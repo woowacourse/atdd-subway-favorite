@@ -51,6 +51,10 @@ function Search() {
       const path = await api.path.find(searchInput)
       showSearchResult(path)
 
+      if (!user.isLoggedIn()) {
+        return
+      }
+
       const { exist } = await user.hasFavorite({
         sourceId: path.stations[0].id,
         targetId: path.stations[path.stations.length - 1].id

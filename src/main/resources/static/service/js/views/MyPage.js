@@ -5,7 +5,10 @@ function MyPage() {
   const $name = document.querySelector('#name')
 
   this.init = async () => {
-    !user.isLoggedIn() && location.replace('/login')
+    if (!user.isLoggedIn()) {
+      location.replace('/login')
+      return
+    }
 
     try {
       const { email, name } = await user.getInfo()
