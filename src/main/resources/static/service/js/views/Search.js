@@ -50,6 +50,10 @@ function Search() {
       const path = await api.path.find(searchInput)
       showSearchResult(path)
 
+      if (!user.isLoggedIn()) {
+        return
+      }
+
       const { exist } = await user.hasFavorite({
         sourceId: path.stations[0].id,
         targetId: path.stations[path.stations.length - 1].id
@@ -148,7 +152,7 @@ function Search() {
 
   this.init = () => {
     const params = (new URL(document.location)).searchParams;
-    const source = params.get('source'); // is the string "Jonathan Smith".
+    const source = params.get('source');
     const target = params.get('target');
 
     if (source && target) {
