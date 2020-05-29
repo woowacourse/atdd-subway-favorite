@@ -1,4 +1,4 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {EVENT_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 
 function Join() {

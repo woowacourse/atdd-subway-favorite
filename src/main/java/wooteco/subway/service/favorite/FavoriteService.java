@@ -1,7 +1,6 @@
 package wooteco.subway.service.favorite;
 
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
@@ -17,16 +16,16 @@ public class FavoriteService {
     }
 
     public FavoriteResponse addFavorite(Member member,
-        FavoriteCreateRequest favoriteCreateRequest) {
+                                        FavoriteCreateRequest favoriteCreateRequest) {
         member.addFavorite(favoriteCreateRequest.toFavorite());
         memberRepository.save(member);
         return FavoriteResponse.of(member.findFavorite(favoriteCreateRequest.getDepartureId(),
-            favoriteCreateRequest.getDestinationId()));
+                favoriteCreateRequest.getDestinationId()));
     }
 
     public FavoriteListResponse findFavorites(Member member) {
         Member persistMember = memberRepository.findById(member.getId())
-            .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(IllegalAccessError::new);
         return FavoriteListResponse.of(persistMember.getFavorites());
     }
 

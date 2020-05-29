@@ -1,13 +1,13 @@
 package wooteco.subway.web.exception;
 
-import java.util.stream.Collectors;
-
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class MemberControllerAdvice {
@@ -20,15 +20,15 @@ public class MemberControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> getException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getAllErrors()
-            .stream()
-            .map(DefaultMessageSourceResolvable::getDefaultMessage)
-            .collect(Collectors.joining(System.lineSeparator()));
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining(System.lineSeparator()));
         return ResponseEntity.badRequest().body(new ExceptionResponse(message));
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ExceptionResponse> getSqlException(UnauthorizedException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(new ExceptionResponse(e.getMessage()));
+                .body(new ExceptionResponse(e.getMessage()));
     }
 }

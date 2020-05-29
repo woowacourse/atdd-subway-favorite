@@ -1,9 +1,9 @@
 package wooteco.subway.service.member.dto;
 
+import wooteco.subway.domain.member.Member;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-
-import wooteco.subway.domain.member.Member;
 
 public class MemberRequest {
     @Email(message = "올바른 이메일 형식으로 입력해주세요.")

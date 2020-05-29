@@ -1,8 +1,8 @@
 package wooteco.subway.service.line.dto;
 
-import java.time.LocalTime;
-
 import wooteco.subway.domain.line.Line;
+
+import java.time.LocalTime;
 
 public class LineRequest {
     private String name;

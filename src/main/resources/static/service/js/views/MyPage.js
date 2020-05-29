@@ -1,4 +1,4 @@
-import { HTTP_HEADERS } from '../../utils/constants.js'
+import {HTTP_HEADERS} from '../../utils/constants.js'
 import api from '../../api/index.js'
 
 function MyPage() {

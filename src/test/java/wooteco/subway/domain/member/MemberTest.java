@@ -1,9 +1,10 @@
 package wooteco.subway.domain.member;
 
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MemberTest {
     private Member member;
@@ -40,10 +41,10 @@ class MemberTest {
     void findFavorite() {
         member.addFavorite(favorite);
         assertThat(
-            member.findFavorite(favorite.getDepartureId(), favorite.getDestinationId())).isEqualTo(
-            favorite);
+                member.findFavorite(favorite.getDepartureId(), favorite.getDestinationId())).isEqualTo(
+                favorite);
         assertThatThrownBy(() -> member.findFavorite(100L, 200L))
-            .isInstanceOf(AssertionError.class);
+                .isInstanceOf(AssertionError.class);
     }
 
     @Test

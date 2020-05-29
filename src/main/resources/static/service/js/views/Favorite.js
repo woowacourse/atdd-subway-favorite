@@ -1,6 +1,6 @@
-import { edgeItemTemplate } from '../../utils/templates.js'
+import {edgeItemTemplate} from '../../utils/templates.js'
 import api from '../../api/index.js'
-import { EVENT_TYPE, HTTP_HEADERS } from '../../utils/constants.js';
+import {EVENT_TYPE, HTTP_HEADERS} from '../../utils/constants.js'
 
 function Favorite() {
   const $favoriteList = document.querySelector('#favorite-list')
@@ -10,11 +10,11 @@ function Favorite() {
 
   const loadFavoriteList = async () => {
     api.station.getAll()
-    .then(data => {
-      stations = [...data];
-    })
-    const response = await api.member.findFavorites(token);
-    const responseList = response.favoriteResponses;
+        .then(data => {
+          stations = [...data]
+        })
+    const response = await api.member.findFavorites(token)
+    const responseList = response.favoriteResponses
     const favoriteItems = responseList.map(item => {
       const favoriteItem = {
         id: item.id,
@@ -25,7 +25,7 @@ function Favorite() {
       }
       return favoriteItem
     }).map(data => edgeItemTemplate(data))
-    .join('')
+        .join('')
 
     $favoriteList.insertAdjacentHTML('beforeend', favoriteItems)
   }
@@ -40,9 +40,9 @@ function Favorite() {
     }
     const favoriteId = $favoriteItem.dataset.edgeId
     api.member.deleteFavorite(token, favoriteId)
-    .then(() => {
-      $target.closest('.edge-item').remove()
-    })
+        .then(() => {
+          $target.closest('.edge-item').remove()
+        })
   }
 
   this.init = () => {

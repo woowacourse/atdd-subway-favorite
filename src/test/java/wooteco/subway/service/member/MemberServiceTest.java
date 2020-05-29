@@ -1,19 +1,11 @@
 package wooteco.subway.service.member;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -22,6 +14,16 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.exception.MemberCreationException;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.BEARER;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -46,7 +48,7 @@ public class MemberServiceTest {
     @Test
     void createMember() {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
-            TEST_USER_PASSWORD);
+                TEST_USER_PASSWORD);
         Member member = memberRequest.toMember();
         when(memberRepository.save(any())).thenReturn(member);
 
@@ -83,9 +85,9 @@ public class MemberServiceTest {
     @Test
     void updateMember() {
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("NEW_RYAN",
-            "NEW_RYAN_PASSWORD");
+                "NEW_RYAN_PASSWORD");
         Member updatedMember = new Member(member.getId(), member.getEmail(),
-            updateMemberRequest.getName(), updateMemberRequest.getPassword());
+                updateMemberRequest.getName(), updateMemberRequest.getPassword());
 
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
         when(memberRepository.save(any())).thenReturn(updatedMember);
@@ -109,6 +111,6 @@ public class MemberServiceTest {
         when(memberRepository.save(any())).thenThrow(MemberCreationException.class);
 
         assertThatThrownBy(() -> memberService.createMember(memberRequest))
-            .isInstanceOf(MemberCreationException.class);
+                .isInstanceOf(MemberCreationException.class);
     }
 }

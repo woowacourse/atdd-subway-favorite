@@ -72,8 +72,7 @@ const api = (() => {
         return
       }
       return await response.json()
-    }
-    catch (error) {
+    } catch (error) {
       alert(error.message)
     }
   }

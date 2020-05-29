@@ -1,23 +1,23 @@
 package wooteco.subway.service.favorite;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static wooteco.subway.AcceptanceTest.*;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteListResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+import static wooteco.subway.AcceptanceTest.*;
 
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {

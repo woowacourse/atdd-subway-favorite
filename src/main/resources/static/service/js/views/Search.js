@@ -1,6 +1,6 @@
-import { ERROR_MESSAGE, EVENT_TYPE, HTTP_HEADERS, PATH_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, HTTP_HEADERS, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
+import {searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -25,10 +25,10 @@ function Search() {
   const onSearchShortestDistance = event => {
     event.preventDefault()
     api.station.getAll()
-    .then(data => {
-      stations = [...data];
-    })
-    .catch(error => alert(error.message));
+        .then(data => {
+          stations = [...data]
+        })
+        .catch(error => alert(error.message))
     $shortestDistanceTab.classList.add('active-tab')
     $minimumTimeTab.classList.remove('active-tab')
     getSearchResult(PATH_TYPE.DISTANCE)
@@ -48,9 +48,9 @@ function Search() {
       type: pathType
     }
     api.path
-    .find(searchInput)
-    .then(data => showSearchResult(data))
-    .catch(error => alert(ERROR_MESSAGE.COMMON))
+        .find(searchInput)
+        .then(data => showSearchResult(data))
+        .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onToggleFavorite = event => {
@@ -58,8 +58,8 @@ function Search() {
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
 
-    const sourceStation = stations.find(station => station.name === $departureStationName.value);
-    const targetStation = stations.find(station => station.name === $arrivalStationName.value);
+    const sourceStation = stations.find(station => station.name === $departureStationName.value)
+    const targetStation = stations.find(station => station.name === $arrivalStationName.value)
 
     const favoriteData = {
       departureId: sourceStation.id,

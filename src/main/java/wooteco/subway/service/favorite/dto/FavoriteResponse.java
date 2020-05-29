@@ -18,7 +18,7 @@ public class FavoriteResponse {
 
     public static FavoriteResponse of(Favorite favorite) {
         return new FavoriteResponse(favorite.getId(), favorite.getDepartureId(),
-            favorite.getDestinationId());
+                favorite.getDestinationId());
     }
 
     public Long getId() {

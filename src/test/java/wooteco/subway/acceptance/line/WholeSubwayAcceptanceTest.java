@@ -1,16 +1,15 @@
 package wooteco.subway.acceptance.line;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class WholeSubwayAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선도 전체 정보 조회")

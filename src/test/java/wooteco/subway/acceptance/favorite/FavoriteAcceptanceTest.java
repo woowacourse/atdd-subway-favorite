@@ -1,18 +1,17 @@
 package wooteco.subway.acceptance.favorite;
 
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteListResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /*
  * Feature: 즐겨찾기 기능 테스트
@@ -65,44 +64,44 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void deleteFavorite(String token, String favoriteId) {
         given()
-            .auth()
-            .oauth2(token)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .delete("/members/favorites/" + favoriteId)
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .auth()
+                .oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/members/favorites/" + favoriteId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     private FavoriteListResponse getFavorites(String token) {
         return given()
-            .auth()
-            .oauth2(token)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/members/favorites")
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(FavoriteListResponse.class);
+                .auth()
+                .oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/members/favorites")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(FavoriteListResponse.class);
     }
 
     private String addFavorite(String token, Long departureId, Long destinationId) {
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(departureId,
-            destinationId);
+                destinationId);
 
         String location = given().
-            auth().
-            oauth2(token).
-            body(favoriteCreateRequest).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            post("/members/favorites").
-            then().
-            log().all().
-            statusCode(HttpStatus.CREATED.value()).extract().header("Location");
+                auth().
+                oauth2(token).
+                body(favoriteCreateRequest).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value()).extract().header("Location");
         return location.split("/")[3];
     }
 }

@@ -1,11 +1,11 @@
 package wooteco.subway.domain.member;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.Id;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
 
 public class Member {
     @Id

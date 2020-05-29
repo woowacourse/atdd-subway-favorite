@@ -1,5 +1,5 @@
 export const EVENT_TYPE = {
-  CLICK: 'click'
+    CLICK: 'click'
 }
 
 export const HTTP_HEADERS = {
