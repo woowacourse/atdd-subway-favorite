@@ -66,7 +66,7 @@ public class FavoriteControllerTest {
 				.build();
 	}
 
-	@DisplayName("즐겨찾기 추가 컨트롤러")
+	@DisplayName("즐겨찾기 추가")
 	@Test
 	void addFavorite() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -95,7 +95,7 @@ public class FavoriteControllerTest {
 				.andDo(FavoriteDocumentation.addFavorite());
 	}
 
-	@DisplayName("즐겨찾기 추가시 없는 역 추가할 경우 실패 컨트롤러")
+	@DisplayName("즐겨찾기 추가시 없는 역 추가할 경우 실패")
 	@Test
 	void addFavorite_fail() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -121,7 +121,7 @@ public class FavoriteControllerTest {
 				.andDo(FavoriteDocumentation.failToAddFavorite());
 	}
 
-	@DisplayName("즐겨찾기 조회 컨트롤러")
+	@DisplayName("즐겨찾기 조회")
 	@Test
 	void readFavorite() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -149,7 +149,7 @@ public class FavoriteControllerTest {
 				.andDo(FavoriteDocumentation.readFavorites());
 	}
 
-	@DisplayName("즐겨찾기 삭제 컨트롤러")
+	@DisplayName("즐겨찾기 삭제")
 	@Test
 	void removeFavorite() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -172,7 +172,7 @@ public class FavoriteControllerTest {
 				.andDo(FavoriteDocumentation.deleteFavorite());
 	}
 
-	@DisplayName("즐겨찾기 삭제시 없는 역 추가할 경우 실패 컨트롤러")
+	@DisplayName("즐겨찾기 삭제시 없는 역 추가할 경우 실패")
 	@Test
 	void removeFavorite_fail() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

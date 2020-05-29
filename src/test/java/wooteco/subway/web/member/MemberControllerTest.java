@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ public class MemberControllerTest {
 				.build();
 	}
 
+	@DisplayName("멤버 생성")
 	@Test
 	public void createMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -73,6 +75,7 @@ public class MemberControllerTest {
 				.andDo(MemberDocumentation.createMember());
 	}
 
+	@DisplayName("형식에 맞지 않는 이메일 입력시 멤버 생성 실패")
 	@Test
 	public void failToCreateMember() throws Exception {
 		String inputJson = "{\"email\":\"" + "이상한이메일" + "\"," +
@@ -88,6 +91,7 @@ public class MemberControllerTest {
 				.andDo(MemberDocumentation.failToCreateMember());
 	}
 
+	@DisplayName("멤버 조회")
 	@Test
 	public void readMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -110,6 +114,7 @@ public class MemberControllerTest {
 				.andDo(MemberDocumentation.readMember());
 	}
 
+	@DisplayName("저장되어 있지 않은 이메일로 멤버 조회 실패")
 	@Test
 	public void failToReadMemberOfEmail() throws Exception {
 		given(memberService.findMemberByEmail(any())).willThrow(new NoMemberExistException());
@@ -130,6 +135,7 @@ public class MemberControllerTest {
 				.andDo(MemberDocumentation.failToReadMemberOfEmail());
 	}
 
+	@DisplayName("멤버 수정")
 	@Test
 	public void updateMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -158,6 +164,7 @@ public class MemberControllerTest {
 				.andDo(MemberDocumentation.updateMember());
 	}
 
+	@DisplayName("멤버 삭제")
 	@Test
 	public void deleteMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -181,6 +188,7 @@ public class MemberControllerTest {
 				.andDo(MemberDocumentation.deleteMember());
 	}
 
+	@DisplayName("유효하지 않은 토큰으로인한 멤버 인증 실패")
 	@Test
 	public void failToAuthorizeMemberBecauseByToken() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -202,6 +210,7 @@ public class MemberControllerTest {
 				.andDo(MemberDocumentation.failToAuthorizeMemberByToken());
 	}
 
+	@DisplayName("유효하지 않은 세션으로인한 멤버 인증 실패")
 	@Test
 	public void failToAuthorizeMemberBecauseBySession() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

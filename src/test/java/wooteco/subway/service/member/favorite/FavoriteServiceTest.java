@@ -34,7 +34,7 @@ public class FavoriteServiceTest {
 		this.favoriteService = new FavoriteService(memberRepository, stationRepository);
 	}
 
-	@DisplayName("즐겨찾기 추가 서비스")
+	@DisplayName("즐겨찾기 추가")
 	@Test
 	void addFavorite() {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -47,7 +47,7 @@ public class FavoriteServiceTest {
 		verify(memberRepository).save(any());
 	}
 
-	@DisplayName("즐겨찾기 제거 서비스")
+	@DisplayName("즐겨찾기 제거")
 	@Test
 	void removeFavorite() {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
