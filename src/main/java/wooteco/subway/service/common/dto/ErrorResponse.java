@@ -1,8 +1,5 @@
 package wooteco.subway.service.common.dto;
 
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
 import java.util.Objects;
 
 public class ErrorResponse {
@@ -15,9 +12,8 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    public static ErrorResponse of(MethodArgumentNotValidException e) {
-        BindingResult bindingResult = e.getBindingResult();
-        String message = bindingResult.getFieldError().getDefaultMessage();
+    public static ErrorResponse of(Exception e) {
+        String message = e.getMessage();
         if (Objects.isNull(message)) {
             return new ErrorResponse("DEFAULT_ERROR");
         }
