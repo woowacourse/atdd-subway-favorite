@@ -20,7 +20,7 @@ import static wooteco.subway.AcceptanceTest.*;
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MemberControllerTest extends MemberAPITest {
+public class MemberControllerTest extends MemberApiTest {
     @Test
     public void createMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

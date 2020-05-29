@@ -21,7 +21,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MemberAPITest {
+public class MemberApiTest {
     @MockBean
     protected MemberService memberService;
 

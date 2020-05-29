@@ -28,7 +28,7 @@ import static wooteco.subway.AcceptanceTest.*;
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class LoginMemberControllerTest extends MemberAPITest {
+class LoginMemberControllerTest extends MemberApiTest {
     private Member member;
     private String token;
     private List<Favorite> favorites;

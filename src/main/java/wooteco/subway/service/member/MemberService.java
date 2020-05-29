@@ -1,5 +1,6 @@
 package wooteco.subway.service.member;
 
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.FavoriteRepository;
@@ -39,7 +40,11 @@ public class MemberService {
 
     public Member createMember(@Valid Member member) {
         validateDuplication(member);
-        return memberRepository.save(member);
+        try {
+            return memberRepository.save(member);
+        } catch (DbActionExecutionException e) {
+            throw new InvalidRegisterException(InvalidRegisterException.DUPLICATE_EMAIL_MSG);
+        }
     }
 
     private void validateDuplication(Member member) {
