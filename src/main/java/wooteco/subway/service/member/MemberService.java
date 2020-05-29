@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteDetail;
@@ -21,12 +22,12 @@ public class MemberService {
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository,
-        JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         try {
             return memberRepository.save(member);
@@ -35,17 +36,20 @@ public class MemberService {
         }
     }
 
+    @Transactional
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id)
             .orElseThrow(NotFoundMemberException::new);
         updateMember(member, param);
     }
 
+    @Transactional
     public void updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
@@ -65,6 +69,7 @@ public class MemberService {
             .orElseThrow(NotFoundMemberException::new);
     }
 
+    @Transactional
     public void addFavorite(Member member, Favorite favorite) {
         member.addFavorite(favorite);
         memberRepository.save(member);
@@ -74,6 +79,7 @@ public class MemberService {
         return memberRepository.findFavoritesById(member.getId());
     }
 
+    @Transactional
     public void removeFavorite(Member member, Long sourceId, Long targetId) {
         member.removeFavorite(new Favorite(sourceId, targetId));
         memberRepository.save(member);
