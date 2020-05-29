@@ -32,6 +32,13 @@ public class MemberServiceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_JASON_EMAIL = "jason@email.com";
+    public static final String TEST_JASON_NAME = "제이슨";
+    public static final String TEST_JASON_PASSWORD = "jason";
+    public static final String TEST_UPDATE_USER_NAME = "브라운";
+    public static final String TEST_UPDATE_USER_PASSWORD = "brown";
+    public static final String STATION_NAME_DOGOK = "도곡";
+    public static final String STATION_NAME_GANGNAM = "강남";
 
     private MemberService memberService;
 
@@ -72,7 +79,7 @@ public class MemberServiceTest {
     @DisplayName("이메일이 중복되는 경우 예외 처리")
     @Test
     void createTokenEmailDuplicate() {
-        Member member = new Member("abc@abc.com", "abc", "abc");
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         lenient().when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
 
         assertThatThrownBy(() -> memberService.createMember(member))
@@ -83,9 +90,9 @@ public class MemberServiceTest {
     @Test
     void updateOtherAccount() {
         Member member1 = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        Member member2 = new Member("jason@woowahan.com", "제이슨", "jason");
+        Member member2 = new Member(TEST_JASON_EMAIL, TEST_JASON_NAME, TEST_JASON_PASSWORD);
 
-        UpdateMemberRequest updateData = new UpdateMemberRequest("가나다", "1234");
+        UpdateMemberRequest updateData = new UpdateMemberRequest(TEST_UPDATE_USER_NAME, TEST_UPDATE_USER_PASSWORD);
 
         when(memberRepository.findById(any())).thenReturn(Optional.of(member1));
         lenient().when(jwtTokenProvider.getSubject(any())).thenReturn(member2.getEmail());
@@ -101,7 +108,7 @@ public class MemberServiceTest {
 
         memberService.addFavorite(member, favoriteCreateRequest);
 
-        when(stationService.findStations()).thenReturn(Arrays.asList(new Station(1L, "왕십리"), new Station(3L, "구의")));
+        when(stationService.findStations()).thenReturn(Arrays.asList(new Station(1L, STATION_NAME_GANGNAM), new Station(3L, STATION_NAME_DOGOK)));
 
         assertThat(memberService.findAllFavorites(member)).isNotNull();
         assertThat(memberService.findAllFavorites(member).size()).isEqualTo(1);

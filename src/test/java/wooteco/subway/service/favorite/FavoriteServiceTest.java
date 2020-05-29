@@ -38,8 +38,10 @@ class FavoriteServiceTest {
 
     @Test
     void deleteFavoriteByStationId() {
-        List<Favorite> favorites = Arrays.asList(new Favorite(1L, 2L), new Favorite(2L, 3L), new Favorite(3L, 4L));
-        List<Favorite> favorites1 = Arrays.asList(new Favorite(1L, 5L), new Favorite(2L, 4L), new Favorite(6L, 7L));
+        List<Favorite> favorites = Arrays.asList(new Favorite(1L, 2L),
+                new Favorite(2L, 3L), new Favorite(3L, 4L));
+        List<Favorite> favorites1 = Arrays.asList(new Favorite(1L, 5L),
+                new Favorite(2L, 4L), new Favorite(6L, 7L));
         List<Member> members = Arrays.asList(new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, new HashSet<>(favorites)),
                 new Member(TEST_USER_EMAIL1, TEST_USER_NAME1, TEST_USER_PASSWORD1, new HashSet<>(favorites1)));
         when(memberRepository.findAll()).thenReturn(members);

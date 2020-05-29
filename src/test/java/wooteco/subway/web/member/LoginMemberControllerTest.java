@@ -35,9 +35,10 @@ class LoginMemberControllerTest extends MemberApiTest {
 
     @BeforeEach
     public void setUpFields() {
-        favorites = Arrays.asList(new Favorite(1L, 1L, 2L), new Favorite(2L, 2L, 3L), new Favorite(3L, 3L, 4L));
+        favorites = Arrays.asList(new Favorite(1L, 1L, 2L),
+                new Favorite(2L, 2L, 3L), new Favorite(3L, 3L, 4L));
         member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD, new HashSet<>(favorites));
-        token = jwtTokenProvider.createToken(member.getEmail());
+        token = TEST_TOKEN;
     }
 
     @Test
@@ -49,7 +50,7 @@ class LoginMemberControllerTest extends MemberApiTest {
                 "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
         this.mockMvc.perform(post("/oauth/token")
-                .header("Authorization", "bearer " + token)
+                .header("Authorization", token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -64,7 +65,7 @@ class LoginMemberControllerTest extends MemberApiTest {
                 "\"password\":\"" + "sample_password" + "\"}";
 
         this.mockMvc.perform(put("/me")
-                .header("Authorization", "bearer " + token)
+                .header("Authorization", token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -76,7 +77,7 @@ class LoginMemberControllerTest extends MemberApiTest {
     @Test
     void deleteMember() throws Exception {
         this.mockMvc.perform(delete("/me")
-                .header("Authorization", "bearer " + token)
+                .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
@@ -90,7 +91,7 @@ class LoginMemberControllerTest extends MemberApiTest {
                 "\"target\":\"" + "3" + "\"}";
 
         this.mockMvc.perform(post("/me/favorites")
-                .header("Authorization", "bearer " + token)
+                .header("Authorization", token)
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -103,13 +104,13 @@ class LoginMemberControllerTest extends MemberApiTest {
     void findAllFavorites() throws Exception {
         List<FavoriteResponse> favoriteResponses = favorites.stream()
                 .map(favorite -> new FavoriteResponse(favorite.getId(), favorite.getSourceStationId(), favorite.getTargetStationId()
-                        , "강남", "압구정"))
+                        , STATION_NAME_KANGNAM, STATION_NAME_DOGOK))
                 .collect(Collectors.toList());
 
         when(memberService.findAllFavorites(any())).thenReturn(favoriteResponses);
 
         this.mockMvc.perform(get("/me/favorites")
-                .header("Authorization", "bearer " + token)
+                .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -121,7 +122,7 @@ class LoginMemberControllerTest extends MemberApiTest {
     @Test
     void removeFavorite() throws Exception {
         this.mockMvc.perform(delete("/me/favorites/1")
-                .header("Authorization", "bearer " + token)
+                .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())

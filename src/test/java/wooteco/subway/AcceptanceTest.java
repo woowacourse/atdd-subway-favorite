@@ -41,6 +41,7 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_TOKEN = "bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA3NTg2MDIsImV4cCI6MTU5MDc2MjIwMn0.dzIpHaJAmbUMvTul09zVpXKLI-OEt6QFDlxU0q4rfBE";
 
     public static final String TEST_UPDATED_USER_NAME = "제이슨";
     public static final String TEST_UPDATED_USER_PASSWORD = "jason";
