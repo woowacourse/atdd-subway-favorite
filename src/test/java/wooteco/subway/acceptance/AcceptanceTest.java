@@ -300,6 +300,7 @@ public class AcceptanceTest {
     public void updateMember(String token, MemberResponse memberResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("email", TEST_USER_EMAIL);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         given().
@@ -307,9 +308,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                put("/members/" + memberResponse.getId()).
-                then().
+        when().
+                put("/members").
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -331,9 +332,9 @@ public class AcceptanceTest {
                 .basic(email, password)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
+            .when()
                 .get("/me/basic")
-                .then()
+            .then()
                 .log().all()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())

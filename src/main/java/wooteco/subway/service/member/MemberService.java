@@ -39,10 +39,12 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void updateMember(Member member) {
-        if (member.isNotPersistent()) {
-            throw new IllegalArgumentException(NOT_MANAGED_BY_REPOSITORY);
+    public void updateMember(Member member, UpdateMemberRequest param) {
+        validatePersistence(member);
+        if (member.isNotMe(param.getEmail())) {
+            throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
         }
+        member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
@@ -69,9 +71,7 @@ public class MemberService {
     }
 
     public void removeFavoritePath(Station startStation, Station endStation, Member member) {
-        if (member.isNotPersistent()) {
-            throw new IllegalArgumentException(NOT_MANAGED_BY_REPOSITORY);
-        }
+        validatePersistence(member);
         member.removeFavoritePath(startStation, endStation);
         memberRepository.save(member);
     }
@@ -79,5 +79,17 @@ public class MemberService {
     public List<FavoritePath> findFavoritePathsOf(Member member) {
         List<FavoritePath> favoritePaths = new ArrayList<>(member.getFavoritePaths());
         return Collections.unmodifiableList(favoritePaths);
+    }
+
+    public void addFavoritePath(Member member, FavoritePath favoritePath) {
+        member.addFavoritePath(favoritePath);
+        validatePersistence(member);
+        memberRepository.save(member);
+    }
+
+    private void validatePersistence(Member member) {
+        if (member.isNotPersistent()) {
+            throw new IllegalArgumentException(NOT_MANAGED_BY_REPOSITORY);
+        }
     }
 }

@@ -26,6 +26,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -68,19 +69,24 @@ public class MemberServiceTest {
     @Test
     void updateMemberSuccessCase() {
         Member member = mock(Member.class);
-        when(member.isNotPersistent()).thenReturn(false);
+        UpdateMemberRequest request = mock(UpdateMemberRequest.class);
 
-        memberService.updateMember(member);
+        when(member.isNotPersistent()).thenReturn(false);
+        when(member.isNotMe(request.getEmail())).thenReturn(false);
+
+        memberService.updateMember(member, request);
 
         verify(memberRepository).save(member);
     }
 
     @Test
-    void updateMemberFailCase() {
+    void updateMemberWhenNotPersistent() {
+        String testEmail = "test@test.com";
         Member member = mock(Member.class);
+        UpdateMemberRequest request = mock(UpdateMemberRequest.class);
         when(member.isNotPersistent()).thenReturn(true);
 
-        assertThatThrownBy(() -> memberService.updateMember(member))
+        assertThatThrownBy(() -> memberService.updateMember(member, request))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(MemberService.NOT_MANAGED_BY_REPOSITORY);
     }

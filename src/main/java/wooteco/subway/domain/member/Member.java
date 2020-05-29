@@ -12,6 +12,7 @@ import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.station.Station;
 
 public class Member {
+    public static final String NOT_ME_MESSAGE = "본인의 이메일이 아닙니다.";
     @Id
     private Long id;
     private String email;
@@ -25,6 +26,13 @@ public class Member {
 
     public Member(String email, String name, String password) {
         validate(email, name, password);
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
+    public Member(Long id, String email, String name, String password) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
@@ -55,13 +63,6 @@ public class Member {
         if (!email.contains("@")) {
             throw new MemberConstructException(MemberConstructException.INVALID_EMAIL_FORM_MESSAGE);
         }
-    }
-
-    public Member(Long id, String email, String name, String password) { // Todo 없애볼것
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
     }
 
     public Long getId() {
@@ -140,5 +141,9 @@ public class Member {
     public void removeFavoritePath(Station start, Station end) {
         // set 에서 favorite path 를 찾아서 remove
         this.favoritePaths.removeIf(favoritePath -> favoritePath.match(start, end));
+    }
+
+    public boolean isNotMe(String email) {
+        return !this.email.equals(email);
     }
 }

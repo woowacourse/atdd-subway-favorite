@@ -119,14 +119,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void updateMyInfoWithoutLogin() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("email", "NEW_" + TEST_USER_EMAIL);
+        params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-        MemberResponse memberResponse = getMember(tokenResponse.getAccessToken(), TEST_USER_EMAIL);
 
         given().
+            body(params).
             accept(MediaType.APPLICATION_JSON_VALUE).
         when().
-            put("/members/" + memberResponse.getId()).
+            put("/members").
         then().
             log().all().
             statusCode(HttpStatus.UNAUTHORIZED.value());

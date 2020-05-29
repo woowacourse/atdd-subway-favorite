@@ -124,5 +124,5 @@ class FavoriteControllerTest {
         verify(favoritePathService).delete(startStationName, endStationName, member);
     }
 
-    // Todo: service 가 예외를 던지도록 mocking 하는 side test 해보고싶다.
+
 }

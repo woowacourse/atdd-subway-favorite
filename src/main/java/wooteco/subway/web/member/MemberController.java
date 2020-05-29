@@ -40,9 +40,12 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    @PutMapping("/members")
+    public ResponseEntity<MemberResponse> updateMember(@RequestBody UpdateMemberRequest param, @LoginMember Member member) {
+        if (member.isNotMe(param.getEmail())) {
+            throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
+        }
+        memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 

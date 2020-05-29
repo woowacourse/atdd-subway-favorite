@@ -27,9 +27,10 @@ function MyPageEdit() {
     }
     const data = {
       name: nameValue,
+      email: emailValue,
       password: passwordValue
     };
-    api.user.update(token, id, data).then(response => {
+    api.user.update(token, data).then(response => {
       if (!response.ok) {
         throw new Error(response.message);
       }

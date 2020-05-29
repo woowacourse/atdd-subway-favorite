@@ -118,8 +118,8 @@ const api = (() => {
     getInfo(token) {
       return requestWithJsonData(`/me/bearer`, METHOD.AUTH_GET(token))
     },
-    update(token, id, data) {
-      return request(`/members/` + id, METHOD.AUTH_PUT(token, data))
+    update(token, data) {
+      return request(`/members`, METHOD.AUTH_PUT(token, data))
     },
     delete(token, id) {
       return request(`/members/` + id, METHOD.AUTH_DELETE(token))

@@ -26,9 +26,7 @@ public class FavoritePathService {
         Station endStation = stationService.findByName(endStationName);
 
         FavoritePath favoritePath = new FavoritePath(startStation, endStation);
-        member.addFavoritePath(favoritePath);
-
-        memberService.updateMember(member);
+        memberService.addFavoritePath(member, favoritePath);
     }
 
     public void delete(String startStationName, String endStationName, Member member) {
