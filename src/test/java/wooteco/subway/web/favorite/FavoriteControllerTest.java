@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import wooteco.subway.doc.MemberDocumentation;
+import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -91,7 +91,7 @@ public class FavoriteControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andDo(MemberDocumentation.addFavorite());
+                .andDo(FavoriteDocumentation.addFavorite());
     }
 
     public void setMockToken() {
@@ -116,7 +116,7 @@ public class FavoriteControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, mockToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(MemberDocumentation.findFavorites())
+                .andDo(FavoriteDocumentation.findFavorites())
                 .andReturn();
 
         //Then
@@ -134,6 +134,6 @@ public class FavoriteControllerTest {
         this.mockMvc.perform(delete("/members/favorites/{id}", favorite.getId())
                 .header(HttpHeaders.AUTHORIZATION, mockToken))
                 .andExpect(status().isNoContent())
-                .andDo(MemberDocumentation.deleteFavorite());
+                .andDo(FavoriteDocumentation.deleteFavorite());
     }
 }

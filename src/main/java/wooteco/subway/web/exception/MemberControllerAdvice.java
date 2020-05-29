@@ -11,14 +11,18 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class MemberControllerAdvice {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleSystemException(Exception e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse("시스템 에러가 발생했습니다."));
+    }
 
     @ExceptionHandler(MemberCreationException.class)
-    public ResponseEntity<ExceptionResponse> getSqlException(MemberCreationException e) {
+    public ResponseEntity<ExceptionResponse> handleSqlException(MemberCreationException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> getException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ExceptionResponse> handleBeanValidationException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getAllErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -27,7 +31,7 @@ public class MemberControllerAdvice {
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ExceptionResponse> getSqlException(UnauthorizedException e) {
+    public ResponseEntity<ExceptionResponse> handleAuthException(UnauthorizedException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new ExceptionResponse(e.getMessage()));
     }
