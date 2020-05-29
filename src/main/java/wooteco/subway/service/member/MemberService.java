@@ -23,8 +23,7 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Long updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    public Long updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
         return member.getId();

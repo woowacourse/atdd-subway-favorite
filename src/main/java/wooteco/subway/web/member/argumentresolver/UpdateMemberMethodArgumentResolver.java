@@ -34,7 +34,7 @@ public class UpdateMemberMethodArgumentResolver implements HandlerMethodArgument
 
         Member updateMember = memberService.findMemberById(Long.valueOf(id));
         if (updateMember.isNotEqualEmail(email)) {
-            throw new UnAuthorizationException(email);
+            throw new UnAuthorizationException();
         }
         return updateMember;
     }

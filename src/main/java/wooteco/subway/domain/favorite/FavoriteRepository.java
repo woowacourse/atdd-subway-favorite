@@ -13,4 +13,7 @@ public interface FavoriteRepository extends CrudRepository<Favorite, Long> {
 
     @Query("SELECT * FROM favorite WHERE member_email = :email")
     List<Favorite> findByEmail(@Param("email") String email);
+
+    @Query("SELECT * FROM favorite WHERE member_id = :member_id")
+    List<Favorite> findAllByMemberId(@Param("member_id") Long memberId);
 }

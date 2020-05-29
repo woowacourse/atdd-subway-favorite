@@ -58,11 +58,10 @@ public class DummyDataConfiguration {
 
             lineNumber3 = lineRepository.save(lineNumber3);
 
-            Member member = new Member("ramen6315@gmail.com", "ramen", "6315");
-            memberService.createMember(member);
+            Member member = memberService.createMember(new Member("ramen6315@gmail.com", "ramen", "6315"));
 
-            favoriteRepository.save(new Favorite("중량", "청량리", "ramen6315@gmail.com"));
-            favoriteRepository.save(new Favorite("청량리", "왕십리", "ramen635@gmail.com"));
+            favoriteRepository.save(new Favorite(member.getId(), station1.getId(), station2.getId()));
+            favoriteRepository.save(new Favorite(member.getId(), station2.getId(), station3.getId()));
         }
     }
 }

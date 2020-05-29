@@ -41,11 +41,8 @@ create table if not exists MEMBER
 create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
-    member_email varchar(255) not null,
-    source varchar(255) not null,
-    target varchar(255) not null,
+    member_id bigint not null,
+    source_id bigint not null,
+    target_id bigint not null,
     primary key(id)
---     foreign key(member_email) REFERENCES MEMBER (email) ON DELETE CASCADE ON UPDATE CASCADE,
---     foreign key(source) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE,
---     foreign key(target) REFERENCES STATION (name) ON DELETE CASCADE ON UPDATE CASCADE
 );
