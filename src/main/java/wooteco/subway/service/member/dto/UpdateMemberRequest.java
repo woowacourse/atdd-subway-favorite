@@ -1,5 +1,7 @@
 package wooteco.subway.service.member.dto;
 
+import wooteco.subway.service.member.vo.UpdateMemberInfo;
+
 public class UpdateMemberRequest {
 	private String name;
 	private String password;
@@ -18,5 +20,9 @@ public class UpdateMemberRequest {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public UpdateMemberInfo toInfo() {
+		return new UpdateMemberInfo(name, password);
 	}
 }

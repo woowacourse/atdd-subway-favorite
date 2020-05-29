@@ -20,6 +20,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @RestController
 public class LoginMemberController {
 	private static final String TOKEN_BEARER = "bearer";
+
 	private final MemberService memberService;
 
 	public LoginMemberController(MemberService memberService) {
@@ -40,7 +41,7 @@ public class LoginMemberController {
 	@PutMapping("/me")
 	public ResponseEntity<Void> updateMemberOfMineBasic(@LoginMember Member member,
 		@RequestBody UpdateMemberRequest updateMemberRequest) {
-		memberService.updateMember(member.getId(), updateMemberRequest);
+		memberService.updateMember(member.getId(), updateMemberRequest.toInfo());
 		return ResponseEntity.ok().build();
 	}
 
