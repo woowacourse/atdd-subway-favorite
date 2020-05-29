@@ -42,6 +42,6 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new InvalidAuthenticationException("ILLEGAL_ACCESS"));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new InvalidAuthenticationException("WRONG_EMAIL"));
     }
 }
