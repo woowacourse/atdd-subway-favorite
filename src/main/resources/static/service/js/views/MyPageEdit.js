@@ -25,6 +25,7 @@ function MyPageEdit() {
         api.member.update(data).then(() => {
             alert("수정되었습니다.");
             location.href = "/mypage";
+        }).catch(() => {
         });
     }
 
@@ -33,6 +34,7 @@ function MyPageEdit() {
         api.member.delete().then(() => {
             alert("탈퇴되었습니다.");
             location.href = "/";
+        }).catch(() => {
         });
     }
 
@@ -41,6 +43,7 @@ function MyPageEdit() {
             const memberResponse = await response.json();
             email.value = memberResponse.email;
             name.value = memberResponse.name;
+        }).catch(() => {
         });
 
         $saveButton.addEventListener(EVENT_TYPE.CLICK, onSave)

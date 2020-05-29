@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
+import {EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {searchResultTemplate} from '../../utils/templates.js'
 
@@ -40,7 +40,8 @@ function Search() {
                 }
             });
             changeFavoriteButton();
-        })
+        }).catch(() => {
+        });
     }
 
     const showSearchResult = data => {
@@ -76,8 +77,8 @@ function Search() {
             .then(response => {
                 makeFavoriteButton();
                 showSearchResult(response);
-            })
-            .catch(error => alert(ERROR_MESSAGE.COMMON))
+            }).catch(() => {
+        });
     };
 
     const onToggleFavorite = event => {
@@ -103,11 +104,13 @@ function Search() {
             api.favorite.delete(data).then(() => {
                 $favoriteButton.classList.remove("mdi-star");
                 changeFavoriteButton();
+            }).catch(() => {
             });
         } else {
             api.favorite.create(data).then(() => {
                 $favoriteButton.classList.add("mdi-star");
                 changeFavoriteButton();
+            }).catch(() => {
             });
         }
     };

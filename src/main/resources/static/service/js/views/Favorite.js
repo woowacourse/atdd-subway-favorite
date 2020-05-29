@@ -10,7 +10,8 @@ function Favorite() {
             const json = await response.json();
             const template = json.map(edge => edgeItemTemplate(edge)).join('');
             $favoriteList.insertAdjacentHTML('beforeend', template);
-        })
+        }).catch(() => {
+        });
     };
 
     const onDeleteFavorite = (event) => {
@@ -25,6 +26,7 @@ function Favorite() {
             }
             api.favorite.delete(data).then(() => {
                 $listItem.remove();
+            }).catch(() => {
             });
         }
     };

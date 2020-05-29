@@ -26,8 +26,7 @@ function Login() {
             const tokenResponse = await response.json();
             setAccessTokenCookie(tokenResponse.accessToken);
             location.href = "/mypage";
-        }).catch(error => {
-            console.log(error);
+        }).catch(() => {
         });
 
     };

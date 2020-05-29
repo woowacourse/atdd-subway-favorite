@@ -8,6 +8,7 @@ function MyPage() {
             const name = document.querySelector('#name');
             email.innerText = memberResponse.email;
             name.innerText = memberResponse.name;
+        }).catch(() => {
         });
     }
 }
