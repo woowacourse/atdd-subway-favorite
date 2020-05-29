@@ -67,6 +67,11 @@ operation::members/authorize_fail_session[snippets='http-request,http-response']
 
 operation::favorites/add[snippets='http-request,path-parameters,request-fields,http-response']
 
+[[resources-favorites-add_fail]]
+=== 즐겨찾기 추가 실패 (없는 역을 추가시)
+
+operation::favorites/add_fail[snippets='http-request,http-response']
+
 [[resources-favorites-read]]
 === 즐겨찾기 조회
 

@@ -27,6 +27,10 @@ public class FavoriteDocumentation {
 		);
 	}
 
+	public static RestDocumentationResultHandler failToAddFavorite() {
+		return document("favorites/add_fail");
+	}
+
 	public static RestDocumentationResultHandler readFavorites() {
 		return document("favorites/read",
 				pathParameters(

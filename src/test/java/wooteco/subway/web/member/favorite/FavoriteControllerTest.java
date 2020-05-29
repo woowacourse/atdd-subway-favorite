@@ -20,6 +20,7 @@ import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.DuplicatedFavoriteException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.favorite.FavoriteService;
@@ -91,6 +92,32 @@ public class FavoriteControllerTest {
 				.andExpect(jsonPath("$.sourceId").value(1L))
 				.andExpect(jsonPath("$.targetId").value(2L))
 				.andDo(FavoriteDocumentation.addFavorite());
+	}
+
+	@DisplayName("즐겨찾기 추가시 없는 역 추가할 경우 실패 컨트롤러")
+	@Test
+	void addFavorite_fail() throws Exception {
+		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		when(favoriteService.addFavorite(anyLong(), anyLong(), anyLong())).thenThrow(DuplicatedFavoriteException.class);
+		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
+		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+		given(jwtTokenProvider.validateToken(any())).willReturn(true);
+		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+
+		String inputJson = "{\"sourceId\":\"" + 199L + "\"," +
+				"\"targetId\":\"" + 200L + "\"}";
+
+		this.mockMvc.perform(post("/members/{id}/favorites", 1L)
+				.session(session)
+				.header("authorization", "Bearer " + TEST_USER_TOKEN)
+				.content(inputJson)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andDo(FavoriteDocumentation.failToAddFavorite());
 	}
 
 	@DisplayName("즐겨찾기 조회 컨트롤러")
