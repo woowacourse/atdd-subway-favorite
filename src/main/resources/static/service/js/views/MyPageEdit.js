@@ -10,6 +10,14 @@ function MyPageEdit() {
 
     const onSave = (event) => {
         event.preventDefault();
+        const passwordValue = document.querySelector('#password').value;
+        const passwordCheckValue = document.querySelector('#password-check').value;
+
+        if (passwordValue !== passwordCheckValue) {
+            alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return;
+        }
+
         const data = {
             name: name.value,
             password: password.value

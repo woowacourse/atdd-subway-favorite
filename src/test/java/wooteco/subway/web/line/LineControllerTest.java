@@ -1,13 +1,5 @@
 package wooteco.subway.web.line;
 
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +8,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
@@ -26,6 +17,15 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.web.LineController;
 import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = LineController.class)
 @Import(ETagHeaderFilter.class)
@@ -43,7 +43,7 @@ public class LineControllerTest {
     @Test
     void ETag() throws Exception {
         WholeSubwayResponse response = WholeSubwayResponse.of(
-            Arrays.asList(createMockResponse(), createMockResponse()));
+                Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.findLinesWithStations()).willReturn(response);
 
         String uri = "/lines/detail";

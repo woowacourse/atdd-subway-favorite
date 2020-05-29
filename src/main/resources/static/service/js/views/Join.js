@@ -11,7 +11,7 @@ function Join() {
         const passwordCheckValue = document.querySelector('#password-check').value;
 
         if (passwordValue !== passwordCheckValue) {
-            alert("비밀번호와 비밀번호 확인이 일치하지 않아요. ><");
+            alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
             return;
         }
 
@@ -24,8 +24,7 @@ function Join() {
         api.member.create(data).then((response) => {
             alert("회원가입을 축하합니다.");
             location.href = "/login";
-        }).catch(error => {
-            console.log(error);
+        }).catch(() => {
         });
     };
 

@@ -6,8 +6,8 @@ function Favorite() {
     const $favoriteList = document.querySelector('#favorite-list');
 
     const loadFavoriteList = () => {
-        api.favorite.get().then(async (data) => {
-            const json = await data.json();
+        api.favorite.get().then(async (response) => {
+            const json = await response.json();
             const template = json.map(edge => edgeItemTemplate(edge)).join('');
             $favoriteList.insertAdjacentHTML('beforeend', template);
         })

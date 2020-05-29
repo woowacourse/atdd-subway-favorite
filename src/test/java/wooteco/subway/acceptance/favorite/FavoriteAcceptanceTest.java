@@ -50,7 +50,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(STATION_NAME_KANGNAM, STATION_NAME_YEOKSAM);
         String location = createFavorite(tokenResponse, favoriteCreateRequest);
         assertThat(location).isEqualTo("/favorites/me");
-        
+
         //조회
         List<FavoriteResponse> favoriteResponses = getFavorites(tokenResponse);
         assertThat(favoriteResponses).hasSize(1);

@@ -66,9 +66,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/stations").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(StationResponse.class);
@@ -76,18 +76,20 @@ public class AcceptanceTest {
 
     public List<StationResponse> getStations() {
         return
-                given().when().
+                given().
+                when().
                         get("/stations").
-                        then().
+                then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
     }
 
     public void deleteStation(Long id) {
-        given().when().
+        given().
+        when().
                 delete("/stations/" + id).
-                then().
+        then().
                 log().all();
     }
 
@@ -105,9 +107,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/lines").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(LineResponse.class);
@@ -115,9 +117,10 @@ public class AcceptanceTest {
 
     public LineDetailResponse getLine(Long id) {
         return
-                given().when().
+                given().
+                when().
                         get("/lines/" + id).
-                        then().
+                then().
                         log().all().
                         extract().as(LineDetailResponse.class);
     }
@@ -132,27 +135,29 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 put("/lines/" + id).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
     public List<LineResponse> getLines() {
         return
-                given().when().
+                given().
+                when().
                         get("/lines").
-                        then().
+                then().
                         log().all().
                         extract().
                         jsonPath().getList(".", LineResponse.class);
     }
 
     public void deleteLine(Long id) {
-        given().when().
+        given().
+        when().
                 delete("/lines/" + id).
-                then().
+        then().
                 log().all();
     }
 
@@ -172,9 +177,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -183,9 +188,9 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -193,9 +198,9 @@ public class AcceptanceTest {
     public WholeSubwayResponse retrieveWholeSubway() {
         return
                 given().
-                        when().
+                when().
                         get("/lines/detail").
-                        then().
+                then().
                         log().all().
                         extract().as(WholeSubwayResponse.class);
     }
@@ -205,9 +210,9 @@ public class AcceptanceTest {
                 given().
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(PathResponse.class);
@@ -272,9 +277,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/members").
-                        then().
+                then().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().header("Location");
     }
@@ -289,9 +294,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/oauth/token").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(TokenResponse.class);
@@ -305,9 +310,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/oauth/token").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -318,9 +323,9 @@ public class AcceptanceTest {
                         auth().
                         oauth2(tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         get("/members/me").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberResponse.class);
@@ -337,60 +342,67 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 put("/members/me").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
     public void deleteMember(TokenResponse tokenResponse) {
         given().
-            auth().
-            oauth2(tokenResponse.getAccessToken()).
-            when().
-            delete("/members/me").
-            then().
-            log().all().
-            statusCode(HttpStatus.NO_CONTENT.value());
+                auth().
+                oauth2(tokenResponse.getAccessToken()).
+        when().
+                delete("/members/me").
+        then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     public String createFavorite(TokenResponse tokenResponse, FavoriteCreateRequest favoriteCreateRequest) {
-        return given().log().all().
-            auth().
-            oauth2(tokenResponse.getAccessToken()).
-            body(favoriteCreateRequest).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            post("/favorites/me").
-            then().log().all().
-            statusCode(HttpStatus.CREATED.value()).
-            extract().header("location");
+        return
+                given().
+                        log().all().
+                        auth().
+                        oauth2(tokenResponse.getAccessToken()).
+                        body(favoriteCreateRequest).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                        post("/favorites/me").
+                then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().header("location");
     }
 
     public List<FavoriteResponse> getFavorites(TokenResponse tokenResponse) {
-        return given().log().all().
-            auth().
-            oauth2(tokenResponse.getAccessToken()).
-            accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            get("/favorites/me").
-            then().log().all().
-            statusCode(HttpStatus.OK.value()).
-            extract().jsonPath().
-            getList(".", FavoriteResponse.class);
+        return
+                given().
+                        log().all().
+                        auth().
+                        oauth2(tokenResponse.getAccessToken()).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                        get("/favorites/me").
+                then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().jsonPath().
+                        getList(".", FavoriteResponse.class);
     }
 
     public void deleteFavorite(TokenResponse tokenResponse, FavoriteDeleteRequest favoriteDeleteRequest) {
-        given().log().all().
-            auth().
-            oauth2(tokenResponse.getAccessToken()).
-            body(favoriteDeleteRequest).
-            contentType(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            delete("/favorites/me").
-            then().
-            statusCode(HttpStatus.NO_CONTENT.value());
+        given().
+                log().all().
+                auth().
+                oauth2(tokenResponse.getAccessToken()).
+                body(favoriteDeleteRequest).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                delete("/favorites/me").
+        then().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
 }

@@ -31,8 +31,8 @@ function Search() {
     }
 
     const makeFavoriteButton = () => {
-        api.favorite.get().then(async (data) => {
-            const json = await data.json();
+        api.favorite.get().then(async (response) => {
+            const json = await response.json();
             $favoriteButton.classList.remove("mdi-star");
             json.filter(i => {
                 if (i.source === $departureStationName.value && (i.target === $arrivalStationName.value)) {
@@ -73,9 +73,9 @@ function Search() {
         };
         api.path
             .find(searchInput)
-            .then(data => {
+            .then(response => {
                 makeFavoriteButton();
-                showSearchResult(data);
+                showSearchResult(response);
             })
             .catch(error => alert(ERROR_MESSAGE.COMMON))
     };

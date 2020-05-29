@@ -20,9 +20,9 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        try{
+        try {
             return memberRepository.save(member);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }
     }

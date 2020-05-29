@@ -32,12 +32,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
-        return given().log().all()
-                .auth()
-                .oauth2(tokenResponse.getAccessToken())
+        return
+                given().
+                        log().all()
+                        .auth()
+                        .oauth2(tokenResponse.getAccessToken())
                 .when()
-                .get("/me/bearer")
-                .then().log().all()
-                .extract().as(MemberResponse.class);
+                        .get("/me/bearer")
+                .then().
+                        log().all()
+                        .extract().as(MemberResponse.class);
     }
 }

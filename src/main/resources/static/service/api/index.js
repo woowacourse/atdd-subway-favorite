@@ -83,6 +83,10 @@ const METHOD = {
 const resolver = (response) => {
     return new Promise((resolve, reject) => {
         response.status < 400 ? resolve(response) : reject(response);
+    }).catch(async (error) => {
+        const errorJson = await error.json();
+        alert(errorJson.message);
+        throw new Error();
     });
 };
 
