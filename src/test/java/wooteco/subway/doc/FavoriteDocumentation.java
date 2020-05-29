@@ -48,4 +48,8 @@ public class FavoriteDocumentation {
 				)
 		);
 	}
+
+	public static RestDocumentationResultHandler failToDeleteFavorite() {
+		return document("favorites/delete_fail");
+	}
 }

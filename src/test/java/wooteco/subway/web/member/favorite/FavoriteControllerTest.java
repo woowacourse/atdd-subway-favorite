@@ -21,6 +21,7 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.DuplicatedFavoriteException;
+import wooteco.subway.exception.NoFavoriteExistException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.favorite.FavoriteService;
@@ -98,7 +99,7 @@ public class FavoriteControllerTest {
 	@Test
 	void addFavorite_fail() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		when(favoriteService.addFavorite(anyLong(), anyLong(), anyLong())).thenThrow(DuplicatedFavoriteException.class);
+		when(favoriteService.addFavorite(anyLong(), anyLong(), anyLong())).thenThrow(new DuplicatedFavoriteException());
 		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
 		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
 		given(jwtTokenProvider.validateToken(any())).willReturn(true);
@@ -169,5 +170,28 @@ public class FavoriteControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(FavoriteDocumentation.deleteFavorite());
+	}
+
+	@DisplayName("즐겨찾기 삭제시 없는 역 추가할 경우 실패 컨트롤러")
+	@Test
+	void removeFavorite_fail() throws Exception {
+		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
+		doThrow(new NoFavoriteExistException()).when(favoriteService).removeFavorite(anyLong(), anyLong(), anyLong());
+		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+		given(jwtTokenProvider.validateToken(any())).willReturn(true);
+		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+
+		this.mockMvc.perform(delete("/members/{memberId}/favorites/source/{sourceId}/target/{targetId}", 1L, 1L, 2L)
+				.session(session)
+				.header("authorization", "Bearer " + TEST_USER_TOKEN)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andDo(FavoriteDocumentation.failToDeleteFavorite());
 	}
 }

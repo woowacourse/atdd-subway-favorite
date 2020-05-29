@@ -44,6 +44,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    // TODO: 2020/05/29 이름 달기
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

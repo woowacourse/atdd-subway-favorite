@@ -3,6 +3,9 @@ package wooteco.subway.exception;
 public class ExceptionResponse {
 	private String message;
 
+	private ExceptionResponse() {
+	}
+
 	private ExceptionResponse(String message) {
 		this.message = message;
 	}
