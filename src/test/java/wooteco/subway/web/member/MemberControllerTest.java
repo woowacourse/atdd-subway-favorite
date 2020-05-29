@@ -89,11 +89,6 @@ public class MemberControllerTest {
 	}
 
 	@Test
-	public void failToCreateDuplicatedMember() throws Exception {
-
-	}
-
-	@Test
 	public void readMember() throws Exception {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		given(memberService.findMemberByEmail(any())).willReturn(member);

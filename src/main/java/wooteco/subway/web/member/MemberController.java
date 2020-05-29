@@ -36,7 +36,6 @@ public class MemberController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@PathVariable Long id, @LoginMember Member member) {
-        member.validateId(id);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
@@ -46,7 +45,6 @@ public class MemberController {
             @RequestBody @Valid UpdateMemberRequest param,
             @LoginMember Member member
     ) {
-        member.validateId(id);
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -56,7 +54,6 @@ public class MemberController {
             @PathVariable Long id,
             @LoginMember Member member
     ) {
-        member.validateId(id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
