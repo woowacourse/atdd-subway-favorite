@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FavoritesTest {
@@ -20,7 +22,7 @@ class FavoritesTest {
 		favorites.add(favorite);
 	}
 
-	@DisplayName("즐겨찾기 추가 기능")
+	@DisplayName("즐겨찾기 추가 기능 테스트")
 	@Test
 	void add() {
 		favorites.add(favorite2);
@@ -28,11 +30,26 @@ class FavoritesTest {
 		assertThat(favorites.getFavorites().size()).isEqualTo(2);
 	}
 
-	@DisplayName("즐겨찾기 삭제 기능")
+	@DisplayName("즐겨찾기 삭제 기능 테스트")
 	@Test
 	void remove() {
 		favorites.remove(favorite);
 
 		assertThat(favorites.getFavorites().size()).isEqualTo(0);
+	}
+
+	@DisplayName("즐겨찾기에 추가된 모든 역들의 id를 중복없이 구하는 기능 테스트")
+	@Test
+	void extractStationIds() {
+		favorites.add(favorite2);
+		Set<Long> ids = favorites.extractStationIds();
+		assertThat(ids).contains(1L, 2L, 3L);
+	}
+
+	@DisplayName("출발역과 도착역 id에 해당되는 즐겨찾기가 있는지 확인하는 기능 테스트")
+	@Test
+	void hasFavoriteOf() {
+		assertThat(favorites.hasFavoriteOf(1L, 2L)).isTrue();
+		assertThat(favorites.hasFavoriteOf(1L, 3L)).isFalse();
 	}
 }
