@@ -63,7 +63,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
             40, 3);
 
         // 경로 조회
-        PathResponse pathResponse = findPath(stationResponse1.getId(), stationResponse5.getId(), "DISTANCE");
+        PathResponse pathResponse = findPath(stationResponse1.getId(), stationResponse5.getId(),
+            "DISTANCE");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(5);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
@@ -116,7 +117,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
             40, 3);
 
         // 경로 조회
-        PathResponse pathResponse = findPath(stationResponse1.getId(), stationResponse5.getId(), "DURATION");
+        PathResponse pathResponse = findPath(stationResponse1.getId(), stationResponse5.getId(),
+            "DURATION");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(4);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);

@@ -10,16 +10,16 @@ public enum PathType {
 
     private Function<LineStation, Integer> function;
 
+    PathType(Function<LineStation, Integer> function) {
+        this.function = function;
+    }
+
     public static PathType of(String name) {
         try {
             return valueOf(name.toUpperCase());
         } catch (IllegalArgumentException ie) {
             return DISTANCE;
         }
-    }
-
-    PathType(Function<LineStation, Integer> function) {
-        this.function = function;
     }
 
     public int getWeight(LineStation lineStation) {

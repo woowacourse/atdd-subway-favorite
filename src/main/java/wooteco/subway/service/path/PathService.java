@@ -26,7 +26,8 @@ public class PathService {
     private final LineRepository lineRepository;
     private final Graphs graphs;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, Graphs graphs) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository,
+        Graphs graphs) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.graphs = graphs;

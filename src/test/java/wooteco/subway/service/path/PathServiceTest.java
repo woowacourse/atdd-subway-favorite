@@ -2,13 +2,10 @@ package wooteco.subway.service.path;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,7 +82,8 @@ public class PathServiceTest {
             Lists.list(station1, station2, station3, station4, station5, station6));
         graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
 
-        PathResponse pathResponse = graphs.findPath(station3.getId(), station5.getId(), PathType.DISTANCE);
+        PathResponse pathResponse = graphs.findPath(station3.getId(), station5.getId(),
+            PathType.DISTANCE);
 
         List<StationResponse> paths = pathResponse.getStations();
         assertThat(paths).hasSize(5);

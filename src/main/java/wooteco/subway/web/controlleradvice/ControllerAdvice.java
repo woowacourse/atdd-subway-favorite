@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import wooteco.subway.web.controlleradvice.dto.ApiError;
-import wooteco.subway.web.controlleradvice.exception.DuplicateNameException;
+import wooteco.subway.web.controlleradvice.exception.DuplicateValueException;
 import wooteco.subway.web.controlleradvice.exception.EntityNotFoundException;
 import wooteco.subway.web.controlleradvice.exception.LineStationException;
 
@@ -24,7 +24,7 @@ public class ControllerAdvice {
         return new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
-    @ExceptionHandler({DuplicateNameException.class, LineStationException.class})
+    @ExceptionHandler({DuplicateValueException.class, LineStationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError duplicateNameException(IllegalArgumentException e) {
         logger.error("error : {}, message : {}", e, e.getMessage());

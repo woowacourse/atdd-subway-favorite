@@ -27,6 +27,10 @@ public class FavoriteService {
     }
 
     public Long addFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        if (favoriteRepository.hasFavorite(memberId, favoriteRequest.getSource(),
+            favoriteRequest.getTarget())) {
+            throw new IllegalArgumentException("동일한 즐겨찾기가 등록되어 있습니다.");
+        }
         return favoriteRepository.save(favoriteRequest.toFavorite(memberId)).getId();
     }
 
@@ -60,15 +64,17 @@ public class FavoriteService {
     public void removeFavorite(Long memberId, Long source, Long target) {
         boolean ok = favoriteRepository.deleteByMemberIdAndSourceAndTarget(memberId, source,
             target);
-        if (!ok) {
-            throw new IllegalArgumentException("삭제 실패했습니다!");
-        }
+        validateDbResult(ok);
     }
 
     public void removeFavoriteById(Long memberId, Long favoriteId) {
         boolean ok = favoriteRepository.deleteByIdWithMemberId(memberId, favoriteId);
+        validateDbResult(ok);
+    }
+
+    private void validateDbResult(boolean ok) {
         if (!ok) {
-            throw new IllegalArgumentException("삭제 실패했습니다!");
+            throw new IllegalArgumentException("작업에 실패했습니다!");
         }
     }
 }

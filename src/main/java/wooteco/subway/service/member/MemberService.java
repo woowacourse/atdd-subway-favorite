@@ -1,5 +1,7 @@
 package wooteco.subway.service.member;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
@@ -9,6 +11,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.controlleradvice.exception.DuplicateValueException;
 
 @Service
 public class MemberService {
@@ -21,14 +24,14 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest memberRequest) {
-        validateDuplicateEmail(memberRequest.getEmail());
-        Member member = memberRepository.save(memberRequest.toMember());
-        return MemberResponse.of(member);
-    }
-
-    private void validateDuplicateEmail(String email) {
-        if (memberRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다");
+        try {
+            Member member = memberRepository.save(memberRequest.toMember());
+            return MemberResponse.of(member);
+        } catch (DbActionExecutionException dbActionExecutionException) {
+            if (dbActionExecutionException.getCause() instanceof DuplicateKeyException) {
+                throw new DuplicateValueException("이미 존재하는 이메일입니다.");
+            }
+            throw dbActionExecutionException;
         }
     }
 

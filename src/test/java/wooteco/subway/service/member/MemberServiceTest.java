@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -51,7 +53,9 @@ public class MemberServiceTest {
     void duplicateEmail() {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
             TEST_USER_PASSWORD);
-        when(memberRepository.existsByEmail(anyString())).thenReturn(true);
+        DbActionExecutionException dbActionExecutionException =
+            new DbActionExecutionException(null, new DuplicateKeyException("중복되는 키 값"));
+        when(memberRepository.save(any())).thenThrow(dbActionExecutionException);
 
         assertThatThrownBy(() -> memberService.createMember(memberRequest))
             .isInstanceOf(IllegalArgumentException.class);

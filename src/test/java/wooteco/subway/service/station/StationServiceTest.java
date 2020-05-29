@@ -32,7 +32,7 @@ public class StationServiceTest {
         Station station1 = stationRepository.save(new Station("강남역"));
         Station station2 = stationRepository.save(new Station("역삼역"));
         Line line = lineRepository.save(
-             Line.withoutId("2호선", "green", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
+            Line.withoutId("2호선", "green", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
 
         line.addLineStation(LineStation.of(null, station1.getId(), 10, 10));
         line.addLineStation(LineStation.of(station1.getId(), station2.getId(), 10, 10));

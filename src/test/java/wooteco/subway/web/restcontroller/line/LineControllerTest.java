@@ -61,7 +61,9 @@ public class LineControllerTest {
 
     private LineDetailResponse createMockResponse() {
         List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-        return LineDetailResponse.of(Line.of(2L, "신분당선", "deep-red", LocalTime.of(05, 30), LocalTime.of(22, 30), 5), stations);
+        return LineDetailResponse.of(
+            Line.of(2L, "신분당선", "deep-red", LocalTime.of(05, 30), LocalTime.of(22, 30), 5),
+            stations);
     }
 }
 
