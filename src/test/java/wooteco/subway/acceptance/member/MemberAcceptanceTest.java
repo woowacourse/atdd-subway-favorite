@@ -4,12 +4,9 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.acceptance.AcceptanceTest;
-import wooteco.subway.exception.InvalidAuthenticationException;
-import wooteco.subway.exception.NoMemberExistException;
 import wooteco.subway.service.member.dto.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 

@@ -41,107 +41,107 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FavoriteControllerTest {
-	public static final String TEST_USER_EMAIL = "brown@email.com";
-	public static final String TEST_USER_NAME = "브라운";
-	public static final String TEST_USER_PASSWORD = "brown";
-	public static final String TEST_USER_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTAwNTA1NjMsImV4cCI6MTU5MDA1NDE2M30.bPh4VZcEj7aYlXDBP_o-1IqZw5AoKCIetrHvI7OcB_k";
-	@MockBean
-	protected FavoriteService favoriteService;
-	@MockBean
-	protected MemberService memberService;
-	@MockBean
-	protected JwtTokenProvider jwtTokenProvider;
-	@MockBean
-	protected AuthorizationExtractor authorizationExtractor;
-	@Autowired
-	protected MockMvc mockMvc;
+    public static final String TEST_USER_EMAIL = "brown@email.com";
+    public static final String TEST_USER_NAME = "브라운";
+    public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_USER_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTAwNTA1NjMsImV4cCI6MTU5MDA1NDE2M30.bPh4VZcEj7aYlXDBP_o-1IqZw5AoKCIetrHvI7OcB_k";
+    @MockBean
+    protected FavoriteService favoriteService;
+    @MockBean
+    protected MemberService memberService;
+    @MockBean
+    protected JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    protected AuthorizationExtractor authorizationExtractor;
+    @Autowired
+    protected MockMvc mockMvc;
 
-	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-		this.mockMvc = MockMvcBuilders
-				.webAppContextSetup(webApplicationContext)
-				.addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print())
-				.apply(documentationConfiguration(restDocumentation))
-				.build();
-	}
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print())
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
+    }
 
-	@DisplayName("즐겨찾기 추가 컨트롤러")
-	@Test
-	void addFavorite() throws Exception {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		Favorite favorite = Favorite.of(1L, 2L);
-		when(favoriteService.addFavorite(anyLong(), anyLong(), anyLong())).thenReturn(favorite);
-		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
-		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
-		given(jwtTokenProvider.validateToken(any())).willReturn(true);
-		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+    @DisplayName("즐겨찾기 추가 컨트롤러")
+    @Test
+    void addFavorite() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Favorite favorite = Favorite.of(1L, 2L);
+        when(favoriteService.addFavorite(anyLong(), anyLong(), anyLong())).thenReturn(favorite);
+        when(memberService.findMemberByEmail(anyString())).thenReturn(member);
+        given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
-		String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
-				"\"targetId\":\"" + 2L + "\"}";
+        String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
+                "\"targetId\":\"" + 2L + "\"}";
 
-		this.mockMvc.perform(post("/members/{id}/favorites", 1L)
-				.session(session)
-				.header("authorization", "Bearer " + TEST_USER_TOKEN)
-				.content(inputJson)
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.sourceId").value(1L))
-				.andExpect(jsonPath("$.targetId").value(2L))
-				.andDo(FavoriteDocumentation.addFavorite());
-	}
+        this.mockMvc.perform(post("/members/{id}/favorites", 1L)
+                .session(session)
+                .header("authorization", "Bearer " + TEST_USER_TOKEN)
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.sourceId").value(1L))
+                .andExpect(jsonPath("$.targetId").value(2L))
+                .andDo(FavoriteDocumentation.addFavorite());
+    }
 
-	@DisplayName("즐겨찾기 조회 컨트롤러")
-	@Test
-	void readFavorite() throws Exception {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+    @DisplayName("즐겨찾기 조회 컨트롤러")
+    @Test
+    void readFavorite() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
 
-		List<FavoriteDetail> favoriteDetails = Arrays.asList(new FavoriteDetail(1L, 1L, 2L, "유안", "토니"),
-				new FavoriteDetail(1L, 2L, 3L, "토니", "코즈"));
+        List<FavoriteDetail> favoriteDetails = Arrays.asList(new FavoriteDetail(1L, 1L, 2L, "유안", "토니"),
+                new FavoriteDetail(1L, 2L, 3L, "토니", "코즈"));
 
-		when(favoriteService.readFavorites(anyLong())).thenReturn(favoriteDetails);
-		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
-		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
-		given(jwtTokenProvider.validateToken(any())).willReturn(true);
-		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+        when(favoriteService.readFavorites(anyLong())).thenReturn(favoriteDetails);
+        when(memberService.findMemberByEmail(anyString())).thenReturn(member);
+        given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
-		this.mockMvc.perform(get("/members/{id}/favorites", 1L)
-				.session(session)
-				.header("authorization", "Bearer " + TEST_USER_TOKEN)
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.favorites").isArray())
-				.andDo(FavoriteDocumentation.readFavorites());
-	}
+        this.mockMvc.perform(get("/members/{id}/favorites", 1L)
+                .session(session)
+                .header("authorization", "Bearer " + TEST_USER_TOKEN)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.favorites").isArray())
+                .andDo(FavoriteDocumentation.readFavorites());
+    }
 
-	@DisplayName("즐겨찾기 삭제 컨트롤러")
-	@Test
-	void removeFavorite() throws Exception {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+    @DisplayName("즐겨찾기 삭제 컨트롤러")
+    @Test
+    void removeFavorite() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-		when(memberService.findMemberByEmail(anyString())).thenReturn(member);
-		doNothing().when(favoriteService).removeFavorite(anyLong(), anyLong(), anyLong());
-		given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
-		given(jwtTokenProvider.validateToken(any())).willReturn(true);
-		given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+        when(memberService.findMemberByEmail(anyString())).thenReturn(member);
+        doNothing().when(favoriteService).removeFavorite(anyLong(), anyLong(), anyLong());
+        given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
 
-		this.mockMvc.perform(delete("/members/{memberId}/favorites/source/{sourceId}/target/{targetId}", 1L, 1L, 2L)
-				.session(session)
-				.header("authorization", "Bearer " + TEST_USER_TOKEN)
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andDo(FavoriteDocumentation.deleteFavorite());
-	}
+        this.mockMvc.perform(delete("/members/{memberId}/favorites/source/{sourceId}/target/{targetId}", 1L, 1L, 2L)
+                .session(session)
+                .header("authorization", "Bearer " + TEST_USER_TOKEN)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(FavoriteDocumentation.deleteFavorite());
+    }
 }

@@ -1,5 +1,5 @@
 export const listItemTemplate = data =>
-  `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
+    `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
     ${data.name}
   </div>`
 
@@ -23,8 +23,8 @@ export const navTemplate = `<nav class="flex items-center justify-between flex-w
 </nav>`
 
 export const subwayLinesItemTemplate = line => {
-  const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
-  return `<div class="inline-block w-1/2 px-2">
+    const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
+    return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
               <div class="border ${line.bgColor ? line.bgColor : ''} lint-name px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">
@@ -35,9 +35,9 @@ export const subwayLinesItemTemplate = line => {
 }
 
 export const searchResultTemplate = result => {
-  const lastIndex = result.stations.length - 1
-  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.id, station.name, index, lastIndex)).join('')
-  return `<div class="px-2 py-4 border-b">
+    const lastIndex = result.stations.length - 1
+    const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.id, station.name, index, lastIndex)).join('')
+    return `<div class="px-2 py-4 border-b">
       <div class="w-full flex mb-3">
         <div class="inline-block w-1/2 border-r text-center">
           <div class="text-gray-600 text-sm">소요시간</div>
@@ -59,24 +59,24 @@ export const searchResultTemplate = result => {
 }
 
 export const pathStationTemplate = (id, name, index, lastIndex) => {
-  return `
+    return `
   ${
-    index === 0 || index === lastIndex
-      ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
+        index === 0 || index === lastIndex
+            ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
         <span class="font-bold" data-id=${id}>${name}</span>`
-      : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+            : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
          <span class="text-gray-600">${name}</span>
         `
-  }`
+    }`
 }
 
 export const initNavigation = () => {
-  document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
+    document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
 
 export const mainMenuTemplate = (isLogin) => {
-  if (isLogin) {
-    return `
+    if (isLogin) {
+        return `
     <ul class="text-blue-700">
           <li class="inline-block p-1">
             <a href="/" id="log-out" class="underline">로그아웃</a>
@@ -97,8 +97,8 @@ export const mainMenuTemplate = (isLogin) => {
             <a href="/favorites" class="underline">즐겨찾기</a>
           </li>
         </ul>`
-  } else {
-    return `
+    } else {
+        return `
     <ul class="text-blue-700">
             <li class="inline-block p-1">
               <a href="/login" class="underline">로그인</a>
@@ -113,15 +113,15 @@ export const mainMenuTemplate = (isLogin) => {
               <a href="/search" class="underline">경로 검색</a>
           </li>
         </ul>`
-  }
+    }
 }
 
 export const initMainMenu = (isLogin) => {
-  document.querySelector('#menu').insertAdjacentHTML('afterBegin', mainMenuTemplate(isLogin))
+    document.querySelector('#menu').insertAdjacentHTML('afterBegin', mainMenuTemplate(isLogin))
 }
 
 export const edgeItemTemplate = favorite => {
-  return `<li data-member-id="${favorite.memberId}" 
+    return `<li data-member-id="${favorite.memberId}" 
               data-source-id="${favorite.sourceId}"
               data-target-id="${favorite.targetId}"
               class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">

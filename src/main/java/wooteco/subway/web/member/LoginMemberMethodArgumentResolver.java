@@ -52,7 +52,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 
     private void validatePathVariable(NativeWebRequest webRequest, Member member) {
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-        Map<String, String> pathParams = (Map<String, String>)httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        Map<String, String> pathParams = (Map<String, String>) httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         String id = pathParams.get("id");
 
         if (Objects.nonNull(id)) {

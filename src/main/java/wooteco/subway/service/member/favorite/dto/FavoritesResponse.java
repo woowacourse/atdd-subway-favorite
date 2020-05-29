@@ -5,16 +5,16 @@ import wooteco.subway.domain.member.FavoriteDetail;
 import java.util.List;
 
 public class FavoritesResponse {
-	private List<FavoriteDetail> favorites;
+    private List<FavoriteDetail> favorites;
 
-	public FavoritesResponse() {
-	}
+    public FavoritesResponse() {
+    }
 
-	public FavoritesResponse(List<FavoriteDetail> favorites) {
-		this.favorites = favorites;
-	}
+    public FavoritesResponse(List<FavoriteDetail> favorites) {
+        this.favorites = favorites;
+    }
 
-	public List<FavoriteDetail> getFavorites() {
-		return favorites;
-	}
+    public List<FavoriteDetail> getFavorites() {
+        return favorites;
+    }
 }
