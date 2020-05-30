@@ -1,6 +1,5 @@
 package wooteco.subway.service.member;
 
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,12 +32,8 @@ public class MemberService {
 
         Member member = memberRequest.toMember();
 
-        try {
-            Member savedMember = memberRepository.save(member);
-            return MemberResponse.of(savedMember);
-        } catch (DbActionExecutionException exception) {
-            throw new DuplicateEmailException();
-        }
+        Member savedMember = memberRepository.save(member);
+        return MemberResponse.of(savedMember);
     }
 
     @Transactional
@@ -56,7 +51,7 @@ public class MemberService {
     @Transactional
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(InvalidMemberEmailException::new);
+            .orElseThrow(InvalidMemberEmailException::new);
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }

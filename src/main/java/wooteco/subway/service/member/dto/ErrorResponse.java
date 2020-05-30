@@ -3,7 +3,7 @@ package wooteco.subway.service.member.dto;
 public class ErrorResponse {
     private String errorMessage;
 
-    private ErrorResponse() {
+    public ErrorResponse() {
     }
 
     public ErrorResponse(String errorMessage) {
