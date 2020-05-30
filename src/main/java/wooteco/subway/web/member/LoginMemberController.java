@@ -33,7 +33,7 @@ public class LoginMemberController {
         String password = paramMap.get("password");
 
         if (!memberService.loginWithForm(email, password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
+            throw new InvalidAuthorizationException("올바르지 않은 이메일과 비밀번호 입력");
         }
         session.setAttribute("loginMemberEmail", email);
 

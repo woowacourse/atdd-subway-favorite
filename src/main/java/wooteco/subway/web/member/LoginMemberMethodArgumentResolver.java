@@ -36,7 +36,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         try {
             return memberService.findMemberByEmail(email);
         } catch (Exception e) {
-            throw new InvalidAuthenticationException("비정상적인 로그인");
+            throw new InvalidAuthorizationException("비정상적인 로그인");
         }
     }
 }

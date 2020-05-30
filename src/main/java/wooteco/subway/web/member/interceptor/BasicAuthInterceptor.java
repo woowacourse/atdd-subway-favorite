@@ -8,7 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.AuthorizationExtractor;
-import wooteco.subway.web.member.InvalidAuthenticationException;
+import wooteco.subway.web.member.InvalidAuthorizationException;
 
 @Component
 public class BasicAuthInterceptor implements HandlerInterceptor {
@@ -32,7 +32,7 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
 
         Member member = memberService.findMemberByEmail(email);
         if (!member.checkPassword(password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
+            throw new InvalidAuthorizationException("올바르지 않은 이메일과 비밀번호 입력");
         }
 
         request.setAttribute("loginMemberEmail", email);
