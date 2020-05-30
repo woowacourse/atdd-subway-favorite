@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.favorite.Favorite;
@@ -21,36 +22,37 @@ import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.member.LoginMember;
 
+@RequestMapping("/members/favorites")
 @RestController
 public class FavoriteController {
 
-    private FavoriteService favoriteService;
+	private FavoriteService favoriteService;
 
-    public FavoriteController(FavoriteService favoriteService) {
-        this.favoriteService = favoriteService;
-    }
+	public FavoriteController(FavoriteService favoriteService) {
+		this.favoriteService = favoriteService;
+	}
 
-    @PostMapping("/members/favorites")
-    public ResponseEntity<Void> createFavorite(@LoginMember Member member,
-        @RequestBody @Valid FavoriteRequest favoriteRequest) {
-        Favorite favorite = favoriteService.createFavorite(member, favoriteRequest);
+	@PostMapping
+	public ResponseEntity<Void> createFavorite(@LoginMember Member member,
+		@RequestBody @Valid FavoriteRequest favoriteRequest) {
+		Favorite favorite = favoriteService.createFavorite(member, favoriteRequest);
 
-        return ResponseEntity
-            .created(URI.create("/members/favorites/" + favorite.getId()))
-            .build();
-    }
+		return ResponseEntity
+			.created(URI.create("/members/favorites/" + favorite.getId()))
+			.build();
+	}
 
-    @GetMapping("/members/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(favorites);
-    }
+	@GetMapping
+	public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
+		List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(favorites);
+	}
 
-    @DeleteMapping("/members/favorites/{id}")
-    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long id) {
-        favoriteService.deleteFavorite(member, id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long id) {
+		favoriteService.deleteFavorite(member, id);
+		return ResponseEntity.noContent().build();
+	}
 }

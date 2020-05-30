@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.line.Line;
@@ -20,60 +21,61 @@ import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
+@RequestMapping("/admin/lines")
 @RestController
 public class LineController {
-    private LineService lineService;
+	private LineService lineService;
 
-    public LineController(LineService lineService) {
-        this.lineService = lineService;
-    }
+	public LineController(LineService lineService) {
+		this.lineService = lineService;
+	}
 
-	@PostMapping(value = "/admin/lines")
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
-        Line persistLine = lineService.save(view.toLine());
+	@PostMapping
+	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
+		Line persistLine = lineService.save(view.toLine());
 
-        return ResponseEntity
+		return ResponseEntity
 			.created(URI.create("/admin/lines/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine));
-    }
+			.body(LineResponse.of(persistLine));
+	}
 
-	@GetMapping("/admin/lines")
-    public ResponseEntity<List<LineResponse>> showLine() {
-        return ResponseEntity.ok().body(LineResponse.listOf(lineService.findLines()));
-    }
+	@GetMapping
+	public ResponseEntity<List<LineResponse>> showLine() {
+		return ResponseEntity.ok().body(LineResponse.listOf(lineService.findLines()));
+	}
 
-	@GetMapping("/admin/lines/{id}")
-    public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
-        return ResponseEntity.ok().body(lineService.retrieveLine(id));
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<LineDetailResponse> retrieveLine(@PathVariable Long id) {
+		return ResponseEntity.ok().body(lineService.retrieveLine(id));
+	}
 
-	@PutMapping("/admin/lines/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
-        lineService.updateLine(id, view);
-        return ResponseEntity.ok().build();
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest view) {
+		lineService.updateLine(id, view);
+		return ResponseEntity.ok().build();
+	}
 
-	@DeleteMapping("/admin/lines/{id}")
-    public ResponseEntity deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity deleteLine(@PathVariable Long id) {
+		lineService.deleteLineById(id);
+		return ResponseEntity.noContent().build();
+	}
 
-	@PostMapping("/admin/lines/{lineId}/stations")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
-        lineService.addLineStation(lineId, view);
-        return ResponseEntity.ok().build();
-    }
+	@PostMapping("/{lineId}/stations")
+	public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest view) {
+		lineService.addLineStation(lineId, view);
+		return ResponseEntity.ok().build();
+	}
 
-	@DeleteMapping("/admin/lines/{lineId}/stations/{stationId}")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
-        lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{lineId}/stations/{stationId}")
+	public ResponseEntity removeLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+		lineService.removeLineStation(lineId, stationId);
+		return ResponseEntity.noContent().build();
+	}
 
-	@GetMapping("/admin/lines/detail")
-    public ResponseEntity wholeLines() {
-        WholeSubwayResponse result = lineService.findLinesWithStations();
-        return ResponseEntity.ok().body(result);
-    }
+	@GetMapping("/detail")
+	public ResponseEntity wholeLines() {
+		WholeSubwayResponse result = lineService.findLinesWithStations();
+		return ResponseEntity.ok().body(result);
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
+@RequestMapping("/admin/members")
 @RestController
 public class AdminMemberController {
 	private MemberService memberService;
@@ -26,7 +28,7 @@ public class AdminMemberController {
 		this.memberService = memberService;
 	}
 
-	@PostMapping("/admin/members")
+	@PostMapping
 	public ResponseEntity createMember(@RequestBody MemberRequest view) {
 		Member member = memberService.createMember(view.toMember());
 		return ResponseEntity
@@ -34,20 +36,20 @@ public class AdminMemberController {
 			.build();
 	}
 
-	@GetMapping("/admin/members")
+	@GetMapping
 	public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
 		Member member = memberService.findMemberByEmail(email);
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}
 
-	@PutMapping("/admin/members/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
 		@RequestBody UpdateMemberRequest updateMemberRequest) {
 		Member updatedMember = memberService.updateMemberByAdmin(id, updateMemberRequest);
 		return ResponseEntity.ok().body(MemberResponse.of(updatedMember));
 	}
 
-	@DeleteMapping("/admin/members/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
 		memberService.deleteMemberByAdmin(id);
 		return ResponseEntity.noContent().build();
