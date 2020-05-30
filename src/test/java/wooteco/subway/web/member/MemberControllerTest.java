@@ -30,6 +30,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.web.member.interceptor.Auth;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -81,7 +82,7 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
         this.mockMvc.perform(get("/members")
-            .header("Authorization", token))
+            .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(MemberDocumentation.getMember());
@@ -91,11 +92,12 @@ public class MemberControllerTest {
     void update() throws Exception {
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+
         String inputJson = "{\"name\":\"" + "brown2" + "\"," +
             "\"password\":\"" + "1234" + "\"" + "}";
 
-        this.mockMvc.perform(put("/members/1")
-            .header("Authorization", token)
+        this.mockMvc.perform(put("/members")
+            .header(AuthorizationExtractor.AUTHORIZATION, token)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(inputJson))
@@ -109,8 +111,8 @@ public class MemberControllerTest {
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", 1)
-            .header("Authorization", token))
+        this.mockMvc.perform(delete("/members")
+            .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(MemberDocumentation.deleteMember());
@@ -118,14 +120,11 @@ public class MemberControllerTest {
 
     @Test
     void addFavorite() throws Exception {
-        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
-        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
-
         String inputJson = "{\"source\":\"" + "강남" + "\"," +
             "\"target\":\"" + "잠실" + "\"" + "}";
 
         this.mockMvc.perform(post("/members/favorites")
-            .header("Authorization", token)
+            .header(AuthorizationExtractor.AUTHORIZATION, token)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(inputJson))
@@ -149,12 +148,8 @@ public class MemberControllerTest {
 
     @Test
     void deleteFavorites() throws Exception {
-        given(memberService.findMemberByEmail(anyString())).willReturn(member);
-        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
-        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
-
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/favorites/{id}", 1)
-            .header("Authorization", token))
+            .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(MemberDocumentation.deleteFavorites());

@@ -3,7 +3,6 @@ package wooteco.subway.domain.member;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
@@ -73,7 +72,7 @@ public class Member {
 
     public void deleteFavoriteBy(Long favoriteId) {
         this.favorites.remove(favorites.stream()
-                .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("즐겨찾기 항목이 존재하지 않습니다.")));
+            .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
+            .findFirst().orElseThrow(() -> new IllegalArgumentException("즐겨찾기 항목이 존재하지 않습니다.")));
     }
 }

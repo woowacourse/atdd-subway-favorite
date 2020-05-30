@@ -45,19 +45,14 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(String email, Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
-        if (!email.equals(member.getEmail())) {
-            throw new IllegalAccessError("잘못된 접근입니다.");
-        }
+    public void updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
     @Transactional
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+    public void deleteMember(Member member) {
+        memberRepository.deleteById(member.getId());
     }
 
     @Transactional(readOnly = true)

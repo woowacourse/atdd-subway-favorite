@@ -12,7 +12,7 @@ public class ExceptionResponse {
         Optional<FieldError> fieldError1 = Optional.ofNullable(fieldError);
 
         this.message = fieldError1.map(DefaultMessageSourceResolvable::getDefaultMessage)
-            .orElseGet(() -> "");
+            .orElseGet(() -> "알수 없는 에러가 발생했습니다.");
     }
 
     public ExceptionResponse(String string){

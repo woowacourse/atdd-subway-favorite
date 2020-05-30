@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,18 +50,19 @@ public class MemberController {
     }
 
     @IsAuth(isAuth = Auth.AUTH)
-    @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@RequestAttribute String email, @PathVariable Long id,
+    @PutMapping
+    public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member,
         @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(email, id, param);
+        memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 
     @IsAuth(isAuth = Auth.AUTH)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping
+    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
+        return ResponseEntity.noContent()
+            .build();
     }
 
     @IsAuth(isAuth = Auth.AUTH)
