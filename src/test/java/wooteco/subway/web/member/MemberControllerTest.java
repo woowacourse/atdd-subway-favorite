@@ -128,7 +128,7 @@ public class MemberControllerTest {
 
 		String request = objectMapper.writeValueAsString(updateMemberRequest);
 
-		this.mockMvc.perform(put("/members/{id}", member.getId())
+		this.mockMvc.perform(put("/members")
 			.header(HttpHeaders.AUTHORIZATION, mockToken)
 			.content(request)
 			.accept(MediaType.APPLICATION_JSON)
@@ -141,7 +141,7 @@ public class MemberControllerTest {
 	@Test
 	void deleteMember() throws Exception {
 		setMockToken();
-		this.mockMvc.perform(delete("/members/{id}", member.getId())
+		this.mockMvc.perform(delete("/members")
 			.header(HttpHeaders.AUTHORIZATION, mockToken))
 			.andExpect(status().isNoContent())
 			.andDo(print())
@@ -198,7 +198,7 @@ public class MemberControllerTest {
 
 		String request = objectMapper.writeValueAsString(updateMemberRequest);
 
-		this.mockMvc.perform(put("/members/{id}", member.getId())
+		this.mockMvc.perform(put("/members")
 			.header(HttpHeaders.AUTHORIZATION, mockToken)
 			.content(request)
 			.accept(MediaType.APPLICATION_JSON)

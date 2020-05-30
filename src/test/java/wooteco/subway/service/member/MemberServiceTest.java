@@ -87,10 +87,10 @@ public class MemberServiceTest {
         Member updatedMember = new Member(member.getId(), member.getEmail(),
             updateMemberRequest.getName(), updateMemberRequest.getPassword());
 
-        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+        when(memberRepository.findByEmail(member.getEmail())).thenReturn(Optional.of(member));
         when(memberRepository.save(any())).thenReturn(updatedMember);
 
-        memberService.updateMember(member.getId(), updateMemberRequest);
+        memberService.updateMember(member, updateMemberRequest);
 
         assertThat(member.getName()).isEqualTo(updatedMember.getName());
         assertThat(member.getPassword()).isEqualTo(updatedMember.getPassword());

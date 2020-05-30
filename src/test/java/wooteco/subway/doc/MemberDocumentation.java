@@ -58,8 +58,6 @@ public class MemberDocumentation {
 
     public static RestDocumentationResultHandler updateMember() {
         return document("members/update",
-            pathParameters(
-                parameterWithName("id").description("The user's id")),
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
@@ -74,8 +72,6 @@ public class MemberDocumentation {
 
     public static RestDocumentationResultHandler deleteMember() {
         return document("members/delete",
-            pathParameters(
-                parameterWithName("id").description("The user's id")),
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")

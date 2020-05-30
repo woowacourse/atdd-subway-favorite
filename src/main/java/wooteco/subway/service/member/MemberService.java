@@ -17,47 +17,52 @@ import wooteco.subway.web.exception.MemberCreationException;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+	private MemberRepository memberRepository;
+	private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
-        this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+		this.memberRepository = memberRepository;
+		this.jwtTokenProvider = jwtTokenProvider;
+	}
 
-    public MemberResponse createMember(@Valid MemberRequest request) {
-        Member member = request.toMember();
-        try {
-            memberRepository.save(member);
-        } catch (DbActionExecutionException e) {
-            if (e.getCause() instanceof DuplicateKeyException) {
-                throw new MemberCreationException(MemberCreationException.DUPLICATED_EMAIL);
-            }
-        }
-        return MemberResponse.of(member);
-    }
+	public MemberResponse createMember(@Valid MemberRequest request) {
+		Member member = request.toMember();
+		try {
+			memberRepository.save(member);
+		} catch (DbActionExecutionException e) {
+			if (e.getCause() instanceof DuplicateKeyException) {
+				throw new MemberCreationException(MemberCreationException.DUPLICATED_EMAIL);
+			}
+		}
+		return MemberResponse.of(member);
+	}
 
-    public String createToken(LoginRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail())
-            .orElseThrow(RuntimeException::new);
-        if (!member.checkPassword(request.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
-        }
+	public String createToken(LoginRequest request) {
+		Member member = memberRepository.findByEmail(request.getEmail())
+			.orElseThrow(RuntimeException::new);
+		if (!member.checkPassword(request.getPassword())) {
+			throw new RuntimeException("잘못된 패스워드");
+		}
 
-        return jwtTokenProvider.createToken(request.getEmail());
-    }
+		return jwtTokenProvider.createToken(request.getEmail());
+	}
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
+	public Member findMemberByEmail(String email) {
+		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+	}
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
-        memberRepository.save(member);
-    }
+	public void updateMember(Member member, UpdateMemberRequest param) {
+		Member persistMember = memberRepository.findByEmail(member.getEmail()).orElseThrow(RuntimeException::new);
+		persistMember.update(param.getName(), param.getPassword());
+		memberRepository.save(persistMember);
+	}
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
-    }
+	public void deleteMember(Member member) {
+		Member persistMember = findMemberByEmail(member.getEmail());
+		deleteMember(persistMember.getId());
+	}
+
+	public void deleteMember(Long id) {
+		memberRepository.deleteById(id);
+	}
 }

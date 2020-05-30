@@ -41,7 +41,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
         //When : 회원 정보 수정
-        Response updateResponse = updateMember(tokenResponse, memberResponse,
+        Response updateResponse = updateMember(tokenResponse,
             "NEW " + TEST_USER_NAME, "NEW " + TEST_USER_PASSWORD);
         MemberResponse persistMember = getMember(tokenResponse);
         //Then : 수정 완료
@@ -50,7 +50,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         //When : 회원 탈퇴
         //Then : 탈퇴 완료
-        deleteMember(tokenResponse, persistMember);
+        deleteMember(tokenResponse);
 
         //When : (예외) 회원가입 시 빈 문자열 입력
         Response failedCreateResponse = createMember("", "", "");
@@ -67,12 +67,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(failedCreateResponseByDuplicatedEmail.getHeader("Location")).isNull();
 
         //When : (예외) 회원 정보 수정 시 빈 문자열 입력
-        Response failedUpdateResponse = updateMember(tokenResponse, memberResponse, "", "");
+        Response failedUpdateResponse = updateMember(tokenResponse,"", "");
         //Then : 400 에러 발생
         assertThat(failedUpdateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public Response updateMember(TokenResponse tokenResponse, MemberResponse memberResponse,
+    public Response updateMember(TokenResponse tokenResponse,
         String name, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -85,17 +85,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            put("/members/" + memberResponse.getId()).
+            put("/members/").
             then().
             log().all().
             extract().response();
     }
 
-    public void deleteMember(TokenResponse tokenResponse, MemberResponse memberResponse) {
+    public void deleteMember(TokenResponse tokenResponse) {
         given().
             auth().
             oauth2(tokenResponse.getAccessToken()).when().
-            delete("/members/" + memberResponse.getId()).
+            delete("/members/").
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());
