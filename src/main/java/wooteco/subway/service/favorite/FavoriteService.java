@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
@@ -30,10 +31,12 @@ public class FavoriteService {
 
     public Long create(Long memberId, FavoriteRequest favoriteRequest) {
         memberRepository.findById(memberId).orElseThrow(InvalidMemberIdException::new);
-        stationRepository.findByName(favoriteRequest.getDeparture()).orElseThrow(InvalidStationNameException::new);
-        stationRepository.findByName(favoriteRequest.getArrival()).orElseThrow(InvalidStationNameException::new);
+        Station departure = stationRepository.findByName(favoriteRequest.getDeparture())
+            .orElseThrow(InvalidStationNameException::new);
+        Station arrival = stationRepository.findByName(favoriteRequest.getArrival())
+            .orElseThrow(InvalidStationNameException::new);
 
-        Favorite favorite = Favorite.of(memberId, favoriteRequest);
+        Favorite favorite = Favorite.of(memberId, departure, arrival);
 
         if (isDuplicate(memberId, favorite)) {
             throw new DuplicateFavoriteException();
