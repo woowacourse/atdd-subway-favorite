@@ -27,28 +27,28 @@ public class ExceptionController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponse> handleIllegalArgumentException() {
 		return ResponseEntity
-			.status(HttpStatus.BAD_REQUEST.value())
+			.status(HttpStatus.BAD_REQUEST)
 			.body(new ErrorResponse("INVALID_PARAM"));
 	}
 
 	@ExceptionHandler(InvalidAuthenticationException.class)
 	public ResponseEntity<ErrorResponse> handleInvalidAuthenticationException() {
 		return ResponseEntity
-			.status(HttpStatus.UNAUTHORIZED.value())
+			.status(HttpStatus.UNAUTHORIZED)
 			.body(new ErrorResponse("UNAUTHORIZED"));
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleEntityNotFoundException() {
 		return ResponseEntity
-			.status(HttpStatus.BAD_REQUEST.value())
+			.status(HttpStatus.BAD_REQUEST)
 			.body(new ErrorResponse("NOT_EXISTENT_DATA"));
 	}
 
 	@ExceptionHandler(SameSourceTargetException.class)
 	public ResponseEntity<ErrorResponse> handleSameSourceTargetException() {
 		return ResponseEntity
-			.status(HttpStatus.BAD_REQUEST.value())
+			.status(HttpStatus.BAD_REQUEST)
 			.body(new ErrorResponse("SAME_SOURCE_TARGET_STATION"));
 	}
 }
