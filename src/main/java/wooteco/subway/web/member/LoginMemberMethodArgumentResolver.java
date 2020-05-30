@@ -29,13 +29,13 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String email = (String)webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
             throw new InvalidAuthenticationException("비정상적인 로그인");
         }
         Member member = memberService.findMemberByEmail(email);
         LoginMember annotation = parameter.getParameterAnnotation(LoginMember.class);
-        return annotation.type().validate(webRequest, member);
+        return annotation.type().getValidatedMember(webRequest, member);
     }
 }

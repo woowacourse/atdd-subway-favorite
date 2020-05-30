@@ -31,7 +31,7 @@ public @interface LoginMember {
             this.validator = validator;
         }
 
-        public Member validate(final NativeWebRequest webRequest, final Member member) {
+        public Member getValidatedMember(final NativeWebRequest webRequest, final Member member) {
             return validator.apply(webRequest, member);
         }
 
