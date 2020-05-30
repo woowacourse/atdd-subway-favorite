@@ -18,9 +18,11 @@ function Search() {
       $searchResultContainer.classList.remove('hidden')
     }
     $searchResult.innerHTML = searchResultTemplate(data);
-    const myFavorites = await api.favorite.get(localStorage.getItem("token"));
-    const filter = myFavorites.favoriteResponses.find(favorite => favorite.source === $departureStationName.value && favorite.target === $arrivalStationName.value);
-    initSearchButton(filter);
+    if (isLogin()) {
+      const myFavorites = await api.favorite.get(localStorage.getItem("token"));
+      const filter = myFavorites.favoriteResponses.find(favorite => favorite.source === $departureStationName.value && favorite.target === $arrivalStationName.value);
+      initSearchButton(filter);
+    }
   }
 
   const onSearchShortestDistance = event => {
@@ -79,6 +81,11 @@ function Search() {
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
 
+    if (!isLogin()) {
+      alert(ERROR_MESSAGE.LOGIN_REQUIRED);
+      return;
+    }
+
     if (isFavorite) {
       await api.favorite.delete(localStorage.getItem("token"), $favoriteButton.dataset.id);
       initSearchButton();
@@ -96,6 +103,10 @@ function Search() {
       $favoriteButton.dataset.id = parseLocationToId(response.headers.get("Location"));
     }
   }
+  const isLogin = () => {
+    return localStorage.getItem("token")
+  }
+
 
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);

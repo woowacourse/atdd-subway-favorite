@@ -9,7 +9,8 @@ export const ERROR_MESSAGE = {
   JOIN_INPUT_FAIL: '😭 필드 값을 입력해주세요. 다시 시도해주세요.',
   EMAIL_FAIL: '😭 이메일형식이 아닙니다. 다시 시도해주세요.',
   EMPTY_SPACE_FAIL: '😭 공백은 입력 할 수 없습니다. 다시 시도해주세요.',
-  PASSWORD_FAIL: '😭 두 패스워드가 다릅니다. 다시 시도해주세요.'
+  PASSWORD_FAIL: '😭 두 패스워드가 다릅니다. 다시 시도해주세요.',
+  LOGIN_REQUIRED: '😭 로그인이 필요한 서비스 입니다.'
 }
 
 export const SUCCESS = {

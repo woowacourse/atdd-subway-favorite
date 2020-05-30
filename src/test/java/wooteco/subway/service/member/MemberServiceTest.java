@@ -66,8 +66,8 @@ public class MemberServiceTest {
 	void notExistEmailNotCreateToken() {
 		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL + "NOT_EXIST", TEST_USER_PASSWORD);
 
-		assertThatThrownBy(() -> memberService.createToken(loginRequest)).isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("존재하지않는 이메일 입니다.");
+		assertThatThrownBy(() -> memberService.createToken(loginRequest)).isInstanceOf(NonExistEmailException.class)
+			.hasMessageContaining("존재하지않는 이메일 입니다.");
 	}
 
 	@DisplayName("잘못된 패스워드로 로그인이 실패하는 테스트")
@@ -78,7 +78,7 @@ public class MemberServiceTest {
 
 		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD + "WRONG_PASSWORD");
 
-		assertThatThrownBy(() -> memberService.createToken(loginRequest)).isInstanceOf(IllegalArgumentException.class)
+		assertThatThrownBy(() -> memberService.createToken(loginRequest)).isInstanceOf(WrongPasswordException.class)
 			.hasMessage("잘못된 패스워드입니다.");
 	}
 }

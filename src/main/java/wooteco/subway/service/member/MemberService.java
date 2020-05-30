@@ -37,12 +37,13 @@ public class MemberService {
 	}
 
 	public void updateMember(Long id, UpdateMemberRequest param) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = memberRepository.findById(id)
+			.orElseThrow(() -> new MemberNotFoundException(String.valueOf(id)));
 		member.update(param.getName(), param.getPassword());
 		memberRepository.save(member);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = DbActionExecutionException.class)
 	public void deleteMember(Long id) {
 		memberRepository.deleteById(id);
 		favoriteService.deleteFavorites(id);
@@ -50,15 +51,16 @@ public class MemberService {
 
 	public String createToken(LoginRequest param) {
 		Member member = memberRepository.findByEmail(param.getEmail())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지않는 이메일 입니다."));
+			.orElseThrow(() -> new NonExistEmailException(param.getEmail()));
 		if (!member.checkPassword(param.getPassword())) {
-			throw new IllegalArgumentException("잘못된 패스워드입니다.");
+			throw new WrongPasswordException();
 		}
 
 		return jwtTokenProvider.createToken(param.getEmail());
 	}
 
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberNotFoundException(email));
 	}
 }
