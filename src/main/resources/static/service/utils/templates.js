@@ -19,11 +19,17 @@ export const navTemplate = `<nav class="flex items-center justify-between flex-w
           경로 조회
           </a>
       </div>
+      <div class="hover:bg-yellow-400 px-2 py-1 rounded">
+         <a href="/favorite" class="block inline-block lg:mt-0 text-gray-800 text-sm">
+          즐겨 찾기 목록
+          </a>
+      </div>
     </div>
 </nav>`
 
 export const subwayLinesItemTemplate = line => {
-  const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
+  const stations = line.stations ? line.stations.map(station => listItemTemplate(station))
+  .join('') : null
   return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
               <div class="border ${line.bgColor ? line.bgColor : ''} lint-name px-4 py-1">${line.name}</div>
@@ -36,7 +42,9 @@ export const subwayLinesItemTemplate = line => {
 
 export const searchResultTemplate = result => {
   const lastIndex = result.stations.length - 1
-  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.name, index, lastIndex)).join('')
+  const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station,
+    index,
+    lastIndex)).join('')
   return `<div class="px-2 py-4 border-b">
       <div class="w-full flex mb-3">
         <div class="inline-block w-1/2 border-r text-center">
@@ -58,14 +66,14 @@ export const searchResultTemplate = result => {
     </div>`
 }
 
-export const pathStationTemplate = (name, index, lastIndex) => {
+export const pathStationTemplate = (station, index, lastIndex) => {
   return `
   ${
     index === 0 || index === lastIndex
       ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
-        <span class="font-bold">${name}</span>`
+        <span id="${index === 0 ? 'source-station' : 'target-station'}" data-station-id="${station.id}" class="font-bold">${station.name}</span>`
       : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
-         <span class="text-gray-600">${name}</span>
+         <span class="text-gray-600">${station.name}</span>
         `
   }`
 }
@@ -73,3 +81,26 @@ export const pathStationTemplate = (name, index, lastIndex) => {
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
+
+export const myInformationTemplate = myInfo => `
+  <div class="mb-4">
+    <div class="block text-gray-600 font-bold text-sm">email</div>
+    <div class="block text-gray-700 font-bold text-sm mb-2">${myInfo.email}</div>
+  </div>
+  <div class="mb-4">
+    <div class="block text-gray-600 font-bold text-sm">name</div>
+    <div class="block text-gray-700 font-bold text-sm mb-2">${myInfo.name}</div>
+  </div>
+`
+
+export const edgeItemTemplate = favoriteResponse => {
+  return `<li data-favorite-id="${favoriteResponse.id}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+            <span class="mdi mdi-subway-variant mr-2"></span>
+            <span data-source-station-id="${favoriteResponse.source.id}">${favoriteResponse.source.name ? favoriteResponse.source.name : '출발역'}</span>
+            <span class="mdi mdi-arrow-right text-gray-500"></span>
+            <span data-target-station-id="${favoriteResponse.target.id}">${favoriteResponse.target.name ? favoriteResponse.target.name : '도착역'}</span>
+            <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+              <span class="mdi mdi-delete"></span>
+            </button>
+          </li>`;
+};

@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="kr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>RunningMap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
-    <link href="/service/lib/slider/tiny-slider.css" rel="stylesheet" />
-    <link href="/service/css/app.css" rel="stylesheet" />
-    <link href="/service/css/edge.css" rel="stylesheet" />
-  </head>
-  <body class="bg-gray-200 h-screen">
-    <div class="flex justify-center md:py-10 lg:py-10 app-container">
-      <div class="max-width-md w-full rounded bg-white shadow-lg p-6">
-        <div class="font-bold text-xl mb-4 relative w-full text-center">
-          전체 노선
-        </div>
-        <div class="flex relative">
-          <div id="slider-controls" class="hidden lg:block xl:block">
-            <button
-              data-controls="prev"
-              aria-controls="customize"
-              tabindex="-1"
-              class="prev prev-btn top-50 z-10 absolute top-0 left-10px bg-white rounded-full h-8 w-8 text-base text-gray-600 hover:text-gray-400 focus:text-gray-400 -ml-6 focus:outline-none focus:shadow-outline"
-            >
-              <span class="block" style="transform: scale(-1);">&#x279c;</span>
-            </button>
-            <button
-              aria-controls="customize"
-              tabindex="-1"
-              data-controls="next"
-              class="next next-btn top-50 z-10 absolute top-0 right-10px bg-white rounded-full h-8 w-8 text-base text-gray-600 hover:text-gray-400 focus:text-gray-400 -mr-6 focus:outline-none focus:shadow-outline"
-            >
-              <span class="block" style="transform: scale(1);">&#x279c;</span>
-            </button>
-          </div>
-          <div class="w-full h-full">
-            <div class="subway-lines-slider"></div>
-          </div>
-        </div>
+<head>
+  <meta charset="UTF-8"/>
+  <title>RunningMap</title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+        name="viewport"/>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"/>
+  <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css"
+        rel="stylesheet"/>
+  <link href="/service/lib/slider/tiny-slider.css" rel="stylesheet"/>
+  <link href="/service/css/app.css" rel="stylesheet"/>
+  <link href="/service/css/edge.css" rel="stylesheet"/>
+</head>
+<body class="bg-gray-200 h-screen">
+<div class="flex justify-center md:py-10 lg:py-10 app-container">
+  <div class="max-width-md w-full rounded bg-white shadow-lg p-6">
+    <div class="font-bold text-xl mb-4 relative w-full text-center">
+      전체 노선
+    </div>
+    <div class="flex relative">
+      <div class="hidden lg:block xl:block" id="slider-controls">
+        <button
+          aria-controls="customize"
+          class="prev prev-btn top-50 z-10 absolute top-0 left-10px bg-white rounded-full h-8 w-8 text-base text-gray-600 hover:text-gray-400 focus:text-gray-400 -ml-6 focus:outline-none focus:shadow-outline"
+          data-controls="prev"
+          tabindex="-1"
+        >
+          <span class="block" style="transform: scale(-1);">&#x279c;</span>
+        </button>
+        <button
+          aria-controls="customize"
+          class="next next-btn top-50 z-10 absolute top-0 right-10px bg-white rounded-full h-8 w-8 text-base text-gray-600 hover:text-gray-400 focus:text-gray-400 -mr-6 focus:outline-none focus:shadow-outline"
+          data-controls="next"
+          tabindex="-1"
+        >
+          <span class="block" style="transform: scale(1);">&#x279c;</span>
+        </button>
+      </div>
+      <div class="w-full h-full">
+        <div class="subway-lines-slider"></div>
       </div>
     </div>
-    <script type="module" src="/service/js/App.js"></script>
-    <script type="module" src="/service/js/views/Map.js"></script>
-  </body>
+  </div>
+</div>
+<script src="/service/js/App.js" type="module"></script>
+<script src="/service/js/views/Map.js" type="module"></script>
+</body>
 </html>

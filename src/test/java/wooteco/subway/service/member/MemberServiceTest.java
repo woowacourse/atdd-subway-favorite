@@ -1,21 +1,24 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
-
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import wooteco.subway.service.member.dto.MemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -37,11 +40,25 @@ public class MemberServiceTest {
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
+            TEST_USER_PASSWORD);
+        when(memberRepository.save(any(Member.class))).thenReturn(memberRequest.toMember());
 
-        memberService.createMember(member);
+        memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
+    }
+
+    @Test
+    void duplicateEmail() {
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
+            TEST_USER_PASSWORD);
+        DbActionExecutionException dbActionExecutionException =
+            new DbActionExecutionException(null, new DuplicateKeyException("중복되는 키 값"));
+        when(memberRepository.save(any())).thenThrow(dbActionExecutionException);
+
+        assertThatThrownBy(() -> memberService.createMember(memberRequest))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

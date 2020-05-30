@@ -1,87 +1,115 @@
 package wooteco.subway.service.path;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
+import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import wooteco.subway.service.line.dto.LineDetailResponse;
+import wooteco.subway.service.line.dto.LineStationCreateRequest;
+import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.web.controlleradvice.exception.EntityNotFoundException;
 
 @Service
 public class PathService {
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
-    private GraphService graphService;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final Graphs graphs;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, GraphService graphService) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository,
+        Graphs graphs) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
-        this.graphService = graphService;
+        this.graphs = graphs;
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
     }
 
-    public PathResponse findPath(String source, String target, PathType type) {
-        if (Objects.equals(source, target)) {
-            throw new RuntimeException();
-        }
-
+    @Transactional(readOnly = true)
+    public WholeSubwayResponse wholeLines() {
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
-
-        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
-        List<Station> stations = stationRepository.findAllById(path);
-
-        List<LineStation> lineStations = lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
-                .collect(Collectors.toList());
-
-        List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
-
-        List<Station> pathStation = path.stream()
-                .map(it -> extractStation(it, stations))
-                .collect(Collectors.toList());
-
-        return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
+        Map<Long, Station> stations = stationRepository.findAll()
+            .stream()
+            .collect(Collectors.toMap(Station::getId, station -> station));
+        List<LineDetailResponse> responses = lines.stream()
+            .map(line -> getLineDetailResponse(stations, line))
+            .collect(Collectors.toList());
+        return WholeSubwayResponse.of(responses);
     }
 
-    private Station extractStation(Long stationId, List<Station> stations) {
-        return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+    @Transactional(readOnly = true)
+    public LineDetailResponse findLineWithStationsById(Long id) {
+        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        List<Station> stations = stationRepository.findAllById(line.getStationIds());
+        return LineDetailResponse.of(line, stations);
     }
 
-    private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
-        Long preStationId = null;
-        List<LineStation> paths = new ArrayList<>();
+    @Transactional
+    public void addLineStation(Long id, LineStationCreateRequest request) {
+        validateStations(request.getPreStationId(), request.getStationId());
+        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        LineStation lineStation = LineStation.of(request.getPreStationId(), request.getStationId(),
+            request.getDistance(), request.getDuration());
+        line.addLineStation(lineStation);
 
-        for (Long stationId : path) {
-            if (preStationId == null) {
-                preStationId = stationId;
-                continue;
-            }
+        lineRepository.save(line);
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
+    }
 
-            Long finalPreStationId = preStationId;
-            LineStation lineStation = lineStations.stream()
-                    .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
-                    .findFirst()
-                    .orElseThrow(RuntimeException::new);
+    @Transactional
+    public void removeLineStation(Long lineId, Long stationId) {
+        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        line.removeLineStationById(stationId);
+        lineRepository.save(line);
+        graphs.initialize(lineRepository.findAll(), stationRepository.findAll());
+    }
 
-            paths.add(lineStation);
-            preStationId = stationId;
+    @Transactional
+    public PathResponse findPath(Long sourceId, Long targetId, PathType pathType) {
+        validate(sourceId, targetId);
+        return graphs.findPath(sourceId, targetId, pathType);
+    }
+
+    private void validate(Long sourceId, Long targetId) {
+        validateEmpty(sourceId, targetId);
+        validateSameIds(sourceId, targetId);
+    }
+
+    private void validateEmpty(Long sourceId, Long targetId) {
+        if (Objects.isNull(sourceId) || Objects.isNull(targetId)) {
+            throw new IllegalArgumentException("소스와 타겟 정보가 비어있습니다.");
         }
+    }
 
-        return paths;
+    private void validateSameIds(Long sourceId, Long targetId) {
+        if (Objects.equals(sourceId, targetId)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
+    }
+
+    private LineDetailResponse getLineDetailResponse(Map<Long, Station> stations, Line line) {
+        List<Long> stationIds = line.getStationIds();
+        List<Station> stationsList = stationIds.stream()
+            .map(stations::get)
+            .collect(Collectors.toList());
+        return LineDetailResponse.of(line, stationsList);
+    }
+
+    private void validateStations(Long preStationId, Long stationId) {
+        if (Objects.nonNull(preStationId) && !stationRepository.existsById(preStationId)) {
+            throw new EntityNotFoundException(Station.class.getName(), preStationId);
+        }
+        if (Objects.isNull(stationId) || !stationRepository.existsById(stationId)) {
+            throw new EntityNotFoundException(Station.class.getName(), stationId);
+        }
     }
 }
