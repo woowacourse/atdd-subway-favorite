@@ -31,7 +31,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
@@ -48,93 +47,94 @@ import wooteco.subway.web.member.AuthorizationExtractor;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class FavoriteControllerTest {
-    private static final Gson GSON = new Gson();
 
-    @MockBean
-    private FavoriteService favoriteService;
-    @MockBean
-    private MemberService memberService;
-    @MockBean
-    private AuthorizationExtractor authExtractor;
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private MockMvc mockMvc;
+	@MockBean
+	private FavoriteService favoriteService;
+	@MockBean
+	private MemberService memberService;
+	@MockBean
+	private AuthorizationExtractor authExtractor;
+	@MockBean
+	private JwtTokenProvider jwtTokenProvider;
+	@Autowired
+	private MockMvc mockMvc;
 
-    private Member member;
-    private String credential = " secret";
-    private String mockToken = BEARER + credential;
+	private ObjectMapper objectMapper;
+	private Member member;
+	private String credential = " secret";
+	private String mockToken = BEARER + credential;
 
-    @BeforeEach
-    void setUp(WebApplicationContext webApplicationContext,
-        RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .addFilter(new ShallowEtagHeaderFilter())
-            .apply(documentationConfiguration(restDocumentation))
-            .alwaysDo(print())
-            .build();
-        this.member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-    }
+	@BeforeEach
+	void setUp(WebApplicationContext webApplicationContext,
+		RestDocumentationContextProvider restDocumentation) {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+			.addFilter(new ShallowEtagHeaderFilter())
+			.apply(documentationConfiguration(restDocumentation))
+			.alwaysDo(print())
+			.build();
+		this.member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		objectMapper = new ObjectMapper();
+	}
 
-    @Test
-    void addFavorite() throws Exception {
-        setMockToken();
-        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(1L, 2L);
-        String request = GSON.toJson(favoriteCreateRequest);
-        FavoriteResponse response = new FavoriteResponse(1L, favoriteCreateRequest.getDepartureId(),
-            favoriteCreateRequest.getDepartureId());
-        given(memberService.findMemberByEmail(any())).willReturn(member);
-        given(favoriteService.addFavorite(any(), any())).willReturn(response);
+	@Test
+	void addFavorite() throws Exception {
+		setMockToken();
+		FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(1L, 2L);
+		String request = objectMapper.writeValueAsString(favoriteCreateRequest);
+		FavoriteResponse response = new FavoriteResponse(1L, favoriteCreateRequest.getDepartureId(),
+			favoriteCreateRequest.getDepartureId());
+		given(memberService.findMemberByEmail(any())).willReturn(member);
+		given(favoriteService.addFavorite(any(), any())).willReturn(response);
 
-        this.mockMvc.perform(post("/members/favorites")
-            .header(HttpHeaders.AUTHORIZATION, mockToken)
-            .content(request)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
-            .andDo(MemberDocumentation.addFavorite());
-    }
+		this.mockMvc.perform(post("/members/favorites")
+			.header(HttpHeaders.AUTHORIZATION, mockToken)
+			.content(request)
+			.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isCreated())
+			.andDo(MemberDocumentation.addFavorite());
+	}
 
-    public void setMockToken() {
-        given(authExtractor.extract(any(), eq(BEARER))).willReturn(credential);
-        given(jwtTokenProvider.validateToken(credential)).willReturn(true);
-        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
-    }
+	public void setMockToken() {
+		given(authExtractor.extract(any(), eq(BEARER))).willReturn(credential);
+		given(jwtTokenProvider.validateToken(credential)).willReturn(true);
+		given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
+	}
 
-    @Test
-    void findFavorites() throws Exception {
-        //Given
-        setMockToken();
-        FavoriteResponse response = new FavoriteResponse(1L, 1L, 2L);
-        FavoriteResponse response2 = new FavoriteResponse(2L, 3L, 4L);
-        FavoriteListResponse favoriteListResponse = new FavoriteListResponse(
-            Arrays.asList(response, response2));
+	@Test
+	void findFavorites() throws Exception {
+		//Given
+		setMockToken();
+		FavoriteResponse response = new FavoriteResponse(1L, 1L, 2L);
+		FavoriteResponse response2 = new FavoriteResponse(2L, 3L, 4L);
+		FavoriteListResponse favoriteListResponse = new FavoriteListResponse(
+			Arrays.asList(response, response2));
 
-        given(favoriteService.findFavorites(any())).willReturn(favoriteListResponse);
+		given(favoriteService.findFavorites(any())).willReturn(favoriteListResponse);
 
-        //When
-        MvcResult mvcResult = this.mockMvc.perform(get("/members/favorites")
-            .header(HttpHeaders.AUTHORIZATION, mockToken)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(MemberDocumentation.findFavorites())
-            .andReturn();
+		//When
+		MvcResult mvcResult = this.mockMvc.perform(get("/members/favorites")
+			.header(HttpHeaders.AUTHORIZATION, mockToken)
+			.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(MemberDocumentation.findFavorites())
+			.andReturn();
 
-        //Then
-        ObjectMapper mapper = new ObjectMapper();
-        assertThat(mapper.readValue(
-            mvcResult.getResponse().getContentAsString(), FavoriteListResponse.class)).isInstanceOf(
-            FavoriteListResponse.class);
-    }
+		//Then
+		ObjectMapper mapper = new ObjectMapper();
+		assertThat(mapper.readValue(
+			mvcResult.getResponse().getContentAsString(), FavoriteListResponse.class)).isInstanceOf(
+			FavoriteListResponse.class);
+	}
 
-    @Test
-    void deleteFavorite() throws Exception {
-        setMockToken();
-        Favorite favorite = new Favorite(1L, 1L, 2L);
+	@Test
+	void deleteFavorite() throws Exception {
+		setMockToken();
+		Favorite favorite = new Favorite(1L, 1L, 2L);
 
-        this.mockMvc.perform(delete("/members/favorites/{id}", favorite.getId())
-            .header(HttpHeaders.AUTHORIZATION, mockToken))
-            .andExpect(status().isNoContent())
-            .andDo(MemberDocumentation.deleteFavorite());
-    }
+		this.mockMvc.perform(delete("/members/favorites/{id}", favorite.getId())
+			.header(HttpHeaders.AUTHORIZATION, mockToken))
+			.andExpect(status().isNoContent())
+			.andDo(MemberDocumentation.deleteFavorite());
+	}
 }
