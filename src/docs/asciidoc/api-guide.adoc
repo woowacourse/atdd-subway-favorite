@@ -19,4 +19,70 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources]]
+= Resources
+
+[[resources-members]]
+== Member
+
+[[resources-members-create]]
+=== 회원 정보 수정
+
+operation::members/update[snippets='http-request,http-response,request-fields']
+
+[[resources]]
+= Resources
+
+[[resources-members]]
+== Member
+
+[[resources-members-create]]
+=== 로그인
+
+operation::members/login[snippets='http-request,http-response,request-fields']
+
+[[resources]]
+= Resources
+
+[[resources-members]]
+== Member
+
+[[resources-members-create]]
+=== 회원 삭제
+
+operation::members/delete[snippets='http-request,http-response']
+
+[[resources]]
+= Resources
+
+[[resources-members]]
+== Favorite
+
+[[resources-members-create]]
+=== 즐겨찾기 추가
+
+operation::favorites/create[snippets='http-request,http-response,request-fields']
+
+[[resources]]
+= Resources
+
+[[resources-members]]
+== Favorite
+
+[[resources-members-create]]
+=== 즐겨찾기 불러오기
+
+operation::favorites/read[snippets='http-request,http-response,response-fields']
+
+[[resources]]
+= Resources
+
+[[resources-members]]
+== Favorite
+
+[[resources-members-create]]
+=== 즐겨찾기 삭제
+
+operation::favorites/delete[snippets='http-request,http-response']

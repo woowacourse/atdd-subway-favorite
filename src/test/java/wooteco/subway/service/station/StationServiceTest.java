@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Sql("/truncate.sql")
@@ -43,5 +44,25 @@ public class StationServiceTest {
 
         Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
         assertThat(resultLine.getStations()).hasSize(1);
+    }
+
+    @Test
+    void findStationById() {
+        Station station1 = stationRepository.save(new Station("강남역"));
+        Station station2 = stationRepository.save(new Station("역삼역"));
+
+        Station resultStation1 = stationService.findStationById(station1.getId());
+        assertThat(resultStation1.getName()).isEqualTo(station1.getName());
+
+        Station resultStation2 = stationService.findStationById(station2.getId());
+        assertThat(resultStation2.getName()).isEqualTo(station2.getName());
+    }
+
+    @Test
+    void findNoExistStationById() {
+        Station station1 = stationRepository.save(new Station("강남역"));
+
+        assertThatThrownBy(() -> stationService.findStationById(2L))
+                .isInstanceOf(NoExistStationException.class);
     }
 }

@@ -35,4 +35,8 @@ public class Station {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
+    }
 }
