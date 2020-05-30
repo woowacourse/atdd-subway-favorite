@@ -11,8 +11,9 @@ public interface FavoriteRepository extends CrudRepository<Favorite, Long> {
     @Query("SELECT * FROM favorite WHERE member_id = :memberId")
     List<Favorite> findAllByMemberId(@Param("memberId") Long memberId);
 
-    @Query("SELECT * FROM favorite WHERE member_id = :memberId AND departure = :departure AND arrival = :arrival")
-    Optional<Favorite> findByMemberIdAndDepartureAndArrival(@Param("memberId") Long memberId,
-                                                            @Param("departure") String departure,
-                                                            @Param("arrival") String arrival);
+    @Query("SELECT * FROM favorite WHERE member_id = :memberId AND departure_station_id = :departureStationId AND arrival_station_id = :arrivalStationId")
+    Optional<Favorite> findByMemberIdAndDepartureStationIdAndArrivalStationId(
+        @Param("memberId") Long memberId,
+        @Param("departureStationId") Long departureStationId,
+        @Param("arrivalStationId") Long arrivalStationId);
 }

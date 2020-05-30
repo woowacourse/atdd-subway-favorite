@@ -1,16 +1,16 @@
 package wooteco.subway.domain.favorite;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class FavoriteTest {
 
     @Test
     void isDuplicate() {
         Long memberId = 1L;
-        String departure = "강남";
-        String arrival = "도곡";
+        Long departure = 1L;
+        Long arrival = 2L;
         Favorite favorite = new Favorite(memberId, departure, arrival);
         Favorite duplicated = new Favorite(memberId, departure, arrival);
 
@@ -20,10 +20,10 @@ class FavoriteTest {
     @Test
     void isDuplicateWhenFail() {
         Long memberId = 1L;
-        String departure = "강남";
-        String arrival = "도곡";
+        Long departure = 1L;
+        Long arrival = 2L;
         Favorite favorite = new Favorite(memberId, departure, arrival);
-        Favorite duplicated = new Favorite(2L, "잠실", "석촌");
+        Favorite duplicated = new Favorite(2L, 3L, 4L);
 
         assertThat(favorite.isDuplicate(duplicated)).isFalse();
     }

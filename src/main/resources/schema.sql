@@ -42,8 +42,8 @@ create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
     member_id bigint not null,
-    departure varchar(255) not null,
-    arrival varchar(255) not null,
+    departure_station_id varchar(255) not null,
+    arrival_station_id varchar(255) not null,
     primary key(id)
 );
 

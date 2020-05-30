@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -52,7 +51,7 @@ public class MemberServiceTest {
     @Test
     void createMemberWithDuplicateEmail() {
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, "pobi", "123");
-        doThrow(DbActionExecutionException.class)
+        doThrow(DuplicateEmailException.class)
             .when(memberRepository)
             .save(any());
 
