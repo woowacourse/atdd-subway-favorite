@@ -19,7 +19,7 @@ public class GraphService {
 
         lines.stream()
             .flatMap(it -> it.getStationIds().stream())
-            .forEach(it -> graph.addVertex(it));
+            .forEach(graph::addVertex);
 
         lines.stream()
             .flatMap(it -> it.getStations().stream())

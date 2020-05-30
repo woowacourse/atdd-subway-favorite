@@ -50,7 +50,7 @@ public class LineStationService {
 
     public void deleteLineStationByStationId(Long stationId) {
         List<Line> lines = lineRepository.findAll();
-        lines.stream().forEach(it -> it.removeLineStationById(stationId));
+        lines.forEach(it -> it.removeLineStationById(stationId));
         lineRepository.saveAll(lines);
     }
 }

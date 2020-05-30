@@ -50,8 +50,8 @@ public class PathService {
             .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+        int duration = paths.stream().mapToInt(LineStation::getDuration).sum();
+        int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
 
         List<Station> pathStation = path.stream()
             .map(it -> extractStation(it, stations))
@@ -62,7 +62,7 @@ public class PathService {
 
     private Station extractStation(Long stationId, List<Station> stations) {
         return stations.stream()
-            .filter(it -> it.getId() == stationId)
+            .filter(it -> it.getId().equals(stationId))
             .findFirst()
             .orElseThrow(RuntimeException::new);
     }
