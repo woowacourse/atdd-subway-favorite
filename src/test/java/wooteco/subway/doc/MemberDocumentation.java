@@ -25,7 +25,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler loginMember() {
-        return document("members/login",
+        return document("me/login",
             requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING)
                     .description("The user's email address"),
@@ -40,7 +40,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler getMemberByEmail() {
-        return document("members/getMemberByEmail",
+        return document("me/getMemberByEmail",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
@@ -49,7 +49,7 @@ public class MemberDocumentation {
                 fieldWithPath("id").type(JsonFieldType.NUMBER)
                     .description("The user's id"),
                 fieldWithPath("email").type(JsonFieldType.STRING)
-                    .description("The user's eamil"),
+                    .description("The user's email"),
                 fieldWithPath("name").type(JsonFieldType.STRING)
                     .description("The user's name")
             )
@@ -57,7 +57,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler updateMember() {
-        return document("members/update",
+        return document("me/update",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
@@ -71,7 +71,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler deleteMember() {
-        return document("members/delete",
+        return document("me/delete",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
@@ -80,7 +80,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler failedCreateMemberByBlank() {
-        return document("members/create/fail/blank",
+        return document("me/create/fail/blank",
             requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING)
                     .description("The user's email address"),
@@ -96,7 +96,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler failedCreateMemberByDuplication() {
-        return document("members/create/fail/duplication",
+        return document("me/create/fail/duplication",
             requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING)
                     .description("The user's email address"),
@@ -112,7 +112,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler failedUpdateMemberByBlank() {
-        return document("members/update/fail/blank",
+        return document("me/update/fail/blank",
             requestFields(
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                 fieldWithPath("password").type(JsonFieldType.STRING)
@@ -126,7 +126,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler addFavorite() {
-        return document("members/favorites/add",
+        return document("me/favorites/add",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
@@ -144,7 +144,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler findFavorites() {
-        return document("members/favorites/find",
+        return document("me/favorites/find",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
@@ -161,7 +161,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler deleteFavorite() {
-        return document("members/favorites/delete",
+        return document("me/favorites/delete",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")

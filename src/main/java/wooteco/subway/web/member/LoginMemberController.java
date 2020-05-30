@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
@@ -17,6 +18,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
+@RequestMapping("/me")
 @RestController
 public class LoginMemberController {
 	private MemberService memberService;
@@ -25,31 +27,31 @@ public class LoginMemberController {
 		this.memberService = memberService;
 	}
 
-	@PostMapping("/login")
+	@PostMapping
 	public ResponseEntity<Void> login(@RequestBody LoginRequest param) {
 		String token = memberService.createToken(param);
 		return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "bearer " + token).build();
 	}
 
-	@GetMapping("/members")
+	@GetMapping
 	public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}
 
-	@PutMapping("/members")
+	@PutMapping
 	public ResponseEntity<Void> updateMember(@LoginMember Member member,
 		@RequestBody @Valid UpdateMemberRequest param) {
 		memberService.updateMember(member, param);
 		return ResponseEntity.ok().build();
 	}
 
-	@DeleteMapping("/members")
+	@DeleteMapping
 	public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
 		memberService.deleteMember(member);
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping({"/me/basic", "/me/session", "/me/bearer"})
+	@GetMapping({"/basic", "/session", "/bearer"})
 	public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}

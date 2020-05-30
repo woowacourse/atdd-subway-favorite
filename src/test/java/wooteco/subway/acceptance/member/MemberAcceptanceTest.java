@@ -85,7 +85,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            put("/members/").
+            put("/me").
             then().
             log().all().
             extract().response();
@@ -95,7 +95,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         given().
             auth().
             oauth2(tokenResponse.getAccessToken()).when().
-            delete("/members/").
+            delete("/me").
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());

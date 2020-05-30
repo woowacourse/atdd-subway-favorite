@@ -282,7 +282,7 @@ public class AcceptanceTest {
             .auth()
             .oauth2(tokenResponse.getAccessToken())
             .when()
-            .get("/members")
+            .get("/me")
             .then()
             .log().all()
             .statusCode(HttpStatus.OK.value())
@@ -299,7 +299,7 @@ public class AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            post("/login").
+            post("/me").
             then().
             log().all().
             statusCode(HttpStatus.OK.value())

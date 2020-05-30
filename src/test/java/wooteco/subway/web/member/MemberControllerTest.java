@@ -95,7 +95,7 @@ public class MemberControllerTest {
 		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 		String request = objectMapper.writeValueAsString(loginRequest);
 
-		this.mockMvc.perform(post("/login")
+		this.mockMvc.perform(post("/me")
 			.content(request)
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON))
@@ -109,7 +109,7 @@ public class MemberControllerTest {
 		setMockToken();
 		given(memberService.findMemberByEmail(TEST_USER_EMAIL)).willReturn(member);
 
-		MvcResult result = this.mockMvc.perform(get("/members")
+		MvcResult result = this.mockMvc.perform(get("/me")
 			.header(HttpHeaders.AUTHORIZATION, mockToken))
 			.andExpect(status().isOk())
 			.andDo(print())
@@ -128,7 +128,7 @@ public class MemberControllerTest {
 
 		String request = objectMapper.writeValueAsString(updateMemberRequest);
 
-		this.mockMvc.perform(put("/members")
+		this.mockMvc.perform(put("/me")
 			.header(HttpHeaders.AUTHORIZATION, mockToken)
 			.content(request)
 			.accept(MediaType.APPLICATION_JSON)
@@ -141,7 +141,7 @@ public class MemberControllerTest {
 	@Test
 	void deleteMember() throws Exception {
 		setMockToken();
-		this.mockMvc.perform(delete("/members")
+		this.mockMvc.perform(delete("/me")
 			.header(HttpHeaders.AUTHORIZATION, mockToken))
 			.andExpect(status().isNoContent())
 			.andDo(print())
@@ -198,7 +198,7 @@ public class MemberControllerTest {
 
 		String request = objectMapper.writeValueAsString(updateMemberRequest);
 
-		this.mockMvc.perform(put("/members")
+		this.mockMvc.perform(put("/me")
 			.header(HttpHeaders.AUTHORIZATION, mockToken)
 			.content(request)
 			.accept(MediaType.APPLICATION_JSON)

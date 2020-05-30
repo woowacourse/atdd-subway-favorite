@@ -5,6 +5,7 @@ import static wooteco.subway.web.exception.UnauthorizedException.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,8 +30,9 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
         HttpServletResponse response, Object handler) {
-        // 회원가입 시 토큰 검증 불필요
-        if (request.getMethod().equals("POST") && request.getRequestURI().equals("/members")) {
+        // 회원가입, 로그인 시 토큰 검증 불필요
+        if (request.getMethod().equals(HttpMethod.POST.name()) && (request.getRequestURI().equals("/me")
+            || request.getRequestURI().equals("/members"))) {
             return true;
         }
         String credential = authExtractor.extract(request, BEARER);
