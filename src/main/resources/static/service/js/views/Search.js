@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -13,12 +12,17 @@ function Search() {
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
 
-  const showSearchResult = data => {
+  const showSearchResult = async data => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
-    $searchResult.innerHTML = searchResultTemplate(data)
+    $searchResult.innerHTML = searchResultTemplate(data);
+    if (isLogin()) {
+      const myFavorites = await api.favorite.get(localStorage.getItem("token"));
+      const filter = myFavorites.favoriteResponses.find(favorite => favorite.source === $departureStationName.value && favorite.target === $arrivalStationName.value);
+      initSearchButton(filter);
+    }
   }
 
   const onSearchShortestDistance = event => {
@@ -47,28 +51,65 @@ function Search() {
       .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
-  const onToggleFavorite = event => {
+  function parseLocationToId(location) {
+    const index = location.lastIndexOf("/") + 1;
+    return location.substring(index);
+  }
+
+  function initSearchButton(filter) {
+    const classList = $favoriteButton.classList
+    if (filter) {
+      classList.remove('mdi-star-outline')
+      classList.remove('text-gray-600')
+      classList.remove('bg-yellow-500')
+      classList.add('mdi-star')
+      classList.add('text-yellow-500')
+      $favoriteButton.dataset.id = filter.id;
+      return;
+    }
+    classList.add('mdi-star-outline')
+    classList.add('text-gray-600')
+    classList.add('bg-yellow-500')
+    classList.remove('mdi-star')
+    classList.remove('text-yellow-500')
+    $favoriteButton.dataset.id = "";
+  }
+
+
+  const onToggleFavorite = async event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
 
+    if (!isLogin()) {
+      alert(ERROR_MESSAGE.LOGIN_REQUIRED);
+      return;
+    }
+
     if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
+      await api.favorite.delete(localStorage.getItem("token"), $favoriteButton.dataset.id);
+      initSearchButton();
     } else {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
+      const favoriteRequest = {
+        source: $departureStationName.value,
+        target: $arrivalStationName.value
+      }
+      const response = await api.favorite.create(localStorage.getItem("token"), favoriteRequest);
+      $favoriteButton.dataset.id = parseLocationToId(response.headers.get("Location"));
     }
   }
+  const isLogin = () => {
+    return localStorage.getItem("token")
+  }
+
 
   const initEventListener = () => {
-    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite)
+    $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
     $shortestDistanceTab.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance)
     $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime)
