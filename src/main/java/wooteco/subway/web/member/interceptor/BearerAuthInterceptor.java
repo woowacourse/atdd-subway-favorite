@@ -59,12 +59,12 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private long getId(HttpServletRequest request) {
-        String test = request.getRequestURI().split("/members/")[1];
-        if (test.contains("/")) {
-            return Long.parseLong(test.split("/")[0]);
+    private Long getId(HttpServletRequest request) {
+        String uri = request.getRequestURI().split("/members/")[1];
+        if (uri.contains("/")) {
+            return Long.parseLong(uri.split("/")[0]);
         }
-        return Long.parseLong(test);
+        return Long.parseLong(uri);
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
