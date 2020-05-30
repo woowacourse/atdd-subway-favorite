@@ -32,13 +32,6 @@ public class MemberService {
         }
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
-
-        memberRepository.save(member);
-    }
-
     public void updateMember(Member member, UpdateMemberRequest param) {
         validatePersistence(member);
         if (member.isNotMe(param.getEmail())) {

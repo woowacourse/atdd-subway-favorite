@@ -31,10 +31,10 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
         String password = splitAuth[1];
 
         Member member = memberService.findMemberByEmail(email);
+
         if (!member.checkPassword(password)) {
             throw new InvalidAuthorizationException("올바르지 않은 이메일과 비밀번호 입력");
         }
-
         request.setAttribute("loginMemberEmail", email);
         return true;
     }
