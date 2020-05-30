@@ -48,7 +48,7 @@ public class Member {
 	}
 
 	public void addFavorite(Favorite favorite) {
-		if (favorites.stream().anyMatch(it -> it.hasSameStationsAs(favorite))) {
+		if (favorites.stream().anyMatch(it -> it.isSameAs(favorite))) {
 			throw new DuplicatedFavoriteException();
 		}
 		favorites.add(favorite);

@@ -26,7 +26,7 @@ public class Favorite {
 		return this.id.equals(favoriteId);
 	}
 
-	public boolean hasSameStationsAs(Favorite favorite) {
+	public boolean isSameAs(Favorite favorite) {
 		return this.preStation.equals(favorite.preStation) && this.station.equals(favorite.station);
 	}
 

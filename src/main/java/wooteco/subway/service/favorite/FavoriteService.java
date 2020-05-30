@@ -66,11 +66,7 @@ public class FavoriteService {
 	}
 
 	public void deleteFavorite(Member member, Long favoriteId) {
-		try {
-			member.removeFavoriteById(favoriteId);
-			memberRepository.save(member);
-		} catch (RuntimeException e) {
-			System.out.println(e);
-		}
+		member.removeFavoriteById(favoriteId);
+		memberRepository.save(member);
 	}
 }
