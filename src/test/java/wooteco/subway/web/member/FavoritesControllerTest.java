@@ -1,15 +1,5 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static wooteco.subway.service.member.MemberServiceTest.*;
-
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +12,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -31,6 +20,16 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.web.FavoritesController;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
+
+import java.util.Arrays;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wooteco.subway.service.member.MemberServiceTest.*;
 
 @Import(value = {BearerAuthInterceptor.class, AuthorizationExtractor.class})
 @ExtendWith(RestDocumentationExtension.class)
@@ -59,7 +58,7 @@ public class FavoritesControllerTest {
                 .build();
 
         given(memberService.findMemberByEmail(any())).willReturn(MEMBER_BROWN);
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.isInvalidToken(any())).willReturn(false);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
     }
 
