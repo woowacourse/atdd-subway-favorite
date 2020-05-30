@@ -127,8 +127,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         params.put("email", "NEW_" + TEST_USER_EMAIL);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
-        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-
         given().
             body(params).
             accept(MediaType.APPLICATION_JSON_VALUE).
