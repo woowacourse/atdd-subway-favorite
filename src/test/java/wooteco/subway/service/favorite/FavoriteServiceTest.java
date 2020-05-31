@@ -35,20 +35,25 @@ class FavoriteServiceTest {
 
     private FavoriteService favoriteService;
 
+    private Station jamsil;
+    private Station gangnam;
+
     @BeforeEach
     private void setUp() {
         favoriteService = new FavoriteService(memberRepository, stationRepository, favoriteRepository);
+        jamsil = new Station(1L, "잠실");
+        gangnam = new Station(2L, "강남");
     }
 
     @Test
     void createWhenValidInput() {
-        FavoriteRequest favoriteRequest = new FavoriteRequest("잠실", "강남");
-        Favorite favorite = new Favorite(1L, 1L, favoriteRequest.getDeparture(),
-                favoriteRequest.getArrival());
+        FavoriteRequest favoriteRequest = new FavoriteRequest(jamsil.getId(), gangnam.getId());
+        Favorite favorite = new Favorite(1L, 1L, favoriteRequest.getDepartureId(),
+                favoriteRequest.getArrivalId());
 
-        when(stationRepository.findByName(favoriteRequest.getDeparture()))
+        when(stationRepository.findById(favoriteRequest.getDepartureId()))
                 .thenReturn(Optional.of(new Station("잠실")));
-        when(stationRepository.findByName(favoriteRequest.getArrival()))
+        when(stationRepository.findById(favoriteRequest.getArrivalId()))
                 .thenReturn(Optional.of(new Station("강남")));
         when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member()));
         when(favoriteRepository.findAllByMemberId(1L))
@@ -63,16 +68,16 @@ class FavoriteServiceTest {
     @Test
     void createWhenDuplicatedInput() {
         Long duplicatedMemberId = 1L;
-        FavoriteRequest duplicatedFavoriteRequest = new FavoriteRequest("잠실", "강남");
+        FavoriteRequest duplicatedFavoriteRequest = new FavoriteRequest(jamsil.getId(), gangnam.getId());
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member("a@a", "a", "a")));
-        when(stationRepository.findByName(duplicatedFavoriteRequest.getDeparture()))
-                .thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getDeparture())));
-        when(stationRepository.findByName(duplicatedFavoriteRequest.getArrival()))
-                .thenReturn(Optional.of(new Station(duplicatedFavoriteRequest.getArrival())));
+        when(stationRepository.findById(duplicatedFavoriteRequest.getDepartureId()))
+                .thenReturn(Optional.of(new Station(1L, "잠실")));
+        when(stationRepository.findById(duplicatedFavoriteRequest.getArrivalId()))
+                .thenReturn(Optional.of(new Station(2L, "강남")));
         when(favoriteRepository.findAllByMemberId(duplicatedMemberId))
                 .thenReturn(Collections.singletonList(new Favorite(duplicatedMemberId,
-                        duplicatedFavoriteRequest.getDeparture(), duplicatedFavoriteRequest.getArrival())));
+                        duplicatedFavoriteRequest.getDepartureId(), duplicatedFavoriteRequest.getArrivalId())));
 
         assertThatThrownBy(() -> favoriteService.create(duplicatedMemberId, duplicatedFavoriteRequest))
                 .isInstanceOf(DuplicateFavoriteException.class);
@@ -81,12 +86,12 @@ class FavoriteServiceTest {
     @Test
     void deleteTest() {
         Long memberId = 1L;
-        FavoriteRequest favoriteRequest = new FavoriteRequest("잠실", "강남");
+        FavoriteRequest favoriteRequest = new FavoriteRequest(jamsil.getId(), gangnam.getId());
 
-        when(favoriteRepository.findByMemberIdAndDepartureAndArrival(memberId,
-                favoriteRequest.getDeparture(), favoriteRequest.getArrival()))
+        when(favoriteRepository.findByMemberIdAndDepartureIdAndArrivalId(memberId,
+                favoriteRequest.getDepartureId(), favoriteRequest.getArrivalId()))
                 .thenReturn(Optional.of(
-                        new Favorite(memberId, favoriteRequest.getDeparture(), favoriteRequest.getArrival())));
+                        new Favorite(memberId, favoriteRequest.getDepartureId(), favoriteRequest.getArrivalId())));
 
         favoriteService.delete(memberId, favoriteRequest);
 

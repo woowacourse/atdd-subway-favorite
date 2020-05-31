@@ -2,34 +2,35 @@ package wooteco.subway.domain.favorite;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
-
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 
 public class Favorite {
     @Id
     private Long id;
     private Long memberId;
-    private String departure;
-    private String arrival;
+    private Long departureId;
+    private Long arrivalId;
 
-    public Favorite(Long memberId, String departure, String arrival) {
-        this(null, memberId, departure, arrival);
+    public Favorite(Long memberId, Long departureId, Long arrivalId) {
+        this(null, memberId, departureId, arrivalId);
     }
 
     @PersistenceConstructor
-    public Favorite(Long id, Long memberId, String departure, String arrival) {
+    public Favorite(Long id, Long memberId, Long departureId, Long arrivalId) {
         this.id = id;
         this.memberId = memberId;
-        this.departure = departure;
-        this.arrival = arrival;
+        this.departureId = departureId;
+        this.arrivalId = arrivalId;
     }
 
     public static Favorite of(Long memberId, FavoriteRequest favoriteRequest) {
-        return new Favorite(memberId, favoriteRequest.getDeparture(), favoriteRequest.getArrival());
+        return new Favorite(memberId, favoriteRequest.getDepartureId(), favoriteRequest.getArrivalId());
     }
 
     public boolean isDuplicate(Favorite favorite) {
-        return this.memberId.equals(favorite.memberId) && this.departure.equals(favorite.departure) && this.arrival.equals(favorite.arrival);
+        return this.memberId.equals(favorite.memberId)
+                && this.departureId.equals(favorite.departureId)
+                && this.arrivalId.equals(favorite.arrivalId);
     }
 
     public Long getId() {
@@ -40,11 +41,11 @@ public class Favorite {
         return memberId;
     }
 
-    public String getDeparture() {
-        return departure;
+    public Long getDepartureId() {
+        return departureId;
     }
 
-    public String getArrival() {
-        return arrival;
+    public Long getArrivalId() {
+        return arrivalId;
     }
 }

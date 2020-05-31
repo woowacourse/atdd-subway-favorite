@@ -1,22 +1,22 @@
 package wooteco.subway.acceptance.member;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.DynamicTest.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import wooteco.subway.AcceptanceTest;
+import wooteco.subway.service.member.dto.ErrorResponse;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.member.dto.ErrorResponse;
-import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class LoginMemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 멤버 기능")
@@ -91,5 +91,30 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
             log().all().
             statusCode(HttpStatus.BAD_REQUEST.value()).
             extract().as(ErrorResponse.class);
+    }
+
+    @DisplayName("토큰 획득에 실패")
+    @Test
+    void invalidLoginMember() {
+        // when 정보가 없는 회원으로 로그인 시도를 한다
+        // then 토큰을 발급 받지 못한다
+        assertThat(invalidLoginResponse(TEST_USER_EMAIL, TEST_USER_PASSWORD)).isInstanceOf(ErrorResponse.class);
+    }
+
+    private ErrorResponse invalidLoginResponse(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/oauth/token").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value()).
+                extract().as(ErrorResponse.class);
     }
 }

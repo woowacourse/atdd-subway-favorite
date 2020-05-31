@@ -8,7 +8,7 @@ public class UpdateMemberRequest {
     @NotBlank
     private String password;
 
-    public UpdateMemberRequest() {
+    private UpdateMemberRequest() {
     }
 
     public UpdateMemberRequest(String name, String password) {

@@ -1,23 +1,22 @@
 package wooteco.subway.acceptance.favorite;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.DynamicTest.*;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import wooteco.subway.AcceptanceTest;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.line.dto.LineResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.favorite.dto.FavoriteResponse;
-import wooteco.subway.service.line.dto.LineResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.service.station.dto.StationResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     @TestFactory
@@ -37,10 +36,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         return Stream.of(dynamicTest("즐겨찾기 추가", () -> {
                 // given 경로를 검색한 상태이다
-                String departure = STATION_NAME_KANGNAM;
-                String arrival = STATION_NAME_HANTI;
+                Long departureId = kangnam.getId();
+                Long arrivalId = hanti.getId();
                 // when 즐겨찾기를 저장하는 요청을 보낸다
-                String location = addFavorite(tokenResponse, departure, arrival);
+                String location = addFavorite(tokenResponse, departureId, arrivalId);
 
                 // then 해당 회원에 즐겨찾기가 추가되었다
                 assertThat(location).isNotNull();
@@ -54,9 +53,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             }),
             dynamicTest("즐겨찾기 삭제", () -> {
                 // when 회원이 즐겨찾기 삭제를 요청한다
-                String departure = STATION_NAME_KANGNAM;
-                String arrival = STATION_NAME_HANTI;
-                deleteFavorite(tokenResponse, departure, arrival);
+                Long departureId = kangnam.getId();
+                Long arrivalId = hanti.getId();
+                deleteFavorite(tokenResponse, departureId, arrivalId);
 
                 // then 해당 회원의 즐겨찾기가 삭제되었다
                 List<FavoriteResponse> favoriteResponses = getFavorites(tokenResponse);
@@ -64,10 +63,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             }));
     }
 
-    private String addFavorite(TokenResponse tokenResponse, String departure, String arrival) {
-        Map<String, String> params = new HashMap<>();
-        params.put("departure", departure);
-        params.put("arrival", arrival);
+    private String addFavorite(TokenResponse tokenResponse, Long departureId, Long arrivalId) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("departureId", departureId);
+        params.put("arrivalId", arrivalId);
 
         return given().
             header("Authorization",
@@ -96,10 +95,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             extract().jsonPath().getList(".", FavoriteResponse.class);
     }
 
-    private void deleteFavorite(TokenResponse tokenResponse, String departure, String arrival) {
-        Map<String, String> params = new HashMap<>();
-        params.put("departure", departure);
-        params.put("arrival", arrival);
+    private void deleteFavorite(TokenResponse tokenResponse, Long departureId, Long arrivalId) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("departureId", departureId);
+        params.put("arrivalId", arrivalId);
 
         given().
             header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).

@@ -11,7 +11,7 @@ function Index() {
 
     this.init = () => {
         const jwt = localStorage.getItem("jwt");
-        if (jwt !== "") {
+        if (!!jwt && jwt !== "") {
             const loginTemplate = `<li class="inline-block p-1">
                 <a id="index-logout" href="/logout" class="underline">로그아웃</a>
                 </li>`

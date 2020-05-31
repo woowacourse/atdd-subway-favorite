@@ -1,25 +1,25 @@
 package wooteco.subway.service.favorite.dto;
 
-import static java.util.stream.Collectors.*;
+import wooteco.subway.domain.favorite.Favorite;
 
 import java.util.List;
 
-import wooteco.subway.domain.favorite.Favorite;
+import static java.util.stream.Collectors.toList;
 
 public class FavoriteResponse {
-    private String departure;
-    private String arrival;
+    private Long departureId;
+    private Long arrivalId;
 
     private FavoriteResponse() {
     }
 
-    public FavoriteResponse(String departure, String arrival) {
-        this.departure = departure;
-        this.arrival = arrival;
+    public FavoriteResponse(Long departureId, Long arrivalId) {
+        this.departureId = departureId;
+        this.arrivalId = arrivalId;
     }
 
     public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getDeparture(), favorite.getArrival());
+        return new FavoriteResponse(favorite.getDepartureId(), favorite.getArrivalId());
     }
 
     public static List<FavoriteResponse> listOf(List<Favorite> favorites) {
@@ -28,11 +28,11 @@ public class FavoriteResponse {
             .collect(toList());
     }
 
-    public String getDeparture() {
-        return departure;
+    public Long getDepartureId() {
+        return departureId;
     }
 
-    public String getArrival() {
-        return arrival;
+    public Long getArrivalId() {
+        return arrivalId;
     }
 }

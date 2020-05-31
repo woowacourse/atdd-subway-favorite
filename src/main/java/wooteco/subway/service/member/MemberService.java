@@ -1,9 +1,7 @@
 package wooteco.subway.service.member;
 
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -33,12 +31,8 @@ public class MemberService {
 
         Member member = memberRequest.toMember();
 
-        try {
-            Member savedMember = memberRepository.save(member);
-            return MemberResponse.of(savedMember);
-        } catch (DbActionExecutionException exception) {
-            throw new DuplicateEmailException();
-        }
+        Member savedMember = memberRepository.save(member);
+        return MemberResponse.of(savedMember);
     }
 
     @Transactional
