@@ -6,10 +6,9 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
-import wooteco.subway.exceptions.NotExistStationException;
 import wooteco.subway.service.favorite.dto.FavoritePathResponse;
+import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
@@ -19,19 +18,17 @@ import java.util.stream.IntStream;
 @Service
 public class FavoriteService {
 	private final MemberRepository memberRepository;
-	private final StationRepository stationRepository;
+	private final StationService stationService;
 
-	public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
+	public FavoriteService(MemberRepository memberRepository, StationService stationService) {
 		this.memberRepository = memberRepository;
-		this.stationRepository = stationRepository;
+		this.stationService = stationService;
 	}
 
 	@Transactional
 	public FavoritePath registerPath(Member member, String sourceName, String targetName) {
-		Station source = stationRepository.findByName(sourceName)
-				.orElseThrow(() -> new NotExistStationException(sourceName));
-		Station target = stationRepository.findByName(targetName)
-				.orElseThrow(() -> new NotExistStationException(targetName));
+		Station source = stationService.findStationByName(sourceName);
+		Station target = stationService.findStationByName(targetName);
 
 		FavoritePath favoritePath = FavoritePath.of(source.getId(), target.getId());
 		member.addFavoritePath(favoritePath);
@@ -42,7 +39,7 @@ public class FavoriteService {
 	public List<FavoritePathResponse> retrievePath(Member member) {
 		List<Long> favoritePathsIds = member.getFavoritePathsIds();
 		List<Long> favoritePathsStationsIds = member.getFavoritePathsStationsIds();
-		List<Station> favoritePathsStations = stationRepository.findAllById(favoritePathsStationsIds);
+		List<Station> favoritePathsStations = stationService.findStationsByIds(favoritePathsStationsIds);
 
 		return IntStream.range(0, favoritePathsIds.size())
 				.mapToObj(idx -> new FavoritePathResponse(favoritePathsIds.get(idx),

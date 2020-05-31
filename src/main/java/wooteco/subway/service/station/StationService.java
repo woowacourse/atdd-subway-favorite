@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exceptions.NotExistStationException;
 import wooteco.subway.service.line.LineStationService;
 
 import java.util.List;
@@ -30,5 +31,14 @@ public class StationService {
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
+    }
+
+    public Station findStationByName(String name) {
+        return stationRepository.findByName(name)
+                .orElseThrow(() -> new NotExistStationException(name));
+    }
+
+    public List<Station> findStationsByIds(List<Long> stationsIds) {
+        return stationRepository.findAllById(stationsIds);
     }
 }

@@ -11,14 +11,13 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
 import wooteco.subway.service.favorite.dto.FavoritePathResponse;
+import wooteco.subway.service.station.StationService;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,11 +32,11 @@ class FavoriteServiceTest {
 	@Mock
 	private MemberRepository memberRepository;
 	@Mock
-	private StationRepository stationRepository;
+	private StationService stationService;
 
 	@BeforeEach
 	void setUp() {
-		this.favoriteService = new FavoriteService(memberRepository, stationRepository);
+		this.favoriteService = new FavoriteService(memberRepository, stationService);
 	}
 
 	@DisplayName("즐겨찾기 경로 등록에 성공하는지 확인")
@@ -49,8 +48,8 @@ class FavoriteServiceTest {
 		FavoritePath favoritePathToAdd = new FavoritePath(1L, 1L, 2L);
 		expectedMember.addFavoritePath(favoritePathToAdd);
 
-		BDDMockito.when(stationRepository.findByName(STATION_NAME_KANGNAM)).thenReturn(Optional.of(source));
-		BDDMockito.when(stationRepository.findByName(STATION_NAME_HANTI)).thenReturn(Optional.of(target));
+		BDDMockito.when(stationService.findStationByName(STATION_NAME_KANGNAM)).thenReturn(source);
+		BDDMockito.when(stationService.findStationByName(STATION_NAME_HANTI)).thenReturn(target);
 		BDDMockito.when(memberRepository.save(any())).thenReturn(expectedMember);
 
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -70,8 +69,8 @@ class FavoriteServiceTest {
 		FavoritePath favoritePathToAdd = new FavoritePath(1L, 1L, 2L);
 		expectedMember.addFavoritePath(favoritePathToAdd);
 
-		BDDMockito.when(stationRepository.findByName(STATION_NAME_KANGNAM)).thenReturn(Optional.of(source));
-		BDDMockito.when(stationRepository.findByName(STATION_NAME_HANTI)).thenReturn(Optional.of(target));
+		BDDMockito.when(stationService.findStationByName(STATION_NAME_KANGNAM)).thenReturn(source);
+		BDDMockito.when(stationService.findStationByName(STATION_NAME_HANTI)).thenReturn(target);
 
 		assertThatThrownBy(() -> favoriteService.registerPath(expectedMember, source.getName(), target.getName()))
 				.isInstanceOf(DuplicatedFavoritePathException.class)
@@ -92,8 +91,8 @@ class FavoriteServiceTest {
 		member.addFavoritePath(favoritePath1);
 		member.addFavoritePath(favoritePath2);
 
-		BDDMockito.when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(kangnam, hanti, dogok,
-		                                                                                   yangjae));
+		BDDMockito.when(stationService.findStationsByIds(anyList())).thenReturn(Arrays.asList(kangnam, hanti, dogok,
+		                                                                                      yangjae));
 
 		List<FavoritePathResponse> favoritePathRespons = favoriteService.retrievePath(member);
 
