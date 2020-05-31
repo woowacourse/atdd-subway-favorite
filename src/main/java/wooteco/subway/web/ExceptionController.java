@@ -19,4 +19,9 @@ public class ExceptionController {
     public ResponseEntity<MemberErrorResponse> handleException(CreateMemberException e) {
         return ResponseEntity.badRequest().body(MemberErrorResponse.of(e));
     }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<UnknownErrorResponse> handleException(Exception e) {
+        return ResponseEntity.badRequest().body(UnknownErrorResponse.of(e));
+    }
 }
