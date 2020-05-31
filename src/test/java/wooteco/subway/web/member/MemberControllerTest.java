@@ -10,36 +10,16 @@ import static wooteco.subway.service.member.MemberServiceTest.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.MemberService;
 
-@ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = {MemberController.class, LoginMemberController.class})
-public class MemberControllerTest {
-	@MockBean
-	protected MemberService memberService;
-
-	@MockBean
-	protected JwtTokenProvider jwtTokenProvider;
-
-	@MockBean
-	protected AuthorizationExtractor authorizationExtractor;
-
-	protected MockMvc mockMvc;
-
+public class MemberControllerTest extends RestDocumentationTest {
 	@BeforeEach
 	void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)

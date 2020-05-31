@@ -13,15 +13,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
@@ -30,33 +23,13 @@ import wooteco.subway.doc.MemberLoginDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.FavoriteService;
-import wooteco.subway.service.member.MemberService;
 
 /**
  *    class description
  *
  *    @author HyungJu An
  */
-@ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = {FavoriteController.class, MemberController.class, LoginMemberController.class})
-@Import({JwtTokenProvider.class, AuthorizationExtractor.class})
-public class FavoriteControllerTest {
-	@MockBean
-	protected MemberService memberService;
-
-	@MockBean
-	protected FavoriteService favoriteService;
-
-	@Autowired
-	protected JwtTokenProvider jwtTokenProvider;
-
-	@Autowired
-	protected AuthorizationExtractor authorizationExtractor;
-
-	protected MockMvc mockMvc;
-
+public class FavoriteControllerTest extends RestDocumentationTest {
 	private String email;
 	private String password;
 	private String name;
