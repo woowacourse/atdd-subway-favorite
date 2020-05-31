@@ -1,5 +1,7 @@
 package wooteco.subway.web.member;
 
+import static wooteco.subway.web.member.LoginMemberController.MEMBER_URI_WITH_AUTH;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -18,9 +20,11 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
-@RequestMapping("/me")
+@RequestMapping(MEMBER_URI_WITH_AUTH)
 @RestController
 public class LoginMemberController {
+	public static final String MEMBER_URI_WITH_AUTH = "/me";
+
 	private MemberService memberService;
 
 	public LoginMemberController(MemberService memberService) {
