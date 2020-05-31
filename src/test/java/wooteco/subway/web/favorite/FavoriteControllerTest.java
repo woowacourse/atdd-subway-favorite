@@ -26,7 +26,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
@@ -124,7 +123,7 @@ class FavoriteControllerTest {
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
 		BDDMockito.when(favoriteService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI))
-				.thenReturn(new FavoritePath(1L, 1L, 2L));
+				.thenReturn(1L);
 
 		String token =
 				"bearer " + new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL);

@@ -53,11 +53,9 @@ class FavoriteServiceTest {
 		BDDMockito.when(memberRepository.save(any())).thenReturn(expectedMember);
 
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		FavoritePath favoritePath = favoriteService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI);
+		Long favoritePathId = favoriteService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI);
 
-		assertThat(favoritePath.getId()).isEqualTo(1L);
-		assertThat(favoritePath.getSourceId()).isEqualTo(1L);
-		assertThat(favoritePath.getTargetId()).isEqualTo(2L);
+		assertThat(favoritePathId).isEqualTo(1L);
 	}
 
 	@DisplayName("이미 등록된 즐겨찾기 경로를 재등록 시 실패하는지 확인")

@@ -26,14 +26,14 @@ public class FavoriteService {
 	}
 
 	@Transactional
-	public FavoritePath registerPath(Member member, String sourceName, String targetName) {
+	public Long registerPath(Member member, String sourceName, String targetName) {
 		Station source = stationService.findStationByName(sourceName);
 		Station target = stationService.findStationByName(targetName);
 
 		FavoritePath favoritePath = FavoritePath.of(source.getId(), target.getId());
 		member.addFavoritePath(favoritePath);
 		Member savedMember = memberRepository.save(member);
-		return savedMember.getRecentlyUpdatedPath();
+		return savedMember.getRecentlyUpdatedPath().getId();
 	}
 
 	public List<FavoritePathResponse> retrievePath(Member member) {
