@@ -1,6 +1,11 @@
 package wooteco.subway.domain.line;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class LineStations {
     private Set<LineStation> stations;
@@ -64,13 +69,5 @@ public class LineStations {
         return stations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
                 .findFirst();
-    }
-
-    public int getTotalDistance() {
-        return stations.stream().mapToInt(it -> it.getDistance()).sum();
-    }
-
-    public int getTotalDuration() {
-        return stations.stream().mapToInt(it -> it.getDuration()).sum();
     }
 }
