@@ -1,12 +1,11 @@
 package wooteco.subway.domain.member;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.Id;
+
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
 
 public class Member {
     @Id
@@ -19,19 +18,16 @@ public class Member {
     public Member() {
     }
 
-    public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.favorites = new LinkedHashSet<>();
-    }
-
     public Member(Long id, String email, String name, String password) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
         this.favorites = new LinkedHashSet<>();
+    }
+
+    public Member(String email, String name, String password) {
+        this(null, email, name, password);
     }
 
     public Long getId() {
@@ -74,6 +70,6 @@ public class Member {
     public void deleteFavoriteBy(Long favoriteId) {
         this.favorites.remove(favorites.stream()
                 .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
-                .findFirst().orElseThrow(IllegalArgumentException::new));
+                .findAny().orElseThrow(IllegalArgumentException::new));
     }
 }

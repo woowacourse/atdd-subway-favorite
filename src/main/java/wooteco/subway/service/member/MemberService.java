@@ -1,11 +1,6 @@
 package wooteco.subway.service.member;
 
-import java.util.LinkedHashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -18,6 +13,10 @@ import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+
+import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 public class MemberService {
@@ -54,8 +53,7 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(NotFoundUserException::new);
+        Member member = findMemberByEmail(param.getEmail());
         if (!member.checkPassword(param.getPassword())) {
             throw new IllegalArgumentException("잘못된 패스워드 입니다.");
         }
