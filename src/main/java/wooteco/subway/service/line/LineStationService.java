@@ -32,7 +32,7 @@ public class LineStationService {
     }
 
     public WholeSubwayResponse findLinesWithStations() {
-        Lines lines = new Lines(lineRepository.findAll());
+        Lines lines = Lines.of(lineRepository.findAll());
         List<Station> stations = stationRepository.findAllById(lines.getStationIds());
 
         List<LineDetailResponse> lineDetailResponses = lines.getLines().stream()

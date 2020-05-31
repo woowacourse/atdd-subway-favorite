@@ -88,7 +88,7 @@ public class PathServiceTest {
         when(stationRepository.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
         when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
         when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
-        when(graphService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
+        when(graphService.findPath(any(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
 
         PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
 

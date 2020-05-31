@@ -1,9 +1,9 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
@@ -36,7 +36,7 @@ public class PathService {
             throw new SourceEqualsTargetException();
         }
 
-        List<Line> lines = lineRepository.findAll();
+        Lines lines = Lines.of(lineRepository.findAll());
         Station sourceStation = stationRepository.findByName(source).orElseThrow(NoStationExistsException::new);
         Station targetStation = stationRepository.findByName(target).orElseThrow(NoStationExistsException::new);
 
@@ -48,7 +48,7 @@ public class PathService {
 
         List<Station> stations = stationRepository.findAllById(path);
 
-        List<LineStation> lineStations = lines.stream()
+        List<LineStation> lineStations = lines.getLines().stream()
                 .flatMap(line -> line.getStations().stream())
                 .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
                 .collect(Collectors.toList());
