@@ -19,7 +19,26 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("회원가입 성공")
     @Test
-    void createMemberSucceed() {}
+    void createMemberSucceed() {
+        final String TEST_EMAIL = "test@test.com";
+        final String TEST_NAME = "testName";
+        final String TEST_PASSWORD = "testPassword";
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("email", TEST_EMAIL);
+        requestBody.put("name", TEST_NAME);
+        requestBody.put("password", TEST_PASSWORD);
+
+        given().
+            body(requestBody).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            post("/join").
+        then().
+            log().all().
+            statusCode(HttpStatus.CREATED.value());
+    }
 
     @DisplayName("이미 존재하는 이메일로 회원가입")
     @Test
@@ -45,7 +64,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.BAD_REQUEST.value()).
                 extract().as(MemberErrorResponse.class);
-        assertThat(response.getErrorMessage()).isEqualTo(CreateMemberException.WRONG_CREATE_MESSAGE);
+        assertThat(response.getMessage()).isEqualTo(CreateMemberException.WRONG_CREATE_MESSAGE);
     }
 
     @DisplayName("요구되는 입력에 빈 값이 있는 경우의 회원가입")
@@ -72,7 +91,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 statusCode(HttpStatus.BAD_REQUEST.value()).
                 extract().as(MemberErrorResponse.class);
 
-            assertThat(response.getErrorMessage()).isEqualTo(MemberConstructException.EMPTY_NAME_MESSAGE);
+            assertThat(response.getMessage()).isEqualTo(MemberConstructException.EMPTY_NAME_MESSAGE);
     }
 
     @DisplayName("내 정보 확인에 필요한 내 정보 가져오기")
@@ -116,11 +135,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("로그인 없이 회원정보 수정하기")
     @Test
-        //todo: csv로 다양한 케이스
+    //todo: csv로 다양한 케이스
     void updateMyInfoWithoutLogin() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new HashMap< >();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("email", "NEW_" + TEST_USER_EMAIL);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);

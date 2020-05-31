@@ -72,7 +72,7 @@ class FavoriteControllerTest {
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
 
         MvcResult mvcResult = this.mockMvc.perform(
-            get("/favoritePaths")
+            get("/favorite-paths")
                 .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA2NjQ2NjIsImV4cCI6MTU5MDY2ODI2Mn0.oYE1kJY5wEYGofLv83SvPDe9zQbWCryyLLqQrdIybj8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +93,7 @@ class FavoriteControllerTest {
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
 
         this.mockMvc.perform(
-            post("/favoritePaths")
+            post("/favorite-paths")
                 .content(inputJson)
                 .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA2NjQ2NjIsImV4cCI6MTU5MDY2ODI2Mn0.oYE1kJY5wEYGofLv83SvPDe9zQbWCryyLLqQrdIybj8")
                 .accept(MediaType.APPLICATION_JSON)
@@ -112,7 +112,7 @@ class FavoriteControllerTest {
         doNothing().when(favoritePathService).delete(startStationName, endStationName, member);
 
         this.mockMvc.perform(
-            delete("/favoritePaths")
+            delete("/favorite-paths")
                 .content(inputJson)
                 .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA2NjQ2NjIsImV4cCI6MTU5MDY2ODI2Mn0.oYE1kJY5wEYGofLv83SvPDe9zQbWCryyLLqQrdIybj8")
                 .accept(MediaType.APPLICATION_JSON)

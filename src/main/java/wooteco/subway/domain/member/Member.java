@@ -44,6 +44,15 @@ public class Member {
         validatePassword(password);
     }
 
+    private void validateEmail(String email) {
+        if (Objects.isNull(email) || email.isEmpty()) {
+            throw new MemberConstructException(MemberConstructException.EMPTY_EMAIL_MESSAGE);
+        }
+        if (!email.contains("@")) {
+            throw new MemberConstructException(MemberConstructException.INVALID_EMAIL_FORM_MESSAGE);
+        }
+    }
+
     private void validateName(String name) {
         if (Objects.isNull(name) || name.isEmpty()) {
             throw new MemberConstructException(MemberConstructException.EMPTY_NAME_MESSAGE);
@@ -53,15 +62,6 @@ public class Member {
     private void validatePassword(String password) {
         if (Objects.isNull(password) || password.isEmpty()) {
             throw new MemberConstructException(MemberConstructException.EMPTY_PASSWORD_MESSAGE);
-        }
-    }
-
-    private void validateEmail(String email) {
-        if (Objects.isNull(email) || email.isEmpty()) {
-            throw new MemberConstructException(MemberConstructException.EMPTY_EMAIL_MESSAGE);
-        }
-        if (!email.contains("@")) {
-            throw new MemberConstructException(MemberConstructException.INVALID_EMAIL_FORM_MESSAGE);
         }
     }
 
@@ -113,6 +113,15 @@ public class Member {
         return Objects.isNull(this.getId());
     }
 
+    public void removeFavoritePath(Station start, Station end) {
+        // set 에서 favorite path 를 찾아서 remove
+        this.favoritePaths.removeIf(favoritePath -> favoritePath.match(start, end));
+    }
+
+    public boolean isNotMe(String email) {
+        return !this.email.equals(email);
+    }
+
     public Set<FavoritePath> getFavoritePaths() {
         return Collections.unmodifiableSet(favoritePaths);
     }
@@ -136,14 +145,5 @@ public class Member {
     @Override
     public int hashCode() {
         return Objects.hash(id, email, name, password, favoritePaths);
-    }
-
-    public void removeFavoritePath(Station start, Station end) {
-        // set 에서 favorite path 를 찾아서 remove
-        this.favoritePaths.removeIf(favoritePath -> favoritePath.match(start, end));
-    }
-
-    public boolean isNotMe(String email) {
-        return !this.email.equals(email);
     }
 }

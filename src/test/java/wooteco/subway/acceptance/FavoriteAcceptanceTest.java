@@ -47,7 +47,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
         .when()
             .log().all()
-            .delete("/favoritePaths")
+            .delete("/favorite-paths")
         .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -64,7 +64,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
                 .log().all()
-                .get("/favoritePaths")
+                .get("/favorite-paths")
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -90,6 +90,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .log().all()
-            .post("/favoritePaths");
+            .post("/favorite-paths");
     }
 }

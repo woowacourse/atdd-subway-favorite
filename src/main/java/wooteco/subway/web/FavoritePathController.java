@@ -15,7 +15,7 @@ import wooteco.subway.service.station.dto.FavoritePathResponse;
 import wooteco.subway.web.member.LoginMember;
 
 @RestController
-@RequestMapping("/favoritePaths")
+@RequestMapping("/favorite-paths")
 public class FavoritePathController {
 
     private final FavoritePathService favoriteService;
