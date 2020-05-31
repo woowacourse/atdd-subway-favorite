@@ -1,5 +1,6 @@
 package wooteco.subway.config;
 
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -30,10 +31,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(basicAuthInterceptor).addPathPatterns("/me/basic");
         registry.addInterceptor(sessionInterceptor).addPathPatterns("/me/session");
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me/bearer");
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members");
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members/*");
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/favorite-paths");
+        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns(
+            Arrays.asList("/me/bearer", "/members", "/members/*", "/favorite-paths"));
     }
 
     @Override
