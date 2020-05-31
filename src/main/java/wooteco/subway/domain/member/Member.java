@@ -19,16 +19,12 @@ public class Member {
     }
 
     public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(null, email, name, password, Favorites.empty());
+
     }
 
     public Member(Long id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(id, email, name, password, Favorites.empty());
     }
 
     public Member(Long id, String email, String name, String password, Favorites favorites) {
