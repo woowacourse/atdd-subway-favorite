@@ -14,21 +14,21 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Service
 @Transactional
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+	private final MemberRepository memberRepository;
+	private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
-        this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+		this.memberRepository = memberRepository;
+		this.jwtTokenProvider = jwtTokenProvider;
+	}
 
-    public Member createMember(Member member) {
-        String email = member.getEmail();
-        if (memberRepository.findByEmail(email).isPresent()) {
-	        throw new DuplicatedEmailException(email);
-        }
-	    return memberRepository.save(member);
-    }
+	public Member createMember(Member member) {
+		String email = member.getEmail();
+		if (memberRepository.existsByEmail(email)) {
+			throw new DuplicatedEmailException(email);
+		}
+		return memberRepository.save(member);
+	}
 
 	public void updateMember(Long id, UpdateMemberRequest param) {
 		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -51,7 +51,7 @@ public class MemberService {
 
 	public String createToken(LoginRequest param) {
 		String email = param.getEmail();
-		Member member = memberRepository.findByEmail(email).orElseThrow(() -> new InvalidEmailException(email));
+		Member member = findMemberByEmail(email);
 		if (member.hasIdenticalPasswordWith(param.getPassword())) {
 			return jwtTokenProvider.createToken(email);
 		}
@@ -59,6 +59,6 @@ public class MemberService {
 	}
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+	    return memberRepository.findByEmail(email).orElseThrow(() -> new InvalidEmailException(email));
     }
 }

@@ -65,7 +65,7 @@ public class MemberServiceTest {
     @Test
     void failToCreateMemberIfAlreadyRegisteredMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        when(memberRepository.existsByEmail(anyString())).thenReturn(true);
 
         assertThatThrownBy(() -> memberService.createMember(member))
                 .isInstanceOf(DuplicatedEmailException.class)
