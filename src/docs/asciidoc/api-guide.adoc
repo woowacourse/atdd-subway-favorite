@@ -30,7 +30,7 @@ operation::members/create[snippets='http-request,http-response,request-fields']
 operation::login[snippets='http-request,http-response,request-fields']
 
 [[resources-login-member-retreive]]
-=== 내 정보
+=== 내 정보 조회
 
 operation::me/retrieve[snippets='http-request,http-response']
 
