@@ -38,10 +38,4 @@ create table if not exists MEMBER
     primary key(id)
 );
 
-create table if not exists FAVORITE
-(
-    id bigint auto_increment not null,
-    member bigint not null,
-    start_station_id bigint not null,
-    end_station_id bigint not null
-);
+-- // TODO 즐겨찾기 테이블 스키마 추가
