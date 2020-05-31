@@ -19,7 +19,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping("/join")
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse response = memberService.createMember(request);
         return ResponseEntity

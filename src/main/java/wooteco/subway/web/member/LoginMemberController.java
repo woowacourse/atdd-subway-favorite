@@ -42,9 +42,4 @@ public class LoginMemberController {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
-        return ResponseEntity.ok().body(MemberResponse.of(member));
-    }
 }

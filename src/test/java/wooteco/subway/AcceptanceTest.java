@@ -270,7 +270,7 @@ public class AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/members").
+                        post("/join").
                         then().
                         log().all().
                         extract().response();

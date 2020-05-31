@@ -26,12 +26,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
-        // 회원가입 시 토큰 검증 불필요
-        if (request.getMethod().equals("POST") && request.getRequestURI().equals("/members")) {
-            return true;
-        }
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String credential = authExtractor.extract(request, BEARER);
         if (!jwtTokenProvider.validateToken(credential)) {
             throw new UnauthorizedException(REQUIRE_LOGIN_MESSAGE);
@@ -43,16 +38,12 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
     }
 }

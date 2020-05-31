@@ -80,7 +80,7 @@ public class MemberControllerTest {
 
         String request = GSON.toJson(joinRequest);
 
-        this.mockMvc.perform(post("/members")
+        this.mockMvc.perform(post("/join")
                 .content(request)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))

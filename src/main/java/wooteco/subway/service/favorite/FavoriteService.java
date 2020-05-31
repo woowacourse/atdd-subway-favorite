@@ -9,7 +9,7 @@ import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
 @Service
 public class FavoriteService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public FavoriteService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
