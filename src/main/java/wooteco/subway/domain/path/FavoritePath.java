@@ -2,6 +2,9 @@ package wooteco.subway.domain.path;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FavoritePath {
 	@Id
 	private Long id;
@@ -28,5 +31,9 @@ public class FavoritePath {
 
 	public Long getTargetId() {
 		return targetId;
+	}
+
+	public List<Long> getStationsId() {
+		return Arrays.asList(sourceId, targetId);
 	}
 }

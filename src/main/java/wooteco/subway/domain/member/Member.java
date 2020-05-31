@@ -2,13 +2,13 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
 import wooteco.subway.domain.path.FavoritePath;
-import wooteco.subway.exceptions.DuplicatedFavoritePathException;
+import wooteco.subway.domain.path.FavoritePaths;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Member {
     @Id
@@ -16,7 +16,9 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private List<FavoritePath> favoritePaths = new ArrayList<>();
+
+    @Embedded.Empty
+    private FavoritePaths favoritePaths = new FavoritePaths(new ArrayList<>());
 
     public Member() {
     }
@@ -32,7 +34,7 @@ public class Member {
         this.id = id;
     }
 
-    public Member(Long id, String email, String name, String password, List<FavoritePath> favoritePaths) {
+    public Member(Long id, String email, String name, String password, FavoritePaths favoritePaths) {
         this(id, email, name, password);
         this.favoritePaths = favoritePaths;
     }
@@ -47,21 +49,7 @@ public class Member {
     }
 
     public void addFavoritePath(FavoritePath favoritePath) {
-        validateDuplication(favoritePath);
-
-        if (Objects.nonNull(favoritePath)) {
-            this.favoritePaths.add(favoritePath);
-        }
-    }
-
-    private void validateDuplication(FavoritePath favoritePath) {
-        favoritePaths.stream()
-                .filter(path -> Objects.equals(path.getSourceId(), favoritePath.getSourceId()) &&
-                        Objects.equals(path.getTargetId(), favoritePath.getTargetId()))
-                .findFirst()
-                .ifPresent(path -> {
-                    throw new DuplicatedFavoritePathException();
-                });
+        favoritePaths.addPath(favoritePath);
     }
 
     public boolean hasIdenticalPasswordWith(String password) {
@@ -69,14 +57,15 @@ public class Member {
     }
 
     public boolean hasNotPath(Long pathId) {
-        return favoritePaths.stream()
-                .noneMatch(path -> Objects.equals(path.getId(), pathId));
+        return favoritePaths.hasNotPath(pathId);
     }
 
     public void deletePath(Long pathId) {
-        favoritePaths = favoritePaths.stream()
-                .filter(path -> !Objects.equals(path.getId(), pathId))
-                .collect(Collectors.toList());
+        favoritePaths.deletePath(pathId);
+    }
+
+    public FavoritePath getRecentlyUpdatedPath() {
+        return favoritePaths.getRecentlyUpdatedPath();
     }
 
     public Long getId() {
@@ -93,14 +82,6 @@ public class Member {
 
     public String getPassword() {
         return password;
-    }
-
-    public List<FavoritePath> getFavoritePaths() {
-        return favoritePaths;
-    }
-
-    public FavoritePath getRecentlyUpdatedPath() {
-        return favoritePaths.get(favoritePaths.size() - 1);
     }
 
     @Override
