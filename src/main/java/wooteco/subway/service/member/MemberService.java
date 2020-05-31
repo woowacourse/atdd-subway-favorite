@@ -16,8 +16,8 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Service
 public class MemberService {
     static final String NOT_MANAGED_BY_REPOSITORY = "repository에 영속되지 않는 member 객체를 update 할 수 없습니다.";
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;

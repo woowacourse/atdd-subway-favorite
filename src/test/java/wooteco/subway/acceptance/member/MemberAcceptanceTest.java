@@ -102,8 +102,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     //todo: csv로 다양한 케이스
     void retrieveMyInfoWithoutLogin() {
-
-        
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();
 

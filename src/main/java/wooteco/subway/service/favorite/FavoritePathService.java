@@ -13,8 +13,8 @@ import wooteco.subway.service.station.dto.FavoritePathResponse;
 @Service
 public class FavoritePathService {
 
-    private MemberService memberService;
-    private StationService stationService;
+    private final MemberService memberService;
+    private final StationService stationService;
 
     public FavoritePathService(MemberService memberService, StationService stationService) {
         this.memberService = memberService;

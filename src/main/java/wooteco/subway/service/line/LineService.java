@@ -1,20 +1,19 @@
 package wooteco.subway.service.line;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
-
-import java.util.List;
 
 @Service
 public class LineService {
-    private LineStationService lineStationService;
-    private LineRepository lineRepository;
+    private final LineStationService lineStationService;
+    private final LineRepository lineRepository;
 
     public LineService(LineStationService lineStationService, LineRepository lineRepository) {
         this.lineStationService = lineStationService;
