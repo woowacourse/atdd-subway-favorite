@@ -9,6 +9,9 @@ public class LineStation {
     private int duration;
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
+        if (Objects.nonNull(preStationId) && preStationId.equals(stationId)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
+        }
         this.preStationId = preStationId;
         this.stationId = stationId;
         this.distance = distance;
