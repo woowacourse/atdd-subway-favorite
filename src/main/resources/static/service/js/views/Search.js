@@ -35,55 +35,22 @@ function Search() {
     getSearchResult(PATH_TYPE.DURATION)
   }
 
-  const getSearchResult = async pathType => {
-    const classList = $favoriteButton.classList
+  const getSearchResult = pathType => {
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value,
       type: pathType
     }
-    await api.path
+    api.path
       .find(searchInput)
       .then(data => showSearchResult(data))
       .catch(error => alert(ERROR_MESSAGE.COMMON))
-
-    const token = sessionStorage.getItem("accessToken")
-    let isFavorite = false;
-    await api.favorite.getFavoriteByMember(token).then(data => {
-      data.favorites.forEach(favorite => {
-        if (favorite.startStation.name === $departureStationName.value && favorite.endStation.name === $arrivalStationName.value) {
-          isFavorite = true;
-          $favoriteButton.dataset.favoriteId = favorite.id
-        }
-      })
-    })
-
-    if (!isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
-    } else {
-      classList.remove('mdi-star-outline')
-      classList.remove('text-gray-600')
-      classList.remove('bg-yellow-500')
-      classList.add('mdi-star')
-      classList.add('text-yellow-500')
-    }
   }
 
-  const onToggleFavorite = async event => {
+  const onToggleFavorite = event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
-    const startStationId = document.querySelector('#start-station-id').dataset.startStationId
-    const endStationId = document.querySelector('#end-station-id').dataset.endStationId
-    const token = sessionStorage.getItem("accessToken");
-    if (!token) {
-      alert("로그인 해주십쇼.")
-      window.location = "/login"
-    }
 
     if (isFavorite) {
       classList.add('mdi-star-outline')
@@ -91,18 +58,12 @@ function Search() {
       classList.add('bg-yellow-500')
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
-      await api.favorite.delete(token, $favoriteButton.dataset.favoriteId)
     } else {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
-      const favoriteInfo = {
-        startStationId: startStationId,
-        endStationId: endStationId
-      }
-      await api.favorite.create(token, favoriteInfo)
     }
   }
 

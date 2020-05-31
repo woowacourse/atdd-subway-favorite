@@ -3,17 +3,12 @@ package wooteco.subway.domain.member;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Member {
     @Id
     private Long id;
     private String email;
     private String name;
     private String password;
-
-    private Set<Favorite> favorites = new HashSet<>();
 
     public Member() {
     }
@@ -45,23 +40,6 @@ public class Member {
 
     public String getPassword() {
         return password;
-    }
-
-    public Set<Favorite> getFavorites() {
-        return favorites;
-    }
-
-    public void addFavorite(Favorite favorite) {
-        favorites.add(favorite);
-    }
-
-    public void removeFavorite(Long favoriteId) {
-        Favorite findFavorite = favorites.stream()
-        .filter(favorite -> favorite.getId().equals(favoriteId))
-        .findFirst()
-        .orElseThrow(IllegalArgumentException::new);
-
-        favorites.remove(findFavorite);
     }
 
     public void update(String name, String password) {

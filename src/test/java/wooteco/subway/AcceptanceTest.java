@@ -8,13 +8,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.service.member.dto.MemberFavoriteResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -40,16 +37,9 @@ public class AcceptanceTest {
     public static final String LINE_NAME_BUNDANG = "분당선";
     public static final String LINE_NAME_SINBUNDANG = "신분당선";
 
-    public static final Long TEST_USER_ID = 1L;
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
-
-    public static final String TEST_INVALID_USER_EMAIL = "brown.borwn";
-    public static final String TEST_INVALID_USER_NAME = "";
-
-    public static final Long TEST_START_STATION_ID = 1L;
-    public static final Long TEST_END_STATION_ID = 2L;
 
     @LocalServerPort
     public int port;
@@ -276,11 +266,9 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(TokenResponse tokenResponse, String email) {
+    public MemberResponse getMember(String email) {
         return
-                given().auth().
-                        oauth2(tokenResponse.getAccessToken()).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                given().
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
                         get("/members?email=" + email).
@@ -290,69 +278,25 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(TokenResponse tokenResponse, Long id) {
+    public void updateMember(MemberResponse memberResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
-        given().auth().
-                oauth2(tokenResponse.getAccessToken()).
+        given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + id).
+                put("/members/" + memberResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(TokenResponse tokenResponse, Long id) {
-        given().auth().
-                oauth2(tokenResponse.getAccessToken()).
-                when().
-                delete("/members/" + id).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    public void createFavorite(TokenResponse tokenResponse, Long memberId, Long startStationId, Long endStationId) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startStationId", startStationId.toString());
-        params.put("endStationId", endStationId.toString());
-
-        given().auth().
-                oauth2(tokenResponse.getAccessToken()).
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/members/"+ memberId +"/favorite").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value());
-    }
-
-    public MemberFavoriteResponse findFavoriteById(TokenResponse tokenResponse, Long id) {
-        return
-                given().auth().
-                        oauth2(tokenResponse.getAccessToken()).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        get("/members/"+ id +"/favorite").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(MemberFavoriteResponse.class);
-    }
-
-    public void deleteFavoriteById(TokenResponse tokenResponse, Long memberId, Long favoriteId) {
-        given().auth().
-                oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/members/"+ memberId + "/favorite/" + favoriteId).
+    public void deleteMember(MemberResponse memberResponse) {
+        given().when().
+                delete("/members/" + memberResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
