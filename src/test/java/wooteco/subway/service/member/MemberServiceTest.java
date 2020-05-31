@@ -17,15 +17,12 @@ import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -89,6 +86,17 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @DisplayName("토큰 생성 실패")
+    @Test
+    void createTokenWithError() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, "wrongPassword");
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        assertThatThrownBy(()->memberService.createToken(loginRequest))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("모든 즐겨찾기 조회")
