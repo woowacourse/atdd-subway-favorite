@@ -12,6 +12,12 @@ import wooteco.subway.exception.NotFoundUserException;
 
 @RestControllerAdvice
 public class ExceptionController {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ExceptionResponse> runtimeException() {
+        ExceptionResponse exceptionResponse = new ExceptionResponse("서버측 오류입니다. 다시 시도해주세요.");
+        return ResponseEntity.badRequest().body(exceptionResponse);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();

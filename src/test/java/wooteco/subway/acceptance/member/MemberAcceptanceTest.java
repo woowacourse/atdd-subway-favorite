@@ -18,15 +18,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         TokenResponse token = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        MemberResponse memberResponse = getMember(token);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
-        assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
-
-        updateMember(memberResponse, token);
+        updateMember(token);
         MemberResponse updatedMember = getMember(token);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
-        deleteMember(memberResponse, token);
+        deleteMember(token);
     }
 }

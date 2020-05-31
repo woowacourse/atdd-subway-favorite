@@ -22,6 +22,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.member.AuthorizationExtractor;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -275,7 +276,7 @@ public class AcceptanceTest {
     // @formatter:off
     public MemberResponse getMember(TokenResponse token) {
         return given()
-                    .header("Authorization", token.getTokenType()+" "+token.getAccessToken())
+                    .header(AuthorizationExtractor.AUTHORIZATION, token.getTokenType()+" "+token.getAccessToken())
                 .when()
                     .get("/members")
                 .then()
@@ -285,31 +286,31 @@ public class AcceptanceTest {
     }
 
     // @formatter:off
-    public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
+    public void updateMember(TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
         String token = tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
 
         given()
-            .header("Authorization", token)
+            .header(AuthorizationExtractor.AUTHORIZATION, token)
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
         .when()
-            .put("/members/" + memberResponse.getId())
+            .put("/members")
         .then()
             .log().all()
             .statusCode(HttpStatus.OK.value());
     }
 
     // @formatter:off
-    public void deleteMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
+    public void deleteMember(TokenResponse tokenResponse) {
         String token = tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
 
         given().when()
-            .header("Authorization", token)
-            .delete("/members/" + memberResponse.getId())
+            .header(AuthorizationExtractor.AUTHORIZATION, token)
+            .delete("/members/")
         .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());

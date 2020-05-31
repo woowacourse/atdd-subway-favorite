@@ -30,7 +30,6 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteResponse;
-import wooteco.subway.web.member.interceptor.Auth;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -68,8 +67,8 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(post("/members")
             .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated())
             .andDo(print())
             .andDo(MemberDocumentation.createMember());
@@ -98,8 +97,8 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(put("/members")
             .header(AuthorizationExtractor.AUTHORIZATION, token)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(inputJson))
             .andExpect(status().isOk())
             .andDo(print())
@@ -125,8 +124,8 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(post("/members/favorites")
             .header(AuthorizationExtractor.AUTHORIZATION, token)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(inputJson))
             .andExpect(status().isOk())
             .andDo(print())
@@ -140,7 +139,7 @@ public class MemberControllerTest {
         given(memberService.findFavorites(any())).willReturn(favorites);
 
         this.mockMvc.perform(get("/members/favorites")
-            .header("Authorization", token))
+            .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(MemberDocumentation.getFavorites());

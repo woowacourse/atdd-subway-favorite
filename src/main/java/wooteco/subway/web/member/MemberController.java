@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ import wooteco.subway.web.member.interceptor.Auth;
 import wooteco.subway.web.member.interceptor.IsAuth;
 
 @RestController
-@RequestMapping(value = "/members", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/members")
 public class MemberController {
     private final MemberService memberService;
 
