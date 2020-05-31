@@ -6,7 +6,6 @@ import org.springframework.data.relational.core.mapping.Embedded;
 import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.path.FavoritePaths;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,11 +15,10 @@ public class Member {
     private String email;
     private String name;
     private String password;
-
     @Embedded.Empty
-    private FavoritePaths favoritePaths = new FavoritePaths(new ArrayList<>());
+    private FavoritePaths favoritePaths = FavoritePaths.empty();
 
-    public Member() {
+    private Member() {
     }
 
     public Member(String email, String name, String password) {

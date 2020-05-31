@@ -59,7 +59,7 @@ public class LineControllerTest {
     }
 
     private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
+        List<Station> stations = Arrays.asList(new Station("강남"), new Station("역삼"), new Station("선릉"));
         return LineDetailResponse.of(new Line(), stations);
     }
 }

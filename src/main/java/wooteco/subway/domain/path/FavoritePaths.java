@@ -3,6 +3,7 @@ package wooteco.subway.domain.path;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +15,10 @@ public class FavoritePaths {
 
 	public FavoritePaths(final List<FavoritePath> favoritePaths) {
 		this.favoritePaths = favoritePaths;
+	}
+
+	public static FavoritePaths empty() {
+		return new FavoritePaths(new ArrayList<>());
 	}
 
 	public void addPath(FavoritePath favoritePath) {
