@@ -39,6 +39,9 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
+        if (favorites.contains(favorite)) {
+            throw new IllegalArgumentException("이미 존재하는 즐겨찾기입니다.");
+        }
         this.favorites.add(favorite);
     }
 
@@ -67,6 +70,9 @@ public class Member {
     }
 
     public void removeFavorite(Favorite favorite) {
+        if (!favorites.contains(favorite)) {
+            throw new IllegalArgumentException("존재하지 않는 즐겨찾기입니다.");
+        }
         favorites.remove(favorite);
     }
 }
