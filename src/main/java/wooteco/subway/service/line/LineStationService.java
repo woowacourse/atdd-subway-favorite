@@ -1,18 +1,17 @@
 package wooteco.subway.service.line;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.EntityNotFoundException;
+import wooteco.subway.exception.LineNotFoundException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineStationService {
@@ -26,7 +25,7 @@ public class LineStationService {
 
     public LineDetailResponse findLineWithStationsById(Long lineId) {
         Line line = lineRepository.findById(lineId)
-            .orElseThrow(() -> new EntityNotFoundException("노선을 찾을 수 없습니다."));
+                .orElseThrow(() -> new LineNotFoundException("노선을 찾을 수 없습니다."));
         List<Long> lineStationIds = line.getStationIds();
         List<Station> stations = stationRepository.findAllById(lineStationIds);
 

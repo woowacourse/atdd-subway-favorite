@@ -24,7 +24,13 @@ const METHOD = {
 
 const api = (() => {
     const request = (uri, config) => fetch(uri, config)
-    const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
+    const requestWithJsonData = (uri, config) => fetch(uri, config).then(response => {
+        if (!response.ok) {
+            response.json().then(error => alert(error.errorMessage));
+            return;
+        }
+        return response.json();
+    })
     const accessToken = localStorage.getItem("accessToken")
     const tokenType = localStorage.getItem("tokenType")
 

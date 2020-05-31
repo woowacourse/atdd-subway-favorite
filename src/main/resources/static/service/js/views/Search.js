@@ -1,4 +1,4 @@
-import {ERROR_MESSAGE, ERROR_SNACK_BAR, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
+import {ERROR_SNACK_BAR, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
 import {searchResultTemplate} from '../../utils/templates.js'
 
@@ -49,7 +49,6 @@ function Search() {
             .then(data => {
                 showSearchResult(data)
             })
-            .catch(error => alert(ERROR_MESSAGE.COMMON))
     }
 
     const onToggleFavorite = event => {
