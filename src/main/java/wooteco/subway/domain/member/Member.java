@@ -68,6 +68,14 @@ public class Member {
         return favoritePaths.getRecentlyUpdatedPath();
     }
 
+    public List<Long> getFavoritePathsIds() {
+        return favoritePaths.getPathsIds();
+    }
+
+    public List<Long> getFavoritePathsStationsIds() {
+        return favoritePaths.getStationsIds();
+    }
+
     public Long getId() {
         return id;
     }

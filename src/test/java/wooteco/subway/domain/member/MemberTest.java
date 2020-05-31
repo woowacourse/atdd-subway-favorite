@@ -48,7 +48,7 @@ class MemberTest {
 		member.addFavoritePath(new FavoritePath(1L, 1L, 2L));
 		member.addFavoritePath(new FavoritePath(2L, 3L, 4L));
 
-		assertThat(member.getFavoritePaths()).hasSize(2);
+		assertThat(member.getFavoritePathsIds()).hasSize(2);
 	}
 
 	@DisplayName("이미 등록된 즐겨찾기 경로 추가 시 실패하는지 확인")

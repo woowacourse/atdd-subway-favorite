@@ -16,12 +16,14 @@ import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
 import wooteco.subway.service.favorite.dto.FavoritePathResponse;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static wooteco.subway.AcceptanceTest.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -90,10 +92,8 @@ class FavoriteServiceTest {
 		member.addFavoritePath(favoritePath1);
 		member.addFavoritePath(favoritePath2);
 
-		BDDMockito.when(stationRepository.findById(kangnam.getId())).thenReturn(Optional.of(kangnam));
-		BDDMockito.when(stationRepository.findById(hanti.getId())).thenReturn(Optional.of(hanti));
-		BDDMockito.when(stationRepository.findById(dogok.getId())).thenReturn(Optional.of(dogok));
-		BDDMockito.when(stationRepository.findById(yangjae.getId())).thenReturn(Optional.of(yangjae));
+		BDDMockito.when(stationRepository.findAllById(anyList())).thenReturn(Arrays.asList(kangnam, hanti, dogok,
+		                                                                                   yangjae));
 
 		List<FavoritePathResponse> favoritePathRespons = favoriteService.retrievePath(member);
 
@@ -113,8 +113,8 @@ class FavoriteServiceTest {
 
 		favoriteService.deletePath(member, 1L);
 
-		assertThat(member.getFavoritePaths()).hasSize(1);
-		assertThat(member.getFavoritePaths().get(0).getSourceId()).isEqualTo(3L);
+		assertThat(member.getFavoritePathsIds()).hasSize(1);
+		assertThat(member.getFavoritePathsStationsIds().get(0)).isEqualTo(3L);
 	}
 
 	@DisplayName("다른 회원의 즐겨찾기 경로 삭제 시도 시 실패하는지 확인")

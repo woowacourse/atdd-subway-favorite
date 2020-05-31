@@ -13,6 +13,7 @@ import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class FavoriteService {
@@ -37,16 +38,14 @@ public class FavoriteService {
 	}
 
 	public List<FavoritePathResponse> retrievePath(Member member) {
-		List<FavoritePath> favoritePaths = member.getFavoritePaths();
-		return favoritePaths.stream()
-				.map(path -> {
-					Station source =
-							stationRepository.findById(path.getSourceId()).orElseThrow(() -> new NotExistStationException(path.getSourceId()));
-					Station target =
-							stationRepository.findById(path.getTargetId()).orElseThrow(() -> new NotExistStationException(path.getTargetId()));
-					return new FavoritePathResponse(path.getId(), StationResponse.of(source),
-					                                StationResponse.of(target));
-				})
+		List<Long> favoritePathsIds = member.getFavoritePathsIds();
+		List<Long> favoritePathsStationsIds = member.getFavoritePathsStationsIds();
+		List<Station> favoritePathsStations = stationRepository.findAllById(favoritePathsStationsIds);
+
+		return IntStream.range(0, favoritePathsIds.size())
+				.mapToObj(idx -> new FavoritePathResponse(favoritePathsIds.get(idx),
+				                                          StationResponse.of(favoritePathsStations.get(idx * 2)),
+				                                          StationResponse.of(favoritePathsStations.get(idx * 2 + 1))))
 				.collect(Collectors.toList());
 	}
 
