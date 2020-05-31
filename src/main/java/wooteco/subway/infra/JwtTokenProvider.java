@@ -1,5 +1,6 @@
 package wooteco.subway.infra;
 
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 
@@ -15,10 +16,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtTokenProvider {
     private String secretKey;
-    private long validityInMilliseconds;
+    private Duration validityInMilliseconds;
 
     public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
-        @Value("${security.jwt.token.expire-length}") long validityInMilliseconds) {
+        @Value("${security.jwt.token.expire-length}") Duration validityInMilliseconds) {
         this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
         this.validityInMilliseconds = validityInMilliseconds;
     }
@@ -28,7 +29,7 @@ public class JwtTokenProvider {
 
         Date now = new Date();
         Date validity = new Date(now.getTime()
-            + validityInMilliseconds);
+            + validityInMilliseconds.getSeconds());
 
         return Jwts.builder()
             .setClaims(claims)
