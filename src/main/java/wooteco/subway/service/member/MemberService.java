@@ -7,6 +7,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.member.exception.DuplicatedEmailException;
 import wooteco.subway.service.member.exception.EmailNotFoundException;
 import wooteco.subway.service.member.exception.MemberNotFoundException;
 import wooteco.subway.service.member.exception.WrongPasswordException;
@@ -22,6 +23,10 @@ public class MemberService {
 	}
 
 	public Member createMember(Member member) {
+		if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
+			throw new DuplicatedEmailException();
+		}
+
 		return memberRepository.save(member);
 	}
 
