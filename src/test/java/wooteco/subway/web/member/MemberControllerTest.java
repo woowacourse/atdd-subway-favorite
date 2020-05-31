@@ -51,6 +51,10 @@ public class MemberControllerTest {
     public void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .apply(documentationConfiguration(restDocumentation))
+            .addFilter((request, response, chain) -> {
+                response.setCharacterEncoding("UTF-8");
+                chain.doFilter(request, response);
+            }, "/*")
             .build();
 
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -71,7 +75,8 @@ public class MemberControllerTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated())
             .andDo(print())
-            .andDo(MemberDocumentation.createMember());
+            .andDo(MemberDocumentation.createMember())
+            .andReturn();
     }
 
     @Test
