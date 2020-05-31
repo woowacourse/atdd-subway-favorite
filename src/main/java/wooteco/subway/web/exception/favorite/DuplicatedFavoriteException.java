@@ -1,4 +1,4 @@
-package wooteco.subway.service.favorite.exception;
+package wooteco.subway.web.exception.favorite;
 
 public class DuplicatedFavoriteException extends FavoriteException {
 	public DuplicatedFavoriteException() {

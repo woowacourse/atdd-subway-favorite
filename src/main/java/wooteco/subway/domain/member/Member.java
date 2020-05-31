@@ -10,8 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
 import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.service.favorite.exception.DuplicatedFavoriteException;
-import wooteco.subway.service.favorite.exception.FavoriteNotFoundException;
+import wooteco.subway.web.exception.favorite.DuplicatedFavoriteException;
+import wooteco.subway.web.exception.favorite.FavoriteNotFoundException;
 
 public class Member {
 	@Id

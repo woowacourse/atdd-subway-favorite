@@ -7,10 +7,10 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.service.member.exception.DuplicatedEmailException;
-import wooteco.subway.service.member.exception.EmailNotFoundException;
-import wooteco.subway.service.member.exception.MemberNotFoundException;
-import wooteco.subway.service.member.exception.WrongPasswordException;
+import wooteco.subway.web.exception.member.DuplicatedEmailException;
+import wooteco.subway.web.exception.member.EmailNotFoundException;
+import wooteco.subway.web.exception.member.MemberNotFoundException;
+import wooteco.subway.web.exception.member.WrongPasswordException;
 
 @Service
 public class MemberService {

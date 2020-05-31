@@ -1,4 +1,4 @@
-package wooteco.subway.service.member.exception;
+package wooteco.subway.web.exception.member;
 
 public class DuplicatedEmailException extends MemberException {
 	public DuplicatedEmailException() {
