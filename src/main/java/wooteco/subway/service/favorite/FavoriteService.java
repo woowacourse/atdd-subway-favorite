@@ -1,6 +1,7 @@
 package wooteco.subway.service.favorite;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.path.FavoritePath;
@@ -25,6 +26,7 @@ public class FavoriteService {
 		this.stationRepository = stationRepository;
 	}
 
+	@Transactional
 	public FavoritePath registerPath(Member member, String sourceName, String targetName) {
 		Station source = stationRepository.findByName(sourceName)
 				.orElseThrow(() -> new NotExistStationException(sourceName));
@@ -49,6 +51,7 @@ public class FavoriteService {
 				.collect(Collectors.toList());
 	}
 
+	@Transactional
 	public void deletePath(Member member, long pathId) {
 		if (member.hasNotPath(pathId)) {
 			throw new NotExistFavoritePathException(pathId);

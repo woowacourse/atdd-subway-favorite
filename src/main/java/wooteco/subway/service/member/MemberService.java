@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exceptions.DuplicatedEmailException;
@@ -11,6 +12,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
+@Transactional
 public class MemberService {
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;

@@ -1,6 +1,7 @@
 package wooteco.subway.service.station;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.line.LineStationService;
@@ -8,6 +9,7 @@ import wooteco.subway.service.line.LineStationService;
 import java.util.List;
 
 @Service
+@Transactional
 public class StationService {
     private LineStationService lineStationService;
     private StationRepository stationRepository;
