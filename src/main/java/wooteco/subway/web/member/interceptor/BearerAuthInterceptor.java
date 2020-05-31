@@ -36,7 +36,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         }
 
         String credential = authExtractor.extract(request, BEARER);
-        if (!jwtTokenProvider.validateToken(credential)) {
+        if (isInvalidToken(credential)) {
             throw new UnauthorizedException(REQUIRE_LOGIN_MESSAGE);
         }
 
@@ -52,6 +52,10 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         boolean isJoinRequest = isPostMethod && request.getRequestURI().equals(MEMBER_URI);
 
         return isLoginRequest || isJoinRequest;
+    }
+
+    private boolean isInvalidToken(String credential) {
+        return !jwtTokenProvider.validateToken(credential);
     }
 
     @Override
