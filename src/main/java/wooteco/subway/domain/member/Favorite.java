@@ -3,8 +3,8 @@ package wooteco.subway.domain.member;
 import java.util.Objects;
 
 public class Favorite {
-	private Long sourceId;
-	private Long targetId;
+	private final Long sourceId;
+	private final Long targetId;
 
 	public Favorite(Long sourceId, Long targetId) {
 		this.sourceId = sourceId;

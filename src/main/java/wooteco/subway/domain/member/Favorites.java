@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Favorites {
-	private Set<Favorite> favorites;
+	private final Set<Favorite> favorites;
 
 	public Favorites(Set<Favorite> favorites) {
 		this.favorites = favorites;

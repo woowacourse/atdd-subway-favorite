@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-    private AuthorizationExtractor authExtractor;
-    private JwtTokenProvider jwtTokenProvider;
+    private final AuthorizationExtractor authExtractor;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
         this.authExtractor = authExtractor;

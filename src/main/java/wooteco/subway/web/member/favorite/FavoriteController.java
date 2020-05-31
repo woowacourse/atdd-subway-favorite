@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/members/{id}/favorites")
 public class FavoriteController {
-	private FavoriteService favoriteService;
+	private final FavoriteService favoriteService;
 
 	public FavoriteController(FavoriteService favoriteService) {
 		this.favoriteService = favoriteService;

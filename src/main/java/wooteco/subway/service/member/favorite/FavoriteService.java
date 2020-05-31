@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
-	private MemberRepository memberRepository;
-	private StationRepository stationRepository;
+	private final MemberRepository memberRepository;
+	private final StationRepository stationRepository;
 
 	public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
 		this.memberRepository = memberRepository;
