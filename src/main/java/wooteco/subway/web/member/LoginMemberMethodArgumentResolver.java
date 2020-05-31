@@ -8,6 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.CustomException;
 import wooteco.subway.service.member.MemberService;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
@@ -35,7 +36,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         try {
             return memberService.findMemberByEmail(email);
         } catch (Exception e) {
-            throw new InvalidAuthenticationException("비정상적인 로그인");
+            throw new CustomException(new IllegalArgumentException("비정상적인 로그인"));
         }
     }
 }

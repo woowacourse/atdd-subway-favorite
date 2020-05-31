@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import wooteco.subway.exception.CustomException;
+
 import java.util.Objects;
 
 public class Favorite {
@@ -11,7 +13,7 @@ public class Favorite {
 
     public Favorite(String source, String target) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
+            throw new CustomException(new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다."));
         }
         this.source = source;
         this.target = target;

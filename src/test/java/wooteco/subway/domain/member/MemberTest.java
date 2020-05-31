@@ -2,9 +2,10 @@ package wooteco.subway.domain.member;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.exception.CustomException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MemberTest {
     private static final String SOURCE = "강남역";
@@ -41,7 +42,9 @@ class MemberTest {
     void addFavorite_AlreadyExist() {
         member.addFavorite(favorite);
 
-        assertThrows(IllegalArgumentException.class, () -> member.addFavorite(favorite));
+        assertThatThrownBy(() -> member.addFavorite(favorite))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("이미 존재하는 즐겨찾기입니다.");
     }
 
     @Test
@@ -54,7 +57,8 @@ class MemberTest {
     @Test
     void removeFavorite_NotExist() {
         member.addFavorite(favorite);
-        assertThrows(IllegalArgumentException.class,
-                () -> member.removeFavorite(new Favorite("잠실역", "잠실새내역")));
+        assertThatThrownBy(() -> member.removeFavorite(new Favorite("잠실역", "잠실새내역")))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("존재하지 않는 즐겨찾기입니다.");
     }
 }

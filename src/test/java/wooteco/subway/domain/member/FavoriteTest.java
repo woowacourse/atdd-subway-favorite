@@ -10,7 +10,6 @@ public class FavoriteTest {
     @Test
     void constructException() {
         assertThatThrownBy(() -> new Favorite("삼성역", "삼성역"))
-                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 같을 수 없습니다.");
     }
 }

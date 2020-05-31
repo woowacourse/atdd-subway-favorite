@@ -2,6 +2,7 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import wooteco.subway.exception.CustomException;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class Member {
 
     public void addFavorite(Favorite favorite) {
         if (favorites.contains(favorite)) {
-            throw new IllegalArgumentException("이미 존재하는 즐겨찾기입니다.");
+            throw new CustomException(new IllegalArgumentException("이미 존재하는 즐겨찾기입니다."));
         }
         this.favorites.add(favorite);
     }
@@ -70,7 +71,7 @@ public class Member {
 
     public void removeFavorite(Favorite favorite) {
         if (!favorites.contains(favorite)) {
-            throw new IllegalArgumentException("존재하지 않는 즐겨찾기입니다.");
+            throw new CustomException(new IllegalArgumentException("존재하지 않는 즐겨찾기입니다."));
         }
         favorites.remove(favorite);
     }

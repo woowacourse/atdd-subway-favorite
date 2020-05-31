@@ -1,5 +1,7 @@
 package wooteco.subway.domain.line;
 
+import wooteco.subway.exception.CustomException;
+
 import java.util.Objects;
 
 public class LineStation {
@@ -10,7 +12,7 @@ public class LineStation {
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
         if (Objects.nonNull(preStationId) && preStationId.equals(stationId)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
+            throw new CustomException(new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다."));
         }
         this.preStationId = preStationId;
         this.stationId = stationId;

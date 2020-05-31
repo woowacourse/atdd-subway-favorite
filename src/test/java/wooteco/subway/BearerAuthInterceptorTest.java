@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import wooteco.subway.exception.CustomException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.BearerAuthInterceptor;
-import wooteco.subway.web.member.InvalidAuthenticationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,7 +29,7 @@ public class BearerAuthInterceptorTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         assertThatThrownBy(() -> interceptor.preHandle(request, response, null))
-                .isInstanceOf(InvalidAuthenticationException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage("Token이 존재하지 않습니다.");
     }
 
@@ -40,7 +40,7 @@ public class BearerAuthInterceptorTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         assertThatThrownBy(() -> interceptor.preHandle(request, response, null))
-                .isInstanceOf(InvalidAuthenticationException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage("Token이 잘못되었습니다.");
     }
 
