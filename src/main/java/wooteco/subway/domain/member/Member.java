@@ -2,7 +2,6 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
-import wooteco.subway.domain.member.favorite.Favorite;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

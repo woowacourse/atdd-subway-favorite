@@ -1,6 +1,6 @@
-package wooteco.subway.service.member.favorite.dto;
+package wooteco.subway.service.member;
 
-import wooteco.subway.domain.member.favorite.Favorite;
+import wooteco.subway.domain.member.Favorite;
 
 import java.util.List;
 import java.util.Set;
