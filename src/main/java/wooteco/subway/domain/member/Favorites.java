@@ -1,5 +1,6 @@
 package wooteco.subway.domain.member;
 
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.NoFavoriteExistException;
 
 import java.util.Arrays;
@@ -34,6 +35,16 @@ public class Favorites {
 				.map(favorite -> Arrays.asList(favorite.getSourceId(), favorite.getTargetId()))
 				.flatMap(List::stream)
 				.collect(Collectors.toSet());
+	}
+
+	public List<FavoriteDetail> toFavoriteDetails(Stations stations, long memberId) {
+		return favorites.stream()
+				.map(favorite -> FavoriteDetail.of(
+						memberId,
+						favorite,
+						stations.extractStationById(favorite.getSourceId()).getName(),
+						stations.extractStationById(favorite.getTargetId()).getName()))
+				.collect(Collectors.toList());
 	}
 
 	public boolean hasFavoriteOf(long sourceId, long targetId) {

@@ -3,14 +3,16 @@ package wooteco.subway.service.member.favorite;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.member.*;
+import wooteco.subway.domain.member.Favorite;
+import wooteco.subway.domain.member.FavoriteDetail;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.NoMemberExistException;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -24,38 +26,31 @@ public class FavoriteService {
 
 	@Transactional
 	public Favorite addFavorite(long memberId, long sourceId, long targetId) {
-		Member member = memberRepository.findById(memberId)
-				.orElseThrow(NoMemberExistException::new);
-		member.validateDuplicatedFavorite(sourceId, targetId);
-		Favorite favorite = Favorite.of(sourceId, targetId);
-		member.addFavorite(favorite);
+		Member member = getMember(memberId);
+		Favorite addedFavorite = member.addFavorite(sourceId, targetId);
 		memberRepository.save(member);
 
-		return favorite;
+		return addedFavorite;
+	}
+
+	private Member getMember(long memberId) {
+		return memberRepository.findById(memberId)
+				.orElseThrow(NoMemberExistException::new);
 	}
 
 	@Transactional(readOnly = true)
 	public List<FavoriteDetail> readFavorites(long memberId) {
-		Member member = memberRepository.findById(memberId)
-				.orElseThrow(NoMemberExistException::new);
+		Member member = getMember(memberId);
 
-		Favorites favorites = member.getFavorites();
-		Set<Long> ids = favorites.extractStationIds();
+		Set<Long> ids = member.getFavoriteStationIds();
 		Stations stations = new Stations(stationRepository.findAllById(ids));
 
-		return favorites.getFavorites().stream()
-				.map(favorite -> FavoriteDetail.of(
-						memberId,
-						favorite,
-						stations.extractStationById(favorite.getSourceId()).getName(),
-						stations.extractStationById(favorite.getTargetId()).getName()))
-				.collect(Collectors.toList());
+		return member.getFavoriteDetails(stations, memberId);
 	}
 
 	@Transactional
 	public void removeFavorite(long memberId, long sourceId, long targetId) {
-		Member member = memberRepository.findById(memberId)
-				.orElseThrow(NoMemberExistException::new);
+		Member member = getMember(memberId);
 
 		member.removeFavorite(Favorite.of(sourceId, targetId));
 		memberRepository.save(member);

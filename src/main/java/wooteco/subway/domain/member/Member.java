@@ -3,8 +3,12 @@ package wooteco.subway.domain.member;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.DuplicatedFavoriteException;
 import wooteco.subway.exception.InvalidAuthenticationException;
+
+import java.util.List;
+import java.util.Set;
 
 public class Member {
     @Id
@@ -39,6 +43,13 @@ public class Member {
         favorites.add(favorite);
     }
 
+    public Favorite addFavorite(long sourceId, long targetId) {
+        validateDuplicatedFavorite(sourceId, targetId);
+        Favorite favorite = Favorite.of(sourceId, targetId);
+        favorites.add(favorite);
+        return favorite;
+    }
+
     public void removeFavorite(Favorite favorite) {
         favorites.remove(favorite);
     }
@@ -66,6 +77,14 @@ public class Member {
         if (favorites.hasFavoriteOf(sourceId, targetId)) {
             throw new DuplicatedFavoriteException();
         }
+    }
+
+    public Set<Long> getFavoriteStationIds() {
+        return favorites.extractStationIds();
+    }
+
+    public List<FavoriteDetail> getFavoriteDetails(Stations stations, long memberId) {
+        return favorites.toFavoriteDetails(stations, memberId);
     }
 
     public Long getId() {
