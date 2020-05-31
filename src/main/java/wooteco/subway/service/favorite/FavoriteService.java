@@ -1,9 +1,12 @@
 package wooteco.subway.service.favorite;
 
+import static wooteco.subway.exception.InvalidMemberException.NOT_FOUND_MEMBER;
+
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.InvalidMemberException;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteListResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
@@ -26,7 +29,7 @@ public class FavoriteService {
 
     public FavoriteListResponse findFavorites(Member member) {
         Member persistMember = memberRepository.findById(member.getId())
-            .orElseThrow(IllegalAccessError::new);
+            .orElseThrow(() -> new InvalidMemberException(NOT_FOUND_MEMBER,member.getEmail()));
         return FavoriteListResponse.of(persistMember.getFavorites());
     }
 

@@ -1,6 +1,6 @@
 package wooteco.subway.web.member.interceptor;
 
-import static wooteco.subway.web.exception.UnauthorizedException.*;
+import static wooteco.subway.exception.UnauthorizedException.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.web.exception.UnauthorizedException;
+import wooteco.subway.exception.UnauthorizedException;
 import wooteco.subway.web.member.AuthorizationExtractor;
 
 @Component

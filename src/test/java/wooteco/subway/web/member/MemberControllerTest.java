@@ -8,6 +8,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.acceptance.member.MemberAcceptanceTest.*;
+import static wooteco.subway.exception.InvalidMemberException.DUPLICATED_EMAIL;
 import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,13 +34,13 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.InvalidMemberException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.JoinRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.exception.MemberCreationException;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -158,7 +159,7 @@ public class MemberControllerTest {
 	@Test
 	public void failedCreateMember() throws Exception {
 		given(memberService.createMember(any())).willThrow(
-			new MemberCreationException(MemberCreationException.DUPLICATED_EMAIL));
+			new InvalidMemberException(DUPLICATED_EMAIL,anyString()));
 		JoinRequest joinRequest = new JoinRequest(TEST_USER_EMAIL, TEST_USER_NAME,
 			TEST_USER_PASSWORD);
 

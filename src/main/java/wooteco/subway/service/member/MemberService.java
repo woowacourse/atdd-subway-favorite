@@ -1,5 +1,10 @@
 package wooteco.subway.service.member;
 
+import static wooteco.subway.exception.InvalidMemberException.DUPLICATED_EMAIL;
+import static wooteco.subway.exception.InvalidMemberException.FAIL_TO_CREATE;
+import static wooteco.subway.exception.InvalidMemberException.NOT_FOUND_MEMBER;
+import static wooteco.subway.exception.InvalidMemberException.WRONG_PASSWORD;
+
 import javax.validation.Valid;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -8,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.InvalidMemberException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.exception.MemberCreationException;
 
 @Service
 public class MemberService {
@@ -31,28 +36,28 @@ public class MemberService {
 			memberRepository.save(member);
 		} catch (DbActionExecutionException e) {
 			if (e.getCause() instanceof DuplicateKeyException) {
-				throw new MemberCreationException(MemberCreationException.DUPLICATED_EMAIL);
+				throw new InvalidMemberException(DUPLICATED_EMAIL, member.getEmail());
 			}
+			throw new InvalidMemberException(FAIL_TO_CREATE + e.getMessage(), member.getEmail());
 		}
 		return MemberResponse.of(member);
 	}
 
 	public String createToken(LoginRequest request) {
-		Member member = memberRepository.findByEmail(request.getEmail())
-			.orElseThrow(RuntimeException::new);
+		Member member = findMemberByEmail(request.getEmail());
 		if (!member.checkPassword(request.getPassword())) {
-			throw new RuntimeException("잘못된 패스워드");
+			throw new InvalidMemberException(WRONG_PASSWORD, request.getEmail());
 		}
-
 		return jwtTokenProvider.createToken(request.getEmail());
 	}
 
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new InvalidMemberException(NOT_FOUND_MEMBER, email));
 	}
 
 	public void updateMember(Member member, UpdateMemberRequest param) {
-		Member persistMember = memberRepository.findByEmail(member.getEmail()).orElseThrow(RuntimeException::new);
+		Member persistMember = findMemberByEmail(member.getEmail());
 		persistMember.update(param.getName(), param.getPassword());
 		memberRepository.save(persistMember);
 	}

@@ -1,9 +1,12 @@
 package wooteco.subway.service.member;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.BEARER;
 
 import java.util.Optional;
 
@@ -16,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.InvalidMemberException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.exception.MemberCreationException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -106,9 +109,9 @@ public class MemberServiceTest {
     @Test
     void failedCreateMemberByBlank() {
         MemberRequest memberRequest = new MemberRequest("", "", "");
-        when(memberRepository.save(any())).thenThrow(MemberCreationException.class);
+        when(memberRepository.save(any())).thenThrow(InvalidMemberException.class);
 
         assertThatThrownBy(() -> memberService.createMember(memberRequest))
-            .isInstanceOf(MemberCreationException.class);
+            .isInstanceOf(InvalidMemberException.class);
     }
 }

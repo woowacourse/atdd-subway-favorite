@@ -1,4 +1,4 @@
-package wooteco.subway.web.exception;
+package wooteco.subway.exception;
 
 public class ExceptionResponse {
     private String message;

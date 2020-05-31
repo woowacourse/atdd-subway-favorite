@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.exception.InvalidFavoriteException;
+
 class MemberTest {
     private Member member;
     private Favorite favorite;
@@ -43,7 +45,7 @@ class MemberTest {
             member.findFavorite(favorite.getDepartureId(), favorite.getDestinationId())).isEqualTo(
             favorite);
         assertThatThrownBy(() -> member.findFavorite(100L, 200L))
-            .isInstanceOf(AssertionError.class);
+            .isInstanceOf(InvalidFavoriteException.class);
     }
 
     @Test

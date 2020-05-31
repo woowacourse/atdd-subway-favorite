@@ -1,11 +1,15 @@
 package wooteco.subway.domain.member;
 
+import static wooteco.subway.exception.InvalidFavoriteException.NOT_FOUND_FAVORITE;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+
+import wooteco.subway.exception.InvalidFavoriteException;
 
 public class Member {
     @Id
@@ -72,14 +76,14 @@ public class Member {
             .filter(favorite -> Objects.equals(favorite.getDepartureId(), departureId))
             .filter(favorite -> Objects.equals(favorite.getDestinationId(), destinationId))
             .findFirst()
-            .orElseThrow(AssertionError::new);
+            .orElseThrow(() -> new InvalidFavoriteException(NOT_FOUND_FAVORITE));
     }
 
     public void deleteFavorite(Long favoriteId) {
         Favorite favoriteToRemove = favorites.stream()
             .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
             .findFirst()
-            .orElseThrow(AssertionError::new);
+            .orElseThrow(() -> new InvalidFavoriteException(NOT_FOUND_FAVORITE));
         favorites.remove(favoriteToRemove);
     }
 }
