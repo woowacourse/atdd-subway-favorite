@@ -10,7 +10,7 @@ public class FavoriteResponse {
     private String source;
     private String target;
 
-    public FavoriteResponse() {
+    private FavoriteResponse() {
     }
 
     public FavoriteResponse(String source, String target) {

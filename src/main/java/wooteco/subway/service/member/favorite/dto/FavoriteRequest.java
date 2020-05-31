@@ -7,7 +7,7 @@ public class FavoriteRequest {
     private String source;
     private String target;
 
-    public FavoriteRequest() {
+    private FavoriteRequest() {
     }
 
     public FavoriteRequest(String source, String target) {

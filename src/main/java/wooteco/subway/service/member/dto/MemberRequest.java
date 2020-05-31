@@ -7,7 +7,7 @@ public class MemberRequest {
     private String name;
     private String password;
 
-    public MemberRequest() {
+    private MemberRequest() {
 
     }
 

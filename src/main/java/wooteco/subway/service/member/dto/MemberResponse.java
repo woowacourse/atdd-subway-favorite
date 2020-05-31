@@ -7,7 +7,7 @@ public class MemberResponse {
     private String email;
     private String name;
 
-    public MemberResponse() {
+    private MemberResponse() {
     }
 
     public MemberResponse(Long id, String email, String name) {

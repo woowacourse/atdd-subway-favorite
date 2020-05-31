@@ -9,7 +9,7 @@ public class WholeSubwayResponse {
         return new WholeSubwayResponse(lineDetailResponses);
     }
 
-    public WholeSubwayResponse() {
+    private WholeSubwayResponse() {
     }
 
     public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponse) {
