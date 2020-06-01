@@ -10,7 +10,7 @@ import wooteco.subway.web.dto.ExceptionResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @RestControllerAdvice
-public class ExceptionController {
+public class GlobalControllerAdvice {
 
 	@ResponseStatus(HttpStatus.CONFLICT)
 	@ExceptionHandler({DuplicatedEmailException.class, DuplicatedFavoritePathException.class})

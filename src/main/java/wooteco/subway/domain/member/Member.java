@@ -108,10 +108,7 @@ public class Member {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Member member = (Member) o;
-        return Objects.equals(id, member.id) &&
-                Objects.equals(email, member.email) &&
-                Objects.equals(name, member.name) &&
-                Objects.equals(password, member.password);
+        return Objects.equals(id, member.id);
     }
 
     @Override

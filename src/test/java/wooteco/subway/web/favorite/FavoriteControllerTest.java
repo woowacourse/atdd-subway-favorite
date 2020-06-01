@@ -125,6 +125,8 @@ class FavoriteControllerTest {
 
 		BDDMockito.when(favoriteService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI))
 				.thenReturn(new FavoritePath(1L, 1L, 2L));
+		BDDMockito.when(memberService.findMemberByEmail(TEST_USER_EMAIL))
+			.thenReturn(member);
 
 		String token =
 				"bearer " + new JwtTokenProvider(secretKey, validityInMilliseconds).createToken(TEST_USER_EMAIL);
