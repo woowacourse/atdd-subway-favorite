@@ -62,8 +62,7 @@ public class MemberService {
         if (!member.checkPassword(param.getPassword())) {
             throw new IllegalArgumentException("잘못된 패스워드 입니다.");
         }
-
-        return jwtTokenProvider.createToken(param.getEmail());
+        return jwtTokenProvider.createToken(member.getEmail());
     }
 
     public Member findMemberByEmail(String email) {

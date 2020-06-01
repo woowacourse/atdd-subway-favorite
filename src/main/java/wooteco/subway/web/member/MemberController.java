@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,7 +46,8 @@ public class MemberController {
     @IsAuth(isAuth = Auth.AUTH)
     @GetMapping
     public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
-        return ResponseEntity.ok().body(MemberResponse.of(member));
+        return ResponseEntity.ok()
+            .body(MemberResponse.of(member));
     }
 
     @IsAuth(isAuth = Auth.AUTH)

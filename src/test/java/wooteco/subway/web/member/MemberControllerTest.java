@@ -1,14 +1,10 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.service.member.MemberServiceTest.*;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,33 +12,38 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import wooteco.subway.doc.MemberDocumentation;
-import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.station.StationService;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql("/truncate.sql")
+@Import({JwtTokenProvider.class})
 public class MemberControllerTest {
-    private Member member;
     private String token;
 
-    @MockBean
-    private MemberService memberService;
+    @Autowired
+    private StationService stationService;
 
-    @MockBean
-    JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private MemberService memberService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,16 +57,13 @@ public class MemberControllerTest {
                 chain.doFilter(request, response);
             }, "/*")
             .build();
-
-        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
+        memberService.createMember(new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD));
+        token = "bearer " + memberService.createToken(new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD));
     }
 
     @Test
     void create() throws Exception {
-        given(memberService.createMember(any())).willReturn(member);
-
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+        String inputJson = "{\"email\":\"" + "pobi@email.com" + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +
             "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
@@ -81,9 +79,6 @@ public class MemberControllerTest {
 
     @Test
     void getMember() throws Exception {
-        given(memberService.findMemberByEmail(anyString())).willReturn(member);
-        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
-        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
         this.mockMvc.perform(get("/members")
             .header(AuthorizationExtractor.AUTHORIZATION, token))
@@ -94,9 +89,6 @@ public class MemberControllerTest {
 
     @Test
     void update() throws Exception {
-        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
-        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
-
         String inputJson = "{\"name\":\"" + "brown2" + "\"," +
             "\"password\":\"" + "1234" + "\"" + "}";
 
@@ -112,9 +104,6 @@ public class MemberControllerTest {
 
     @Test
     void deleteMember() throws Exception {
-        given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
-        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
-
         this.mockMvc.perform(delete("/members")
             .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isNoContent())
@@ -124,6 +113,8 @@ public class MemberControllerTest {
 
     @Test
     void addFavorite() throws Exception {
+        stationService.createStation(new Station("잠실"));
+        stationService.createStation(new Station("강남"));
         String inputJson = "{\"source\":\"" + "강남" + "\"," +
             "\"target\":\"" + "잠실" + "\"" + "}";
 
@@ -139,9 +130,10 @@ public class MemberControllerTest {
 
     @Test
     void getFavorites() throws Exception {
-        Set<FavoriteResponse> favorites = new LinkedHashSet<>();
-        favorites.add(new FavoriteResponse(1L, "잠실", "강남"));
-        given(memberService.findFavorites(any())).willReturn(favorites);
+        stationService.createStation(new Station("잠실"));
+        stationService.createStation(new Station("강남"));
+        memberService.addFavorite(memberService.findMemberByEmail(TEST_USER_EMAIL),
+            new FavoriteRequest("잠실", "강남"));
 
         this.mockMvc.perform(get("/members/favorites")
             .header(AuthorizationExtractor.AUTHORIZATION, token))
@@ -151,7 +143,12 @@ public class MemberControllerTest {
     }
 
     @Test
-    void deleteFavorites() throws Exception {
+    void deleteFavorite() throws Exception {
+        stationService.createStation(new Station("잠실"));
+        stationService.createStation(new Station("강남"));
+        memberService.addFavorite(memberService.findMemberByEmail(TEST_USER_EMAIL),
+            new FavoriteRequest("잠실", "강남"));
+
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/favorites/{id}", 1)
             .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isNoContent())
