@@ -3,7 +3,7 @@ package wooteco.subway.infra;
 import java.util.Base64;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -11,16 +11,18 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import wooteco.subway.config.JwtTokenProperties;
 
 @Component
+@EnableConfigurationProperties(JwtTokenProperties.class)
 public class JwtTokenProvider {
     private final String secretKey;
     private final long validityInMilliseconds;
 
-    public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
-        @Value("${security.jwt.token.expire-length}") long validityInMilliseconds) {
-        this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        this.validityInMilliseconds = validityInMilliseconds;
+    public JwtTokenProvider(JwtTokenProperties jwtTokenProperties) {
+        this.secretKey = Base64.getEncoder()
+            .encodeToString(jwtTokenProperties.getSecretKey().getBytes());
+        this.validityInMilliseconds = jwtTokenProperties.getExpireLength();
     }
 
     public String createToken(String subject) {
