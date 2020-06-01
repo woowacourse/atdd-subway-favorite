@@ -42,10 +42,10 @@ create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
     member bigint not null,
-    source bigint not null,
-    target bigint not null,
+    source_id bigint not null,
+    target_id bigint not null,
     primary key(id),
-    unique key(member, source, target)
+    unique key(member, source_id, target_id)
 );
 
 

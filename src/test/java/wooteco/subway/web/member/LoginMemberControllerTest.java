@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static wooteco.subway.AcceptanceTest.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +28,7 @@ import wooteco.subway.doc.LoginMemberDocumentation;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.web.advice.dto.ErrorResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -50,6 +52,7 @@ public class LoginMemberControllerTest {
 		gson = new Gson();
 	}
 
+	@DisplayName("로그인 실패 테스트")
 	@Test
 	public void login() throws Exception {
 		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
@@ -68,5 +71,24 @@ public class LoginMemberControllerTest {
 			.andExpect(content().json(gson.toJson(tokenResponse)))
 			.andDo(print())
 			.andDo(LoginMemberDocumentation.login());
+	}
+
+	@DisplayName("로그인 실패 테스트")
+	@Test
+	public void loginFail() throws Exception {
+		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+		ErrorResponse errorResponse = ErrorResponse.of(new IllegalArgumentException());
+
+		given(memberService.createToken(any())).willThrow(
+			new IllegalArgumentException("잘못된 패스워드입니다."));
+
+		this.mockMvc.perform(post("/oauth/token")
+			.content(gson.toJson(loginRequest))
+			.contentType(MediaType.APPLICATION_JSON)
+			.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().is4xxClientError())
+			.andExpect(content().json(gson.toJson(errorResponse)))
+			.andDo(print())
+			.andDo(LoginMemberDocumentation.loginFail());
 	}
 }

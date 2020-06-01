@@ -19,7 +19,12 @@ endif::[]
 [[resources-loginMembers-login]]
 === 로그인
 
-operation::oauth/token[snippets='http-request,http-response']
+operation::login[snippets='http-request,http-response']
+
+[[resources-loginMembers-loginFail]]
+=== 로그인 실패
+
+operation::login/fail[snippets='http-request,http-response']
 
 [[resources-members]]
 == Member

@@ -1,11 +1,15 @@
 package wooteco.subway.doc;
 
-import org.springframework.test.web.servlet.ResultHandler;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import org.springframework.test.web.servlet.ResultHandler;
 
 public class LoginMemberDocumentation {
     public static ResultHandler login() {
-        return document("/oauth/token");
+        return document("/login");
+    }
+
+    public static ResultHandler loginFail() {
+        return document("/login/fail");
     }
 }

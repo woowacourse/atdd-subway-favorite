@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -20,29 +21,38 @@ public class MemberService {
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
+	@Transactional
 	public Member createMember(Member member) {
 		return memberRepository.save(member);
 	}
 
+	@Transactional
 	public void updateMember(Member member, UpdateMemberRequest param) {
 		Member updated = member.updateNameAndPassword(param.getName(),
 			param.getPassword());
 		memberRepository.save(updated);
 	}
 
+	@Transactional
 	public void deleteMember(Member member) {
 		memberRepository.delete(member);
 	}
 
+	@Transactional
 	public String createToken(LoginRequest param) {
 		Member member = findMemberByEmail(param.getEmail());
-		if (!member.checkPassword(param.getPassword())) {
-			throw new RuntimeException("잘못된 패스워드입니다.");
-		}
+		checkPassword(param, member);
 
 		return jwtTokenProvider.createToken(param.getEmail());
 	}
 
+	private void checkPassword(LoginRequest param, Member member) {
+		if (!member.checkPassword(param.getPassword())) {
+			throw new IllegalArgumentException("잘못된 패스워드입니다.");
+		}
+	}
+
+	@Transactional
 	public Member findMemberByEmail(String email) {
 		return memberRepository.findByEmail(email)
 			.orElseThrow(() -> new InvalidAuthenticationException(
