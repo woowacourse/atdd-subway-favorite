@@ -1,38 +1,40 @@
 package wooteco.subway.service.member.dto;
 
-import wooteco.subway.domain.member.Favorite;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import wooteco.subway.domain.member.Favorite;
+
 public class FavoriteResponse {
-    private String source;
-    private String target;
 
-    public FavoriteResponse() {
-    }
+	private String source;
+	private String target;
 
-    public FavoriteResponse(String source, String target) {
-        this.source = source;
-        this.target = target;
-    }
+	public FavoriteResponse() {
+	}
 
-    public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getSource(), favorite.getTarget());
-    }
+	public FavoriteResponse(String source, String target) {
+		this.source = source;
+		this.target = target;
+	}
 
-    public static List<FavoriteResponse> listOf(Set<Favorite> favorites) {
-        return favorites.stream()
-                .map(FavoriteResponse::of)
-                .collect(Collectors.toList());
-    }
+	public static FavoriteResponse of(Favorite favorite) {
+		return new FavoriteResponse(favorite.getSource(), favorite.getTarget());
+	}
 
-    public String getSource() {
-        return source;
-    }
+	public static List<FavoriteResponse> listOf(Set<Favorite> favorites) {
+		return favorites.stream()
+		                .map(FavoriteResponse::of)
+		                .collect(Collectors.toList());
+	}
 
-    public String getTarget() {
-        return target;
-    }
+	public String getSource() {
+		return source;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
 }

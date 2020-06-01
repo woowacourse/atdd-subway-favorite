@@ -1,22 +1,24 @@
 package wooteco.subway.service.member.dto;
 
 public class UpdateMemberRequest {
-    private String name;
-    private String password;
 
-    public UpdateMemberRequest() {
-    }
+	private String name;
+	private String password;
 
-    public UpdateMemberRequest(String name, String password) {
-        this.name = name;
-        this.password = password;
-    }
+	public UpdateMemberRequest() {
+	}
 
-    public String getName() {
-        return name;
-    }
+	public UpdateMemberRequest(String name, String password) {
+		this.name = name;
+		this.password = password;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getName() {
+		return name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
 }

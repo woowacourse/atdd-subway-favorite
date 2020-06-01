@@ -3,32 +3,34 @@ package wooteco.subway.service.member.dto;
 import wooteco.subway.domain.member.Member;
 
 public class MemberResponse {
-    private Long id;
-    private String email;
-    private String name;
 
-    public MemberResponse() {
-    }
+	private Long id;
+	private String email;
+	private String name;
 
-    public MemberResponse(Long id, String email, String name) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-    }
+	public MemberResponse() {
+	}
 
-    public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getName());
-    }
+	public MemberResponse(Long id, String email, String name) {
+		this.id = id;
+		this.email = email;
+		this.name = name;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public static MemberResponse of(Member member) {
+		return new MemberResponse(member.getId(), member.getEmail(), member.getName());
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getEmail() {
+		return email;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 }

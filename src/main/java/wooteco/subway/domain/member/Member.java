@@ -1,71 +1,73 @@
 package wooteco.subway.domain.member;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.Id;
+
 public class Member {
-    @Id
-    private Long id;
-    private String email;
-    private String name;
-    private String password;
-    private Set<Favorite> favorites = new LinkedHashSet<>();
 
-    public Member() {
-    }
+	@Id
+	private Long id;
+	private String email;
+	private String name;
+	private String password;
+	private Set<Favorite> favorites = new LinkedHashSet<>();
 
-    public Member(Long id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
-    }
+	public Member() {
+	}
 
-    public Member(String email, String name, String password) {
-        this(null, email, name, password);
-    }
+	public Member(Long id, String email, String name, String password) {
+		this.id = id;
+		this.email = email;
+		this.name = name;
+		this.password = password;
+	}
 
-    public void update(String name, String password) {
-        if (StringUtils.isNotBlank(name)) {
-            this.name = name;
-        }
-        if (StringUtils.isNotBlank(password)) {
-            this.password = password;
-        }
-    }
+	public Member(String email, String name, String password) {
+		this(null, email, name, password);
+	}
 
-    public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
-    }
+	public void update(String name, String password) {
+		if (StringUtils.isNotBlank(name)) {
+			this.name = name;
+		}
+		if (StringUtils.isNotBlank(password)) {
+			this.password = password;
+		}
+	}
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
+	public void addFavorite(Favorite favorite) {
+		this.favorites.add(favorite);
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public boolean checkPassword(String password) {
+		return this.password.equals(password);
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void removeFavorite(Favorite favorite) {
+		this.favorites.remove(favorite);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public Set<Favorite> getFavorites() {
-        return favorites;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void removeFavorite(Favorite favorite) {
-        favorites.remove(favorite);
-    }
+	public String getPassword() {
+		return password;
+	}
+
+	public Set<Favorite> getFavorites() {
+		return favorites;
+	}
+
 }
