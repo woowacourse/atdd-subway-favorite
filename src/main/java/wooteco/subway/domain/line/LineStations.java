@@ -1,5 +1,7 @@
 package wooteco.subway.domain.line;
 
+import wooteco.subway.exception.NoLineStationExistsException;
+
 import java.util.*;
 
 public class LineStations {
@@ -9,8 +11,19 @@ public class LineStations {
         this.stations = stations;
     }
 
+    public static LineStations of(List<LineStation> lines) {
+        return new LineStations(new HashSet<>(lines));
+    }
+
     public static LineStations empty() {
         return new LineStations(new HashSet<>());
+    }
+
+    public LineStation findLineStation(Long preStationId, Long stationId) {
+        return stations.stream()
+                .filter(lineStation -> lineStation.isLineStationOf(preStationId, stationId))
+                .findFirst()
+                .orElseThrow(NoLineStationExistsException::new);
     }
 
     public Set<LineStation> getStations() {
@@ -64,6 +77,19 @@ public class LineStations {
         return stations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
                 .findFirst();
+    }
+
+
+    public int extractShortestDistance() {
+        return stations.stream()
+                .mapToInt(LineStation::getDuration)
+                .sum();
+    }
+
+    public int extractShortestDuration() {
+        return stations.stream()
+                .mapToInt(LineStation::getDuration)
+                .sum();
     }
 
     public int getTotalDistance() {

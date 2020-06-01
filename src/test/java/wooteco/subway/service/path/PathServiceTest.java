@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,8 +40,6 @@ public class PathServiceTest {
     private StationRepository stationRepository;
     @Mock
     private LineRepository lineRepository;
-    @Mock
-    private GraphService graphService;
 
     private PathService pathService;
 
@@ -58,7 +56,7 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationRepository, lineRepository, graphService);
+		pathService = new PathService(stationRepository, lineRepository);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -88,7 +86,6 @@ public class PathServiceTest {
         when(stationRepository.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
         when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
         when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
-        when(graphService.findPath(any(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
 
         PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
 

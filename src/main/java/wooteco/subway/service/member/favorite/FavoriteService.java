@@ -43,7 +43,7 @@ public class FavoriteService {
 		Member member = getMember(memberId);
 
 		Set<Long> ids = member.getFavoriteStationIds();
-		Stations stations = new Stations(stationRepository.findAllById(ids));
+		Stations stations = Stations.of(stationRepository.findAllById(ids));
 
 		return member.getFavoriteDetails(stations, memberId);
 	}

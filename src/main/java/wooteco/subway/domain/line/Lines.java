@@ -35,6 +35,13 @@ public class Lines {
                 ));
     }
 
+    public LineStations toLineStations() {
+        return LineStations.of(lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+                .collect(Collectors.toList()));
+    }
+
     public List<Line> getLines() {
         return lines;
     }

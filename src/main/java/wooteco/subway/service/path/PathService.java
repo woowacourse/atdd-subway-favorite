@@ -1,96 +1,66 @@
 package wooteco.subway.service.path;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.LineStations;
 import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.NoLineStationExistsException;
-import wooteco.subway.exception.NoPathExistsException;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.NoStationExistsException;
 import wooteco.subway.exception.SourceEqualsTargetException;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
-    private final StationRepository stationRepository;
-    private final LineRepository lineRepository;
-    private final GraphService graphService;
+	private final StationRepository stationRepository;
+	private final LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, GraphService graphService) {
-        this.stationRepository = stationRepository;
-        this.lineRepository = lineRepository;
-        this.graphService = graphService;
-    }
+	public PathService(StationRepository stationRepository, LineRepository lineRepository) {
+		this.stationRepository = stationRepository;
+		this.lineRepository = lineRepository;
+	}
 
-    public PathResponse findPath(String source, String target, PathType type) {
-        if (Objects.equals(source, target)) {
-            throw new SourceEqualsTargetException();
-        }
+	public PathResponse findPath(String source, String target, PathType type) {
+		validateSourceEqualsTarget(source, target);
 
-        Lines lines = Lines.of(lineRepository.findAll());
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(NoStationExistsException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(NoStationExistsException::new);
+		Path path = new Path(new WeightedMultigraph(DefaultWeightedEdge.class));
 
-        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
+		Lines lines = Lines.of(lineRepository.findAll());
+		List<Long> shortestPath = findShortestPath(source, target, type, path, lines);
 
-        if (path.isEmpty()) {
-            throw new NoPathExistsException();
-        }
+		LineStations paths = path.extractPathLineStations(lines.toLineStations());
 
-        List<Station> stations = stationRepository.findAllById(path);
+		Stations stations = Stations.of(stationRepository.findAllById(shortestPath));
+		List<Station> pathStation = path.extractPathStation(stations);
+		int duration = paths.extractShortestDistance();
+		int distance = paths.extractShortestDuration();
 
-        List<LineStation> lineStations = lines.getLines().stream()
-                .flatMap(line -> line.getStations().stream())
-                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
-                .collect(Collectors.toList());
+		return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
+	}
 
-        List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(LineStation::getDuration).sum();
-        int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
+	private void validateSourceEqualsTarget(String source, String target) {
+		if (Objects.equals(source, target)) {
+			throw new SourceEqualsTargetException();
+		}
+	}
 
-        List<Station> pathStation = path.stream()
-                .map(it -> extractStation(it, stations))
-                .collect(Collectors.toList());
+	private List<Long> findShortestPath(String source, String target, PathType type, Path path, Lines lines) {
+		Station sourceStation = findStationByNameOf(source);
+		Station targetStation = findStationByNameOf(target);
+		return path.findShortestPath(lines, sourceStation.getId(), targetStation.getId(), type);
+	}
 
-        return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
-    }
-
-    private Station extractStation(Long stationId, List<Station> stations) {
-        return stations.stream()
-                .filter(station -> station.getId().equals(stationId))
-                .findFirst()
-                .orElseThrow(NoStationExistsException::new);
-    }
-
-    private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
-        Long preStationId = null;
-        List<LineStation> paths = new ArrayList<>();
-
-        for (Long stationId : path) {
-            if (preStationId == null) {
-                preStationId = stationId;
-                continue;
-            }
-
-            Long finalPreStationId = preStationId;
-            LineStation foundLineStation = lineStations.stream()
-                    .filter(lineStation -> lineStation.isLineStationOf(finalPreStationId, stationId))
-                    .findFirst()
-                    .orElseThrow(NoLineStationExistsException::new);
-
-            paths.add(foundLineStation);
-            preStationId = stationId;
-        }
-
-        return paths;
-    }
+	private Station findStationByNameOf(String target) {
+		return stationRepository.findByName(target)
+				.orElseThrow(NoStationExistsException::new);
+	}
 }
