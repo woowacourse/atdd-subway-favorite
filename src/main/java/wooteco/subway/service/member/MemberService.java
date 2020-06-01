@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -31,6 +32,7 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(MemberRequest memberRequest) {
         memberRepository.findByEmail(memberRequest.getEmail()).ifPresent(member -> {
             throw new IllegalArgumentException("존재하는 이메일입니다.");
@@ -38,16 +40,18 @@ public class MemberService {
         return memberRepository.save(memberRequest.toMember());
     }
 
+    @Transactional
     public void updateMember(String email, Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
         if (!email.equals(member.getEmail())) {
-            throw new IllegalAccessError("잘못된 접근입니다.");
+            throw new IllegalAccessError("사용자 정보가 일치하지 않습니다.");
         }
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
@@ -61,11 +65,13 @@ public class MemberService {
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(NotFoundUserException::new);
     }
 
+    @Transactional
     public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
         Station source = stationRepository.findByName(favoriteRequest.getSource())
                 .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
@@ -78,6 +84,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
     public Set<FavoriteResponse> findFavorites(Member member) {
         Set<Favorite> favorites = member.getFavorites();
         Set<FavoriteResponse> favoriteResponses = new LinkedHashSet<>();
@@ -94,6 +101,7 @@ public class MemberService {
         return favoriteResponses;
     }
 
+    @Transactional
     public void deleteFavorites(Long favoriteId, Member member) {
         member.deleteFavoriteBy(favoriteId);
         memberRepository.save(member);
