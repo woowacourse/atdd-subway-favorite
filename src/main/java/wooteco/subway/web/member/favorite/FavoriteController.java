@@ -30,6 +30,8 @@ public class FavoriteController {
 			@RequestBody @Valid AddFavoriteRequest param,
 			@LoginMember Member member
 	) {
+		member.validateId(id);
+
 		Favorite favorite = favoriteService.addFavorite(id, param.getSourceId(), param.getTargetId());
 		String createUri = "/members/" + id + "/favorites/source/" + param.getSourceId() + "/target/" + param.getTargetId();
 		return ResponseEntity.created(URI.create(createUri))
@@ -41,6 +43,8 @@ public class FavoriteController {
 			@PathVariable Long id,
 			@LoginMember Member member
 	) {
+		member.validateId(id);
+
 		List<FavoriteDetail> favoriteDetails = favoriteService.readFavorites(id);
 
 		return ResponseEntity.ok()
@@ -54,6 +58,8 @@ public class FavoriteController {
 			@PathVariable Long targetId,
 			@LoginMember Member member
 	) {
+		member.validateId(id);
+
 		favoriteService.removeFavorite(id, sourceId, targetId);
 		return ResponseEntity.ok()
 				.build();

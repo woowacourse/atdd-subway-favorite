@@ -7,13 +7,10 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import org.springframework.web.servlet.HandlerMapping;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.service.member.MemberService;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.Objects;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
@@ -48,18 +45,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         }
 
         member = memberService.findMemberByEmail(emailJwt);
-        validateId(webRequest, member);
 
         return member;
-    }
-
-    private void validateId(NativeWebRequest webRequest, Member member) {
-        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        Map<String, String> pathParam = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        String id = pathParam.get("id");
-
-        if (Objects.nonNull(id)) {
-            member.validateId(Long.parseLong(id));
-        }
     }
 }
