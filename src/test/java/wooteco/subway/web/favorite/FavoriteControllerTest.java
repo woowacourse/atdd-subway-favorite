@@ -93,12 +93,6 @@ public class FavoriteControllerTest {
                 .andDo(FavoriteDocumentation.addFavorite());
     }
 
-    public void setMockToken() {
-        given(authExtractor.extract(any(), eq(BEARER))).willReturn(credential);
-        given(jwtTokenProvider.validateToken(credential)).willReturn(true);
-        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
-    }
-
     @Test
     void findFavorites() throws Exception {
         //Given
@@ -134,5 +128,11 @@ public class FavoriteControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, mockToken))
                 .andExpect(status().isNoContent())
                 .andDo(FavoriteDocumentation.deleteFavorite());
+    }
+
+    public void setMockToken() {
+        given(authExtractor.extract(any(), eq(BEARER))).willReturn(credential);
+        given(jwtTokenProvider.validateToken(credential)).willReturn(true);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
     }
 }
