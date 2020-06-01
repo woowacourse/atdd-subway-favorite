@@ -119,7 +119,6 @@ public class LineServiceTest {
     void removeLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
         lineService.removeLineStation(line.getId(), 2L);
-
         verify(lineRepository).save(any());
     }
 

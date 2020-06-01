@@ -1,99 +1,74 @@
 package wooteco.subway.web.member;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.DuplicatedEmailException;
 import wooteco.subway.exception.NoMemberExistException;
-import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.web.member.interceptor.AuthorizationExtractor;
+import wooteco.subway.web.member.info.AuthInfo;
+import wooteco.subway.web.member.info.UriInfo;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static wooteco.subway.service.member.MemberServiceTest.*;
 
 @ExtendWith(RestDocumentationExtension.class)
-//@WebMvcTest(controllers = {MemberController.class, LoginMemberController.class})
-@SpringBootTest
-@AutoConfigureMockMvc
-public class MemberControllerTest {
-    public static final String TEST_USER_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTAwNTA1NjMsImV4cCI6MTU5MDA1NDE2M30.bPh4VZcEj7aYlXDBP_o-1IqZw5AoKCIetrHvI7OcB_k";
+public class MemberControllerTest extends MockMvcTest{
+    private static final String EMAIL_NAME_PASSWORD_FORMAT =  "{\"email\":\"%s\",\"name\":\"%s\",\"password\":\"%s\"}";
+    private static final String NAME_PASSWORD_FORMAT =  "{\"name\":\"%s\",\"password\":\"%s\"}";
+    private static final String WEIRED_USER_EMAIL = "이상한이메일";
+
     @MockBean
     protected MemberService memberService;
-    @MockBean
-    protected JwtTokenProvider jwtTokenProvider;
-    @MockBean
-    protected AuthorizationExtractor authorizationExtractor;
-    @Autowired
-    protected MockMvc mockMvc;
 
-    @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print())
-                .apply(documentationConfiguration(restDocumentation))
-                .build();
-    }
-
+    @DisplayName("유저 생성 컨트롤러")
     @Test
     public void createMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
 
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-                "\"name\":\"" + TEST_USER_NAME + "\"," +
-                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+        UriInfo uriInfo = UriInfo.of("/members");
+        String inputJson = String.format(EMAIL_NAME_PASSWORD_FORMAT, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-        this.mockMvc.perform(post("/members")
-                .content(inputJson)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        postAction(uriInfo, inputJson, AuthInfo.empty())
                 .andExpect(status().isCreated())
-                .andDo(print())
                 .andDo(MemberDocumentation.createMember());
     }
 
+    @DisplayName("유저 생성 실패(이메일 형식) 컨트롤러")
     @Test
-    public void failToCreateMember() throws Exception {
-        String inputJson = "{\"email\":\"" + "이상한이메일" + "\"," +
-                "\"name\":\"" + TEST_USER_NAME + "\"," +
-                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+    public void failToCreateWeiredEmailMember() throws Exception {
+        UriInfo uriInfo = UriInfo.of("/members");
+        String inputJson = String.format(EMAIL_NAME_PASSWORD_FORMAT, WEIRED_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-        this.mockMvc.perform(post("/members")
-                .content(inputJson)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        postAction(uriInfo, inputJson, AuthInfo.empty())
                 .andExpect(status().isBadRequest())
-                .andDo(print())
-                .andDo(MemberDocumentation.failToCreateMember());
+                .andDo(MemberDocumentation.failToCreateMemberByEmail());
     }
 
+    @DisplayName("유저 생성 실패(중복 이메일) 컨트롤러")
     @Test
     public void failToCreateDuplicatedMember() throws Exception {
+        given(memberService.createMember(any())).willThrow(new DuplicatedEmailException());
 
+        UriInfo uriInfo = UriInfo.of("/members");
+        String inputJson = String.format(EMAIL_NAME_PASSWORD_FORMAT, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        postAction(uriInfo, inputJson, AuthInfo.empty())
+                .andExpect(status().isBadRequest())
+                .andDo(MemberDocumentation.failToCreateMemberByDuplication());
     }
 
+    @DisplayName("유저 정보 읽기 컨트롤러")
     @Test
     public void readMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -102,40 +77,33 @@ public class MemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        UriInfo uriInfo = UriInfo.of("/members?email=" + TEST_USER_EMAIL);
+        AuthInfo authInfo = AuthInfo.of(TEST_USER_TOKEN, TEST_USER_SESSION);
 
-        this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL)
-                .session(session)
-                .header("authorization", "Bearer " + TEST_USER_TOKEN)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        getAction(uriInfo, "", authInfo)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(TEST_USER_NAME))
-                .andDo(print())
                 .andDo(MemberDocumentation.readMember());
     }
 
+    @DisplayName("유저 정보 읽기 실패(잘못된 이메일) 컨트롤러")
     @Test
-    public void failToReadMemberOfEmail() throws Exception {
+    public void failToReadMemberOfWrongEmail() throws Exception {
         given(memberService.findMemberByEmail(any())).willThrow(new NoMemberExistException());
         given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        UriInfo uriInfo = UriInfo.of("/members?email=" + WEIRED_USER_EMAIL);
+        AuthInfo authInfo = AuthInfo.of(TEST_USER_TOKEN, TEST_USER_SESSION);
 
-        this.mockMvc.perform(get("/members?email=" + "이상한 이메일")
-                .session(session)
-                .header("authorization", "Bearer " + TEST_USER_TOKEN)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        getAction(uriInfo, "", authInfo)
                 .andExpect(status().isNotFound())
                 .andDo(print())
                 .andDo(MemberDocumentation.failToReadMemberOfEmail());
     }
 
+    @DisplayName("유저 정보 수정 컨트롤러")
     @Test
     public void updateMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -146,24 +114,17 @@ public class MemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        UriInfo uriInfo = UriInfo.of("/members/{id}", new Long[] {1L});
+        String inputJson = String.format(NAME_PASSWORD_FORMAT, TEST_USER_NAME, TEST_USER_PASSWORD);
+        AuthInfo authInfo = AuthInfo.of(TEST_USER_TOKEN, TEST_USER_SESSION);
 
-        String inputJson = "{" +
-                "\"name\":\"" + TEST_USER_NAME + "\"," +
-                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
-
-        this.mockMvc.perform(put("/members/{id}", 1L)
-                .session(session)
-                .header("authorization", "Bearer " + TEST_USER_TOKEN)
-                .content(inputJson)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        putAction(uriInfo, inputJson, authInfo)
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(MemberDocumentation.updateMember());
     }
 
+    @DisplayName("유저 정보 삭제 컨트롤러")
     @Test
     public void deleteMember() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -174,52 +135,46 @@ public class MemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        UriInfo uriInfo = UriInfo.of("/members/{id}", new Long[] {1L});
+        AuthInfo authInfo = AuthInfo.of(TEST_USER_TOKEN, TEST_USER_SESSION);
 
-        this.mockMvc.perform(delete("/members/{id}", 1L)
-                .session(session)
-                .header("authorization", "Bearer " + TEST_USER_TOKEN)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        deleteAction(uriInfo, "", authInfo)
                 .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember());
     }
 
+    @DisplayName("유저 토큰 인증 실패 컨트롤러")
     @Test
-    public void failToAuthorizeMemberBecauseByToken() throws Exception {
+    public void failToAuthorizeMemberBecauseOfToken() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
         given(jwtTokenProvider.validateToken(any())).willReturn(false);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("loginMemberEmail", TEST_USER_EMAIL);
+        UriInfo uriInfo = UriInfo.of("/members?email=" + TEST_USER_EMAIL);
+        AuthInfo authInfo = AuthInfo.of("", TEST_USER_SESSION);
 
-        this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL)
-                .session(session)
-                .header("authorization", "Bearer " + TEST_USER_TOKEN)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        getAction(uriInfo, "", authInfo)
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andDo(MemberDocumentation.failToAuthorizeMemberByToken());
     }
 
+    @DisplayName("유저 세션 인증 실패 컨트롤러")
     @Test
-    public void failToAuthorizeMemberBecauseBySession() throws Exception {
+    public void failToAuthorizeMemberBecauseOfSession() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        this.mockMvc.perform(get("/members?email=" + TEST_USER_EMAIL)
-                .header("authorization", "Bearer " + TEST_USER_TOKEN)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        UriInfo uriInfo = UriInfo.of("/members?email=" + TEST_USER_EMAIL);
+        AuthInfo authInfo = AuthInfo.of(TEST_USER_TOKEN, new MockHttpSession());
+
+        getAction(uriInfo, "", authInfo)
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andDo(MemberDocumentation.failToAuthorizeMemberBySession());

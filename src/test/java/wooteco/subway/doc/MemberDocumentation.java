@@ -25,8 +25,12 @@ public class MemberDocumentation {
         );
     }
 
-    public static RestDocumentationResultHandler failToCreateMember() {
-        return document("members/create_fail");
+    public static RestDocumentationResultHandler failToCreateMemberByEmail() {
+        return document("members/create_fail_weired_email");
+    }
+
+    public static RestDocumentationResultHandler failToCreateMemberByDuplication() {
+        return document("members/create_fail_duplicated_email");
     }
 
     public static RestDocumentationResultHandler readMember() {

@@ -24,10 +24,15 @@ endif::[]
 
 operation::members/create[snippets='http-request,request-fields,http-response']
 
-[[resources-members-create_fail]]
-=== 회원 가입 실패
+[[resources-members-create_fail_weired_email]]
+=== 회원 가입 실패 (이상한 이메일)
 
-operation::members/create_fail[snippets='http-request,http-response']
+operation::members/create_fail_weired_email[snippets='http-request,http-response']
+
+[[resources-members-create_fail_duplicated_email]]
+=== 회원 가입 실패 (중복된 이메일)
+
+operation::members/create_fail_duplicated_email[snippets='http-request,http-response']
 
 [[resources-members-read]]
 === 회원 정보 조회
