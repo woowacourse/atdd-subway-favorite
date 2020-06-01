@@ -61,4 +61,12 @@ public class FavoritePathService {
 
         favoritePathRepository.delete(favoritePath);
     }
+
+    public void deletePathByMember(Long memberId) {
+        favoritePathRepository.deleteByMemberId(memberId);
+    }
+
+    public void deletePathByStation(Long stationId) {
+        favoritePathRepository.deleteByStationId(stationId);
+    }
 }

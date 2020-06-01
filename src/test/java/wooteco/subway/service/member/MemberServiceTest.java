@@ -10,6 +10,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exceptions.DuplicatedEmailException;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoritePathService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
@@ -30,13 +31,15 @@ public class MemberServiceTest {
     private MemberService memberService;
 
     @Mock
+    private FavoritePathService favoritePathService;
+    @Mock
     private MemberRepository memberRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(favoritePathService, memberRepository, jwtTokenProvider);
     }
 
     @DisplayName("회원 생성을 정상적으로 하는지 확인")

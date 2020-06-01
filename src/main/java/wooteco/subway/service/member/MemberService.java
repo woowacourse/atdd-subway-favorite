@@ -7,16 +7,20 @@ import wooteco.subway.exceptions.DuplicatedEmailException;
 import wooteco.subway.exceptions.InvalidEmailException;
 import wooteco.subway.exceptions.InvalidPasswordException;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoritePathService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
+	private FavoritePathService favoritePathService;
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
-        this.memberRepository = memberRepository;
+    public MemberService(FavoritePathService favoritePathService,
+		MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+		this.favoritePathService = favoritePathService;
+		this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -40,10 +44,12 @@ public class MemberService {
 	}
 
 	public void deleteMember(Long id) {
+    	favoritePathService.deletePathByMember(id);
 		memberRepository.deleteById(id);
 	}
 
 	public void deleteMember(Member member) {
+		favoritePathService.deletePathByMember(member.getId());
 		memberRepository.delete(member);
 	}
 
