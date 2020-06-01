@@ -2,6 +2,8 @@ package wooteco.subway.web.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +29,10 @@ public class FavoriteController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> createFavorite(@LoginMember Member member, @RequestBody FavoriteRequest request) {
+	public ResponseEntity<Void> createFavorite(@LoginMember Member member,
+		@RequestBody @Valid FavoriteRequest request) {
 		favoriteService.createFavorite(member, request);
+
 		return ResponseEntity
 			.noContent()
 			.build();
@@ -43,7 +47,8 @@ public class FavoriteController {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @RequestBody FavoriteRequest request) {
+	public ResponseEntity<Void> deleteFavorite(@LoginMember Member member,
+		@RequestBody @Valid FavoriteRequest request) {
 		favoriteService.deleteFavorite(member, request);
 
 		return ResponseEntity

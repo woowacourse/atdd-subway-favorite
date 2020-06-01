@@ -2,7 +2,6 @@ package wooteco.subway.web.member;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -14,6 +13,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,7 +42,7 @@ class FavoriteControllerTest {
 	private static final Gson GSON = new Gson();
 	private static final String TARGET = "선릉역";
 	private static final String SOURCE = "강남역";
-	private static final String TOKEN = "This.is.token";
+	private static final String BEARER_TOKEN = "Bearer This.is.token";
 
 	@MockBean
 	private FavoriteService favoriteService;
@@ -68,12 +69,45 @@ class FavoriteControllerTest {
 		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
 		doNothing().when(favoriteService).createFavorite(any(), any());
 
-		mockMvc.perform(post("/me/favorites")
-			.header("Authorization", "Bearer " + TOKEN)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(GSON.toJson(request)))
-		       .andExpect(status().isNoContent())
-		       .andDo(FavoriteDocumentation.createFavorite());
+		mockMvc
+			.perform(post("/me/favorites")
+				.header("Authorization", BEARER_TOKEN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(GSON.toJson(request)))
+			.andExpect(status().isNoContent())
+			.andDo(FavoriteDocumentation.createFavorite());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"", " "})
+	void createFavorite_BlankSourceInRequest(final String source) throws Exception {
+		FavoriteRequest request = new FavoriteRequest(source, TARGET);
+
+		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+		doNothing().when(favoriteService).createFavorite(any(), any());
+
+		mockMvc
+			.perform(post("/me/favorites")
+				.header("Authorization", BEARER_TOKEN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(GSON.toJson(request)))
+			.andExpect(status().isBadRequest());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"", " "})
+	void createFavorite_BlankTargetInRequest(final String target) throws Exception {
+		FavoriteRequest request = new FavoriteRequest(SOURCE, target);
+
+		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+		doNothing().when(favoriteService).createFavorite(any(), any());
+
+		mockMvc
+			.perform(post("/me/favorites")
+				.header("Authorization", BEARER_TOKEN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(GSON.toJson(request)))
+			.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -81,13 +115,14 @@ class FavoriteControllerTest {
 		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
 		given(favoriteService.findFavorites(any())).willReturn(Arrays.asList(new FavoriteResponse(SOURCE, TARGET)));
 
-		mockMvc.perform(get("/me/favorites")
-			.header("Authorization", "Bearer " + TOKEN)
-			.accept(MediaType.APPLICATION_JSON))
-		       .andExpect(status().isOk())
-		       .andExpect(jsonPath("$[0].source", Matchers.is(SOURCE)))
-		       .andExpect(jsonPath("$[0].target", Matchers.is(TARGET)))
-		       .andDo(FavoriteDocumentation.getAllFavorites());
+		mockMvc
+			.perform(get("/me/favorites")
+				.header("Authorization", BEARER_TOKEN)
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].source", Matchers.is(SOURCE)))
+			.andExpect(jsonPath("$[0].target", Matchers.is(TARGET)))
+			.andDo(FavoriteDocumentation.getAllFavorites());
 	}
 
 	@Test
@@ -97,11 +132,45 @@ class FavoriteControllerTest {
 		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
 		doNothing().when(favoriteService).deleteFavorite(any(), any());
 
-		mockMvc.perform(delete("/me/favorites")
-			.header("Authorization", "Bearer " + TOKEN)
-			.content(GSON.toJson(request))
-			.contentType(MediaType.APPLICATION_JSON))
-		       .andExpect(status().isNoContent())
-		       .andDo(FavoriteDocumentation.deleteFavorite());
+		mockMvc
+			.perform(delete("/me/favorites")
+				.header("Authorization", BEARER_TOKEN)
+				.content(GSON.toJson(request))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isNoContent())
+			.andDo(FavoriteDocumentation.deleteFavorite());
 	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"", " "})
+	void deleteFavorite_BlankSourceInRequest(final String source) throws Exception {
+		FavoriteRequest request = new FavoriteRequest(source, TARGET);
+
+		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+		doNothing().when(favoriteService).createFavorite(any(), any());
+
+		mockMvc
+			.perform(delete("/me/favorites")
+				.header("Authorization", BEARER_TOKEN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(GSON.toJson(request)))
+			.andExpect(status().isBadRequest());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"", " "})
+	void deleteFavorite_BlankTargetInRequest(final String target) throws Exception {
+		FavoriteRequest request = new FavoriteRequest(SOURCE, target);
+
+		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+		doNothing().when(favoriteService).createFavorite(any(), any());
+
+		mockMvc
+			.perform(delete("/me/favorites")
+				.header("Authorization", BEARER_TOKEN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(GSON.toJson(request)))
+			.andExpect(status().isBadRequest());
+	}
+
 }

@@ -1,10 +1,15 @@
 package wooteco.subway.service.member.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import wooteco.subway.domain.member.Favorite;
 
 public class FavoriteRequest {
 
+	@NotBlank(message = "출발역이 존재하지 않습니다.")
 	private String source;
+
+	@NotBlank(message = "도착역이 존재하지 않습니다.")
 	private String target;
 
 	public FavoriteRequest() {
