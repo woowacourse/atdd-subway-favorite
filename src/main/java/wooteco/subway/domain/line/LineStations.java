@@ -42,14 +42,16 @@ public class LineStations {
     }
 
     private void extractNext(Long preStationId, List<Long> ids) {
-        stations.stream()
-            .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
-            .findFirst()
-            .ifPresent(it -> {
-                Long nextStationId = it.getStationId();
-                ids.add(nextStationId);
-                extractNext(nextStationId, ids);
-            });
+        for (int i=0; i<stations.size(); i++) {
+            final Long finalPreStationId = preStationId;
+            stations.stream()
+                .filter(station -> Objects.equals(station.getPreStationId(), finalPreStationId))
+                .findFirst()
+                .ifPresent(station -> {
+                    ids.add(station.getStationId());
+                });
+            preStationId = ids.get(ids.size()-1);
+        }
     }
 
     private void updatePreStationOfNextLineStation(Long targetStationId, Long newPreStationId) {
