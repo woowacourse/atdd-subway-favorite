@@ -1,10 +1,10 @@
 package wooteco.subway.domain.member;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
+
+import java.util.List;
 
 public class Member {
     @Id
@@ -52,6 +52,14 @@ public class Member {
         favorites.addFavorite(favorite);
     }
 
+    public void deleteFavorite(Favorite favorite) {
+        favorites.delete(favorite);
+    }
+
+    public Favorite findFavoriteById(Long favoriteId) {
+        return favorites.findFavoriteById(favoriteId);
+    }
+
     public Long getId() {
         return id;
     }
@@ -70,9 +78,5 @@ public class Member {
 
     public List<Favorite> getFavorites() {
         return favorites.getFavorites();
-    }
-
-    public void deleteFavorite(Favorite favorite) {
-        favorites.delete(favorite);
     }
 }

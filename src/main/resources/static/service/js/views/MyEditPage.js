@@ -8,13 +8,14 @@ function MyEditPage() {
     const $passwordValue = document.querySelector('#password');
     const $passwordCheckValue = document.querySelector('#password-check');
     const $editButton = document.querySelector('#edit-button');
-
     const $signOutButton = document.querySelector('#sign-out');
+    let memberId;
 
     const onLoad = () => {
         api.member
             .find()
             .then(data => {
+                memberId = data.id;
                 $emailValue.textContent = data.email;
                 $nameValue.value = data.name;
             })
@@ -40,7 +41,7 @@ function MyEditPage() {
         }
 
         api.member
-            .update(data)
+            .update(memberId, data)
             .then(() => {
                 SUCCESS_SNACK_BAR("UPDATE_SUCCESS");
                 window.location.href = "/mypage";
@@ -49,7 +50,7 @@ function MyEditPage() {
 
     function onSignOut() {
         api.member
-            .signOut()
+            .signOut(memberId)
             .then(response => {
                 if (response.ok) {
                     SUCCESS_SNACK_BAR("SIGN_OUT_SUCCESS");

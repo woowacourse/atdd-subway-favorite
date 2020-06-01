@@ -1,9 +1,13 @@
 package wooteco.subway.domain.member;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public class Favorite {
+    @Id
+    private Long id;
     private Long departStationId;
     private Long arriveStationId;
 
@@ -15,8 +19,22 @@ public class Favorite {
         this.arriveStationId = arriveStationId;
     }
 
+    public Favorite(Long id, Long departStationId, Long arriveStationId) {
+        this.id = id;
+        this.departStationId = departStationId;
+        this.arriveStationId = arriveStationId;
+    }
+
     public Stream<Long> getStationIdsStream() {
         return Stream.of(departStationId, arriveStationId);
+    }
+
+    public boolean isSameId(Long favoriteId) {
+        return this.id.equals(favoriteId);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getDepartStationId() {

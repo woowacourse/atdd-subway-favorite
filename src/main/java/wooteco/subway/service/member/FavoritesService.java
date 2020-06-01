@@ -1,16 +1,15 @@
 package wooteco.subway.service.member;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.service.member.dto.FavoriteCreateRequest;
-import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
+
+import java.util.List;
 
 @Service
 public class FavoritesService {
@@ -34,8 +33,9 @@ public class FavoritesService {
         return FavoriteResponse.listOf(member.getFavorites(), stations.createStationIdNameMap());
     }
 
-    public void deleteFavorite(Member member, FavoriteDeleteRequest favoriteDeleteRequest) {
-        member.deleteFavorite(favoriteDeleteRequest.toEntity());
+    public void deleteFavorite(Member member, Long favoriteId) {
+        Favorite targetFavorite = member.findFavoriteById(favoriteId);
+        member.deleteFavorite(targetFavorite);
         memberRepository.save(member);
     }
 }

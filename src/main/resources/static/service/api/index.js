@@ -74,8 +74,9 @@ const api = (() => {
                 return response.json();
             })
         },
-        update(data) {
-            return fetch(`/members`, {
+        update(memberId, data) {
+            console.log("### memberId : " + memberId);
+            return fetch(`/members/${memberId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': getToken(),
@@ -84,8 +85,8 @@ const api = (() => {
                 body: JSON.stringify(data)
             })
         },
-        signOut() {
-            return fetch(`/members`, {
+        signOut(memberId) {
+            return fetch(`/members/${memberId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': getToken()
@@ -122,7 +123,7 @@ const api = (() => {
             })
         },
         delete(data) {
-            return fetch(`/members/favorites`, {
+            return fetch(`/members/favorites/${data.favoriteId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': getToken(),

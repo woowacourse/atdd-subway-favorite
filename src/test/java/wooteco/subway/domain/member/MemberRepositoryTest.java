@@ -1,14 +1,12 @@
 package wooteco.subway.domain.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_EMAIL;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.service.member.MemberServiceTest.*;
 
 @DataJdbcTest
 public class MemberRepositoryTest {

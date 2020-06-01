@@ -21,11 +21,10 @@ function Favorite() {
             return;
         }
         try {
-            const edge = {
-                "departStationId": $target.closest(".edge-item").dataset.departStationId,
-                "arriveStationId": $target.closest(".edge-item").dataset.arriveStationId
+            const favoriteId = {
+                "favoriteId": $target.closest(".edge-item").dataset.favoriteId
             };
-            await api.favorite.delete(edge)
+            await api.favorite.delete(favoriteId)
             await loadFavoriteList()
             SUCCESS_SNACK_BAR("COMMON");
         } catch (e) {

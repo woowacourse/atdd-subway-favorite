@@ -1,21 +1,22 @@
 package wooteco.subway.doc;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultHandler;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+
 /**
- *   class description
+ * class description
  *
- *   @author ParkDooWon
+ * @author ParkDooWon
  */
 public class FavoriteDocumentation {
 	public static ResultHandler addFavorite() {
 		return document("favorite/add",
-			requestFields(
+				requestFields(
 				fieldWithPath("departStationId").type(JsonFieldType.STRING).description("The depart station's id"),
 				fieldWithPath("arriveStationId").type(JsonFieldType.STRING).description("The arrive station's id")
 			),
@@ -31,10 +32,9 @@ public class FavoriteDocumentation {
 				headerWithName("Authorization").description("The token for login which is Bearer Type")
 			),
 			responseFields(
-				fieldWithPath("[].departStationId").description("The depart station's id"),
-				fieldWithPath("[].departStationName").description("The depart station's name"),
-				fieldWithPath("[].arriveStationId").description("The arrive station's id"),
-				fieldWithPath("[].arriveStationName").description("The arrive station's name")
+					fieldWithPath("[].favoriteId").description("The favorite's id"),
+					fieldWithPath("[].departStationName").description("The depart station's name"),
+					fieldWithPath("[].arriveStationName").description("The arrive station's name")
 			)
 		);
 	}

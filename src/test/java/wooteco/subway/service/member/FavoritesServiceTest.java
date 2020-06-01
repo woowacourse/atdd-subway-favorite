@@ -1,29 +1,25 @@
 package wooteco.subway.service.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_EMAIL;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.member.dto.FavoriteCreateRequest;
-import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static wooteco.subway.service.member.MemberServiceTest.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FavoritesServiceTest {
@@ -68,10 +64,11 @@ public class FavoritesServiceTest {
 
     @Test
     void deleteFavorite() {
-        MEMBER_BROWN.addFavorite(new Favorite(1L, 2L));
-        MEMBER_BROWN.addFavorite(new Favorite(2L, 3L));
+        MEMBER_BROWN.addFavorite(new Favorite(1L, 1L, 2L));
+        MEMBER_BROWN.addFavorite(new Favorite(2L, 2L, 3L));
 
-        favoritesService.deleteFavorite(MEMBER_BROWN, new FavoriteDeleteRequest(1L, 2L));
+//        favoritesService.deleteFavorite(MEMBER_BROWN, new FavoriteDeleteRequest(1L, 2L));
+        favoritesService.deleteFavorite(MEMBER_BROWN, 1L);
 
         List<FavoriteResponse> favorites = favoritesService.getFavorites(MEMBER_BROWN);
 

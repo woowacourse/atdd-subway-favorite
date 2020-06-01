@@ -75,7 +75,7 @@ export const initNavigation = () => {
 }
 
 export const edgeItemTemplate = edge => {
-    return `<li class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700" data-depart-station-id="${edge.departStationId}" data-arrive-station-id="${edge.arriveStationId}">
+    return `<li class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700" data-favorite-id="${edge.favoriteId}">
             <span class="mdi mdi-subway-variant mr-2"></span>
             <span >${edge.departStationName ? edge.departStationName : "출발역"}</span>
             <span id "" class="mdi mdi-arrow-right text-gray-500"></span>

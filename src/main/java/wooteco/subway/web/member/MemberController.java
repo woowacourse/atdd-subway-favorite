@@ -1,24 +1,15 @@
 package wooteco.subway.web.member;
 
-import java.net.URI;
-
-import javax.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+
+import javax.validation.Valid;
+import java.net.URI;
 
 @RequestMapping("/members")
 @RestController
@@ -33,8 +24,8 @@ public class MemberController {
     public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = memberService.createMember(memberRequest.toMember());
         return ResponseEntity
-            .created(URI.create("/members/" + member.getId()))
-            .build();
+                .created(URI.create("/members/" + member.getId()))
+                .build();
     }
 
     @GetMapping
@@ -43,18 +34,20 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping
-    public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member,
-        @RequestBody UpdateMemberRequest updateMemberRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable("id") Long memberId,
+                                                       @RequestBody UpdateMemberRequest updateMemberRequest) {
+        Member member = memberService.findMemberById(memberId);
         memberService.updateMember(member, updateMemberRequest);
         return ResponseEntity.ok()
-            .build();
+                .build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
-        memberService.deleteMember(member);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MemberResponse> deleteMember(@PathVariable("id") Long memberId) {
+        Member targetMember = memberService.findMemberById(memberId);
+        memberService.deleteMember(targetMember);
         return ResponseEntity.noContent()
-            .build();
+                .build();
     }
 }

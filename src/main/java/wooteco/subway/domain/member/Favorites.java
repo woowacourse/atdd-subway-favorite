@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.relational.core.mapping.MappedCollection;
-
 public class Favorites {
-    @MappedCollection(keyColumn = "favorite_key")
     private List<Favorite> favorites;
 
     private Favorites() {
@@ -31,7 +28,15 @@ public class Favorites {
     public List<Long> getStationIds() {
         return favorites.stream()
                 .flatMap(Favorite::getStationIdsStream)
+                .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public Favorite findFavoriteById(Long favoriteId) {
+        return favorites.stream()
+                .filter(favorite -> favorite.isSameId(favoriteId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public int size() {

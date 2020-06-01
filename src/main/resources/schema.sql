@@ -41,7 +41,8 @@ create table if not exists MEMBER
 
 create table if not exists FAVORITE (
     member bigint not null,
-    favorite_key bigint not null,
+    id bigint auto_increment not null,
+    favorites_key int,
     depart_station_id bigint not null,
     arrive_station_id bigint not null
 );

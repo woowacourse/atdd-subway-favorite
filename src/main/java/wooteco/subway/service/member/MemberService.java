@@ -1,7 +1,6 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -20,6 +19,11 @@ public class MemberService {
 
     public Member createMember(Member member) {
         return memberRepository.save(member);
+    }
+
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public void updateMember(Member member, UpdateMemberRequest updateMemberRequest) {
@@ -44,10 +48,5 @@ public class MemberService {
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
     }
 }

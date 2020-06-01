@@ -86,12 +86,12 @@ public class MemberControllerTest {
         String inputJson = "{\"name\":\"" + TEST_USER_NAME + "\"," +
             "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-        mockMvc.perform(put("/members")
-            .header("Authorization",
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(put("/members/{id}", 1L)
+                .header("Authorization",
+                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(MemberDocumentation.updateMember());
@@ -102,10 +102,11 @@ public class MemberControllerTest {
         given(jwtTokenProvider.isInvalidToken(any())).willReturn(false);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
 
-        mockMvc.perform(delete("/members").header("Authorization",
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"))
-            .andExpect(status().isNoContent())
-            .andDo(print())
-            .andDo(MemberDocumentation.deleteMember());
+        mockMvc.perform(delete("/members/{id}", 1L)
+                .header("Authorization",
+                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteMember());
     }
 }

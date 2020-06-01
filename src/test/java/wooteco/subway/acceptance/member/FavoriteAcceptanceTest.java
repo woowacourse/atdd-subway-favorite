@@ -1,19 +1,17 @@
 package wooteco.subway.acceptance.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.FavoriteCreateRequest;
-import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private TokenResponse tokenResponse;
@@ -35,8 +33,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         List<FavoriteResponse> addedFavorites = getFavorites(tokenResponse);
         assertThat(addedFavorites.size()).isEqualTo(2);
 
-        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(2L, 4L);
-        removeFavorite(favoriteDeleteRequest, tokenResponse);
+//        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(2L, 4L);
+        removeFavorite(1L, tokenResponse);
 
         List<FavoriteResponse> removedFavorites = getFavorites(tokenResponse);
         assertThat(removedFavorites.size()).isEqualTo(1);
@@ -72,16 +70,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         jsonPath().getList(".", FavoriteResponse.class);
     }
 
-    public void removeFavorite(FavoriteDeleteRequest favoriteDeleteRequest, TokenResponse tokenResponse) {
+    public void removeFavorite(Long favoriteId, TokenResponse tokenResponse) {
         given().
                 auth().
                 oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(favoriteDeleteRequest).
-        when().
-                delete("/members/favorites").
-        then().
+                when().
+                delete("/members/favorites/{id}", favoriteId).
+                then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
