@@ -15,7 +15,7 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(NoResourceExistException.class)
     public ResponseEntity<ExceptionResponse> handleNoResourceExistException(NoResourceExistException e) {
-        LOGGER.error(e);
+        LOGGER.error("\n@@@@@@@@@@ error message @@@@@@@@@@\n >>> {}", e.getMessage(), e);
         return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
@@ -27,19 +27,19 @@ public class SubwayControllerAdvice {
             DuplicatedEmailException.class
     })
     public ResponseEntity<ExceptionResponse> handleBadRequestException(RuntimeException e) {
-        LOGGER.error(e);
+        LOGGER.error("\n@@@@@@@@@@ error message @@@@@@@@@@\n >>> {}", e.getMessage(), e);
         return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidAuthenticationException.class)
     public ResponseEntity<ExceptionResponse> handleAuthenticationException(Exception e) {
-        LOGGER.error(e);
+        LOGGER.error("\n@@@@@@@@@@ error message @@@@@@@@@@\n >>> {}", e.getMessage(), e);
         return new ResponseEntity<>(ExceptionResponse.of(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleUnexpectedException(Exception e) {
-        LOGGER.error(e);
+        LOGGER.error("\n@@@@@@@@@@ error message @@@@@@@@@@\n >>> {}", e.getMessage(), e);
         return new ResponseEntity<>(ExceptionResponse.of("서버 오류가 발생했어요."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
