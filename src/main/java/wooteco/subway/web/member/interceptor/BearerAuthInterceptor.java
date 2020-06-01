@@ -9,6 +9,7 @@ import wooteco.subway.web.member.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 import static wooteco.subway.web.exception.UnauthorizedException.REQUIRE_LOGIN_MESSAGE;
 
@@ -27,13 +28,16 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String credential = authExtractor.extract(request, BEARER);
-        if (!jwtTokenProvider.validateToken(credential)) {
-            throw new UnauthorizedException(REQUIRE_LOGIN_MESSAGE);
-        }
+        if (Objects.nonNull(request.getHeader(AuthorizationExtractor.AUTHORIZATION))) {
+            String credential = authExtractor.extract(request, BEARER);
+            if (!jwtTokenProvider.validateToken(credential)) {
+                throw new UnauthorizedException(REQUIRE_LOGIN_MESSAGE);
+            }
 
-        String email = jwtTokenProvider.getSubject(credential);
-        request.setAttribute("loginMemberEmail", email);
+            String email = jwtTokenProvider.getSubject(credential);
+            request.setAttribute("loginMemberEmail", email);
+            return true;
+        }
         return true;
     }
 

@@ -4,8 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -25,23 +27,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.BEARER;
 
-@ExtendWith(MockitoExtension.class)
+//@SpringBootTest(classes = MemberService.class)
+
+//@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class MemberServiceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
 
-    private MemberService memberService;
     private Member member;
 
     @Mock
     private MemberRepository memberRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @InjectMocks
+    private MemberService memberService;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
@@ -114,3 +120,4 @@ public class MemberServiceTest {
                 .isInstanceOf(MemberCreationException.class);
     }
 }
+
