@@ -26,10 +26,12 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.FavoriteDocumentation;
+import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.exception.DuplicatedFavoriteException;
 import wooteco.subway.web.service.favorite.FavoriteService;
+import wooteco.subway.web.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.web.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -50,6 +52,7 @@ public class FavoriteControllerTest {
     private MockMvc mockMvc;
 
     private Member member;
+    private Favorite favorite;
     private Cookie cookie;
 
     @BeforeEach
@@ -61,13 +64,14 @@ public class FavoriteControllerTest {
             .build();
 
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        favorite = Favorite.of(1L, 1L, 1L, 2L);
         cookie = new Cookie("token", "dundung");
     }
 
     @Test
     public void addFavorite() throws Exception {
         given(memberService.save(any())).willReturn(member);
-        given(favoriteService.addToMember(any(), any())).willReturn(member);
+        given(favoriteService.create(any(), any())).willReturn(FavoriteResponse.of(favorite));
 
         String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
             "\"targetId\":\"" + 2L + "\"}";
@@ -85,7 +89,7 @@ public class FavoriteControllerTest {
     @Test
     public void addFavoriteWithNoToken() throws Exception {
         given(memberService.save(any())).willReturn(member);
-        given(favoriteService.addToMember(any(), any())).willReturn(member);
+        given(favoriteService.create(any(), any())).willReturn(FavoriteResponse.of(favorite));
 
         String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
             "\"targetId\":\"" + 2L + "\"}";
@@ -101,7 +105,8 @@ public class FavoriteControllerTest {
 
     @Test
     public void addDuplicatedFavorite() throws Exception {
-        given(favoriteService.addToMember(any(), any())).willThrow(new DuplicatedFavoriteException(1L, 2L));
+        given(favoriteService.create(any(), any())).willThrow(
+            new DuplicatedFavoriteException(1L, 2L));
 
         String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
             "\"targetId\":\"" + 2L + "\"}";

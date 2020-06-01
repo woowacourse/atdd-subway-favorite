@@ -41,7 +41,7 @@ create table if not exists MEMBER
 create table if not exists FAVORITE
 (
     id bigint auto_increment not null unique,
-    member bigint not null,
+    member_id bigint not null,
     source_id bigint not null,
     target_id bigint not null,
     primary key(id)

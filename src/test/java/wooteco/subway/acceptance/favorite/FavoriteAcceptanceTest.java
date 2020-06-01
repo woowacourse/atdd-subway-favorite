@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -25,9 +24,6 @@ import wooteco.subway.web.service.member.dto.MemberDetailResponse;
 
 @Sql("/truncate.sql")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-
-    @LocalServerPort
-    private int port;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -68,8 +64,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 MemberDetailResponse memberDetailResponse = getDetailMember(TEST_USER_EMAIL);
                 Set<FavoriteResponse> favorites = memberDetailResponse.getFavorites();
                 assertThat(favorites).hasSize(1);
-                assertThat(favorites).usingRecursiveFieldByFieldElementComparator()
-                    .containsExactly(new FavoriteResponse(1L, 4L));
             })
         );
     }

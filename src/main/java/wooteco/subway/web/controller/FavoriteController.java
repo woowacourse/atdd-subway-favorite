@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.web.prehandler.Auth;
 import wooteco.subway.web.prehandler.IsAuth;
 import wooteco.subway.web.prehandler.LoginMember;
 import wooteco.subway.web.service.favorite.FavoriteService;
 import wooteco.subway.web.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.web.service.favorite.dto.FavoriteResponse;
 
 @RestController
 public class FavoriteController {
@@ -24,19 +24,20 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @PostMapping("/favorites")
     public ResponseEntity<Void> create(@LoginMember Member member,
         @RequestBody FavoriteRequest favoriteRequest) {
-        Member persistMember = favoriteService.addToMember(member, favoriteRequest);
-        return ResponseEntity.created(URI.create("/members/" + persistMember.getId() + "/favorites"))
+        FavoriteResponse persistFavorite = favoriteService.create(member, favoriteRequest);
+        return ResponseEntity.created(URI.create(
+            "/members/" + persistFavorite.getMemberId() + "/favorites/" + persistFavorite.getId()))
             .build();
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<Void> delete(@LoginMember Member member, @PathVariable Long id) {
-        favoriteService.deleteById(member, id);
+        favoriteService.delete(member, id);
         return ResponseEntity.noContent().build();
     }
 }

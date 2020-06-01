@@ -1,13 +1,7 @@
 package wooteco.subway.domain.member;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
-
-import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.web.exception.DuplicatedFavoriteException;
 
 public class Member {
     @Id
@@ -15,7 +9,6 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private Set<Favorite> favorites = new LinkedHashSet<>();
 
     public Member() {
     }
@@ -33,15 +26,6 @@ public class Member {
         this.password = password;
     }
 
-    public Member(Long id, String email, String name, String password,
-        Set<Favorite> favorites) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.favorites = favorites;
-    }
-
     public Long getId() {
         return id;
     }
@@ -52,10 +36,6 @@ public class Member {
 
     public String getName() {
         return name;
-    }
-
-    public Set<Favorite> getFavorites() {
-        return favorites;
     }
 
     public String getPassword() {
@@ -75,17 +55,7 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public void addFavorite(Favorite favorite) {
-        if (favorites.contains(favorite)) {
-            throw new DuplicatedFavoriteException(favorite.getSourceId(), favorite.getTargetId());
-        }
-        favorites.add(favorite);
-    }
-
-    public void deleteFavorite(Long id) {
-        favorites.stream()
-            .filter(favorite -> favorite.isSameId(id))
-            .findFirst()
-            .ifPresent(favorites::remove);
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
     }
 }

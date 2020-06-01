@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.web.prehandler.Auth;
 import wooteco.subway.web.prehandler.IsAuth;
 import wooteco.subway.web.prehandler.LoginMember;
 import wooteco.subway.web.service.favorite.FavoriteService;
@@ -37,19 +36,20 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/me/detail")
     public ResponseEntity<MemberDetailResponse> getMemberDetailOfMineBasic(@LoginMember Member member) {
-        return ResponseEntity.ok().body(MemberDetailResponse.of(member));
+        Set<FavoriteDetailResponse> responses = favoriteService.getAll(member);
+        return ResponseEntity.ok().body(MemberDetailResponse.of(member, responses));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/me/favorites")
     public ResponseEntity<Set<FavoriteDetailResponse>> getMemberFavorites(@LoginMember Member member) {
         Set<FavoriteDetailResponse> responses =  favoriteService.getAll(member);

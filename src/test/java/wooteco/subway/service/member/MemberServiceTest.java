@@ -88,9 +88,7 @@ public class MemberServiceTest {
     }
 
     @Test
-        // TODO: 2020/05/21 어떻게 해야할지?
     void deleteMember() {
-        // memberService.deleteMember(member.getId());
-        // assertThatThrownBy(() -> memberService.findMemberByEmail(member.getEmail())).isInstanceOf(RuntimeException.class);
+        memberService.deleteMember(member.getId());
     }
 }
