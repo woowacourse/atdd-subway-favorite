@@ -19,9 +19,9 @@ public class JwtTokenProvider {
     private Duration validityInMilliseconds;
 
     public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
-        @Value("${security.jwt.token.expire-length}") Duration validityInMilliseconds) {
+        @Value("${security.jwt.token.expire-length}") long validityInMilliseconds) {
         this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        this.validityInMilliseconds = validityInMilliseconds;
+        this.validityInMilliseconds = Duration.ofMillis(validityInMilliseconds);
     }
 
     public String createToken(String subject) {
@@ -29,7 +29,7 @@ public class JwtTokenProvider {
 
         Date now = new Date();
         Date validity = new Date(now.getTime()
-            + validityInMilliseconds.getSeconds());
+            + validityInMilliseconds.toMillis());
 
         return Jwts.builder()
             .setClaims(claims)

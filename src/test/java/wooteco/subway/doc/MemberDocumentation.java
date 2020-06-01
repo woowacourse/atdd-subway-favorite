@@ -71,7 +71,7 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler deleteMember() {
-        return document("me/delete",
+        return document("me/deleteWithAuth",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
@@ -161,13 +161,10 @@ public class MemberDocumentation {
     }
 
     public static RestDocumentationResultHandler deleteFavorite() {
-        return document("me/favorites/delete",
+        return document("me/favorites/deleteWithAuth",
             requestHeaders(
                 headerWithName("Authorization").description(
                     "The token for login member which is Bearer Type")
-            ),
-            pathParameters(
-                parameterWithName("id").description("The favorite's id")
             )
         );
     }
