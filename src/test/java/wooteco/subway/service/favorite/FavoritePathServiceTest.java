@@ -46,7 +46,7 @@ class FavoritePathServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.favoritePathService = new FavoritePathService(memberRepository, stationRepository, favoritePathRepository);
+        this.favoritePathService = new FavoritePathService(stationRepository, favoritePathRepository);
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         kangnam = new Station(1L, STATION_NAME_KANGNAM);
         hanti = new Station(2L, STATION_NAME_HANTI);
