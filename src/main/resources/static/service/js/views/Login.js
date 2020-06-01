@@ -24,7 +24,7 @@ function Login() {
               localStorage.setItem("token", data.accessToken);
               window.location.href = "/";
           })
-          .catch(error => console.log(error));
+          .catch(error => alert(error));
   }
 
   this.init = () => {
