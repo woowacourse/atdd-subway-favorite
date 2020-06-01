@@ -1,6 +1,6 @@
-package wooteco.subway.service.path;
+package wooteco.subway.service.station;
 
-import wooteco.subway.web.ResourcesNotFoundException;
+import wooteco.subway.web.advice.exception.ResourcesNotFoundException;
 
 public class NotExistedStationException extends ResourcesNotFoundException {
     private static final String ERROR_CODE = "NOT_EXISTED_STATION";

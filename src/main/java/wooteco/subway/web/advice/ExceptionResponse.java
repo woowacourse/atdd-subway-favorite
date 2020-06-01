@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.advice;
 
 public class ExceptionResponse {
     private final String errorCode;

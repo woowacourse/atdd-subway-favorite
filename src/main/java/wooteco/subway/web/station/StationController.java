@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.station;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +21,14 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(
+    public ResponseEntity<Void> createStation(
             @Valid @RequestBody StationCreateRequest request
     ) {
         Station persistStation = stationService.createStation(request.toStation());
 
         return ResponseEntity
                 .created(URI.create("/stations/" + persistStation.getId()))
-                .body(StationResponse.of(persistStation));
+                .build();
     }
 
     @GetMapping

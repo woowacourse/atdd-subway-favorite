@@ -1,6 +1,6 @@
 package wooteco.subway.service.favorite;
 
-import wooteco.subway.web.BadRequestForResourcesException;
+import wooteco.subway.web.advice.exception.BadRequestForResourcesException;
 
 public class ExistedFavoriteException extends BadRequestForResourcesException {
     private static final String ERROR_CODE = "EXISTED_FAVORITE";

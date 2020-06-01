@@ -2,9 +2,10 @@ package wooteco.subway.acceptance.station;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.station.dto.StationResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

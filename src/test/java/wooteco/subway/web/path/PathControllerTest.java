@@ -20,7 +20,7 @@ import wooteco.subway.doc.PathDocumentation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.service.path.DuplicatedStationException;
 import wooteco.subway.service.path.NotExistedPathException;
-import wooteco.subway.service.path.NotExistedStationException;
+import wooteco.subway.service.station.NotExistedStationException;
 import wooteco.subway.service.path.PathService;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;

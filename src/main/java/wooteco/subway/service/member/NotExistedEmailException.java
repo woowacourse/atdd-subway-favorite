@@ -1,6 +1,6 @@
 package wooteco.subway.service.member;
 
-import wooteco.subway.web.ResourcesNotFoundException;
+import wooteco.subway.web.advice.exception.ResourcesNotFoundException;
 
 public class NotExistedEmailException extends ResourcesNotFoundException {
     private static final String ERROR_CODE = "NOT_EXISTED_EMAIL";

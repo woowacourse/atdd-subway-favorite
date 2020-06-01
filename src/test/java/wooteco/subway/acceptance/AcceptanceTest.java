@@ -8,16 +8,18 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.service.line.dto.*;
+import wooteco.subway.service.line.dto.LineDetailResponse;
+import wooteco.subway.service.line.dto.LineResponse;
+import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationCreateRequest;
 import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -52,174 +54,73 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    public StationResponse createStation(String name) {
-        StationCreateRequest request = new StationCreateRequest(name);
-
-        // @formatter:off
-        return
-                given().
-                        body(request).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/stations").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
-        // @formatter:on
+    public void createStation(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        post("/stations", params);
     }
 
     public List<StationResponse> getStations() {
-        // @formatter:off
-        return
-                given().
-                when().
-                        get("/stations").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
-        // @formatter:on
+        return getAll("/stations", StationResponse.class);
+    }
+
+    public StationResponse getStation(Long id) {
+        return get("/stations/" + id, StationResponse.class);
     }
 
     public void deleteStation(Long id) {
-        // @formatter:off
-        given().
-        when().
-                delete("/stations/" + id).
-        then().
-                log().all();
-        // @formatter:on
+        delete("/stations/" + id);
     }
 
-    public LineResponse createLine(String name) {
-        LineRequest request = new LineRequest(
-                name, LocalTime.of(5, 30), LocalTime.of(10, 30), 10);
-        // @formatter:off
-        return
-                given().
-                        body(request).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        post("/lines").
-                then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(LineResponse.class);
-        // @formatter:on
-    }
+    public void createLine(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("intervalTime", String.valueOf(10));
 
-    public LineDetailResponse getLine(Long id) {
-        // @formatter:off
-        return
-                given().
-                when().
-                        get("/lines/" + id).
-                then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
-        // @formatter:on
-    }
-
-    public void updateLine(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        LineRequest updateRequest = new LineRequest(name, startTime, endTime, intervalTime);
-
-        // @formatter:off
-        given().
-                body(updateRequest).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                put("/lines/" + id).
-        then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-        // @formatter:on
+        post("/lines", params);
     }
 
     public List<LineResponse> getLines() {
-        // @formatter:off
-        return
-                given().
-                when().
-                        get("/lines").
-                then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
-        // @formatter:on
+        return getAll("/lines", LineResponse.class);
+    }
+
+    public LineDetailResponse getLine(Long id) {
+        return get("/lines/" + id, LineDetailResponse.class);
+    }
+
+    public void updateLine(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        final Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("intervalTime", String.valueOf(intervalTime));
+
+        put("/lines/" + id, params);
     }
 
     public void deleteLine(Long id) {
-        // @formatter:off
-        given().
-        when().
-                delete("/lines/" + id).
-        then().
-                log().all();
-        // @formatter:on
+        delete("/lines/" + id);
     }
 
     public void addLineStation(Long lineId, Long preStationId, Long stationId) {
-        addLineStation(lineId, preStationId, stationId, 10, 10);
-    }
+        Map<String, String> params = new HashMap<>();
+        params.put("lineId", String.valueOf(lineId));
+        params.put("preStationId", String.valueOf(preStationId));
+        params.put("stationId", String.valueOf(stationId));
+        params.put("distance", String.valueOf(10));
+        params.put("duration", String.valueOf(10));
 
-    public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
-        LineStationCreateRequest request = new LineStationCreateRequest(
-                preStationId, stationId, distance, duration);
-        // @formatter:off
-        given().
-                body(request).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                post("/lines/" + lineId + "/stations").
-        then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-        // @formatter:on
+        post("/lines/" + lineId + "/stations", params);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        // @formatter:off
-        given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-        when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-        then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-        // @formatter:on
+        delete("/lines/" + lineId + "/stations/" + stationId);
     }
 
-    public WholeSubwayResponse retrieveWholeSubway() {
-        // @formatter:off
-        return
-                given().
-                when().
-                        get("/lines/detail").
-                then().
-                        log().all().
-                        extract().as(WholeSubwayResponse.class);
-        // @formatter:on
-    }
-
-    public PathResponse findPath(String source, String target, String type) {
-        // @formatter:off
-        return
-                given().
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                        get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-                then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(PathResponse.class);
-        // @formatter:on
+    public WholeSubwayResponse getWholeSubway() {
+        return get("/lines/detail", WholeSubwayResponse.class);
     }
 
     /**
@@ -231,53 +132,50 @@ public class AcceptanceTest {
      */
     public void initStation() {
         // 역 등록
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
-        StationResponse stationResponse4 = createStation(STATION_NAME_HANTI);
-        StationResponse stationResponse5 = createStation(STATION_NAME_DOGOK);
-        StationResponse stationResponse6 = createStation(STATION_NAME_MAEBONG);
-        StationResponse stationResponse7 = createStation(STATION_NAME_YANGJAE);
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_HANTI);
+        createStation(STATION_NAME_DOGOK);
+        createStation(STATION_NAME_MAEBONG);
+        createStation(STATION_NAME_YANGJAE);
 
         // 2호선
-        LineResponse lineResponse1 = createLine("2호선");
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5, 10);
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 10);
+        createLine(LINE_NAME_2);
+        List<LineResponse> lines = getLines();
+        List<StationResponse> stations = getStations();
+        addLineStation(lines.get(0).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(0).getId(), stations.get(0).getId(), stations.get(1).getId());
+        addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
 
         // 분당선
-        LineResponse lineResponse2 = createLine("분당선");
-        addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
-        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5, 10);
-        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5, 10);
+        createLine(LINE_NAME_BUNDANG);
+        lines = getLines();
+        addLineStation(lines.get(1).getId(), null, stations.get(2).getId());
+        addLineStation(lines.get(1).getId(), stations.get(2).getId(), stations.get(3).getId());
+        addLineStation(lines.get(1).getId(), stations.get(3).getId(), stations.get(4).getId());
 
         // 3호선
-        LineResponse lineResponse3 = createLine("3호선");
-        addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
-        addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5, 10);
-        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5, 10);
+        createLine(LINE_NAME_3);
+        lines = getLines();
+        addLineStation(lines.get(2).getId(), null, stations.get(4).getId());
+        addLineStation(lines.get(2).getId(), stations.get(4).getId(), stations.get(5).getId());
+        addLineStation(lines.get(2).getId(), stations.get(5).getId(), stations.get(6).getId());
 
         // 신분당선
-        LineResponse lineResponse4 = createLine("신분당선");
-        addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
+        createLine(LINE_NAME_SINBUNDANG);
+        lines = getLines();
+        addLineStation(lines.get(3).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(3).getId(), stations.get(0).getId(), stations.get(6).getId());
     }
 
-    public String createMember(final String email, final String name, final String password) {
-        MemberRequest request = new MemberRequest(email, name, password);
-        // @formatter:off
-        return
-                given().
-                        body(request).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/members").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().header("Location");
-        // @formatter:on
+    public void createMember(final String email, final String name, final String password) {
+        final Map<String, String> param = new HashMap<>();
+        param.put("email", email);
+        param.put("name", name);
+        param.put("password", password);
+
+        post("/members", param);
     }
 
     public TokenResponse login(final String email, final String password) {
@@ -295,6 +193,73 @@ public class AcceptanceTest {
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(TokenResponse.class);
+        // @formatter:on
+    }
+
+    public <T> void post(String path, Map<String, String> params) {
+        // @formatter:off
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                post(path).
+        then().
+                log().all().
+                statusCode(HttpStatus.CREATED.value());
+        // @formatter:on
+    }
+
+    public <T> T get(String path, Class<T> responseType) {
+        // @formatter:off
+        return
+                given().
+                when().
+                        get(path).
+                then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(responseType);
+        // @formatter:on
+    }
+
+    public <T> List<T> getAll(String path, Class<T> responseType) {
+        // @formatter:off
+        return
+                given().
+                when().
+                        get(path).
+                then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().
+                        jsonPath().
+                        getList(".",responseType);
+        // @formatter:on
+    }
+
+    public <T> void put(String path, Map<String, String> params) {
+        // @formatter:off
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                put(path).
+        then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+        // @formatter:on
+    }
+
+    public <T> void delete(String path) {
+        // @formatter:off
+        given().
+        when().
+                delete(path).
+        then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
         // @formatter:on
     }
 }

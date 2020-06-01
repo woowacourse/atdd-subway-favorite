@@ -20,25 +20,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     public void manageFavorites() {
         // given(line, station, lineStation, member, login)
-        StationResponse 강남역 = createStation(STATION_NAME_KANGNAM);
-        StationResponse 역삼역 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse 선릉역 = createStation(STATION_NAME_SEOLLEUNG);
+        createLine(LINE_NAME_2);
+        List<LineResponse> lines = getLines();
 
-        LineResponse 이호선 = createLine("2호선");
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        List<StationResponse> stations = getStations();
 
-        addLineStation(이호선.getId(), null, 강남역.getId());
-        addLineStation(이호선.getId(), 강남역.getId(), 역삼역.getId());
-        addLineStation(이호선.getId(), 역삼역.getId(), 선릉역.getId());
+        addLineStation(lines.get(0).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(0).getId(), stations.get(0).getId(), stations.get(1).getId());
+        addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
 
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse token = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         // when : 즐겨찾기 추가
-        addMyFavorite(token, 강남역.getId(), 선릉역.getId());
+        addMyFavorite(token, stations.get(0).getId(), stations.get(2).getId());
         // then : 즐겨찾기 조회
         List<FavoriteResponse> favorites = getAllMyFavorites(token);
-        assertThat(favorites.get(0).getSourceStationId()).isEqualTo(강남역.getId());
-        assertThat(favorites.get(0).getTargetStationId()).isEqualTo(선릉역.getId());
+        assertThat(favorites.get(0).getSourceStationId()).isEqualTo(stations.get(0).getId());
+        assertThat(favorites.get(0).getTargetStationId()).isEqualTo(stations.get(2).getId());
 
         // when : 즐겨찾기 삭제
         removeFavorite(token, favorites.get(0).getId());

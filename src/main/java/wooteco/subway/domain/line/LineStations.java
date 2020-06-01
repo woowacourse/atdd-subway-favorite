@@ -5,7 +5,7 @@ import java.util.*;
 public class LineStations {
     private Set<LineStation> stations;
 
-    public LineStations() {
+    private LineStations() {
     }
 
     public LineStations(Set<LineStation> stations) {
@@ -29,14 +29,14 @@ public class LineStations {
         stations.add(targetLineStation);
     }
 
-    private void remove(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
-        stations.remove(targetLineStation);
-    }
-
     public void removeById(Long targetStationId) {
         extractByStationId(targetStationId)
                 .ifPresent(this::remove);
+    }
+
+    private void remove(LineStation targetLineStation) {
+        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
+        stations.remove(targetLineStation);
     }
 
     public List<Long> getStationIds() {
@@ -74,10 +74,10 @@ public class LineStations {
     }
 
     public int getTotalDistance() {
-        return stations.stream().mapToInt(it -> it.getDistance()).sum();
+        return stations.stream().mapToInt(LineStation::getDistance).sum();
     }
 
     public int getTotalDuration() {
-        return stations.stream().mapToInt(it -> it.getDuration()).sum();
+        return stations.stream().mapToInt(LineStation::getDuration).sum();
     }
 }

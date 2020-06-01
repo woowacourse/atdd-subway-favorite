@@ -1,6 +1,6 @@
 package wooteco.subway.service.path;
 
-import wooteco.subway.web.BadRequestForResourcesException;
+import wooteco.subway.web.advice.exception.BadRequestForResourcesException;
 
 public class NotExistedPathException extends BadRequestForResourcesException {
     private static final String ERROR_CODE = "NOT_EXISTED_PATH";

@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.line.LineStationService;
-import wooteco.subway.service.path.NotExistedStationException;
 
 import java.util.List;
 

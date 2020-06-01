@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.line;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +61,7 @@ public class LineController {
             @Valid @RequestBody LineStationCreateRequest view
     ) {
         lineService.addLineStation(id, view);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/lines/" + id + "/stations")).build();
     }
 
     @DeleteMapping("/{id}/stations/{stationId}")

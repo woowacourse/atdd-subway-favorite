@@ -2,8 +2,7 @@ package wooteco.subway.web.member;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import wooteco.subway.web.BusinessException;
-import wooteco.subway.web.UserUnauthorizedException;
+import wooteco.subway.web.advice.exception.UserUnauthorizedException;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class InvalidAuthenticationException extends UserUnauthorizedException {

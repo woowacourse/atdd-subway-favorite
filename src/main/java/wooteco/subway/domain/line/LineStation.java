@@ -8,7 +8,7 @@ public class LineStation {
     private int distance;
     private int duration;
 
-    public LineStation() {
+    protected LineStation() {
     }
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {

@@ -1,4 +1,4 @@
-package wooteco.subway.web;
+package wooteco.subway.web.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,10 @@ import wooteco.subway.service.member.NotExistedEmailException;
 import wooteco.subway.service.member.WrongPasswordException;
 import wooteco.subway.service.path.DuplicatedStationException;
 import wooteco.subway.service.path.NotExistedPathException;
-import wooteco.subway.service.path.NotExistedStationException;
+import wooteco.subway.service.station.NotExistedStationException;
+import wooteco.subway.web.advice.exception.BadRequestForResourcesException;
+import wooteco.subway.web.advice.exception.ResourcesNotFoundException;
+import wooteco.subway.web.advice.exception.UserUnauthorizedException;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @RestControllerAdvice
