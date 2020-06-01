@@ -8,10 +8,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.auth.AuthorizationExtractor;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+    public static final String BEARER = "Bearer";
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -28,7 +29,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String extractedAuth = authExtractor.extract(request, "Bearer");
+        String extractedAuth = authExtractor.extract(request, BEARER);
         jwtTokenProvider.validateToken(extractedAuth);
         String email = jwtTokenProvider.getSubject(extractedAuth);
         request.setAttribute("loginMemberEmail", email);

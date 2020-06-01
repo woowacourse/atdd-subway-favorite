@@ -29,6 +29,7 @@ import wooteco.subway.doc.OAuthDocumentation;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.web.member.auth.AuthorizationExtractor;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(value = {OAuthController.class, AuthorizationExtractor.class, JwtTokenProvider
@@ -67,7 +68,7 @@ class OAuthControllerTest {
 			.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.tokenType").value("bearer"))
+			.andExpect(jsonPath("$.tokenType").value("Bearer"))
 			.andDo(OAuthDocumentation.login());
 	}
 

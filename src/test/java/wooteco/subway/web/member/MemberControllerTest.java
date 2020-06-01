@@ -34,6 +34,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.auth.AuthorizationExtractor;
 
 @Import(HttpEncodingAutoConfiguration.class)
 @ExtendWith(RestDocumentationExtension.class)

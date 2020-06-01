@@ -63,8 +63,8 @@ public class FavoriteServiceTest {
 
         Favorite savedFavorite = favoriteService.createFavorite(member, favoriteRequest);
 
-        assertThat(savedFavorite.getPreStation()).isEqualTo(preStation.getId());
-        assertThat(savedFavorite.getStation()).isEqualTo(station.getId());
+        assertThat(savedFavorite.getPreStationId()).isEqualTo(preStation.getId());
+        assertThat(savedFavorite.getStationId()).isEqualTo(station.getId());
     }
 
     @DisplayName("예외테스트: 이미 존재하는 즐겨찾기를 추가하는 경우")
@@ -148,12 +148,13 @@ public class FavoriteServiceTest {
 
         List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
 
-        // Todo: 스트림으로인해 순서를 알 수 없는 경우 명확하게 테스트 할 수 있는 방법?
-        assertThat(favorites.size()).isEqualTo(2);
-        assertThat(favorites.get(0).getPreStation()).isIn(gangnam, yeoksam);
-        assertThat(favorites.get(1).getPreStation()).isIn(gangnam, yeoksam);
-        assertThat(favorites.get(0).getStation()).isIn(seolleung, gangnam);
-        assertThat(favorites.get(1).getStation()).isIn(seolleung, gangnam);
+        assertThat(favorites).hasSize(2)
+            .extracting("preStation")
+            .containsOnly(gangnam, yeoksam);
+
+        assertThat(favorites)
+            .extracting("station")
+            .containsOnly(seolleung, gangnam);
     }
 
     @DisplayName("즐겨찾기를 삭제하는 기능 테스트")

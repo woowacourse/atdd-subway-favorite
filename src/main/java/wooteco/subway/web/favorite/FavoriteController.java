@@ -18,7 +18,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
-import wooteco.subway.web.member.LoginMember;
+import wooteco.subway.web.member.resolver.LoginMember;
 
 @RestController
 public class FavoriteController {

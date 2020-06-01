@@ -17,10 +17,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import wooteco.subway.exception.IllegalLoginRequestException;
 import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.web.member.auth.AuthorizationExtractor;
 
 @Import(HttpEncodingAutoConfiguration.class)
 @WebMvcTest(value = {OAuthController.class, MemberController.class, AuthorizationExtractor.class, JwtTokenProvider
@@ -46,7 +48,7 @@ public class MemberControllerAdviceTest {
 		String request = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
 		when(memberService.createToken(any(LoginRequest.class))).thenThrow(
-			new RuntimeException("해당 이메일이 존재하지 않습니다."));
+			new IllegalLoginRequestException("해당 이메일이 존재하지 않습니다."));
 
 		mockMvc.perform(post("/oauth/token")
 			.content(request)
@@ -65,7 +67,7 @@ public class MemberControllerAdviceTest {
 		String request = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
 		when(memberService.createToken(any(LoginRequest.class))).thenThrow(
-			new RuntimeException("패스워드가 일치하지 않습니다."));
+			new IllegalLoginRequestException("패스워드가 일치하지 않습니다."));
 
 		mockMvc.perform(post("/oauth/token")
 			.content(request)
@@ -84,7 +86,7 @@ public class MemberControllerAdviceTest {
 		);
 
 		mockMvc.perform(get("/members")
-			.header("Authorization", "bearer " + TOKEN)
+			.header("Authorization", "Bearer " + TOKEN)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isUnauthorized())

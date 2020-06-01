@@ -4,15 +4,17 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static wooteco.subway.doc.MemberDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 public class FavoriteDocumentation {
+
     public static RestDocumentationResultHandler createFavorite() {
         return document("favorites/create",
             requestHeaders(
-                headerWithName("authorization").description("The user's authorized token")
+                HEADER_AUTHORIZATION
             ),
             requestFields(
                 fieldWithPath("preStationId").type(JsonFieldType.NUMBER)
@@ -26,7 +28,7 @@ public class FavoriteDocumentation {
     public static RestDocumentationResultHandler readFavorites() {
         return document("favorites/read",
             requestHeaders(
-                headerWithName("authorization").description("The user's authorized token")
+                HEADER_AUTHORIZATION
             ),
             responseFields(
                 fieldWithPath("[].id").type(JsonFieldType.NUMBER)
@@ -51,11 +53,11 @@ public class FavoriteDocumentation {
 
     public static RestDocumentationResultHandler deleteFavorite() {
         return document("favorites/delete",
+            requestHeaders(
+                HEADER_AUTHORIZATION
+            ),
             pathParameters(
                 parameterWithName("id").description("The favorite's id to delete")
-            ),
-            requestHeaders(
-                headerWithName("authorization").description("The user's authorized token")
             )
         );
     }

@@ -47,8 +47,9 @@ public class FavoriteService {
         List<Favorite> favorites = member.getFavorites();
 
         return favorites.stream()
-            .map(it -> FavoriteResponse.of(it.getId(), mapStationById(stations, it.getPreStation()),
-                mapStationById(stations, it.getStation())))
+            .map(it -> FavoriteResponse.of(it.getId(),
+                mapStationById(stations, it.getPreStationId()),
+                mapStationById(stations, it.getStationId())))
             .collect(Collectors.toList());
     }
 
@@ -56,7 +57,7 @@ public class FavoriteService {
         return stations.stream()
             .filter(station -> station.getId().equals(stationId))
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("해당하는 역이 존재하지 않습니다."));
+            .orElseThrow(() -> new InvalidStationIdException("해당 역이 존재하지 않습니다."));
     }
 
     public void deleteFavorite(Member member, Long favoriteId) {

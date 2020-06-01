@@ -38,7 +38,7 @@ import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.auth.AuthorizationExtractor;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(value = {FavoriteController.class, AuthorizationExtractor.class})
@@ -91,7 +91,7 @@ public class FavoriteControllerTest {
 
         mockMvc.perform(post("/members/favorites")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .header("authorization", "bearer" + TOKEN)
+            .header("authorization", "Bearer" + TOKEN)
             .content(request))
             .andDo(print())
             .andExpect(status().isCreated())
@@ -111,7 +111,7 @@ public class FavoriteControllerTest {
 
         mockMvc.perform(post("/members/favorites")
             .contentType(MediaType.APPLICATION_JSON)
-            .header("authorization", "bearer" + TOKEN)
+            .header("authorization", "Bearer" + TOKEN)
             .content(request))
             .andDo(print())
             .andExpect(status().isBadRequest());
@@ -134,7 +134,7 @@ public class FavoriteControllerTest {
             .thenReturn(Arrays.asList(favorite1, favorite2));
 
         MvcResult mvcResult = mockMvc.perform(get("/members/favorites")
-            .header("authorization", "bearer" + TOKEN)
+            .header("authorization", "Bearer" + TOKEN)
             .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andDo(FavoriteDocumentation.readFavorites())
@@ -165,7 +165,7 @@ public class FavoriteControllerTest {
 
         mockMvc.perform(
             RestDocumentationRequestBuilders.delete("/members/favorites/{id}", favoriteId)
-                .header("authorization", "bearer" + TOKEN))
+                .header("authorization", "Bearer" + TOKEN))
             .andDo(print())
             .andExpect(status().isNoContent())
             .andDo(FavoriteDocumentation.deleteFavorite());

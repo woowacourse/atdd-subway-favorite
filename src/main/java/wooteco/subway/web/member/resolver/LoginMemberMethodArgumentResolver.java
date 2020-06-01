@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.resolver;
 
 import static org.springframework.web.context.request.RequestAttributes.*;
 

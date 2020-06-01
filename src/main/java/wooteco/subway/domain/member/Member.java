@@ -69,14 +69,14 @@ public class Member {
 
     public Optional<Favorite> findFavorite(Favorite favorite) {
         return favorites.stream()
-            .filter(it -> it.getPreStation().equals(favorite.getPreStation()))
-            .filter(it -> it.getStation().equals(favorite.getStation()))
+            .filter(it -> it.getPreStationId().equals(favorite.getPreStationId()))
+            .filter(it -> it.getStationId().equals(favorite.getStationId()))
             .findFirst();
     }
 
     public List<Long> getStationIds() {
         return favorites.stream()
-            .flatMap(it -> Stream.of(it.getPreStation(), it.getStation()))
+            .flatMap(it -> Stream.of(it.getPreStationId(), it.getStationId()))
             .collect(Collectors.toList());
     }
 
