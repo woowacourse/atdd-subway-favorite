@@ -52,8 +52,8 @@ public class FavoriteService {
 
 	private FavoriteResponse toFavoriteResponse(Favorite favorite) {
 		return new FavoriteResponse(
-			findStationNameById(favorite.getSource()),
-			findStationNameById(favorite.getTarget()));
+			findStationNameById(favorite.getSourceId()),
+			findStationNameById(favorite.getTargetId()));
 	}
 
 	@Transactional
@@ -61,7 +61,7 @@ public class FavoriteService {
 		Favorite favorite = toFavorite(favoriteDeleteRequest);
 		Member persistMember = findMemberById(member);
 
-		persistMember.removeFavorite(favorite.getSource(), favorite.getTarget());
+		persistMember.removeFavorite(favorite.getSourceId(), favorite.getTargetId());
 
 		memberRepository.save(persistMember);
 	}

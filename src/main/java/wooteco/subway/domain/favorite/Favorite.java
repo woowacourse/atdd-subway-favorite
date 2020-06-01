@@ -7,33 +7,33 @@ import org.springframework.data.annotation.Id;
 public class Favorite {
 	@Id
 	private final Long id;
-	private final long source;
-	private final long target;
+	private final long sourceId;
+	private final long targetId;
 
-	Favorite(Long id, long source, long target) {
+	Favorite(Long id, long sourceId, long targetId) {
 		this.id = id;
-		this.source = source;
-		this.target = target;
+		this.sourceId = sourceId;
+		this.targetId = targetId;
 	}
 
-	public static Favorite of(long source, long target) {
-		return new Favorite(null, source, target);
+	public static Favorite of(long sourceId, long targetId) {
+		return new Favorite(null, sourceId, targetId);
 	}
 
 	public Favorite withId(Long id) {
-		return new Favorite(id, this.source, this.target);
+		return new Favorite(id, this.sourceId, this.targetId);
 	}
 
-	public boolean equalsSourceAndTarget(long source, long target) {
-		return this.source == source && this.target == target;
+	public boolean equalsSourceAndTarget(long sourceId, long targetId) {
+		return this.sourceId == sourceId && this.targetId == targetId;
 	}
 
-	public long getSource() {
-		return source;
+	public long getSourceId() {
+		return sourceId;
 	}
 
-	public long getTarget() {
-		return target;
+	public long getTargetId() {
+		return targetId;
 	}
 
 	@Override
@@ -43,22 +43,22 @@ public class Favorite {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		Favorite favorite = (Favorite)o;
-		return source == favorite.source &&
-			target == favorite.target &&
+		return sourceId == favorite.sourceId &&
+			targetId == favorite.targetId &&
 			Objects.equals(id, favorite.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(source, target);
+		return Objects.hash(sourceId, targetId);
 	}
 
 	@Override
 	public String toString() {
 		return "Favorite{" +
 			"id=" + id +
-			", source=" + source +
-			", target=" + target +
+			", source=" + sourceId +
+			", target=" + targetId +
 			'}';
 	}
 }

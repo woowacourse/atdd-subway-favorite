@@ -62,9 +62,9 @@ public class Member {
 		favorites.add(favorite);
 	}
 
-	public void removeFavorite(long source, long target) {
+	public void removeFavorite(long sourceId, long targetId) {
 		Set<Favorite> updated = favorites.stream()
-			.filter(fav -> !fav.equalsSourceAndTarget(source, target))
+			.filter(fav -> !fav.equalsSourceAndTarget(sourceId, targetId))
 			.collect(Collectors.toCollection(HashSet::new));
 		favorites.clear();
 		favorites.addAll(updated);
