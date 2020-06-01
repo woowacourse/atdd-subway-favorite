@@ -317,6 +317,28 @@ public class AcceptanceTest {
                         extract().as(ExceptionResponse.class);
     }
 
+    public MemberResponse getMemberById(String memberId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members/" + memberId).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(MemberResponse.class);
+    }
+
+    public ExceptionResponse failToGetMemberByIdBecauseOfAuthentication(String memberId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members/" + memberId).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.UNAUTHORIZED.value()).
+                        extract().as(ExceptionResponse.class);
+    }
+
     public void updateMember(String id, Authentication authentication, String newName, String newPassword) {
         Map<String, String> params = new HashMap<>();
         params.put("name", newName);

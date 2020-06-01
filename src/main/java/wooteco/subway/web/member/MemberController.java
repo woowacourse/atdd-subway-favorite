@@ -35,7 +35,7 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
+    public ResponseEntity<MemberResponse> getMemberById(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
