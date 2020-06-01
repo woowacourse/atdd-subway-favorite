@@ -56,7 +56,7 @@ class MemberRepositoryTest {
 		Member member = memberRepository.findById(1L)
 			.orElseThrow(IllegalArgumentException::new);
 
-		member.removeFavorite(givenFavorite2.withId(2L));
+		member.removeFavorite(givenFavorite2.getSource(), givenFavorite2.getTarget());
 		memberRepository.save(member);
 
 		Member saved = memberRepository.findById(1L)

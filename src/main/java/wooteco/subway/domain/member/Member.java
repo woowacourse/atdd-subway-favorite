@@ -20,21 +20,22 @@ public class Member {
 	private final Set<Favorite> favorites;
 
 	Member(Long id, String email, String name, String password, Set<Favorite> favorites) {
-		if (StringUtils.isBlank(email)) {
-			throw new IllegalArgumentException();
-		}
-		if (StringUtils.isBlank(name)) {
-			throw new IllegalArgumentException();
-		}
-		if (StringUtils.isBlank(password)) {
-			throw new IllegalArgumentException();
-		}
+		validateIsNotBlank(email);
+		validateIsNotBlank(name);
+		validateIsNotBlank(password);
 
 		this.id = id;
 		this.email = email;
 		this.name = name;
 		this.password = password;
 		this.favorites = favorites;
+	}
+
+	private void validateIsNotBlank(String string) {
+		if (StringUtils.isBlank(string)) {
+			throw new IllegalArgumentException(
+				"이메일, 이름, 패스워드에 널 값이나 빈 값, 공백만있는 값은 허용되지 않습니다.");
+		}
 	}
 
 	public static Member of(String email, String name, String password) {
@@ -61,9 +62,9 @@ public class Member {
 		favorites.add(favorite);
 	}
 
-	public void removeFavorite(Favorite favorite) {
+	public void removeFavorite(long source, long target) {
 		Set<Favorite> updated = favorites.stream()
-			.filter(fav -> !fav.equalsExceptId(favorite))
+			.filter(fav -> !fav.equalsSourceAndTarget(source, target))
 			.collect(Collectors.toCollection(HashSet::new));
 		favorites.clear();
 		favorites.addAll(updated);

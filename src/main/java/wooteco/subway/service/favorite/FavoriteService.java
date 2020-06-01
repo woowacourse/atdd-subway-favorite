@@ -61,7 +61,7 @@ public class FavoriteService {
 		Favorite favorite = toFavorite(favoriteDeleteRequest);
 		Member persistMember = findMemberById(member);
 
-		persistMember.removeFavorite(favorite);
+		persistMember.removeFavorite(favorite.getSource(), favorite.getTarget());
 
 		memberRepository.save(persistMember);
 	}

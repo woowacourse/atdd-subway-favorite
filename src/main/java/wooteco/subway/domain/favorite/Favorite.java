@@ -24,8 +24,8 @@ public class Favorite {
 		return new Favorite(id, this.source, this.target);
 	}
 
-	public boolean equalsExceptId(Favorite other) {
-		return source == other.source && target == other.target;
+	public boolean equalsSourceAndTarget(long source, long target) {
+		return this.source == source && this.target == target;
 	}
 
 	public long getSource() {
