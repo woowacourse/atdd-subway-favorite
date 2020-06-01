@@ -21,6 +21,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.MemberDocumentation;
@@ -37,7 +38,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 public class MemberControllerTest {
 	private static final long MEMBER_ID = 1L;
 	private static final String MEMBER_EMAIL = "tiger@luv.com";
-	private static final String MEMBER_NAME = "tiger";
+	private static final String MEMBER_NAME = "테스트이름";
 	private static final String MEMBER_PASSWORD = "prettiger";
 
 	@MockBean
@@ -52,6 +53,7 @@ public class MemberControllerTest {
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.addFilter(new ShallowEtagHeaderFilter())
+			.addFilter(new CharacterEncodingFilter("UTF-8", true))
 			.apply(documentationConfiguration(restDocumentation))
 			.build();
 

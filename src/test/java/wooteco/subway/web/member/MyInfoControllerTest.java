@@ -29,6 +29,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import wooteco.subway.doc.MeDocumentation;
@@ -76,6 +77,7 @@ public class MyInfoControllerTest {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .addFilter(new ShallowEtagHeaderFilter())
+            .addFilter(new CharacterEncodingFilter("UTF-8", true))
             .apply(documentationConfiguration(restDocumentation))
             .build();
     }
