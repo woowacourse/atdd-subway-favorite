@@ -44,6 +44,10 @@ public class AcceptanceTest {
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
 
+    public static final String TEST_USER_EMAIL2 = "phobi@email.com";
+    public static final String TEST_USER_NAME2 = "포비";
+    public static final String TEST_USER_PASSWORD2 = "phobi";
+
     @LocalServerPort
     public int port;
 
@@ -283,9 +287,11 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public ExceptionResponse failToGetMember(String email) {
+    public ExceptionResponse failToGetMemberByAuthentication(String email, String sessionId, TokenResponse tokenResponse) {
         return
                 given().
+                        cookie("JSESSIONID", sessionId).
+                        header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
                         get("/members?email=" + email).
@@ -295,10 +301,24 @@ public class AcceptanceTest {
                         extract().as(ExceptionResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse, String sessionId, TokenResponse tokenResponse) {
+    public ExceptionResponse failToGetMemberByNotExisting(String email, String sessionId, TokenResponse tokenResponse) {
+        return
+                given().
+                        cookie("JSESSIONID", sessionId).
+                        header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/members?email=" + email).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.NOT_FOUND.value()).
+                        extract().as(ExceptionResponse.class);
+    }
+
+    public void updateMember(String id, String sessionId, TokenResponse tokenResponse, String newName, String newPassword) {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("name", newName);
+        params.put("password", newPassword);
 
         given().
                 cookie("JSESSIONID", sessionId).
@@ -307,18 +327,18 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                put("/members/" + id).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse, String sessionId, TokenResponse tokenResponse) {
+    public void deleteMember(String id, String sessionId, TokenResponse tokenResponse) {
         given().
                 cookie("JSESSIONID", sessionId).
                 header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
                 when().
-                delete("/members/" + memberResponse.getId()).
+                delete("/members/" + id).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
