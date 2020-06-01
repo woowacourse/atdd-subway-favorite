@@ -43,7 +43,7 @@ public class FavoriteController {
             .build();
     }
 
-    @GetMapping(value = "/favorites/{source}/{target}")
+    @GetMapping("/favorites/source/{source}/target/{target}")
     public ResponseEntity<FavoriteResponse> getFavorite(@LoginMemberId Long memberId,
         @PathVariable Long source,
         @PathVariable Long target) {
@@ -60,7 +60,7 @@ public class FavoriteController {
             .ok(favoriteResponses);
     }
 
-    @DeleteMapping("/favorites/{source}/{target}")
+    @DeleteMapping("/favorites/source/{source}/target/{target}")
     public ResponseEntity<Void> deleteFavorite(@LoginMemberId Long memberId,
         @PathVariable Long source, @PathVariable Long target) {
         favoriteService.removeFavorite(memberId, source, target);

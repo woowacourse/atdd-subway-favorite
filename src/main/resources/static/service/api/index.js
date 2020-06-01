@@ -86,14 +86,14 @@ const api = (() => {
       return request("/favorites", METHOD.POST(addFavoriteRequest))
     },
     remove(removeFavoriteRequest) {
-      return request(`/favorites/${removeFavoriteRequest.source}/${removeFavoriteRequest.target}`,
+      return request(`/favorites/source/${removeFavoriteRequest.source}/source/${removeFavoriteRequest.target}`,
         METHOD.DELETE());
     },
     removeById(favoriteId) {
       return request(`/favorites/${favoriteId}`, METHOD.DELETE());
     },
     get(source, target) {
-      return request(`/favorites/${source}/${target}`, METHOD.GET());
+      return request(`/favorites/source/${source}/target/${target}`, METHOD.GET());
     },
     getAll() {
       return requestWithJsonData("/favorites", METHOD.GET());

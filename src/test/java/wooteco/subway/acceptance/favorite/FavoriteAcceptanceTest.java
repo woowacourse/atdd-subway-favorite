@@ -67,7 +67,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
-            get("/favorites/" + source + "/" + target).
+            get("/favorites/source/" + source + "/target/" + target).
             then().
             statusCode(HttpStatus.OK.value()).
             extract().as(FavoriteResponse.class);
@@ -90,7 +90,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
-            delete("/favorites/" + source + "/" + target).
+            delete("/favorites/source/" + source + "/target/" + target).
             then().
             statusCode(HttpStatus.NO_CONTENT.value());
     }
