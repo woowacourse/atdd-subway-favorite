@@ -84,8 +84,8 @@ public class FavoriteService {
 	private Favorite toFavorite(FavoriteDeleteRequest favoriteDeleteRequest) {
 		return Favorite.of(
 			stationRepository.findIdByName(favoriteDeleteRequest.getSource())
-				.orElseThrow(IllegalArgumentException::new),
+				.orElseThrow(() -> new IllegalArgumentException("출발역을 찾을 수 없습니다.")),
 			stationRepository.findIdByName(favoriteDeleteRequest.getTarget())
-				.orElseThrow(IllegalArgumentException::new));
+				.orElseThrow(() -> new IllegalArgumentException("도착역을 찾을 수 없습니다.")));
 	}
 }
