@@ -2,6 +2,7 @@ package wooteco.subway.domain.member;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -83,5 +84,35 @@ public class Member {
 
 	public Set<Favorite> getFavorites() {
 		return favorites;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Member member = (Member)o;
+		return Objects.equals(id, member.id) &&
+			Objects.equals(email, member.email) &&
+			Objects.equals(name, member.name) &&
+			Objects.equals(password, member.password) &&
+			Objects.equals(favorites, member.favorites);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, email, name, password, favorites);
+	}
+
+	@Override
+	public String toString() {
+		return "Member{" +
+			"id=" + id +
+			", email='" + email + '\'' +
+			", name='" + name + '\'' +
+			", password='" + password + '\'' +
+			", favorites=" + favorites +
+			'}';
 	}
 }

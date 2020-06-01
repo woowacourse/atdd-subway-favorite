@@ -34,4 +34,12 @@ public class Favorite {
 	public int hashCode() {
 		return Objects.hash(source, target);
 	}
+
+	@Override
+	public String toString() {
+		return "Favorite{" +
+			"source=" + source +
+			", target=" + target +
+			'}';
+	}
 }
