@@ -10,16 +10,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import wooteco.subway.service.member.MemberService;
-
 @Component
 public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentResolver {
-    private final MemberService memberService;
-
-    public LoginMemberMethodArgumentResolver(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(LoginMemberId.class);

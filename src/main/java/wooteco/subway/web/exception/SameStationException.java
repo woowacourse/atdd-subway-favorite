@@ -3,7 +3,7 @@ package wooteco.subway.web.exception;
 import org.springframework.validation.BindingResult;
 
 public class SameStationException extends RuntimeException {
-    private BindingResult bindingResult;
+    private final BindingResult bindingResult;
 
     public SameStationException(BindingResult bindingResult) {
         this.bindingResult = bindingResult;

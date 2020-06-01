@@ -14,8 +14,8 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
 @Service
 public class LineService {
-    private LineStationService lineStationService;
-    private LineRepository lineRepository;
+    private final LineStationService lineStationService;
+    private final LineRepository lineRepository;
 
     public LineService(LineStationService lineStationService, LineRepository lineRepository) {
         this.lineStationService = lineStationService;
