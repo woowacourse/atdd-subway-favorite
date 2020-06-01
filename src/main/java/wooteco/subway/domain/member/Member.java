@@ -1,7 +1,6 @@
 package wooteco.subway.domain.member;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,6 +45,10 @@ public class Member {
 		return new Member(id, this.email, this.name, this.password, this.favorites);
 	}
 
+	public Member withFavorites(Set<Favorite> favorites) {
+		return new Member(this.id, this.email, this.name, this.password, this.favorites);
+	}
+
 	public Member updateNameAndPassword(String name, String password) {
 		return new Member(this.id, this.email, name, password, this.favorites);
 	}
@@ -60,8 +63,8 @@ public class Member {
 
 	public void removeFavorite(Favorite favorite) {
 		Set<Favorite> updated = favorites.stream()
-			.filter(fav -> !fav.equals(favorite))
-			.collect(Collectors.toCollection(LinkedHashSet::new));
+			.filter(fav -> !fav.equalsExceptId(favorite))
+			.collect(Collectors.toCollection(HashSet::new));
 		favorites.clear();
 		favorites.addAll(updated);
 	}

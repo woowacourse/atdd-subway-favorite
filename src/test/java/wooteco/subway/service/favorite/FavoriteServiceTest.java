@@ -58,7 +58,7 @@ class FavoriteServiceTest {
 	@Test
 	void find() {
 		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		member.addFavorite(new Favorite(1L, 2L));
+		member.addFavorite(Favorite.of(1L, 2L));
 
 		List<FavoriteResponse> expect = Lists.newArrayList(
 			new FavoriteResponse("강남역", "잠실역"));
@@ -76,7 +76,7 @@ class FavoriteServiceTest {
 	@Test
 	void delete() {
 		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		member.addFavorite(new Favorite(1L, 2L));
+		member.addFavorite(Favorite.of(1L, 2L));
 
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
 		when(stationRepository.findIdByName("강남역")).thenReturn(Optional.of(1L));

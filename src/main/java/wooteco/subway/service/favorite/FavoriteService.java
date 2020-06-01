@@ -32,7 +32,7 @@ public class FavoriteService {
 
 		Long source = findStationIdByName(favoriteCreateRequest.getSource());
 		Long target = findStationIdByName(favoriteCreateRequest.getTarget());
-		Favorite favorite = new Favorite(source, target);
+		Favorite favorite = Favorite.of(source, target);
 
 		persistMember.addFavorite(favorite);
 
@@ -82,7 +82,7 @@ public class FavoriteService {
 	}
 
 	private Favorite toFavorite(FavoriteDeleteRequest favoriteDeleteRequest) {
-		return new Favorite(
+		return Favorite.of(
 			stationRepository.findIdByName(favoriteDeleteRequest.getSource())
 				.orElseThrow(IllegalArgumentException::new),
 			stationRepository.findIdByName(favoriteDeleteRequest.getTarget())
