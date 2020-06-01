@@ -27,7 +27,7 @@ public class ExceptionHandlingController {
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException error) {
         System.err.println("EntityNotFoundException: " + error.getMessage());
-        return new ResponseEntity<>(ErrorResponse.of("Entity를 찾을 수 없습니다."), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ErrorResponse.of("Entity를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({Exception.class})
