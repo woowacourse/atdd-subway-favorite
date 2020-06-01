@@ -2,6 +2,7 @@ package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
 
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -13,10 +14,13 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final FavoriteRepository favoriteRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository, FavoriteRepository favoriteRepository,
+        JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.favoriteRepository = favoriteRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -40,6 +44,7 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+        favoriteRepository.deleteByMemberIdWithAllFavorites(id);
     }
 
     public String createToken(LoginRequest param) {
@@ -50,10 +55,6 @@ public class MemberService {
         }
 
         return jwtTokenProvider.createToken(String.valueOf(member.getId()));
-    }
-
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
     public MemberResponse findMemberById(Long id) {

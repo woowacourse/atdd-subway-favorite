@@ -25,4 +25,8 @@ public interface FavoriteRepository extends CrudRepository<Favorite, Long> {
     @Query("DELETE FROM FAVORITE WHERE member_id = :memberId AND id = :favoriteId")
     boolean deleteByIdWithMemberId(@Param("memberId") Long memberId,
         @Param("favoriteId") Long favoriteId);
+
+    @Modifying
+    @Query("DELETE FROM FAVORITE WHERE member_id = :memberId")
+    void deleteByMemberIdWithAllFavorites(@Param("memberId") Long memberId);
 }
