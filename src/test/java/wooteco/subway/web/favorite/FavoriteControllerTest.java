@@ -1,7 +1,6 @@
 package wooteco.subway.web.favorite;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +46,7 @@ import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.BEARER
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class FavoriteControllerTest {
-    private static final Gson GSON = new Gson();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @MockBean
     private FavoriteService favoriteService;
@@ -79,7 +78,7 @@ public class FavoriteControllerTest {
     void addFavorite() throws Exception {
         setMockToken();
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(1L, 2L);
-        String request = GSON.toJson(favoriteCreateRequest);
+        String request = OBJECT_MAPPER.writeValueAsString(favoriteCreateRequest);
         FavoriteResponse response = new FavoriteResponse(1L, favoriteCreateRequest.getDepartureId(),
                 favoriteCreateRequest.getDepartureId());
         given(memberService.findMemberByEmail(any())).willReturn(member);

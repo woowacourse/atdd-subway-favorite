@@ -1,7 +1,6 @@
 package wooteco.subway.web.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.BEARER
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class MemberControllerTest {
-    private static final Gson GSON = new Gson();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @MockBean
     protected MemberService memberService;
@@ -78,7 +77,7 @@ public class MemberControllerTest {
         JoinRequest joinRequest = new JoinRequest(TEST_USER_EMAIL, TEST_USER_NAME,
                 TEST_USER_PASSWORD);
 
-        String request = GSON.toJson(joinRequest);
+        String request = OBJECT_MAPPER.writeValueAsString(joinRequest);
 
         this.mockMvc.perform(post("/join")
                 .content(request)
@@ -92,7 +91,7 @@ public class MemberControllerTest {
     @Test
     void login() throws Exception {
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-        String request = GSON.toJson(loginRequest);
+        String request = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
         this.mockMvc.perform(post("/login")
                 .content(request)
@@ -125,7 +124,7 @@ public class MemberControllerTest {
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest(TEST_USER_NAME,
                 TEST_USER_PASSWORD);
 
-        String request = GSON.toJson(updateMemberRequest);
+        String request = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
 
         this.mockMvc.perform(put("/members/{id}", member.getId())
                 .header(HttpHeaders.AUTHORIZATION, mockToken)
@@ -161,7 +160,7 @@ public class MemberControllerTest {
         JoinRequest joinRequest = new JoinRequest(TEST_USER_EMAIL, TEST_USER_NAME,
                 TEST_USER_PASSWORD);
 
-        String request = GSON.toJson(joinRequest);
+        String request = OBJECT_MAPPER.writeValueAsString(joinRequest);
 
         this.mockMvc.perform(post("/members")
                 .content(request)
@@ -177,7 +176,7 @@ public class MemberControllerTest {
     public void failedCreateMember2() throws Exception {
         JoinRequest joinRequest = new JoinRequest(TEST_USER_EMAIL, "", TEST_USER_PASSWORD);
 
-        String request = GSON.toJson(joinRequest);
+        String request = OBJECT_MAPPER.writeValueAsString(joinRequest);
 
         this.mockMvc.perform(post("/members")
                 .content(request)
@@ -195,7 +194,7 @@ public class MemberControllerTest {
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("",
                 TEST_USER_PASSWORD);
 
-        String request = GSON.toJson(updateMemberRequest);
+        String request = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
 
         this.mockMvc.perform(put("/members/{id}", member.getId())
                 .header(HttpHeaders.AUTHORIZATION, mockToken)
