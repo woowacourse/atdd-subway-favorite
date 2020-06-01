@@ -11,12 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource("classpath:application-test.properties")
 @Sql("/truncate.sql")
 public class PageAcceptanceTest {
     @LocalServerPort
@@ -61,5 +63,4 @@ public class PageAcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.CREATED.value());
     }
-
 }

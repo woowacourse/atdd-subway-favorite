@@ -1,3 +1,7 @@
+const memberBaseUrl = "/members";
+const myInfoBaseUrl = `${memberBaseUrl}/my-info`;
+const myFavoriteBaseUrl = `${myInfoBaseUrl}/favorites`;
+
 const METHOD = {
   GET_WITH_AUTH() {
     return {
@@ -43,40 +47,36 @@ const METHOD = {
 };
 
 const api = (() => {
-  const requestWithRedirect = (uri, config) => fetch(uri, config).then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
+  const requestWithRedirect = (uri, config) => requestWithThrowError(uri, config)
+  .then(response => redirectPage(response));
+  const requestWithJsonData = (uri, config) => requestWithThrowError(uri, config)
+  .then(response => response.json())
+  const requestWithJsonDataAndRedirect = (uri, config) => requestWithThrowError(uri, config)
+  .then(response => redirectPage(response))
+  .then(response => response.json())
+
+  const requestWithThrowError = (uri, config) => fetch(uri, config)
+  .then(response => throwErrorIfStatusIsNotOk(response))
+
+  const throwErrorIfStatusIsNotOk = async response => {
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      throw Error(errorResponse.errorMessage);
     }
     return response;
-  });
-  const requestWithJsonData = (uri, config) =>
-    fetch(uri, config).then(response => {
-      if (!response.ok) {
-        return;
-      }
-      return response.json();
-    });
+  }
 
-  const requestWithJsonDataAndRedirect = (uri, config) =>
-    fetch(uri, config).then(response => {
-      if (!response.ok) {
-        return;
-      }
-      return response.json();
-    });
+  const redirectPage = response => {
+    if (response.redirected) {
+      localStorage.removeItem("jwt")
+      location.href = response.url;
+    }
+    return response;
+  }
 
   const member = {
-    get(id) {
-      return requestWithJsonDataAndRedirect(`/members/${id}`);
-    },
     create(newMember) {
-      return requestWithRedirect(`/members`, METHOD.POST(newMember));
-    },
-    update(id, updatedData) {
-      return requestWithRedirect(`/members/${id}`, METHOD.PUT(updatedData));
-    },
-    delete(id) {
-      return requestWithRedirect(`/members/${id}`, METHOD.DELETE());
+      return requestWithRedirect(`${memberBaseUrl}`, METHOD.POST(newMember));
     },
     login(loginInfo) {
       return requestWithJsonData(`/oauth/token`, METHOD.POST(loginInfo));
@@ -85,20 +85,17 @@ const api = (() => {
 
   const loginMember = {
     get() {
-      return requestWithJsonData(`/me`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonDataAndRedirect(`${myInfoBaseUrl}`, METHOD.GET_WITH_AUTH());
     },
     update(updatedInfo) {
-      return requestWithRedirect(`/me`, METHOD.PUT(updatedInfo));
+      return requestWithRedirect(`${myInfoBaseUrl}`, METHOD.PUT(updatedInfo));
     },
     delete() {
-      return requestWithRedirect(`/me`, METHOD.DELETE());
+      return requestWithRedirect(`${myInfoBaseUrl}`, METHOD.DELETE());
     }
   };
 
   const line = {
-    getAll() {
-      return requestWithRedirect(`/lines/detail`);
-    },
     getAllDetail() {
       return requestWithJsonDataAndRedirect(`/lines/detail`);
     }
@@ -114,17 +111,17 @@ const api = (() => {
 
   const favorite = {
     create(favoritePath) {
-      return requestWithRedirect(`/me/favorites`, METHOD.POST(favoritePath));
+      return requestWithRedirect(`${myFavoriteBaseUrl}`, METHOD.POST(favoritePath));
     },
-    get(sourceId, targetId) {
-      return requestWithJsonDataAndRedirect(`/me/favorites/source/${sourceId}/target/${targetId}/existsPath`,
+    isToggled(sourceId, targetId) {
+      return requestWithJsonDataAndRedirect(`${myFavoriteBaseUrl}/existsPath?sourceId=${sourceId}&targetId=${targetId}`,
         METHOD.GET_WITH_AUTH());
     },
     getAll() {
-      return requestWithJsonDataAndRedirect(`/me/favorites`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonDataAndRedirect(`${myFavoriteBaseUrl}`, METHOD.GET_WITH_AUTH());
     },
     delete(sourceId, targetId) {
-      return requestWithRedirect(`/me/favorites/source/${sourceId}/target/${targetId}`,
+      return requestWithRedirect(`${myFavoriteBaseUrl}/source/${sourceId}/target/${targetId}`,
         METHOD.DELETE());
     }
   };

@@ -30,10 +30,10 @@ import wooteco.subway.web.LineController;
 import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
+@Import(ETagHeaderFilter.class)
 @WebMvcTest(controllers = LineController.class,
     excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
         classes = {WebMvcConfig.class, BearerAuthInterceptor.class, LoginMemberMethodArgumentResolver.class}))
-@Import(ETagHeaderFilter.class)
 public class LineControllerTest {
     @MockBean
     private LineService lineService;
@@ -59,10 +59,10 @@ public class LineControllerTest {
         String eTag = mvcResult.getResponse().getHeader("ETag");
 
         mockMvc.perform(get(uri).header("If-None-Match", eTag))
-                .andDo(print())
-                .andExpect(status().isNotModified())
-                .andExpect(header().exists("ETag"))
-                .andReturn();
+            .andDo(print())
+            .andExpect(status().isNotModified())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
     }
 
     private LineDetailResponse createMockResponse() {

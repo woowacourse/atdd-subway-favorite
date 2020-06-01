@@ -1,9 +1,4 @@
-import {
-  EVENT_TYPE,
-  SUCCESS_MESSAGE,
-  PATH_TYPE,
-  ERROR_MESSAGE
-} from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE, SUCCESS_MESSAGE } from "../../utils/constants.js";
 import api from "../../api/index.js";
 import { searchResultTemplate } from "../../utils/templates.js";
 import showSnackbar from "../../lib/snackbar/index.js";
@@ -55,6 +50,17 @@ function Search() {
       const data = await api.path.find(searchInput);
       searchTargetStations = data.stations;
       showSearchResult(data);
+      const jwt = localStorage.getItem("jwt");
+      if (!jwt) {
+        return;
+      }
+      const isToggled = await api.favorite.isToggled(searchTargetStations[0].id,
+        searchTargetStations[searchTargetStations.length - 1].id);
+      if (isToggled.existence) {
+        renderToggledFavorite();
+        return;
+      }
+      renderUnToggledFavorite();
     } catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
@@ -65,22 +71,51 @@ function Search() {
     try {
       const path = {
         sourceStationId: searchTargetStations[0].id,
-        targetStationId: searchTargetStations[1].id
+        targetStationId: searchTargetStations[searchTargetStations.length - 1].id
       };
-      await api.favorite.create(path);
-      showSnackbar(SUCCESS_MESSAGE.FAVORITE);
-    } catch (e) {
+      const jwt = localStorage.getItem("jwt");
+      if (!jwt) {
+        return;
+      }
+      const isToggled = $favoriteButton.classList.contains("mdi-star");
+      if (isToggled) {
+        renderUnToggledFavorite();
+        await api.favorite.delete(searchTargetStations[0].id,
+          searchTargetStations[searchTargetStations.length - 1].id);
+        showSnackbar(SUCCESS_MESSAGE.FAVORITE_REMOVE);
+      } else {
+        renderToggledFavorite();
+        await api.favorite.create(path);
+        showSnackbar(SUCCESS_MESSAGE.FAVORITE_ADD);
+      }
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
 
+  const renderToggledFavorite = () => {
+    $favoriteButton.classList.remove("mdi-star-outline");
+    $favoriteButton.classList.add("mdi-star");
+    $favoriteButton.classList.add("text-yellow-500");
+    $favoriteButton.classList.remove("text-gray-700");
+    $favoriteButton.classList.remove("bg-yellow-500");
+    $favoriteButton.classList.add("bg-gray-700");
+  }
+
+  const renderUnToggledFavorite = () => {
+    $favoriteButton.classList.add("mdi-star-outline");
+    $favoriteButton.classList.remove("mdi-star");
+    $favoriteButton.classList.remove("text-yellow-500");
+    $favoriteButton.classList.add("text-gray-700");
+    $favoriteButton.classList.add("bg-yellow-500");
+    $favoriteButton.classList.remove("bg-gray-700");
+  }
+
   const initEventListener = () => {
     $favoriteButton.addEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
     $searchButton.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance);
-    $shortestDistanceTab.addEventListener(
-      EVENT_TYPE.CLICK,
-      onSearchShortestDistance
-    );
+    $shortestDistanceTab.addEventListener(EVENT_TYPE.CLICK, onSearchShortestDistance);
     $minimumTimeTab.addEventListener(EVENT_TYPE.CLICK, onSearchMinimumTime);
   };
 

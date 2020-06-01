@@ -11,6 +11,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import wooteco.subway.exception.InvalidAuthenticationException;
 
 @Component
 public class JwtTokenProvider implements TokenProvider {
@@ -41,16 +42,18 @@ public class JwtTokenProvider implements TokenProvider {
 
     @Override
     public String getSubject(String token) {
+        if (isInvalidate(token)) {
+            throw new InvalidAuthenticationException("유효하지 않은 토큰입니다.");
+        }
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    @Override
-    public boolean validateToken(String token) {
+    private boolean isInvalidate(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+            return claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            return true;
         }
     }
 }

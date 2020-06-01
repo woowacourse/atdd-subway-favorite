@@ -10,8 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -19,9 +17,11 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
+import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +34,7 @@ public class MemberServiceTest {
     private static final String TEST_USER_NEW_PASSWORD = "666";
 
     private MemberService memberService;
+    private Member member;
 
     @Mock
     private MemberRepository memberRepository;
@@ -43,15 +44,14 @@ public class MemberServiceTest {
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, tokenProvider);
+        member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @DisplayName("회원 가입시 repository의 save 메서드를 정상 호출한다.")
     @Test
     void createMember() {
-        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-
         when(memberRepository.save(any())).thenReturn(member);
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
@@ -60,10 +60,9 @@ public class MemberServiceTest {
     @DisplayName("중복된 이메일로 회원가입 하는 경우, DuplicateEmailException을 던진다.")
     @Test
     void createMemberWithDuplicateEmail() {
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.of(member));
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-        when(memberRepository.existsByEmail(any())).thenReturn(true);
         assertThatThrownBy(() -> memberService.createMember(memberRequest))
             .isInstanceOf(DuplicateEmailException.class);
     }
@@ -71,8 +70,7 @@ public class MemberServiceTest {
     @DisplayName("로그인시 Jwt 토큰 발급 기능 수행시,  jwtTokenProvider의 토큰 생성 기능을 정상 호출한다.")
     @Test
     void createJwtToken() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         memberService.createJwtToken(loginRequest);
@@ -83,21 +81,20 @@ public class MemberServiceTest {
     @DisplayName("회원정보 업데이트시, 요청한 정보대로 회원의 정보가 변경된다.")
     @Test
     void updateMember() {
-        Member member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        Member newMember = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD);
+        when(memberRepository.findById(TEST_USER_ID)).thenReturn(Optional.of(member));
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest(TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD);
+        memberService.updateMember(TEST_USER_ID, updateMemberRequest);
+        Member expected = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD);
 
-        memberService.updateMember(TEST_USER_ID, new UpdateMemberRequest(TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD));
-
-        assertThat(member).isEqualTo(newMember);
+        assertThat(member).isEqualTo(expected);
         verify(memberRepository).save(any());
     }
 
     @DisplayName("회원정보 삭제시, memberRepository의 deleteById를 정상 호출한다.")
     @Test
     void deleteMember() {
-        when(memberRepository.existsById(any())).thenReturn(true);
-        memberService.deleteMember(1L);
+        when(memberRepository.findById(TEST_USER_ID)).thenReturn(Optional.of(member));
+        memberService.deleteMember(TEST_USER_ID);
 
         verify(memberRepository).deleteById(any());
     }
@@ -105,16 +102,15 @@ public class MemberServiceTest {
     @DisplayName("존재하지 않는 회원정보 삭제시, EntityNotFoundException 예외를 던진다.")
     @Test
     void deleteMemberNotExistingMemberId() {
-        when(memberRepository.existsById(any())).thenReturn(false);
-        assertThatThrownBy(() -> memberService.deleteMember(1L))
+        when(memberRepository.findById(TEST_USER_ID)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> memberService.deleteMember(TEST_USER_ID))
             .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("이메일을 통한 회원 정보 조회시, memberRepository의 findByEmail을 정상 호출한다.")
     @Test
     void findMemberByEmail() {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.of(member));
         memberService.findMemberByEmail(TEST_USER_EMAIL);
 
         verify(memberRepository).findByEmail(any());
@@ -123,23 +119,25 @@ public class MemberServiceTest {
     @DisplayName("존재하지 않는 이메일을 통한 회원 정보 조회시, memberRepository의 findByEmail을 정상 호출한다.")
     @Test
     void findMemberByEmailWhenMemberNotExistWithInputEmail() {
-        when(memberRepository.findByEmail(any())).thenThrow(new EntityNotFoundException("해당하는 이메일이 없습니다."));
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> memberService.findMemberByEmail(TEST_USER_EMAIL))
             .isInstanceOf(EntityNotFoundException.class);
 
         verify(memberRepository).findByEmail(any());
     }
 
-    @DisplayName("폼을 통한 로그인 시도시, memberRepository의 findByEmail을 정상 호출한다.")
-    @ParameterizedTest
-    @CsvSource(value = {"brown, true", "cu, false"})
-    void loginWithForm(String password, boolean expected) {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, password);
-        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
-        boolean actual = memberService.loginWithForm(loginRequest);
+    @DisplayName("id에 대한 회원이 존재하는 경우, MemberResponse 타입 인스턴스 반환")
+    @Test
+    void findMemberById() {
+        when(memberRepository.findById(TEST_USER_ID)).thenReturn(Optional.of(member));
+        assertThat(memberService.findMemberById(TEST_USER_ID)).isInstanceOf(MemberResponse.class);
+    }
 
-        verify(memberRepository).findByEmail(anyString());
-        assertThat(actual).isEqualTo(expected);
+    @DisplayName("id에 대한 회원이 존재하지 않는 경우, MemberNotFoundException 반환")
+    @Test
+    void findMemberById_when_member_not_exists() {
+        when(memberRepository.findById(TEST_USER_ID)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> memberService.findMemberById(TEST_USER_ID))
+            .isInstanceOf(MemberNotFoundException.class);
     }
 }

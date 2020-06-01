@@ -19,8 +19,8 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.TokenResponse;
 
-@WebMvcTest(LoginMemberController.class)
 @Import({AuthorizationExtractor.class, JwtTokenProvider.class})
+@WebMvcTest(LoginMemberController.class)
 class LoginMemberControllerTest {
     private static final String TIGER_EMAIL = "tiger@luv.com";
     private static final String TIGER_PASSWORD = "prettiger";

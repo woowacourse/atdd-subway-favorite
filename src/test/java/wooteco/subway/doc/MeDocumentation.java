@@ -106,6 +106,10 @@ public class MeDocumentation {
 			requestHeaders(
 				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
 			),
+			requestParameters(
+				parameterWithName("sourceId").description("id to favorite path's source station"),
+				parameterWithName("targetId").description("id to favorite path's target station")
+			),
 			responseFields(
 				fieldWithPath("existence").type(JsonFieldType.BOOLEAN).description("whether favorite exists")
 			)

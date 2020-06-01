@@ -14,7 +14,8 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
-public class MeAcceptanceTest extends AcceptanceTest {
+public class MyInfoAcceptanceTest extends AcceptanceTest {
+    private static final String BASE_PATH = "/members/my-info";
 
     @DisplayName("내 정보 관리 기능")
     @Test
@@ -43,7 +44,7 @@ public class MeAcceptanceTest extends AcceptanceTest {
                 auth().
                 oauth2(loginToken.getAccessToken()).
                 when().
-                get("/me").
+                get(BASE_PATH).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -62,7 +63,7 @@ public class MeAcceptanceTest extends AcceptanceTest {
             auth().
             oauth2(loginToken.getAccessToken()).
             when().
-            put("/me").
+            put(BASE_PATH).
             then().
             log().all().
             statusCode(HttpStatus.OK.value());
@@ -73,7 +74,7 @@ public class MeAcceptanceTest extends AcceptanceTest {
             auth().
             oauth2(loginToken.getAccessToken()).
             when().
-            delete("/me").
+            delete(BASE_PATH).
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());

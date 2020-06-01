@@ -9,7 +9,4 @@ import org.springframework.data.repository.query.Param;
 public interface MemberRepository extends CrudRepository<Member, Long> {
     @Query("select * from member where email = :email")
     Optional<Member> findByEmail(@Param("email") String email);
-
-    @Query("select count(*) from Member where email =:email")
-    boolean existsByEmail(@Param("email") String email);
 }

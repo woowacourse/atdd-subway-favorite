@@ -42,9 +42,12 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.dto.StationResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(MeController.class)
 @Import({JwtTokenProvider.class, AuthorizationExtractor.class})
-public class MeControllerTest {
+@WebMvcTest(MyInfoController.class)
+public class MyInfoControllerTest {
+    private static final String BASE_PATH = "/members/my-info";
+    private static final String BASE_PATH_WITH_FAVORITE = "/members/my-info/favorites";
+
     private static final long TIGER_ID = 1L;
     private static final String TIGER_EMAIL = "tiger@luv.com";
     private static final String TIGER_NAME = "tiger";
@@ -86,7 +89,7 @@ public class MeControllerTest {
         String expected =
             "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"id\" : " + TIGER_ID + "}";
 
-        this.mockMvc.perform(get("/me")
+        this.mockMvc.perform(get(BASE_PATH)
             .header(HttpHeaders.AUTHORIZATION, token)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -102,7 +105,7 @@ public class MeControllerTest {
     @ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
     void getMemberByEmail_notExistEmail(String token) throws Exception {
 
-        this.mockMvc.perform(get("/me")
+        this.mockMvc.perform(get(BASE_PATH)
             .header(HttpHeaders.AUTHORIZATION, token)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isFound())
@@ -119,7 +122,7 @@ public class MeControllerTest {
         given(memberService.findMemberByEmail(TIGER_EMAIL)).willReturn(member);
         String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/me")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put(BASE_PATH)
             .content(body)
             .header(HttpHeaders.AUTHORIZATION, token)
             .contentType(MediaType.APPLICATION_JSON))
@@ -136,7 +139,7 @@ public class MeControllerTest {
     void updateMember_invalidToken(String token) throws Exception {
         String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/me")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put(BASE_PATH)
             .content(body)
             .header(HttpHeaders.AUTHORIZATION, token)
             .contentType(MediaType.APPLICATION_JSON))
@@ -153,7 +156,7 @@ public class MeControllerTest {
         Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
         given(memberService.findMemberByEmail(TIGER_EMAIL)).willReturn(member);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete(BASE_PATH)
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, token))
             .andExpect(status().isNoContent())
@@ -167,7 +170,7 @@ public class MeControllerTest {
     @EmptySource
     @ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
     void deleteMember_invalidToken(String token) throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete(BASE_PATH)
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, token))
             .andExpect(status().isFound())
@@ -184,7 +187,9 @@ public class MeControllerTest {
         String expected = "{\"existence\" : " + true + "}";
 
         this.mockMvc.perform(
-            get("/me/favorites/source/{sourceId}/target/{targetId}/existsPath", SOURCE_STATION_ID, TARGET_STATION_ID)
+            get(BASE_PATH_WITH_FAVORITE + "/existsPath")
+                .queryParam("sourceId", String.valueOf(SOURCE_STATION_ID))
+                .queryParam("targetId", String.valueOf(TARGET_STATION_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, token))
             .andExpect(status().isOk())
@@ -200,7 +205,7 @@ public class MeControllerTest {
         String body =
             "{\"sourceStationId\" : " + SOURCE_STATION_ID + ", \"targetStationId\" : " + TARGET_STATION_ID + "}";
 
-        this.mockMvc.perform(post("/me/favorites")
+        this.mockMvc.perform(post(BASE_PATH_WITH_FAVORITE)
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, token)
             .contentType(MediaType.APPLICATION_JSON)
@@ -211,11 +216,11 @@ public class MeControllerTest {
         ;
     }
 
-    @DisplayName("즐겨찾기에서 경로 제거")
+    @DisplayName("존재하는 즐겨찾기 경로 제거")
     @Test
     void removeFavorite() throws Exception {
         this.mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/me/favorites/source/{sourceId}/target/{targetId}",
+            RestDocumentationRequestBuilders.delete(BASE_PATH_WITH_FAVORITE + "/source/{sourceId}/target/{targetId}",
                 SOURCE_STATION_ID, TARGET_STATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, token))
@@ -244,7 +249,7 @@ public class MeControllerTest {
             + "\"targetStation\":{\"id\":3,\"name\":\"강동\",\"createdAt\":\"2020-05-26T14:18:18\"}}]";
 
         when(favoriteService.getFavorites(any())).thenReturn(favoriteResponses);
-        this.mockMvc.perform(get("/me/favorites")
+        this.mockMvc.perform(get(BASE_PATH_WITH_FAVORITE)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .header(HttpHeaders.AUTHORIZATION, token))

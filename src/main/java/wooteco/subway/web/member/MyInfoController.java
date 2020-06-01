@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
@@ -25,12 +26,12 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @RestController
-@RequestMapping("/me")
-public class MeController {
+@RequestMapping("/members/my-info")
+public class MyInfoController {
     private final MemberService memberService;
     private final FavoriteService favoriteService;
 
-    public MeController(MemberService memberService, FavoriteService favoriteService) {
+    public MyInfoController(MemberService memberService, FavoriteService favoriteService) {
         this.memberService = memberService;
         this.favoriteService = favoriteService;
     }
@@ -53,9 +54,9 @@ public class MeController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/favorites/source/{sourceId}/target/{targetId}/existsPath")
+    @GetMapping("/favorites/existsPath")
     public ResponseEntity<FavoriteExistenceResponse> isExistFavoritePath(@LoginMember Member member,
-        @PathVariable Long sourceId, @PathVariable Long targetId) {
+        @RequestParam Long sourceId, @RequestParam Long targetId) {
         FavoriteExistenceResponse response = favoriteService.hasFavoritePath(member, sourceId, targetId);
         return ResponseEntity.ok(response);
     }

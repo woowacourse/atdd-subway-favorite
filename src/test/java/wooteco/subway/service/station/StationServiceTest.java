@@ -17,9 +17,9 @@ import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 
-@SpringBootTest
 @Sql("/truncate.sql")
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource("classpath:application-test.properties")
+@SpringBootTest
 public class StationServiceTest {
     @Autowired
     private StationService stationService;

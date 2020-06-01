@@ -6,14 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,50 +26,45 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.DuplicateEmailException;
-import wooteco.subway.exception.EntityNotFoundException;
+import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(MemberController.class)
 @Import({JwtTokenProvider.class, AuthorizationExtractor.class})
+@WebMvcTest(MemberController.class)
 public class MemberControllerTest {
-	private static final long TIGER_ID = 1L;
-	private static final String TIGER_EMAIL = "tiger@luv.com";
-	private static final String TIGER_NAME = "tiger";
-	private static final String TIGER_PASSWORD = "prettiger";
+	private static final long MEMBER_ID = 1L;
+	private static final String MEMBER_EMAIL = "tiger@luv.com";
+	private static final String MEMBER_NAME = "tiger";
+	private static final String MEMBER_PASSWORD = "prettiger";
 
 	@MockBean
-	MemberService memberService;
+	private MemberService memberService;
 
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-	@Autowired
-	TokenProvider tokenProvider;
-
-	private String token;
+	private Member member;
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-		token = "bearer " + tokenProvider.createToken(TIGER_EMAIL);
-
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.addFilter(new ShallowEtagHeaderFilter())
 			.apply(documentationConfiguration(restDocumentation))
 			.build();
+
+		member = new Member(MEMBER_ID, MEMBER_EMAIL, MEMBER_NAME, MEMBER_PASSWORD);
 	}
 
 	@DisplayName("회원등록을 성공적으로 마치면, Created 상태를 반환하는지 확인한다.")
 	@Test
 	void createMember() throws Exception {
-		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
 		given(memberService.createMember(any())).willReturn(MemberResponse.of(member));
 
-		String body = "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"password\" : \""
-			+ TIGER_PASSWORD + "\"}";
+		String body = "{\"email\" : \"" + MEMBER_EMAIL + "\", \"name\" : \"" + MEMBER_NAME + "\", \"password\" : \""
+			+ MEMBER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(post("/members")
 			.accept(MediaType.APPLICATION_JSON)
@@ -89,8 +80,8 @@ public class MemberControllerTest {
 	void createMemberWithDuplicateEmail() throws Exception {
 		given(memberService.createMember(any())).willThrow(new DuplicateEmailException());
 
-		String body = "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"password\" : \""
-			+ TIGER_PASSWORD + "\"}";
+		String body = "{\"email\" : \"" + MEMBER_EMAIL + "\", \"name\" : \"" + MEMBER_NAME + "\", \"password\" : \""
+			+ MEMBER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(post("/members")
 			.accept(MediaType.APPLICATION_JSON)
@@ -101,111 +92,32 @@ public class MemberControllerTest {
 			.andDo(MemberDocumentation.createMemberException());
 	}
 
-	@DisplayName("이메일로 회원을 조회하고, OK 상태코드를 반환하고, 해당 회원의 정보를 반환하는지 확인한다.")
+	@DisplayName("id에 해당하는 회원의 정보와 200 상태코드 반환")
 	@Test
-	void getMemberByEmail() throws Exception {
-		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
-		given(memberService.findMemberResponseByEmail(TIGER_EMAIL)).willReturn(MemberResponse.of(member));
+	void findMemberInfoById() throws Exception {
+		given(memberService.findMemberById(MEMBER_ID)).willReturn(MemberResponse.of(member));
+		String expected = "{\"email\" : \"" + MEMBER_EMAIL + "\", \"name\" : \"" + MEMBER_NAME + "\", \"id\" :"
+			+ MEMBER_ID + "}";
 
-		String expected =
-			"{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"id\" : " + TIGER_ID + "}";
-
-		this.mockMvc.perform(get("/members")
-			.param("email", TIGER_EMAIL)
-			.header(HttpHeaders.AUTHORIZATION, token)
+		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/members/{id}", MEMBER_ID)
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().json(expected))
 			.andDo(print())
-			.andDo(MemberDocumentation.getMember());
+			.andDo(MemberDocumentation.getMember())
+		;
 	}
 
-	@DisplayName("이메일로 회원을 조회하는데, 회원이 없는 경우 404 Not Found를 반환한다.")
+	@DisplayName("id에 해당하는 회원이 존재하지 않는 경우 404 상태코드 반환")
 	@Test
-	void getMemberByEmail_notExistEmail() throws Exception {
-		given(memberService.findMemberResponseByEmail(TIGER_EMAIL)).willThrow(
-			new EntityNotFoundException(TIGER_EMAIL + "에 해당하는 회원이 없습니다."));
+	void findMemberInfoById_when_memberNotExist() throws Exception {
+		given(memberService.findMemberById(MEMBER_ID)).willThrow(new MemberNotFoundException());
 
-		this.mockMvc.perform(get("/members")
-			.param("email", TIGER_EMAIL)
-			.header(HttpHeaders.AUTHORIZATION, token)
+		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/members/{id}", MEMBER_ID)
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNotFound())
 			.andDo(print())
-			.andDo(MemberDocumentation.getMemberException());
-	}
-
-	@DisplayName("이메일로 회원을 조회하는데, 토큰 불량/없는 경우 302 반환.")
-	@ParameterizedTest
-	@EmptySource
-	@ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
-	void getMemberByEmail_invalidToken(String token) throws Exception {
-
-		this.mockMvc.perform(get("/members")
-			.param("email", TIGER_EMAIL)
-			.header(HttpHeaders.AUTHORIZATION, token)
-			.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isFound())
-			.andExpect(header().string(HttpHeaders.LOCATION, "/login"))
-			.andDo(print())
-			.andDo(MemberDocumentation.getMemberException());
-	}
-
-	@DisplayName("아이디로 정보를 갱신할 회원을 지정하여 정보를 갱신한 후, OK 상태코드를 반환한다.")
-	@Test
-	void updateMember() throws Exception {
-		String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
-
-		this.mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", TIGER_ID)
-			.content(body)
-			.header(HttpHeaders.AUTHORIZATION, token)
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(print())
-			.andDo(MemberDocumentation.updateMember())
+			.andDo(MemberDocumentation.getMemberException())
 		;
-	}
-
-	@DisplayName("아이디로 정보를 갱신할 회원을 지정하여 정보를 갱신하려는데, 토큰 불량/없는 경우 302 반환.")
-	@ParameterizedTest
-	@EmptySource
-	@ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
-	void updateMember_invalidToken(String token) throws Exception {
-		String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
-
-		this.mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", TIGER_ID)
-			.content(body)
-			.header(HttpHeaders.AUTHORIZATION, token)
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isFound())
-			.andExpect(header().string(HttpHeaders.LOCATION, "/login"))
-			.andDo(print())
-			.andDo(MemberDocumentation.updateMember())
-		;
-	}
-
-	@DisplayName("아이디로 회원 정보를 삭제한 후, NoContent 상태코드를 반환한다.")
-	@Test
-	void deleteMember() throws Exception {
-		this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", TIGER_ID)
-			.accept(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, token))
-			.andExpect(status().isNoContent())
-			.andDo(print())
-			.andDo(MemberDocumentation.deleteMember());
-	}
-
-	@DisplayName("아이디로 회원 정보를 삭제하고 싶은데, 토큰 불량/없는 경우 302 반환.")
-	@ParameterizedTest
-	@EmptySource
-	@ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
-	void deleteMember_invalidToken(String token) throws Exception {
-		this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", TIGER_ID)
-			.accept(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, token))
-			.andExpect(status().isFound())
-			.andExpect(header().string(HttpHeaders.LOCATION, "/login"))
-			.andDo(print())
-			.andDo(MemberDocumentation.deleteMember());
 	}
 }

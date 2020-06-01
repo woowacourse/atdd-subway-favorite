@@ -1,8 +1,4 @@
-import {
-  EVENT_TYPE,
-  ERROR_MESSAGE,
-  SUCCESS_MESSAGE
-} from "../../utils/constants.js";
+import { ERROR_MESSAGE } from "../../utils/constants.js";
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 
@@ -17,7 +13,8 @@ function MyInfo() {
         $email.innerText = member.email;
         $name.innerText = member.name;
       }
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };

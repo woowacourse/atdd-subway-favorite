@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import wooteco.subway.exception.EntityNotFoundException;
+import wooteco.subway.exception.FavoriteNotFoundException;
 
 public class Favorites {
     private final Set<Favorite> favorites;
@@ -38,7 +38,7 @@ public class Favorites {
 
     public void removeFavorite(Favorite favorite) {
         if (!favorites.contains(favorite)) {
-            throw new EntityNotFoundException("삭제할 즐겨찾기 경로가 존재하지 않습니다.");
+            throw new FavoriteNotFoundException();
         }
         favorites.remove(favorite);
     }

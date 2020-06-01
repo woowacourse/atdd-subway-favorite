@@ -69,7 +69,7 @@ operation::me/favorites[snippets='curl-request,http-request,http-response']
 [[resources-me-favorites-detail]]
 === 내 즐겨 찾기 경로 존재 여부 확인
 
-operation::me/favorites/detail[snippets='curl-request,http-request,http-response']
+operation::me/favorites/detail[snippets='curl-request,http-request,request-parameters,http-response']
 
 '''
 

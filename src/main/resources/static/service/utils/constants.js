@@ -5,7 +5,8 @@ export const EVENT_TYPE = {
 export const SUCCESS_MESSAGE = {
   COMMON: "😁 성공적으로 변경되었습니다.",
   SAVE: "😁 정보가 반영되었습니다..",
-  FAVORITE: "😁 즐겨찾기에 추가하였습니다."
+  FAVORITE_ADD: "😁 즐겨찾기에 추가하였습니다.",
+  FAVORITE_REMOVE: "😁 즐겨찾기에서 제거하였습니다."
 };
 
 export const ERROR_MESSAGE = {

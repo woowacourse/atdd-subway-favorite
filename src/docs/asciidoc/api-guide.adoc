@@ -45,16 +45,3 @@ operation::members/view[snippets='curl-request,http-request,http-response,reques
 
 operation::members/viewException[snippets='curl-request,http-request,http-response,request-parameters,response-fields']
 
-'''
-
-[[resources-members-update]]
-=== 회원 정보 수정
-
-operation::members/update[snippets='curl-request,http-request,http-response,path-parameters,request-fields']
-
-'''
-
-[[resources-members-delete]]
-=== 회원 정보 삭제
-
-operation::members/delete[snippets='curl-request,http-request,http-response,path-parameters']

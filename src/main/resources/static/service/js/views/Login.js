@@ -1,4 +1,4 @@
-import { EVENT_TYPE, ERROR_MESSAGE } from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE } from "../../utils/constants.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 import api from "../../api/index.js";
 
@@ -19,14 +19,10 @@ function Login() {
         password: $password.value
       };
       const jwt = await api.member.login(loginMember);
-      if (jwt) {
-        localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
-        location.href = "/";
-        return;
-      }
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
+      location.href = "/";
     } catch (e) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      showSnackbar(e.message);
     }
   };
 

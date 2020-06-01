@@ -24,14 +24,10 @@ import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource("classpath:application-test.properties")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
-	public static final long TIGER_ID = 1L;
-	public static final String TIGER_EMAIL = "tiger@luv.com";
-	public static final String TIGER_NAME = "tiger";
-	public static final String TIGER_PASSWORD = "prettiger";
 	public static final String STATION_NAME_KANGNAM = "강남역";
 	public static final String STATION_NAME_YEOKSAM = "역삼역";
 	public static final String STATION_NAME_SEOLLEUNG = "선릉역";
@@ -45,6 +41,7 @@ public class AcceptanceTest {
 	public static final String LINE_NAME_BUNDANG = "분당선";
 	public static final String LINE_NAME_SINBUNDANG = "신분당선";
 
+	public static final long TEST_USER_ID = 1L;
 	public static final String TEST_USER_EMAIL = "brown@email.com";
 	public static final String TEST_USER_NAME = "브라운";
 	public static final String TEST_USER_PASSWORD = "brown";
@@ -274,47 +271,16 @@ public class AcceptanceTest {
 				extract().header("Location");
 	}
 
-	public MemberResponse getMember(String email, TokenResponse loginToken) {
+	public MemberResponse getMember(Long memberId) {
 		return
 			given().
 				accept(MediaType.APPLICATION_JSON_VALUE).
-				auth().
-				oauth2(loginToken.getAccessToken()).
 				when().
-				get("/members?email=" + email).
+				get("/members/{id}", memberId).
 				then().
 				log().all().
 				statusCode(HttpStatus.OK.value()).
 				extract().as(MemberResponse.class);
-	}
-
-	public void updateMember(MemberResponse memberResponse, TokenResponse loginToken) {
-		Map<String, String> params = new HashMap<>();
-		params.put("name", "NEW_" + TEST_USER_NAME);
-		params.put("password", "NEW_" + TEST_USER_PASSWORD);
-
-		given().
-			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			auth().
-			oauth2(loginToken.getAccessToken()).
-			when().
-			put("/members/" + memberResponse.getId()).
-			then().
-			log().all().
-			statusCode(HttpStatus.OK.value());
-	}
-
-	public void deleteMember(MemberResponse memberResponse, TokenResponse loginToken) {
-		given().
-			auth().
-			oauth2(loginToken.getAccessToken()).
-			when().
-			delete("/members/" + memberResponse.getId()).
-			then().
-			log().all().
-			statusCode(HttpStatus.NO_CONTENT.value());
 	}
 
 	public TokenResponse login(String email, String password) {

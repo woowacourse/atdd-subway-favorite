@@ -50,6 +50,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨 찾기를 삭제한 경로로 조회 한다. /삭제 조회/
      * Then 즐겨 찾기는 추가 되어 있지 않다.
      */
+    private static final String BASE_PATH = "/members/my-info/favorites";
+
     @Test
     void manageFavorite() {
         LineResponse lineTwo = createLine(LINE_NAME_2);
@@ -60,8 +62,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         addLineStation(lineTwo.getId(), stationKangnam.getId(), stationYeoksam.getId());
         addLineStation(lineTwo.getId(), stationYeoksam.getId(), stationHanti.getId());
 
-        createMember(TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
-        TokenResponse loginToken = login(TIGER_EMAIL, TIGER_PASSWORD);
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        TokenResponse loginToken = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         FavoriteExistenceResponse favoriteExistenceResponse = existFavorite(loginToken, stationKangnam.getId(),
             stationHanti.getId());
         assertThat(favoriteExistenceResponse.isExistence()).isFalse();
@@ -98,7 +100,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 auth().
                 oauth2(loginToken.getAccessToken()).
                 when().
-                get("/me/favorites/source/{sourceId}/target/{targetId}/existsPath", sourceStationId, targetStationId).
+                queryParam("sourceId", sourceStationId).
+                queryParam("targetId", targetStationId).
+                get(BASE_PATH + "/existsPath").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -114,7 +118,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             oauth2(loginToken.getAccessToken()).
             body(request).
             when().
-            post("/me/favorites").
+            post(BASE_PATH).
             then().
             log().all().
             statusCode(HttpStatus.CREATED.value());
@@ -126,7 +130,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             auth().
             oauth2(loginToken.getAccessToken()).
             when().
-            delete("/me/favorites/source/{sourceId}/target/{targetId}", sourceStationId, targetStationId).
+            delete(BASE_PATH + "/source/{sourceId}/target/{targetId}", sourceStationId, targetStationId).
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());
@@ -139,7 +143,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 auth().
                 oauth2(loginToken.getAccessToken()).
                 when().
-                get("/me/favorites").
+                get(BASE_PATH).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
