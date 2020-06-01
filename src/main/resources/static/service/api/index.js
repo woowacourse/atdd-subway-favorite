@@ -121,8 +121,8 @@ const api = (() => {
     update(token, data) {
       return request(`/members`, METHOD.AUTH_PUT(token, data))
     },
-    delete(token, id) {
-      return request(`/members/` + id, METHOD.AUTH_DELETE(token))
+    delete(token) {
+      return request(`/members/`, METHOD.AUTH_DELETE(token))
     }
   };
 

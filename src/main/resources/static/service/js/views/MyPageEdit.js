@@ -44,9 +44,9 @@ function MyPageEdit() {
       return;
     }
     const token = cookieApi.getCookie("token");
-    const id = cookieApi.getCookie("id");
+    // const id = cookieApi.getCookie("id");
 
-    api.user.delete(token, id).then(response => {
+    api.user.delete(token).then(response => {
       if (!response.ok) {
         throw new Error(response.message);
       }

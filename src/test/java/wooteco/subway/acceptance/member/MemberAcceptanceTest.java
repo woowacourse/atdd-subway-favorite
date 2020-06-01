@@ -153,4 +153,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             log().all().
             statusCode(HttpStatus.UNAUTHORIZED.value());
     }
+
+    @Test
+    void deleteMember() {
+        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(location).isNotBlank();
+
+        TokenResponse response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        given().
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            header("Authorization", "Bearer " + response.getAccessToken()).
+        when().
+            delete("/members").
+        then().
+            log().all().
+            statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }

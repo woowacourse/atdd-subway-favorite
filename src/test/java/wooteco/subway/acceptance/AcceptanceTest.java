@@ -62,9 +62,9 @@ public class AcceptanceTest {
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         post("/stations").
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
                         extract().as(StationResponse.class);
@@ -72,18 +72,20 @@ public class AcceptanceTest {
 
     public List<StationResponse> getStations() {
         return
-                given().when().
+                given().
+                when().
                         get("/stations").
-                        then().
+                then().
                         log().all().
                         extract().
                         jsonPath().getList(".", StationResponse.class);
     }
 
     public void deleteStation(Long id) {
-        given().when().
+        given().
+        when().
                 delete("/stations/" + id).
-                then().
+        then().
                 log().all();
     }
 
@@ -165,9 +167,9 @@ public class AcceptanceTest {
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 post("/lines/" + lineId + "/stations").
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
@@ -176,9 +178,9 @@ public class AcceptanceTest {
         given().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
+        when().
                 delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
+        then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -186,9 +188,9 @@ public class AcceptanceTest {
     public WholeSubwayResponse retrieveWholeSubway() {
         return
                 given().
-                        when().
+                when().
                         get("/lines/detail").
-                        then().
+                then().
                         log().all().
                         extract().as(WholeSubwayResponse.class);
     }
@@ -198,9 +200,9 @@ public class AcceptanceTest {
                 given().
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
+                when().
                         get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(PathResponse.class);
@@ -291,7 +293,7 @@ public class AcceptanceTest {
                         header("Authorization", "Bearer " + token).
                 when().
                         get("/members?email=" + email).
-                        then().
+                then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberResponse.class);
