@@ -12,8 +12,8 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.web.exception.notfound.StationNotFoundException;
 import wooteco.subway.web.exception.path.TargetEqualsSourceException;
-import wooteco.subway.web.exception.station.StationNotFoundException;
 
 @Service
 public class FavoriteService {

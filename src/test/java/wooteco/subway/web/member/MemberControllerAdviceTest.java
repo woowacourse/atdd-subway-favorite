@@ -18,9 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.web.exception.member.EmailNotFoundException;
 import wooteco.subway.web.exception.member.InvalidAuthenticationException;
 import wooteco.subway.web.exception.member.WrongPasswordException;
+import wooteco.subway.web.exception.notfound.EmailNotFoundException;
 
 @Import(HttpEncodingAutoConfiguration.class)
 @WebMvcTest(value = {OAuthController.class, MemberController.class, AuthorizationExtractor.class, JwtTokenProvider
