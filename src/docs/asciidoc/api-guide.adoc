@@ -16,6 +16,19 @@ endif::[]
 [[resources]]
 = 자원
 
+[[resources-authorization]]
+== 인가
+
+[[resources-authorization-authorize_fail_token]]
+=== 인가 실패 (토큰)
+
+operation::authorization/authorize_fail_token[snippets='http-request,http-response']
+
+[[resources-authorization-authorize_fail_session]]
+=== 인가 실패 (세션)
+
+operation::authorization/authorize_fail_session[snippets='http-request,http-response']
+
 [[resources-members]]
 == 멤버
 
@@ -53,16 +66,6 @@ operation::members/update[snippets='http-request,request-fields,path-parameters,
 === 회원 정보 삭제
 
 operation::members/delete[snippets='http-request,path-parameters,http-response']
-
-[[resources-members-authorize_fail_token]]
-=== 회원 권한 접근 실패 (토큰)
-
-operation::members/authorize_fail_token[snippets='http-request,http-response']
-
-[[resources-members-authorize_fail_session]]
-=== 회원 권한 접근 실패 (세션)
-
-operation::members/authorize_fail_session[snippets='http-request,http-response']
 
 [[resources-favorites]]
 == 즐겨찾기

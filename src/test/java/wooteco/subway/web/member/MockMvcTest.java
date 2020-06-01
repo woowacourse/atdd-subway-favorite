@@ -1,6 +1,9 @@
 package wooteco.subway.web.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,20 +11,26 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import wooteco.subway.doc.AuthDocumentation;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.info.AuthInfo;
 import wooteco.subway.web.member.info.UriInfo;
 import wooteco.subway.web.member.interceptor.AuthorizationExtractor;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MockMvcTest {
@@ -43,12 +52,44 @@ public class MockMvcTest {
     protected MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+    protected void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .addFilter(new ShallowEtagHeaderFilter()).alwaysDo(print())
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
+    }
+
+    @DisplayName("유저 토큰 인증 실패 컨트롤러")
+    @Test
+    public void failToAuthorizeMemberBecauseOfToken() throws Exception {
+        given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+        given(jwtTokenProvider.validateToken(any())).willReturn(false);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+        UriInfo uriInfo = UriInfo.of("/members?email=" + TEST_USER_EMAIL);
+        AuthInfo authInfo = AuthInfo.of("", TEST_USER_SESSION);
+
+        getAction(uriInfo, "", authInfo)
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+                .andDo(AuthDocumentation.failToAuthorizeMemberByToken());
+    }
+
+    @DisplayName("유저 세션 인증 실패 컨트롤러")
+    @Test
+    public void failToAuthorizeMemberBecauseOfSession() throws Exception {
+        given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
+
+        UriInfo uriInfo = UriInfo.of("/members?email=" + TEST_USER_EMAIL);
+        AuthInfo authInfo = AuthInfo.of(TEST_USER_TOKEN, new MockHttpSession());
+
+        getAction(uriInfo, "", authInfo)
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+                .andDo(AuthDocumentation.failToAuthorizeMemberBySession());
     }
 
     protected ResultActions postAction(UriInfo uri, String inputJson, AuthInfo authInfo) throws Exception {

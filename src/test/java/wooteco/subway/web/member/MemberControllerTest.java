@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationExtension;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
@@ -142,41 +141,5 @@ public class MemberControllerTest extends MockMvcTest{
                 .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember());
-    }
-
-    @DisplayName("유저 토큰 인증 실패 컨트롤러")
-    @Test
-    public void failToAuthorizeMemberBecauseOfToken() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.findMemberByEmail(any())).willReturn(member);
-        given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
-        given(jwtTokenProvider.validateToken(any())).willReturn(false);
-        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
-
-        UriInfo uriInfo = UriInfo.of("/members?email=" + TEST_USER_EMAIL);
-        AuthInfo authInfo = AuthInfo.of("", TEST_USER_SESSION);
-
-        getAction(uriInfo, "", authInfo)
-                .andExpect(status().isUnauthorized())
-                .andDo(print())
-                .andDo(MemberDocumentation.failToAuthorizeMemberByToken());
-    }
-
-    @DisplayName("유저 세션 인증 실패 컨트롤러")
-    @Test
-    public void failToAuthorizeMemberBecauseOfSession() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.findMemberByEmail(any())).willReturn(member);
-        given(authorizationExtractor.extract(any(), any())).willReturn(TEST_USER_TOKEN);
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
-
-        UriInfo uriInfo = UriInfo.of("/members?email=" + TEST_USER_EMAIL);
-        AuthInfo authInfo = AuthInfo.of(TEST_USER_TOKEN, new MockHttpSession());
-
-        getAction(uriInfo, "", authInfo)
-                .andExpect(status().isUnauthorized())
-                .andDo(print())
-                .andDo(MemberDocumentation.failToAuthorizeMemberBySession());
     }
 }
