@@ -273,12 +273,20 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(String email, String sessionId, TokenResponse tokenResponse) {
+    protected RequestSpecification setAuthorization(Authentication authentication) {
+        TokenResponse tokenResponse = authentication.getTokenResponse();
+
         return
                 given().
-                        cookie("JSESSIONID", sessionId).
+                        cookie("JSESSIONID", authentication.getSessionId()).
                         header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
+                        contentType(MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    public MemberResponse getMember(String email, Authentication authentication) {
+        return
+                setAuthorization(authentication).
                         when().
                         get("/members?email=" + email).
                         then().
@@ -287,12 +295,9 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public ExceptionResponse failToGetMemberByAuthentication(String email, String sessionId, TokenResponse tokenResponse) {
+    public ExceptionResponse failToGetMemberByAuthentication(String email, Authentication authentication) {
         return
-                given().
-                        cookie("JSESSIONID", sessionId).
-                        header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
+                setAuthorization(authentication).
                         when().
                         get("/members?email=" + email).
                         then().
@@ -301,12 +306,9 @@ public class AcceptanceTest {
                         extract().as(ExceptionResponse.class);
     }
 
-    public ExceptionResponse failToGetMemberByNotExisting(String email, String sessionId, TokenResponse tokenResponse) {
+    public ExceptionResponse failToGetMemberByNotExisting(String email, Authentication authentication) {
         return
-                given().
-                        cookie("JSESSIONID", sessionId).
-                        header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
+                setAuthorization(authentication).
                         when().
                         get("/members?email=" + email).
                         then().
@@ -315,17 +317,13 @@ public class AcceptanceTest {
                         extract().as(ExceptionResponse.class);
     }
 
-    public void updateMember(String id, String sessionId, TokenResponse tokenResponse, String newName, String newPassword) {
+    public void updateMember(String id, Authentication authentication, String newName, String newPassword) {
         Map<String, String> params = new HashMap<>();
         params.put("name", newName);
         params.put("password", newPassword);
 
-        given().
-                cookie("JSESSIONID", sessionId).
-                header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+        setAuthorization(authentication).
                 body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
                 put("/members/" + id).
                 then().
@@ -333,10 +331,8 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(String id, String sessionId, TokenResponse tokenResponse) {
-        given().
-                cookie("JSESSIONID", sessionId).
-                header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+    public void deleteMember(String id, Authentication authentication) {
+        setAuthorization(authentication).
                 when().
                 delete("/members/" + id).
                 then().
