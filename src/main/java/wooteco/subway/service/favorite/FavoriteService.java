@@ -6,6 +6,9 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteListResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.web.exception.NoSuchValueException;
+
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_MEMBER_MESSAGE;
 
 @Service
 public class FavoriteService {
@@ -25,7 +28,8 @@ public class FavoriteService {
 
     public FavoriteListResponse findFavorites(Member member) {
         Member persistMember = memberRepository.findById(member.getId())
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_MEMBER_MESSAGE));
+
         return FavoriteListResponse.of(persistMember.getFavorites());
     }
 

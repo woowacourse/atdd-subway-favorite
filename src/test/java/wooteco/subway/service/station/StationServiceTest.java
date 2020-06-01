@@ -9,11 +9,13 @@ import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.web.exception.NoSuchValueException;
 
 import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_LINE_MESSAGE;
 
 @SpringBootTest
 @Sql("/truncate.sql")
@@ -42,7 +44,8 @@ public class StationServiceTest {
         Optional<Station> resultStation = stationRepository.findById(station1.getId());
         assertThat(resultStation).isEmpty();
 
-        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
+        Line resultLine = lineRepository.findById(line.getId())
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_LINE_MESSAGE));
         assertThat(resultLine.getStations()).hasSize(1);
     }
 }

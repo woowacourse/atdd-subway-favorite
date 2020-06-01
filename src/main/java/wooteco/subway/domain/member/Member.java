@@ -2,10 +2,13 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import wooteco.subway.web.exception.NoSuchValueException;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_FAVORITE_MESSAGE;
 
 public class Member {
     @Id
@@ -69,17 +72,18 @@ public class Member {
 
     public Favorite findFavorite(Long departureId, Long destinationId) {
         return favorites.stream()
-            .filter(favorite -> Objects.equals(favorite.getDepartureId(), departureId))
-            .filter(favorite -> Objects.equals(favorite.getDestinationId(), destinationId))
-            .findFirst()
-            .orElseThrow(AssertionError::new);
+                .filter(favorite -> Objects.equals(favorite.getDepartureId(), departureId))
+                .filter(favorite -> Objects.equals(favorite.getDestinationId(), destinationId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_FAVORITE_MESSAGE));
     }
 
     public void deleteFavorite(Long favoriteId) {
         Favorite favoriteToRemove = favorites.stream()
-            .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
-            .findFirst()
-            .orElseThrow(AssertionError::new);
+                .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_FAVORITE_MESSAGE));
+
         favorites.remove(favoriteToRemove);
     }
 }

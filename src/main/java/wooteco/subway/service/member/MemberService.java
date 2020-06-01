@@ -11,8 +11,11 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.exception.MemberCreationException;
+import wooteco.subway.web.exception.NoSuchValueException;
 
 import javax.validation.Valid;
+
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_MEMBER_MESSAGE;
 
 @Service
 public class MemberService {
@@ -38,7 +41,7 @@ public class MemberService {
 
     public String createToken(LoginRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_MEMBER_MESSAGE));
         if (!member.checkPassword(request.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }
@@ -47,11 +50,13 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_MEMBER_MESSAGE));
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_MEMBER_MESSAGE));
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }

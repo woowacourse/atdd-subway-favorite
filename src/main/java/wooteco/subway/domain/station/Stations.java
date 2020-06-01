@@ -1,6 +1,10 @@
 package wooteco.subway.domain.station;
 
+import wooteco.subway.web.exception.NoSuchValueException;
+
 import java.util.List;
+
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_STATION_MESSAGE;
 
 public class Stations {
     private List<Station> stations;
@@ -17,6 +21,6 @@ public class Stations {
         return stations.stream()
                 .filter(it -> it.getId() == stationId)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_STATION_MESSAGE));
     }
 }

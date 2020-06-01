@@ -9,11 +9,15 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.exception.NoSuchValueException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_LINE_STATION_MESSAGE;
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_STATION_MESSAGE;
 
 @Service
 public class PathService {
@@ -35,9 +39,9 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationRepository.findByName(source)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_STATION_MESSAGE));
         Station targetStation = stationRepository.findByName(target)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_STATION_MESSAGE));
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(),
                 type);
@@ -63,7 +67,7 @@ public class PathService {
         return stations.stream()
                 .filter(it -> it.getId() == stationId)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_STATION_MESSAGE));
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path,
@@ -81,7 +85,7 @@ public class PathService {
             LineStation lineStation = lineStations.stream()
                     .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
                     .findFirst()
-                    .orElseThrow(RuntimeException::new);
+                    .orElseThrow(() -> new NoSuchValueException(NO_SUCH_LINE_STATION_MESSAGE));
 
             paths.add(lineStation);
             preStationId = stationId;
