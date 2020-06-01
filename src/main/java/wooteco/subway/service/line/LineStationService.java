@@ -36,7 +36,7 @@ public class LineStationService {
         List<Station> stations = stationRepository.findAllById(lines.getStationIds());
 
         List<LineDetailResponse> lineDetailResponses = lines.getLines().stream()
-                .map(it -> LineDetailResponse.of(it, mapStations(it.getStationIds(), stations)))
+                .map(line -> LineDetailResponse.of(line, mapStations(line.getStationIds(), stations)))
                 .collect(Collectors.toList());
 
         return WholeSubwayResponse.of(lineDetailResponses);
@@ -44,13 +44,13 @@ public class LineStationService {
 
     private List<Station> mapStations(List<Long> stationsIds, List<Station> stations) {
         return stations.stream()
-                .filter(it -> stationsIds.contains(it.getId()))
+                .filter(station -> stationsIds.contains(station.getId()))
                 .collect(Collectors.toList());
     }
 
     public void deleteLineStationByStationId(Long stationId) {
         List<Line> lines = lineRepository.findAll();
-        lines.stream().forEach(it -> it.removeLineStationById(stationId));
+        lines.forEach(line -> line.removeLineStationById(stationId));
         lineRepository.saveAll(lines);
     }
 }

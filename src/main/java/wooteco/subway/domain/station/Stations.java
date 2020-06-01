@@ -21,7 +21,7 @@ public class Stations {
 
 	public Station extractStationById(Long stationId) {
 		return stations.stream()
-				.filter(it -> it.getId().equals(stationId))
+				.filter(station -> station.getId().equals(stationId))
 				.findFirst()
 				.orElseThrow(NoStationExistsException::new);
     }
