@@ -1,6 +1,5 @@
 package wooteco.subway.service.member;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,13 @@ import javax.validation.Valid;
 
 @Service
 public class MemberService {
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+        this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     public MemberResponse createMember(@Valid MemberRequest request) {
         Member member = request.toMember();
