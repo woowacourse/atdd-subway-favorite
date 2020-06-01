@@ -44,7 +44,8 @@ create table if not exists FAVORITE
     member bigint not null,
     source bigint not null,
     target bigint not null,
-    primary key(id)
+    primary key(id),
+    unique key(member, source, target)
 );
 
 
