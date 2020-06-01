@@ -4,6 +4,7 @@ import org.assertj.core.util.Lists;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineStation;
@@ -59,6 +60,7 @@ public class PathTest {
 		line2.addLineStation(new LineStation(4L, 5L, 10, 10));
 	}
 
+	@DisplayName("거리에 따른 최단 경로를 조회")
 	@Test
 	void findPath() {
 		List<Long> stationIds = path.findShortestPath(Lines.of(Lists.list(line1, line2)), station3.getId(), station5.getId(), PathType.DISTANCE);
@@ -71,6 +73,7 @@ public class PathTest {
 		assertThat(stationIds.get(4)).isEqualTo(5L);
 	}
 
+	@DisplayName("경로가 없을시 예외처리")
 	@Test
 	void findPathWithNoPath() {
 		assertThrows(IllegalArgumentException.class, () ->
@@ -79,6 +82,7 @@ public class PathTest {
 
 	}
 
+	@DisplayName("연결이 안되어있을 경우 예외처리")
 	@Test
 	void findPathWithDisconnected() {
 		line2.removeLineStationById(station1.getId());

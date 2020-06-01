@@ -11,10 +11,10 @@ import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-	@DisplayName("즐겨찾기 추가, 삭제에 관한 인수테스트")
+	@DisplayName("즐겨찾기 추가, 삭제")
 	@Test
 	void favoriteAcceptanceTest() {
-		// given : 역이 존재한다
+		// given : 역이 존재한다.
 		createStation("역1");
 		createStation("역2");
 		createStation("역3");

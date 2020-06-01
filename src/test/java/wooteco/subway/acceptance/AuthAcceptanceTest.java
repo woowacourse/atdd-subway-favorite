@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-	@DisplayName("Session와 Bearer 방식 모두에 대한 인수테스트")
+	@DisplayName("Session와 Bearer 방식으로 인증")
 	@Test
 	void AuthorizeSessionAndBearer() {
 		String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

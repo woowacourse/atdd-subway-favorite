@@ -100,13 +100,13 @@ public class PathServiceTest {
         assertThat(pathResponse.getDuration()).isEqualTo(40);
     }
 
-    @DisplayName("출발역과 도착역이 같은 경우")
+    @DisplayName("출발역과 도착역이 같은 경우 예외처리")
     @Test
     void findPathWithSameSourceAndTarget() {
         assertThrows(SourceEqualsTargetException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
     }
 
-    @DisplayName("출발역과 도착역이 연결이 되지 않은 경우")
+    @DisplayName("출발역과 도착역이 연결이 되지 않은 경우 예외처리")
     @Test
     void findPathWithNoPath() {
         when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2, line3));

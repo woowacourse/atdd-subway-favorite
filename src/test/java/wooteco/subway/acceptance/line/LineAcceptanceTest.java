@@ -12,39 +12,42 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineAcceptanceTest extends AcceptanceTest {
-    @DisplayName("지하철 노선을 관리한다")
+    @DisplayName("지하철 노선을 관리")
     @Test
     void manageLine() {
-        // when
+        // when : 노선을 추가한다.
         createLine(LINE_NAME_SINBUNDANG);
         createLine(LINE_NAME_BUNDANG);
         createLine(LINE_NAME_2);
         createLine(LINE_NAME_3);
-        // then
+        // then : 노선이 추가되었다.
         List<LineResponse> lines = getLines();
         assertThat(lines.size()).isEqualTo(4);
 
-        // when
+        // when : 노선을 가져온다.
         LineDetailResponse line = getLine(lines.get(0).getId());
-        // then
+
+        // then : 저장된 노선 정보를 확인한다.
         assertThat(line.getId()).isNotNull();
         assertThat(line.getName()).isNotNull();
         assertThat(line.getStartTime()).isNotNull();
         assertThat(line.getEndTime()).isNotNull();
         assertThat(line.getIntervalTime()).isNotNull();
 
-        // when
+        // when : 노선 정보를 수정한다.
         LocalTime startTime = LocalTime.of(8, 00);
         LocalTime endTime = LocalTime.of(22, 00);
         updateLine(line.getId(), startTime, endTime);
-        //then
+
+        //then : 노선 정보가 수정되었다.
         LineDetailResponse updatedLine = getLine(line.getId());
         assertThat(updatedLine.getStartTime()).isEqualTo(startTime);
         assertThat(updatedLine.getEndTime()).isEqualTo(endTime);
 
-        // when
+        // when : 노선을 삭제한다.
         deleteLine(line.getId());
-        // then
+
+        // then : 노선이 삭제되었다.
         List<LineResponse> linesAfterDelete = getLines();
         assertThat(linesAfterDelete.size()).isEqualTo(3);
     }

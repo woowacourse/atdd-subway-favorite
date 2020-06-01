@@ -22,7 +22,7 @@ class FavoritesTest {
 		favorites.add(favorite);
 	}
 
-	@DisplayName("즐겨찾기 추가 기능 테스트")
+	@DisplayName("즐겨찾기 추가")
 	@Test
 	void add() {
 		favorites.add(favorite2);
@@ -30,7 +30,7 @@ class FavoritesTest {
 		assertThat(favorites.getFavorites().size()).isEqualTo(2);
 	}
 
-	@DisplayName("즐겨찾기 삭제 기능 테스트")
+	@DisplayName("즐겨찾기 삭제")
 	@Test
 	void remove() {
 		favorites.remove(favorite);
@@ -38,7 +38,7 @@ class FavoritesTest {
 		assertThat(favorites.getFavorites().size()).isEqualTo(0);
 	}
 
-	@DisplayName("즐겨찾기에 추가된 모든 역들의 id를 중복없이 구하는 기능 테스트")
+	@DisplayName("즐겨찾기에 추가된 모든 역들의 id를 중복없이 반환")
 	@Test
 	void extractStationIds() {
 		favorites.add(favorite2);
@@ -46,7 +46,7 @@ class FavoritesTest {
 		assertThat(ids).contains(1L, 2L, 3L);
 	}
 
-	@DisplayName("출발역과 도착역 id에 해당되는 즐겨찾기가 있는지 확인하는 기능 테스트")
+	@DisplayName("출발역과 도착역 id에 해당되는 즐겨찾기가 있는지 확인")
 	@Test
 	void hasFavoriteOf() {
 		assertThat(favorites.hasFavoriteOf(1L, 2L)).isTrue();

@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("회원 정보 추가, 조회, 수정, 삭제에 대한 인수테스트")
+    @DisplayName("회원 정보 추가, 조회, 수정, 삭제")
     @Test
     void manageMember() {
         // given : 회원 이메일과 이름, 비밀번호가 있다.
