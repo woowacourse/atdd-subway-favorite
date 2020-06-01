@@ -43,6 +43,5 @@ create table if not exists FAVORITE_PATH
     id bigint auto_increment not null primary key,
     source_id bigint not null,
     target_id bigint not null,
-    member bigint not null,
-    member_key int not null
+    member_id bigint not null
 );

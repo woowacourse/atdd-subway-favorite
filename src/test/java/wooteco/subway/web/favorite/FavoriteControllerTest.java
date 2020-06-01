@@ -29,7 +29,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.FavoritePathService;
 import wooteco.subway.service.favorite.dto.FavoritePathResponse;
 import wooteco.subway.service.favorite.dto.FavoritePathsResponse;
 import wooteco.subway.service.member.MemberService;
@@ -58,7 +58,7 @@ class FavoriteControllerTest {
 	private static final String NOT_DOCUMENTATION = "";
 
 	@MockBean
-	private FavoriteService favoriteService;
+	private FavoritePathService favoritePathService;
 
 	@MockBean
 	private MemberService memberService;
@@ -123,8 +123,8 @@ class FavoriteControllerTest {
 		String stringContent = objectMapper.writeValueAsString(request);
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-		BDDMockito.when(favoriteService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI))
-				.thenReturn(new FavoritePath(1L, 1L, 2L));
+		BDDMockito.when(favoritePathService.registerPath(member, STATION_NAME_KANGNAM, STATION_NAME_HANTI))
+				.thenReturn(new FavoritePath(1L, 1L, 2L, member.getId()));
 		BDDMockito.when(memberService.findMemberByEmail(TEST_USER_EMAIL))
 			.thenReturn(member);
 
@@ -156,7 +156,7 @@ class FavoriteControllerTest {
 		Station dogok = new Station(3L, STATION_NAME_DOGOK);
 		Station yangjae = new Station(4L, STATION_NAME_YANGJAE);
 
-		BDDMockito.when(favoriteService.retrievePath(member))
+		BDDMockito.when(favoritePathService.retrievePath(member))
 				.thenReturn(Arrays.asList(new FavoritePathResponse(1L, StationResponse.of(kangnam),
 				                                                   StationResponse.of(hanti)),
 				                          new FavoritePathResponse(2L, StationResponse.of(dogok),
@@ -194,7 +194,7 @@ class FavoriteControllerTest {
 		Station dogok = new Station(3L, STATION_NAME_DOGOK);
 		Station yangjae = new Station(4L, STATION_NAME_YANGJAE);
 
-		BDDMockito.when(favoriteService.retrievePath(member))
+		BDDMockito.when(favoritePathService.retrievePath(member))
 				.thenReturn(Arrays.asList(new FavoritePathResponse(2L, StationResponse.of(dogok),
 				                                                   StationResponse.of(yangjae))));
 		BDDMockito.when(memberService.findMemberByEmail(TEST_USER_EMAIL)).thenReturn(member);

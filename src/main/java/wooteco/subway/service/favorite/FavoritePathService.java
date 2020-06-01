@@ -1,35 +1,38 @@
 package wooteco.subway.service.favorite;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.path.FavoritePath;
+import wooteco.subway.domain.path.FavoritePathRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.domain.station.Stations;
+import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
 import wooteco.subway.exceptions.NotExistStationException;
 import wooteco.subway.service.favorite.dto.FavoritePathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 @Service
-public class FavoriteService {
+public class FavoritePathService {
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
+    private final FavoritePathRepository favoritePathRepository;
 
-    public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
+    public FavoritePathService(MemberRepository memberRepository, StationRepository stationRepository,
+        FavoritePathRepository favoritePathRepository) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
+        this.favoritePathRepository = favoritePathRepository;
     }
 
     public FavoritePath registerPath(Member member, String sourceName, String targetName) {
@@ -38,14 +41,17 @@ public class FavoriteService {
         Station target = stationRepository.findByName(targetName)
             .orElseThrow(() -> new NotExistStationException(targetName));
 
-        FavoritePath favoritePath = FavoritePath.of(source.getId(), target.getId());
-        member.addFavoritePath(favoritePath);
-        Member savedMember = memberRepository.save(member);
-        return savedMember.getRecentlyUpdatedPath();
+        if (favoritePathRepository.findByUniqueField(member.getId(), source.getId(), target.getId()).isPresent()) {
+            throw new DuplicatedFavoritePathException();
+        }
+
+        FavoritePath favoritePath = new FavoritePath(source.getId(), target.getId(), member.getId());
+        return favoritePathRepository.save(favoritePath);
     }
 
     public List<FavoritePathResponse> retrievePath(Member member) {
-        List<FavoritePath> favoritePaths = member.getFavoritePaths();
+        List<FavoritePath> favoritePaths = favoritePathRepository.findAllByMemberId(member.getId());
+
         Set<Long> stationIdsInFavoritePaths = favoritePaths.stream()
             .map(path -> Arrays.asList(path.getSourceId(), path.getTargetId()))
             .flatMap(Collection::stream)
@@ -64,10 +70,9 @@ public class FavoriteService {
     }
 
     public void deletePath(Member member, long pathId) {
-        if (member.hasNotPath(pathId)) {
-            throw new NotExistFavoritePathException(pathId);
-        }
-        member.deletePath(pathId);
-        memberRepository.save(member);
+        FavoritePath favoritePath = favoritePathRepository.findByMemberIdAndPathId(member.getId(), pathId)
+            .orElseThrow(() -> new NotExistFavoritePathException(pathId));
+
+        favoritePathRepository.delete(favoritePath);
     }
 }
