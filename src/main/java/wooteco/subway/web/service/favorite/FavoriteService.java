@@ -36,7 +36,7 @@ public class FavoriteService {
     }
 
     public FavoriteResponse create(Member member, FavoriteRequest request) {
-        Favorite favorite = getFavorite(member, request);
+        Favorite favorite = makeFavorite(member, request);
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
@@ -44,13 +44,6 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
             .orElseThrow(() -> new NotFoundFavoriteException(id));
         favoriteRepository.delete(favorite);
-    }
-
-    private Favorite getFavorite(Member member, FavoriteRequest request) {
-        Long sourceId = stationService.findStationIdByName(request.getSourceName());
-        Long targetId = stationService.findStationIdByName(request.getTargetName());
-
-        return Favorite.of(member.getId(), sourceId, targetId);
     }
 
     public Set<FavoriteDetailResponse> getAll(Member member) {
@@ -70,5 +63,12 @@ public class FavoriteService {
                 idToName.get(favorite.getSourceId()),
                 idToName.get(favorite.getTargetId())))
             .collect(Collectors.toSet());
+    }
+
+    private Favorite makeFavorite(Member member, FavoriteRequest request) {
+        Long sourceId = stationService.findStationIdByName(request.getSourceName());
+        Long targetId = stationService.findStationIdByName(request.getTargetName());
+
+        return Favorite.of(member.getId(), sourceId, targetId);
     }
 }
