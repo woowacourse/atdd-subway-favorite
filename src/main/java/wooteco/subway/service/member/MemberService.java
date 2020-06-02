@@ -23,7 +23,9 @@ public class MemberService {
 
     public Member createMember(Member member) {
         memberRepository.findByEmail(member.getEmail())
-                .ifPresent(it -> new IllegalArgumentException(ALREADY_EXIST_MEMBER));
+                .ifPresent(it -> {
+                    throw new IllegalArgumentException(ALREADY_EXIST_MEMBER);
+                });
 
         return memberRepository.save(member);
     }
@@ -48,6 +50,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MEMBER));
     }
 }

@@ -89,10 +89,17 @@ public class FavoriteService {
         Favorite favorite = toFavorite(favoriteDeleteRequest, stations);
         Member persistMember = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException(NO_MEMBER));
+        validateFavoriteExist(favorite, persistMember.getFavorites());
 
         persistMember.deleteFavorite(favorite);
 
         memberRepository.save(persistMember);
+    }
+
+    private void validateFavoriteExist(Favorite favorite, Set<Favorite> favorites) {
+        if (!favorites.contains(favorite)) {
+            throw new IllegalArgumentException(NOT_EXIST_FAVORITE);
+        }
     }
 
     private Favorite toFavorite(FavoriteDeleteRequest favoriteDeleteRequest, List<Station> stations) {
