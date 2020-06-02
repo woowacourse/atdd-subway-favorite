@@ -1,4 +1,4 @@
-package wooteco.subway.exception;
+package wooteco.subway.exception.notexist;
 
 public class NoLineExistException extends NoResourceExistException {
     public NoLineExistException() {

@@ -9,7 +9,7 @@ import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.NoLineExistException;
+import wooteco.subway.exception.notexist.NoLineExistException;
 
 import java.time.LocalTime;
 import java.util.Optional;

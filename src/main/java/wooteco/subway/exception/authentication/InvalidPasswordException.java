@@ -1,4 +1,4 @@
-package wooteco.subway.exception;
+package wooteco.subway.exception.authentication;
 
 public class InvalidPasswordException extends InvalidAuthenticationException {
     public InvalidPasswordException() {

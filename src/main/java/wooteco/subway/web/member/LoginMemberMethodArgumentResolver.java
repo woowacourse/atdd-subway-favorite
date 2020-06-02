@@ -8,7 +8,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.exception.InvalidAuthenticationException;
+import wooteco.subway.exception.authentication.TokenSessionNotMatchingException;
 import wooteco.subway.service.member.MemberService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         String emailSession = (String) webRequest.getAttribute("loginMemberEmailSession", SCOPE_REQUEST);
 
         if (!Objects.equals(emailJwt, emailSession)) {
-            throw new InvalidAuthenticationException("토큰정보와 세션정보가 일치하지 않습니다");
+            throw new TokenSessionNotMatchingException();
         }
 
         return emailJwt;

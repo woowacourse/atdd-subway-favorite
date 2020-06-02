@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.exception.NoLineExistException;
+import wooteco.subway.exception.notexist.NoLineExistException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;

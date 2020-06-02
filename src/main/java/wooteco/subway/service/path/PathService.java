@@ -7,10 +7,10 @@ import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.NoLineStationExistsException;
-import wooteco.subway.exception.NoPathExistsException;
-import wooteco.subway.exception.NoStationExistsException;
 import wooteco.subway.exception.SourceEqualsTargetException;
+import wooteco.subway.exception.notexist.NoLineStationExistsException;
+import wooteco.subway.exception.notexist.NoPathExistsException;
+import wooteco.subway.exception.notexist.NoStationExistsException;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 

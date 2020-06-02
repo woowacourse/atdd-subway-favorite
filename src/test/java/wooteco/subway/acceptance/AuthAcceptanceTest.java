@@ -39,6 +39,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2).isNotNull();
 
         return Stream.of(
+                DynamicTest.dynamicTest("로그인 실패(잘못된 비밀번호)", () -> {
+                    // when 잘못된 비밀번호로 로그인을 시도한다
+                    Response badRequestResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD2);
+
+                    // then 로그인이 실패했다
+                    assertThat(badRequestResponse.statusCode()).isEqualTo(401);
+                }),
                 DynamicTest.dynamicTest("유저 인가 실패(토큰 존재 x)", () -> {
                     // when 토큰 없이 유저 정보를 조회한다
                     // then 유저 정보 조회가 실패했다

@@ -1,4 +1,4 @@
-package wooteco.subway.exception;
+package wooteco.subway.exception.notexist;
 
 public class NoMemberExistException extends NoResourceExistException {
     public NoMemberExistException() {

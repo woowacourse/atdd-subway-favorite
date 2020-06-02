@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.*;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.domain.station.Stations;
-import wooteco.subway.exception.NoMemberExistException;
+import wooteco.subway.exception.notexist.NoMemberExistException;
 
 import java.util.List;
 import java.util.Set;

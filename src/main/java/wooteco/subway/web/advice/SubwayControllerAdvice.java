@@ -7,7 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.*;
+import wooteco.subway.exception.DuplicatedEmailException;
+import wooteco.subway.exception.DuplicatedFavoriteException;
+import wooteco.subway.exception.ExceptionResponse;
+import wooteco.subway.exception.SourceEqualsTargetException;
+import wooteco.subway.exception.authentication.InvalidAuthenticationException;
+import wooteco.subway.exception.notexist.NoResourceExistException;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {
@@ -21,7 +26,6 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler({
             SourceEqualsTargetException.class,
-            InvalidPasswordException.class,
             MethodArgumentNotValidException.class,
             DuplicatedFavoriteException.class,
             DuplicatedEmailException.class

@@ -3,7 +3,7 @@ package wooteco.subway.web.member.interceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
-import wooteco.subway.exception.InvalidAuthenticationException;
+import wooteco.subway.exception.authentication.InvalidTokenException;
 import wooteco.subway.infra.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,20 +22,14 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-
         InterceptorValidator interceptorValidator = new InterceptorValidator();
         if (!interceptorValidator.isValid(handler)) {
             return true;
         }
 
         String token = authExtractor.extract(request, "Bearer");
-
-        if (StringUtils.isEmpty(token)) {
-            throw new InvalidAuthenticationException("토큰이 없어요");
-        }
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthenticationException("토큰이 이상해요");
+        if (StringUtils.isEmpty(token) || (!jwtTokenProvider.validateToken(token))) {
+            throw new InvalidTokenException();
         }
 
         String email = jwtTokenProvider.getSubject(token);

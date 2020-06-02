@@ -8,7 +8,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.DuplicatedEmailException;
-import wooteco.subway.exception.NoMemberExistException;
+import wooteco.subway.exception.notexist.NoMemberExistException;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.info.AuthInfo;
 import wooteco.subway.web.member.info.UriInfo;

@@ -1,6 +1,6 @@
 package wooteco.subway.domain.station;
 
-import wooteco.subway.exception.NoStationExistsException;
+import wooteco.subway.exception.notexist.NoStationExistsException;
 
 import java.util.List;
 
