@@ -3,7 +3,7 @@ import api from '../../api/index.js'
 
 function Login() {
   const $loginButton = document.querySelector('#login-button')
-  const onLogin = async event => {
+  const onLogin = event => {
     event.preventDefault()
     const emailValue = document.querySelector('#email').value.trim()
     const passwordValue = document.querySelector('#password').value.trim()
@@ -11,24 +11,18 @@ function Login() {
       alert(ERROR_MESSAGE.EMPTY_VALUE)
       return
     }
-
     const loginInformation = {
       email: emailValue,
       password: passwordValue
     }
-
-    await api.memberWithoutToken.login(loginInformation)
-        .then((data) => {
-          if (data.accessToken !== undefined) {
-            alert("로그인 성공!")
+    api.memberWithoutToken.login(loginInformation)
+        .then(data => {
+          alert("로그인 성공!")
             localStorage.setItem("accessToken", data.accessToken)
             localStorage.setItem("tokenType", data.tokenType)
             location.href = "/"
-          } else {
-            alert(ERROR_MESSAGE.LOGIN_FAIL)
-            return
-          }
         })
+        .catch(error => alert(error))
   }
 
   this.init = () => {

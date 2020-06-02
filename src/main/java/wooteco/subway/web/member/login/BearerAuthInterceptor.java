@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.web.member.InvalidAuthenticationException;
+import wooteco.subway.exception.InvalidAuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +35,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         if (StringUtils.isEmpty(token)) {
             throw new InvalidAuthenticationException("토큰이 비어있습니다.");
         }
-        if(!jwtTokenProvider.validateToken(token)){
+        if (!jwtTokenProvider.validateToken(token)) {
             throw new InvalidAuthenticationException("비정상적인 토큰입니다.");
         }
     }

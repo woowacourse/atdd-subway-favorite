@@ -23,18 +23,11 @@ function Join() {
       password: passwordValue
     }
     api.memberWithoutToken.create(newMember)
-        .then((data) => {
-          if (!data.ok) {
-            throw new Error(data.status)
-          }
+        .then(data => {
           alert("회원가입 성공!")
           location.href = "/login"
         })
-        .catch(error => {
-          if (error.message === "409") {
-            alert(ERROR_MESSAGE.DUPLICATE_EMAIL)
-          }
-        })
+        .catch(error => alert(error))
   }
 
   this.init = () => {
