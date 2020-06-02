@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class MemberControllerAdvice {
+public class ControllerAdvice {
     @ExceptionHandler({InvalidMemberException.class, InvalidFavoriteException.class})
     public ResponseEntity<ExceptionResponse> getDefinedException(InvalidMemberException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));

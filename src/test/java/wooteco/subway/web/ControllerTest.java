@@ -31,6 +31,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -43,8 +44,10 @@ public class ControllerTest {
 	private MockMvc mockMvc;
 	@MockBean
 	protected MemberService memberService;
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
-	private final String mockToken = "bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicm93bkBlbWFpbC5jb20iLCJpYXQiOjE1OTA5OTMxOTMsImV4cCI6MTU5MDk5Njc5M30.RG5pBWF1gGliOLIaZudoLTq_21c-3xFG-rrNitB3Lgk";
+	private String mockToken;
 	protected ObjectMapper objectMapper = new ObjectMapper();
 	protected Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);;
 
@@ -56,6 +59,7 @@ public class ControllerTest {
 			.apply(documentationConfiguration(restDocumentation))
 			.alwaysDo(print())
 			.build();
+		mockToken = "bearer" + jwtTokenProvider.createToken(TEST_USER_EMAIL);
 	}
 
 	protected void post(String path, String request, ResultMatcher status,
@@ -83,8 +87,6 @@ public class ControllerTest {
 
 	protected MvcResult getWithAuth(String path, RestDocumentationResultHandler documentationResultHandler) throws
 		Exception {
-		System.out.println(mockToken);
-
 		return this.mockMvc.perform(RestDocumentationRequestBuilders.get(path)
 			.header(HttpHeaders.AUTHORIZATION, mockToken))
 			.andExpect(status().isOk())
