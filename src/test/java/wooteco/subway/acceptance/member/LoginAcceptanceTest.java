@@ -40,7 +40,7 @@ public class LoginAcceptanceTest extends AuthAcceptanceTest {
             when()
             .get("/members")
             .then()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     public void updateMember(MemberResponse memberResponse, TokenResponse tokenResponse) {
