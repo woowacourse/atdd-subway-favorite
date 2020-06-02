@@ -32,6 +32,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response).isNotNull();
 
         return Stream.of(
+                DynamicTest.dynamicTest("가입된 이메일로 재 가입 시도", () -> {
+                    // when 가입된 이메일로 재 가입을 시도한다
+                    // then 가입이 되지 않는다
+                    failToCreateMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+                }),
                 DynamicTest.dynamicTest("유저 정보 조회", () -> {
                     // when 유저 정보 조회를 한다
                     MemberResponse memberResponse = getMember(TEST_USER_EMAIL, authentication);
@@ -44,7 +49,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 DynamicTest.dynamicTest("유저 정보 조회 실패(잘못된 이메일)", () -> {
                     // when 잘못된 이메일로 유저 정보 조회를 한다
                     // then 유저 정보 조회가 실패한다
-                    failToGetMemberByNotExisting(TEST_USER_EMAIL + "dummy", authentication);
+                    failToGetMemberByAuthentication(TEST_USER_EMAIL + "dummy", authentication);
                 }),
                 DynamicTest.dynamicTest("유저 정보 수정", () -> {
                     // when 유저 정보를 수정한다

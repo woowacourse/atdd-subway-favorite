@@ -277,6 +277,23 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
+    public void failToCreateMember(String email, String name, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        params.put("password", password);
+
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     protected RequestSpecification setAuthorization(Authentication authentication) {
         TokenResponse tokenResponse = authentication.getTokenResponse();
 
@@ -400,6 +417,16 @@ public class AcceptanceTest {
                         extract().as(FavoriteResponse.class);
     }
 
+    public void failToAddFavorite(Long memberId, AddFavoriteRequest addFavoriteRequest, Authentication authentication) {
+        setAuthorization(authentication).
+                body(addFavoriteRequest).
+                when().
+                post("/members/" + memberId + "/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     public FavoritesResponse readFavorite(Long memberId, Authentication authentication) {
         return
                 setAuthorization(authentication).
@@ -424,11 +451,11 @@ public class AcceptanceTest {
     public ValidatableResponse failToRemoveFavorite(Long memberId, Long sourceId, Long targetId, Authentication authentication) {
         return
                 setAuthorization(authentication).
-                    when().
-                    delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
-                    then().
-                    log().all().
-                    statusCode(HttpStatus.NOT_FOUND.value());
+                        when().
+                        delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
 

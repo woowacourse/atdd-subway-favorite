@@ -8,6 +8,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.authentication.InvalidAuthenticationException;
 import wooteco.subway.exception.authentication.TokenSessionNotMatchingException;
 import wooteco.subway.service.member.MemberService;
 
@@ -36,6 +37,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         String email = validateAuthorization(webRequest);
         Member member = memberService.findMemberByEmail(email);
         validatePathVariable(webRequest, member);
+        validateParam(webRequest, member);
         return member;
     }
 
@@ -57,6 +59,16 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 
         if (Objects.nonNull(id)) {
             member.validateId(Long.parseLong(id));
+        }
+    }
+
+    private void validateParam(NativeWebRequest webRequest, Member member) {
+        String paramEmail = webRequest.getParameter("email");
+
+        if (paramEmail != null
+                && !paramEmail.isEmpty()
+                && !Objects.equals(paramEmail, member.getEmail())) {
+            throw new InvalidAuthenticationException("현재 로그인한 아이디 값에 대한 요청이 아닙니다");
         }
     }
 }

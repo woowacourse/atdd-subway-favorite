@@ -40,6 +40,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     FavoritesResponse favoritesResponse = readFavorite(memberId, authentication);
                     assertThat(favoritesResponse.getFavorites().size()).isEqualTo(2);
                 }),
+                DynamicTest.dynamicTest("이미 등록된 즐겨찾기를 재 등록시도", () -> {
+                    // when 멤버가 즐겨찾기를 다시 추가하려 한다
+                    // then 실패한다
+                    failToAddFavorite(memberId, new AddFavoriteRequest(1L, 2L), authentication);
+                }),
                 DynamicTest.dynamicTest("즐겨찾기 삭제", () -> {
                     // when 멤버가 즐겨찾기를 삭제한다
                     removeFavorite(memberId, 1L, 2L, authentication);
