@@ -3,6 +3,7 @@ package wooteco.subway.domain.member;
 import static java.util.stream.Collectors.*;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ public class Member {
 	}
 
 	public static Member of(String email, String name, String password) {
-		return new Member(null, email, name, password, new HashSet<>());
+		return new Member(null, email, name, password, new LinkedHashSet<>());
 	}
 
 	public Member withId(final Long id) {
@@ -51,7 +52,7 @@ public class Member {
 		if (this.favorites.contains(favorite)) {
 			throw new DuplicateFavoriteException("이미 존재하는 즐겨찾기 입니다.");
 		}
-		Set<Favorite> newFavorites = new HashSet<>(this.favorites);
+		Set<Favorite> newFavorites = new LinkedHashSet<>(this.favorites);
 		newFavorites.add(favorite);
 		return new Member(this.id, this.email, this.name, this.password, newFavorites);
 	}

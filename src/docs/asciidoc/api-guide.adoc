@@ -46,10 +46,10 @@ operation::me-delete[snippets='http-request,http-response']
 
 operation::favorite-add[snippets='http-request,http-response']
 
-[[resources-members-favorite-retrieve]]
+[[resources-members-favorite-get]]
 === 즐겨찾기 조회
 
-operation::favorite-retrieve[snippets='http-request,http-response']
+operation::favorite-get[snippets='http-request,http-response']
 
 [[resources-members-favorite-delete]]
 === 즐겨찾기 삭제

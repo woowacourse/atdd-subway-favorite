@@ -75,20 +75,17 @@ public class MemberLoginDocumentation {
 			responseHeaders());
 	}
 
-	public static RestDocumentationResultHandler retrieveFavorites() {
-		return document("favorite-retrieve",
+	public static RestDocumentationResultHandler getFavorites() {
+		return document("favorite-get",
 			requestHeaders(
 				headerWithName("Authorization").description("The token for login which is Bearer Type.")
 			),
 			responseFields(
-				fieldWithPath("[].sourceStationId").type(JsonFieldType.NUMBER)
-					.description("The departure station ID of Favorite."),
-				fieldWithPath("[].targetStationId").type(JsonFieldType.NUMBER)
-					.description("The arrival station ID of Favorite."),
-				fieldWithPath("[].sourceStationName").type(JsonFieldType.STRING)
-					.description("The departure station name of Favorite."),
-				fieldWithPath("[].targetStationName").type(JsonFieldType.STRING)
-					.description("The arrival station name of Favorite.")
+				subsectionWithPath("[].sourceStation").type(JsonFieldType.OBJECT)
+					.description("The departure station of Favorite."),
+				subsectionWithPath("[].targetStation").type(JsonFieldType.OBJECT)
+					.description("The arrival station of Favorite.")
+
 			));
 	}
 

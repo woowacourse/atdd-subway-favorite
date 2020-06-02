@@ -33,6 +33,7 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.FavoriteService;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.vo.FavoriteInfo;
 
 /**
  *    class description
@@ -67,6 +68,10 @@ public class FavoriteControllerTest {
 	void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.addFilter(new ShallowEtagHeaderFilter())
+			.addFilter((req, res, chain) -> {
+				res.setCharacterEncoding("UTF-8");
+				chain.doFilter(req, res);
+			}, "/*")
 			.apply(documentationConfiguration(restDocumentation))
 			.build();
 
@@ -116,17 +121,18 @@ public class FavoriteControllerTest {
 	}
 
 	@Test
-	void retrieveFavorites() throws Exception {
-		List<Station> stations = Arrays.asList(Station.of("강남역").withId(1L), Station.of("잠실역").withId(2L),
-			Station.of("청계산입구역").withId(3L), Station.of("대모산입구역").withId(4L));
+	void getFavorites() throws Exception {
+		final List<FavoriteInfo> favoriteInfos = Arrays.asList(
+			new FavoriteInfo(Station.of("강남역").withId(1L), Station.of("잠실역").withId(2L)),
+			new FavoriteInfo(Station.of("청계산입구역").withId(3L), Station.of("대모산입구역").withId(4L)));
 		given(memberService.findMemberByEmail(any())).willReturn(member);
-		given(favoriteService.retrieveStationsBy(any())).willReturn(stations);
+		given(favoriteService.getFavoriteInfos(any())).willReturn(favoriteInfos);
 
 		this.mockMvc.perform(get("/favorites")
 			.header("authorization", "Bearer " + token))
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(MemberLoginDocumentation.retrieveFavorites());
+			.andDo(MemberLoginDocumentation.getFavorites());
 	}
 
 	@Test

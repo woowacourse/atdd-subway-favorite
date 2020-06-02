@@ -102,13 +102,13 @@ public class FavoriteServiceTest {
 	}
 
 	@Test
-	void retrieveFavorites() {
+	void getFavoriteInfos() {
 		final Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD)
 			.addFavorite(Favorite.of(1L, 2L));
 		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of("잠실역")));
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(Station.of("강남역")));
 
-		assertThat(favoriteService.retrieveStationsBy(member.getFavorites())).hasSize(2);
+		assertThat(favoriteService.getFavoriteInfos(member)).hasSize(1);
 	}
 
 	@Test

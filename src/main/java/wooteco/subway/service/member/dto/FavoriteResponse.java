@@ -1,9 +1,10 @@
 package wooteco.subway.service.member.dto;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.member.vo.FavoriteInfo;
+import wooteco.subway.service.station.dto.StationResponse;
 
 /**
  *    즐겨찾기 응답DTO 클래스입니다.
@@ -11,50 +12,33 @@ import wooteco.subway.domain.station.Station;
  *    @author HyungJu An
  */
 public class FavoriteResponse {
-	private Long sourceStationId;
-	private Long targetStationId;
-	private String sourceStationName;
-	private String targetStationName;
+	private StationResponse sourceStation;
+	private StationResponse targetStation;
 
 	private FavoriteResponse() {
 	}
 
-	private FavoriteResponse(final Long sourceStationId, final Long targetStationId, final String sourceStationName,
-		final String targetStationName) {
-		this.sourceStationId = sourceStationId;
-		this.targetStationId = targetStationId;
-		this.sourceStationName = sourceStationName;
-		this.targetStationName = targetStationName;
+	public FavoriteResponse(final StationResponse sourceStation, final StationResponse targetStation) {
+		this.sourceStation = sourceStation;
+		this.targetStation = targetStation;
 	}
 
-	public static FavoriteResponse of(final Station sourceStation, final Station targetStation) {
-		return new FavoriteResponse(sourceStation.getId(), targetStation.getId(), sourceStation.getName(),
-			targetStation.getName());
+	public static FavoriteResponse of(final FavoriteInfo favoriteInfo) {
+		return new FavoriteResponse(StationResponse.of(favoriteInfo.getSourceStation()),
+			StationResponse.of(favoriteInfo.getTargetStation()));
 	}
 
-	public static List<FavoriteResponse> listOf(final List<Station> stations) {
-		List<FavoriteResponse> favoriteResponses = new ArrayList<>();
-
-		for (int i = 0; i < stations.size(); i += 2) {
-			favoriteResponses.add(FavoriteResponse.of(stations.get(i), stations.get(i + 1)));
-		}
-
-		return favoriteResponses;
+	public static List<FavoriteResponse> listOf(final List<FavoriteInfo> favoriteInfos) {
+		return favoriteInfos.stream()
+			.map(FavoriteResponse::of)
+			.collect(Collectors.toList());
 	}
 
-	public Long getSourceStationId() {
-		return sourceStationId;
+	public StationResponse getSourceStation() {
+		return sourceStation;
 	}
 
-	public Long getTargetStationId() {
-		return targetStationId;
-	}
-
-	public String getSourceStationName() {
-		return sourceStationName;
-	}
-
-	public String getTargetStationName() {
-		return targetStationName;
+	public StationResponse getTargetStation() {
+		return targetStation;
 	}
 }

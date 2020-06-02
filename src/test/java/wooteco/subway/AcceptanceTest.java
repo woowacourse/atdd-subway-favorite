@@ -381,18 +381,15 @@ public class AcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value());
 	}
 
-	public List<FavoriteResponse> retrieveFavorites(String token) {
+	public List<FavoriteResponse> getFavorites(String token) {
 		return given().auth()
 			.oauth2(token)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.get("/favorites")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
-			.extract()
-			.jsonPath().getList(".", FavoriteResponse.class);
+			.extract().jsonPath().getList(".", FavoriteResponse.class);
 	}
 
 	public void deleteFavorite(String token, Long sourceStationId, Long targetStationId) {
