@@ -41,7 +41,17 @@ public class Favorite {
         return targetId;
     }
 
-    public boolean isNotEqual(Long id) {
-        return this.id.equals(id);
+    public boolean isNotEqualToMemberId(Long memberId) {
+        return !this.memberId.equals(memberId);
+    }
+
+    @Override
+    public String toString() {
+        return "Favorite{" +
+                "id=" + id +
+                ", memberId=" + memberId +
+                ", sourceId=" + sourceId +
+                ", targetId=" + targetId +
+                '}';
     }
 }

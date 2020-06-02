@@ -156,7 +156,7 @@ public class MemberControllerTest {
 
     @DisplayName("정보조회 테스트")
     @Test
-    void getMemberByEmailTest() throws Exception {
+    void getMemberTest() throws Exception {
         String email = "ramen@gmail.com";
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
 
@@ -164,7 +164,7 @@ public class MemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(email);
 
-        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/members")
+        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/auth/members")
                 .param("email", email)
                 .header("authorization", "Bearer 토큰값")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -183,13 +183,7 @@ public class MemberControllerTest {
     @DisplayName("정보 조회 실패 테스트 (JWT Token이 없을 경우)")
     @Test
     void getMemberByEmailFailTest() throws Exception {
-        String email = "ramen@gmail.com";
-        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
-
-        given(memberService.findMemberByEmail(email)).willReturn(member);
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
-
-        String uri = "/members?email=ramen@gmail.com";
+        String uri = "/auth/members";
 
         mockMvc.perform(get(uri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +200,7 @@ public class MemberControllerTest {
         given(memberService.updateMember(any(), any())).willReturn(1L);
 
         String updateData = gson.toJson(updateMemberRequest);
-        String uri = "/members/1";
+        String uri = "/auth/members";
 
         mockMvc.perform(put(uri)
                 .content(updateData)
@@ -226,17 +220,17 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(anyString())).willReturn("ramen6315@gmail.com");
         given(memberService.findMemberById(anyLong())).willReturn(member);
 
-        Long updateId = member.getId();
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
         String updateData = gson.toJson(updateMemberRequest);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", updateId)
+        String uri = "/auth/members";
+        mockMvc.perform(RestDocumentationRequestBuilders.put(uri)
                 .header("Authorization", "Bearer 아무토큰값")
                 .content(updateData)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(MemberDocumentation.updateMember())
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 }

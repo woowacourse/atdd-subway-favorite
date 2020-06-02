@@ -26,8 +26,7 @@ public class FavoriteDocumentation {
                 ),
                 requestFields(
                         fieldWithPath("source").type(JsonFieldType.STRING).description("The source station name"),
-                        fieldWithPath("target").type(JsonFieldType.STRING).description("The target station name"),
-                        fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email")
+                        fieldWithPath("target").type(JsonFieldType.STRING).description("The target station name")
                 ),
                 responseFields(
                         fieldWithPath("id").type(JsonFieldType.NUMBER).description("The favorite's id"),

@@ -273,12 +273,13 @@ public class AcceptanceTest {
 
     public MemberResponse getMember(String email) {
         String token = jwtTokenProvider.createToken(email);
+
         return
                 given().
                         header("Authorization", "Bearer " + token).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/members?email=" + email).
+                        get("/auth/members").
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
@@ -297,10 +298,10 @@ public class AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                put("/auth/members").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     public void deleteMember(MemberResponse memberResponse) {
@@ -309,7 +310,7 @@ public class AcceptanceTest {
         given().
                 header("Authorization", "Bearer " + token).
                 when().
-                delete("/members/" + memberResponse.getId()).
+                delete("/auth/members/").
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());

@@ -1,15 +1,12 @@
 package wooteco.subway.acceptance.favorite;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.DummyTestUserInfo;
-import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
@@ -20,18 +17,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Sql("/truncate.sql")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    FavoriteRepository favoriteRepository;
-
-    @BeforeEach
-    public void setUp() {
-        favoriteRepository.deleteAll();
-    }
 
     @DisplayName("즐겨 찾기 추가/삭제/조회")
     @Test
@@ -74,7 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         given().
                 header("Authorization", "Bearer " + token).
                 when().
-                delete("/favorites/" + favoriteResponse.getId()).
+                delete("/auth/favorites/" + favoriteResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
@@ -86,7 +74,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/favorites").
+                get("/auth/favorites").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -105,7 +93,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/favorites").
+                post("/auth/favorites").
                 then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value()).

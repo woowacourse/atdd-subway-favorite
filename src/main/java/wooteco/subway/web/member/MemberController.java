@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/auth/members")
 public class MemberController {
     private MemberService memberService;
 
@@ -21,27 +20,28 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping()
+    @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
+                .header("Location", "/members/" + member.getId())
                 .build();
     }
 
-    @GetMapping()
-    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
+    @GetMapping("/auth/members")
+    public ResponseEntity<MemberResponse> getMember(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping()
+    @PutMapping("/auth/members")
     public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest param) {
         memberService.updateMember(member, param);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/auth/members")
     public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
         memberService.deleteMember(member.getId());
 

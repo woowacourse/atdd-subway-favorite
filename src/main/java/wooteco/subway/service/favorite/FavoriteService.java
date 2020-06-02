@@ -38,11 +38,6 @@ public class FavoriteService {
         return new FavoriteResponse(savedFavorite.getId(), sourceStation.getName(), targetStation.getName());
     }
 
-    public Favorite findFavoriteBySourceAndTarget(String source, String target) {
-        return favoriteRepository.findBySourceAndTarget(source, target)
-                .orElseThrow(() -> new NotExistFavoriteDataException(source + "," + target));
-    }
-
     public Favorite findFavoriteById(Long id) {
         return favoriteRepository.findById(id)
                 .orElseThrow(() -> new NotExistFavoriteDataException("id : " + id));
@@ -63,7 +58,11 @@ public class FavoriteService {
     public void deleteFavorite(Member member, Long id) {
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new NotExistFavoriteDataException("ID = " + id));
-        if (favorite.isNotEqual(member.getId())) {
+        System.out.println(favorite + "fa");
+        System.out.println(member + "me");
+
+        if (favorite.isNotEqualToMemberId(member.getId())) {
+            System.out.println("여기서 터지는것? ");
             throw new UnAuthorizationException();
         }
         favoriteRepository.deleteById(id);
