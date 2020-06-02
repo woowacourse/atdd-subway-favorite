@@ -4,6 +4,7 @@ import wooteco.subway.domain.member.Member;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class MemberRequest {
     @Email(message = "올바른 이메일 형식을 입력해주세요")
@@ -11,7 +12,7 @@ public class MemberRequest {
     private String email;
     @NotBlank(message = "이름에 빈값을 넣지 마세요.")
     private String name;
-    @NotBlank(message = "빈값을 넣지 마세요.")
+    @Size(min = 4, message = "비밀 번호를 4자 이상 입력해주세요")
     private String password;
 
     public MemberRequest() {

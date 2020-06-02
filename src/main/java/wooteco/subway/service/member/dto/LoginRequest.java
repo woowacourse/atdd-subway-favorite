@@ -5,9 +5,10 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class LoginRequest {
-    @Email
+    @Email(message = "올바른 이메일 형식을 입력해주세요")
     private String email;
-    @Size(min = 4)
+
+    @Size(min = 4, message = "비밀 번호를 4자 이상 입력해주세요")
     private String password;
 
     public LoginRequest() {
