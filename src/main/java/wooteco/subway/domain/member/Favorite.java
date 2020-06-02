@@ -8,7 +8,7 @@ public class Favorite {
     private Long startStationId;
     private Long endStationId;
 
-    public Favorite() {}
+    private Favorite() {}
 
     public Favorite(Long startStationId, Long endStationId) {
         this(null, startStationId, endStationId);

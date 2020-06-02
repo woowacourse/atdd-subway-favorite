@@ -2,10 +2,12 @@ package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Favorite;
+import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.exception.LoginFailException;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -59,24 +61,15 @@ public class MemberService {
     }
 
     public Set<FavoriteResponse> findFavorites(Member member) {
-        Set<Favorite> favorites = member.getFavorites();
-        Set<Long> stationIds = new HashSet<>();
-        favorites.forEach(favorite -> {
-            stationIds.add(favorite.getStartStationId());
-            stationIds.add(favorite.getEndStationId());
-        });
+        Set<Long> stationIds = member.getFavoriteStationIds();
+        Stations stations = Stations.of(stationRepository.findAllById(stationIds));
 
-        List<Station> stations = stationRepository.findAllById(stationIds);
-
-        Map<Long, Station> stationMap = new HashMap<>();
-
-        stations.forEach(station -> stationMap.put(station.getId(), station));
-
-        return favorites.stream()
+        Favorites favorites = member.getFavorites();
+        return favorites.getFavorites().stream()
                 .map(favorite ->
                         FavoriteResponse.of(favorite.getId(),
-                                stationMap.get(favorite.getStartStationId()),
-                                stationMap.get(favorite.getEndStationId())))
+                                stations.extractStationById(favorite.getStartStationId()),
+                                stations.extractStationById(favorite.getEndStationId())))
                 .collect(Collectors.toSet());
     }
 

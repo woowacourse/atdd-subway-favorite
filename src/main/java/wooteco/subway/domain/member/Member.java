@@ -2,8 +2,8 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class Member {
@@ -13,7 +13,8 @@ public class Member {
     private String name;
     private String password;
 
-    private Set<Favorite> favorites = new HashSet<>();
+    @Embedded.Empty
+    private Favorites favorites = Favorites.empty();
 
     public Member() {
     }
@@ -47,7 +48,7 @@ public class Member {
         return password;
     }
 
-    public Set<Favorite> getFavorites() {
+    public Favorites getFavorites() {
         return favorites;
     }
 
@@ -56,12 +57,7 @@ public class Member {
     }
 
     public void removeFavorite(Long favoriteId) {
-        Favorite findFavorite = favorites.stream()
-        .filter(favorite -> favorite.getId().equals(favoriteId))
-        .findFirst()
-        .orElseThrow(IllegalArgumentException::new);
-
-        favorites.remove(findFavorite);
+        favorites.remove(favoriteId);
     }
 
     public void update(String name, String password) {
@@ -71,6 +67,10 @@ public class Member {
         if (StringUtils.isNotBlank(password)) {
             this.password = password;
         }
+    }
+
+    public Set<Long> getFavoriteStationIds() {
+        return favorites.getFavoriteStationIds();
     }
 
     public boolean checkPassword(String password) {
