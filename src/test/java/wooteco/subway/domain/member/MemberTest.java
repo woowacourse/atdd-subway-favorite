@@ -2,6 +2,7 @@ package wooteco.subway.domain.member;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.web.exception.NoSuchValueException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,7 +45,7 @@ class MemberTest {
                 member.findFavorite(favorite.getDepartureId(), favorite.getDestinationId())).isEqualTo(
                 favorite);
         assertThatThrownBy(() -> member.findFavorite(100L, 200L))
-                .isInstanceOf(AssertionError.class);
+                .isInstanceOf(NoSuchValueException.class);
     }
 
     @Test

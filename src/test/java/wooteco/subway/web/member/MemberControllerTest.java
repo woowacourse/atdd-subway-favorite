@@ -49,13 +49,12 @@ public class MemberControllerTest {
 
     @MockBean
     protected MemberService memberService;
+    @Autowired
+    protected MockMvc mockMvc;
     @MockBean
     private AuthorizationExtractor authExtractor;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    protected MockMvc mockMvc;
-
     private Member member;
     private String credential = " secret";
     private String mockToken = BEARER + credential;
