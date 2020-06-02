@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import wooteco.subway.exception.notexist.NoFavoriteExistException;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +24,9 @@ public class Favorites {
     }
 
     public void remove(Favorite favorite) {
-        favorites.remove(favorite);
+        if (!favorites.remove(favorite)) {
+            throw new NoFavoriteExistException();
+        }
     }
 
     public Set<Long> extractStationIds() {

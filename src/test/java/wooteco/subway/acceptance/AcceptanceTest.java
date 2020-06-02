@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,9 @@ import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.favorite.dto.AddFavoriteRequest;
+import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -382,6 +386,49 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 and().
                 extract().as(TokenResponse.class);
+    }
+
+    public FavoriteResponse addFavorite(Long memberId, AddFavoriteRequest addFavoriteRequest, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        body(addFavoriteRequest).
+                        when().
+                        post("/members/" + memberId + "/favorites").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(FavoriteResponse.class);
+    }
+
+    public FavoritesResponse readFavorite(Long memberId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members/" + memberId + "/favorites").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().
+                        as(FavoritesResponse.class);
+    }
+
+    public void removeFavorite(Long memberId, Long sourceId, Long targetId, Authentication authentication) {
+        setAuthorization(authentication).
+                when().
+                delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public ValidatableResponse failToRemoveFavorite(Long memberId, Long sourceId, Long targetId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                    when().
+                    delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
+                    then().
+                    log().all().
+                    statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
 

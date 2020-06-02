@@ -41,6 +41,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                     assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
                     assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
                 }),
+                DynamicTest.dynamicTest("유저 정보 조회 실패(잘못된 이메일)", () -> {
+                    // when 잘못된 이메일로 유저 정보 조회를 한다
+                    // then 유저 정보 조회가 실패한다
+                    failToGetMemberByNotExisting(TEST_USER_EMAIL + "dummy", authentication);
+                }),
                 DynamicTest.dynamicTest("유저 정보 수정", () -> {
                     // when 유저 정보를 수정한다
                     String newName = "새이름";

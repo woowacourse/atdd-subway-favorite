@@ -4,11 +4,9 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-import org.springframework.http.HttpStatus;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.acceptance.Authentication;
 import wooteco.subway.service.member.favorite.dto.AddFavoriteRequest;
-import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 
 import java.util.stream.Stream;
@@ -49,40 +47,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     // then 즐겨찾기가 삭제되었다
                     FavoritesResponse favoritesResponse = readFavorite(memberId, authentication);
                     assertThat(favoritesResponse.getFavorites().size()).isEqualTo(1);
+                }),
+                DynamicTest.dynamicTest("즐겨찾기 삭제 실패(존재 하지 않는 즐겨찾기)", () -> {
+                    // when 멤버가 존재하지 않는 즐겨찾기를 삭제한다
+                    // then 삭제가 실패한다
+                    failToRemoveFavorite(memberId, 1L, 2L, authentication);
                 })
         );
-    }
-
-    private FavoriteResponse addFavorite(Long memberId, AddFavoriteRequest addFavoriteRequest, Authentication authentication) {
-        return
-                setAuthorization(authentication).
-                        body(addFavoriteRequest).
-                        when().
-                        post("/members/" + memberId + "/favorites").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(FavoriteResponse.class);
-    }
-
-    private FavoritesResponse readFavorite(Long memberId, Authentication authentication) {
-        return
-                setAuthorization(authentication).
-                        when().
-                        get("/members/" + memberId + "/favorites").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().
-                        as(FavoritesResponse.class);
-    }
-
-    private void removeFavorite(Long memberId, Long sourceId, Long targetId, Authentication authentication) {
-        setAuthorization(authentication).
-                when().
-                delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
     }
 }
