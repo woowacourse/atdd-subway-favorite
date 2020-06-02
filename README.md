@@ -61,6 +61,8 @@
 - [x] 반복되는 변수에 대한 상수 처리하기
 - [x] Controller에서 받게되는 값들에 대한 유효성 검증 추가하기
 - [x] `FavoriteDocumentation` 의 중복되는 부분 처리하기
-- [ ] `FavoriteService` 의 예외 케이스에 대한 테스트 작성하기
+- [x] `FavoriteService` 의 예외 케이스에 대한 테스트 작성하기
+  - [x] `create` 에 대한 예외 (잘못된 request에 대한 테스트는 controller에서 작성함)
+  - [x] `delete` 에 대한 예외 (존재하지 않는 favorite에 대한 삭제 요청)
 - [ ] `WebMvcConfig` 클래스의 `addPathPatterns` 메서드 확인하고 수정하기
 - [x] 예외 메세지에 대한 `ControllerAdvice` 구현하기
