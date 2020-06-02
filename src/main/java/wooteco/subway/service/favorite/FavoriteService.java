@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static wooteco.subway.service.constants.ErrorMessage.*;
+
 @Service
 public class FavoriteService {
     private MemberRepository memberRepository;
@@ -30,29 +32,36 @@ public class FavoriteService {
     public void create(Member member, FavoriteCreateRequest favoriteCreateRequest) {
         List<Station> stations = stationRepository.findAll();
         Member persistMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NO_MEMBER));
 
         Station sourceStation = findStationByName(favoriteCreateRequest.getSource(), stations);
         Station targetStation = findStationByName(favoriteCreateRequest.getTarget(), stations);
         Favorite favorite = new Favorite(sourceStation.getId(), targetStation.getId());
+        validateDuplicatedFavorite(favorite, persistMember.getFavorites());
 
         persistMember.addFavorite(favorite);
 
         memberRepository.save(persistMember);
     }
 
+    private void validateDuplicatedFavorite(Favorite favorite, Set<Favorite> favorites) {
+        if (favorites.contains(favorite)) {
+            throw new IllegalArgumentException(ALREADY_EXIST_FAVORITE);
+        }
+    }
+
     private Station findStationByName(String name, List<Station> stations) {
         return stations.stream()
                 .filter(station -> name.equals(station.getName()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NO_STATION));
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> find(Member member) {
         List<Station> stations = stationRepository.findAll();
         Member persistMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NO_MEMBER));
         Set<Favorite> favorites = persistMember.getFavorites();
 
         return favorites.stream()
@@ -71,7 +80,7 @@ public class FavoriteService {
         return stations.stream()
                 .filter(station -> id.equals(station.getId()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NO_STATION));
     }
 
     @Transactional
@@ -79,7 +88,7 @@ public class FavoriteService {
         List<Station> stations = stationRepository.findAll();
         Favorite favorite = toFavorite(favoriteDeleteRequest, stations);
         Member persistMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NO_MEMBER));
 
         persistMember.deleteFavorite(favorite);
 
