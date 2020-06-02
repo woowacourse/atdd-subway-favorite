@@ -7,7 +7,7 @@ public class FavoriteResponse {
     private Station startStation;
     private Station endStation;
 
-    public FavoriteResponse() {}
+    private FavoriteResponse() {}
 
     public FavoriteResponse(Long id, Station startStation, Station endStation) {
         this.id = id;

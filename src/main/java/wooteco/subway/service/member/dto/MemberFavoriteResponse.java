@@ -6,7 +6,7 @@ public class MemberFavoriteResponse {
     private Long id;
     private Set<FavoriteResponse> favorites;
 
-    public MemberFavoriteResponse() {}
+    private MemberFavoriteResponse() {}
 
     public MemberFavoriteResponse(Long id, Set<FavoriteResponse> favorites) {
         this.id = id;
