@@ -11,11 +11,12 @@ import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.member.DuplicateMemberException;
-import wooteco.subway.web.member.NoSuchMemberException;
+import wooteco.subway.exception.DuplicateMemberException;
+import wooteco.subway.exception.NoSuchMemberException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;

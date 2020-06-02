@@ -9,7 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.web.member.InvalidAuthenticationException;
+import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.web.member.LoginMember;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
