@@ -2,7 +2,6 @@ package wooteco.subway.domain.member;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -12,7 +11,7 @@ import org.springframework.data.annotation.Id;
 import wooteco.subway.service.station.DuplicateFavoriteException;
 
 public class Member {
-	public static final Member EMPTY = new Member(null, "", "", "", new HashSet<>());
+	private static final Member EMPTY = new Member(null, "", "", "", new LinkedHashSet<>());
 
 	@Id
 	private final Long id;
@@ -31,6 +30,9 @@ public class Member {
 	}
 
 	public static Member of(String email, String name, String password) {
+		if (email.isEmpty() && name.isEmpty() && password.isEmpty()) {
+			return EMPTY;
+		}
 		return new Member(null, email, name, password, new LinkedHashSet<>());
 	}
 

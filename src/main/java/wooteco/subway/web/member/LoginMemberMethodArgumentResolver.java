@@ -33,7 +33,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 		String email = (String)webRequest.getAttribute(EMAIL_ATTRIBUTE_NAME, SCOPE_REQUEST);
 		if (StringUtils.isBlank(email)) {
-			return Member.EMPTY;
+			return Member.of("", "", "");
 		}
 		try {
 			return memberService.findMemberByEmail(email);
