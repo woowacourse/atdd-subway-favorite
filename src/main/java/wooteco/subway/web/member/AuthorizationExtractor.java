@@ -1,21 +1,24 @@
 package wooteco.subway.web.member;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+import wooteco.subway.domain.token.TokenType;
 
 @Component
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
     public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
 
-    public String extract(HttpServletRequest request, String type) {
+    public String extract(HttpServletRequest request, TokenType type) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
-            if ((value.toLowerCase().startsWith(type.toLowerCase()))) {
+            if ((value.toLowerCase().startsWith(type.getTokenType()))) {
                 String authHeaderValue = value.substring(type.length()).trim();
                 request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, type.length()).trim());
                 int commaIndex = authHeaderValue.indexOf(',');

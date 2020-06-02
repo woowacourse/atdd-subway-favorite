@@ -1,5 +1,7 @@
 package wooteco.subway.service.member.dto;
 
+import wooteco.subway.domain.token.TokenType;
+
 public class TokenResponse {
     private String accessToken;
     private String tokenType;
@@ -7,9 +9,9 @@ public class TokenResponse {
     public TokenResponse() {
     }
 
-    public TokenResponse(String accessToken, String tokenType) {
+    public TokenResponse(String accessToken, TokenType tokenType) {
         this.accessToken = accessToken;
-        this.tokenType = tokenType;
+        this.tokenType = tokenType.getTokenType();
     }
 
     public String getAccessToken() {

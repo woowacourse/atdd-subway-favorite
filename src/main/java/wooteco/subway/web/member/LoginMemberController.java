@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import wooteco.subway.domain.token.TokenType;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.TokenResponse;
@@ -22,6 +23,6 @@ public class LoginMemberController {
     @PostMapping("/oauth/token")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
-        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+        return ResponseEntity.ok().body(new TokenResponse(token, TokenType.BEARER));
     }
 }
