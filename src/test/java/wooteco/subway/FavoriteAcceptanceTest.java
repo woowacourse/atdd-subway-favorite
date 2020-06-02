@@ -67,7 +67,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             }),
             DynamicTest.dynamicTest("즐겨찾기 페이지에서 재조회를 요청한다", () -> {
                 List<FavoriteStation> favoriteStations = getFavorites(tokenResponse).getFavoriteStations();
-                System.out.println();
                 findPath(favoriteStations.get(0).getSource(), favoriteStations.get(0).getTarget(), "DISTANCE");
             }),
             DynamicTest.dynamicTest("즐겨찾기 목록에서 삭제할 수 있다.", () -> {

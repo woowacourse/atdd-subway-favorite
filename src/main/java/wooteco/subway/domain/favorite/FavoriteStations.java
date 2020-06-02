@@ -24,8 +24,7 @@ public class FavoriteStations {
 
     public FavoriteStation findByNames(String source, String target) {
         return favorites.stream()
-            .filter(favoriteStation -> favoriteStation.getSource().equals(source) &&
-                favoriteStation.getTarget().equals(target))
+            .filter(favoriteStation -> favoriteStation.isSameSourceAndTarget(source, target))
             .findFirst()
             .orElseThrow(AssertionError::new);
     }

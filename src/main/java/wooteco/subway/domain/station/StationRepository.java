@@ -16,4 +16,5 @@ public interface StationRepository extends CrudRepository<Station, Long> {
 
     @Query("select * from station where name = :stationName")
     Optional<Station> findByName(@Param("stationName") String stationName);
+
 }

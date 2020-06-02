@@ -22,6 +22,10 @@ public class FavoriteStation {
         this.target = target;
     }
 
+    public boolean isSameSourceAndTarget(String source, String target) {
+        return this.source.equals(source) && this.target.equals(target);
+    }
+
     public Long getMemberId() {
         return memberId;
     }
