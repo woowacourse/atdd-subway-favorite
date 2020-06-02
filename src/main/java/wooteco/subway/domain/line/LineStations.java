@@ -39,19 +39,21 @@ public class LineStations {
 
 	public List<Long> getStationIds() {
 		List<Long> result = new ArrayList<>();
-		extractNext(null, result);
+		Long currentStationId = null;
+		Optional<LineStation> currentLineStation = extractNext(currentStationId);
+
+		while (currentLineStation.isPresent()) {
+			currentStationId = currentLineStation.get().getStationId();
+			result.add(currentStationId);
+			currentLineStation = extractNext(currentStationId);
+		}
 		return result;
 	}
 
-	private void extractNext(Long preStationId, List<Long> ids) {
-		stations.stream()
-			.filter(it -> Objects.equals(it.getPreStationId(), preStationId))
-			.findFirst()
-			.ifPresent(it -> {
-				Long nextStationId = it.getStationId();
-				ids.add(nextStationId);
-				extractNext(nextStationId, ids);
-			});
+	private Optional<LineStation> extractNext(Long preStationId) {
+		return stations.stream()
+			.filter(station -> Objects.equals(station.getPreStationId(), preStationId))
+			.findFirst();
 	}
 
 	private void updatePreStationOfNextLineStation(Long targetStationId, Long newPreStationId) {
