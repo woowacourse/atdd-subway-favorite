@@ -1,7 +1,13 @@
 const METHOD = {
-  PUT() {
+  PUT(data) {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
@@ -41,9 +47,44 @@ const api = (() => {
     }
   }
 
+  const member = {
+    join(joinForm) {
+      return request(`/members`, METHOD.POST(joinForm));
+    },
+    login(loginForm) {
+      return request(`/login`, METHOD.POST(loginForm));
+    },
+    myPage(){
+      return requestWithJsonData(`/me`);
+    },
+    update(id, updateForm){
+      return request(`/members/`+id, METHOD.PUT(updateForm));
+    },
+    delete(id){
+      return request(`/members/`+id, METHOD.DELETE());
+    }
+  }
+
+  const favorite = {
+    create(favoritePath) {
+      return request(`/favorites`, METHOD.POST(favoritePath));
+    },
+    get(id) {
+      return requestWithJsonData(`/favorites/${id}`);
+    },
+    getAll() {
+      return requestWithJsonData(`/me/favorites`);
+    },
+    delete(id) {
+      return request(`/favorites/${id}`, METHOD.DELETE());
+    }
+  };
+
   return {
     line,
-    path
+    path,
+    member,
+    favorite,
   }
 })()
 

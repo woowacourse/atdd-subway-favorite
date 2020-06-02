@@ -54,4 +54,8 @@ public class Member {
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
+
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
+    }
 }
