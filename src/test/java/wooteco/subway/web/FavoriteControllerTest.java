@@ -1,6 +1,7 @@
 package wooteco.subway.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -34,6 +35,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoritePathService;
 import wooteco.subway.service.station.dto.FavoritePathResponse;
+import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureMockMvc
@@ -45,6 +47,8 @@ class FavoriteControllerTest {
     private FavoritePathService favoritePathService;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
 
     private MockMvc mockMvc;
 
@@ -67,9 +71,12 @@ class FavoriteControllerTest {
     void showAll() throws Exception {
         List<FavoritePathResponse> favoritePathResponses = new ArrayList<>();
         favoritePathResponses.add(new FavoritePathResponse("start station", "end station"));
+
         Member member = new Member();
         when(favoritePathService.findAllOf(member)).thenReturn(favoritePathResponses);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
+        when(loginMemberMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+            .thenReturn(member);
 
         MvcResult mvcResult = this.mockMvc.perform(
             get("/favorite-paths")
@@ -91,6 +98,8 @@ class FavoriteControllerTest {
         Member member = new Member();
         doNothing().when(favoritePathService).register(startStationName, endStationName, member);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
+        when(loginMemberMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+            .thenReturn(member);
 
         this.mockMvc.perform(
             post("/favorite-paths")
@@ -107,8 +116,10 @@ class FavoriteControllerTest {
 
     @Test
     void deleteFavoritePath() throws Exception {
-        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         Member member = new Member();
+        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
+        when(loginMemberMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+            .thenReturn(member);
         doNothing().when(favoritePathService).delete(startStationName, endStationName, member);
 
         this.mockMvc.perform(
