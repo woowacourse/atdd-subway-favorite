@@ -1,6 +1,6 @@
 package wooteco.subway.web.member;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
-    private static final Gson gson = new Gson();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @MockBean
     MemberService memberService;
@@ -66,7 +66,7 @@ public class MemberControllerTest {
 
         given(memberService.createMember(any())).willReturn(member);
 
-        String content = gson.toJson(memberRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
         String uri = "/members";
 
         mockMvc.perform(post(uri)
@@ -86,7 +86,7 @@ public class MemberControllerTest {
 
         given(memberService.createMember(any())).willReturn(member);
 
-        String content = gson.toJson(memberRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
         String uri = "/members";
 
         mockMvc.perform(post(uri)
@@ -106,7 +106,7 @@ public class MemberControllerTest {
         given(memberService.createMember(any())).willReturn(member);
 
         String uri = "/members";
-        String content = gson.toJson(memberRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
 
         mockMvc.perform(post(uri)
                 .content(content)
@@ -125,7 +125,7 @@ public class MemberControllerTest {
         given(memberService.createMember(any())).willReturn(member);
 
         String uri = "/members";
-        String content = gson.toJson(memberRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
 
         mockMvc.perform(post(uri)
                 .content(content)
@@ -144,7 +144,7 @@ public class MemberControllerTest {
         given(memberService.createMember(any())).willReturn(member);
 
         String uri = "/members";
-        String content = gson.toJson(memberRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
 
         mockMvc.perform(post(uri)
                 .content(content)
@@ -174,7 +174,8 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        MemberResponse memberResponse = gson.fromJson(mvcResult.getResponse().getContentAsString(), MemberResponse.class);
+        MemberResponse memberResponse
+                = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), MemberResponse.class);
 
         assertThat(memberResponse.getName()).isEqualTo("ramen");
         assertThat(memberResponse.getEmail()).isEqualTo("ramen@gmail.com");
@@ -199,7 +200,7 @@ public class MemberControllerTest {
 
         given(memberService.updateMember(any(), any())).willReturn(1L);
 
-        String updateData = gson.toJson(updateMemberRequest);
+        String updateData = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
         String uri = "/auth/members";
 
         mockMvc.perform(put(uri)
@@ -221,7 +222,7 @@ public class MemberControllerTest {
         given(memberService.findMemberById(anyLong())).willReturn(member);
 
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
-        String updateData = gson.toJson(updateMemberRequest);
+        String updateData = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
 
         String uri = "/auth/members";
         mockMvc.perform(RestDocumentationRequestBuilders.put(uri)

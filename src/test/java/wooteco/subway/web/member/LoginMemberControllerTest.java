@@ -1,6 +1,6 @@
 package wooteco.subway.web.member;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class LoginMemberControllerTest {
-    private static final Gson gson = new Gson();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @MockBean
     MemberService memberService;
@@ -57,7 +57,7 @@ class LoginMemberControllerTest {
 
         String uri = "/login";
 
-        String content = gson.toJson(loginRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
         MvcResult mvcResult = mockMvc.perform(post(uri)
                 .content(content)
@@ -79,7 +79,7 @@ class LoginMemberControllerTest {
 
         String uri = "/login";
 
-        String content = gson.toJson(loginRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
         mockMvc.perform(post(uri)
                 .content(content)
@@ -97,7 +97,7 @@ class LoginMemberControllerTest {
 
         String uri = "/login";
 
-        String content = gson.toJson(loginRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(loginRequest);
 
         mockMvc.perform(post(uri)
                 .content(content)

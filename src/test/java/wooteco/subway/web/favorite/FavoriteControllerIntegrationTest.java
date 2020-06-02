@@ -1,6 +1,6 @@
 package wooteco.subway.web.favorite;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ import static wooteco.subway.DummyTestUserInfo.*;
 @AutoConfigureMockMvc
 @Sql("/truncate.sql")
 public class FavoriteControllerIntegrationTest {
-    private static final Gson gson = new Gson();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Autowired
     protected MockMvc mockMvc;
@@ -85,7 +85,8 @@ public class FavoriteControllerIntegrationTest {
         CreateFavoriteRequest createFavoriteRequest = new CreateFavoriteRequest(source, target);
 
         String uri = "/auth/favorites";
-        String content = gson.toJson(createFavoriteRequest);
+
+        String content = OBJECT_MAPPER.writeValueAsString(createFavoriteRequest);
 
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +108,8 @@ public class FavoriteControllerIntegrationTest {
         String wrongRequestToken = jwtTokenProvider.createToken(wrongRequestEmail);
 
         String uri = "/auth/favorites";
-        String content = gson.toJson(createFavoriteRequest);
+
+        String content = OBJECT_MAPPER.writeValueAsString(createFavoriteRequest);
 
         mockMvc.perform(post(uri)
                 .header("Authorization", "Bearer " + wrongRequestToken)
@@ -144,8 +146,8 @@ public class FavoriteControllerIntegrationTest {
                 .andReturn();
 
         // then
-        FavoritesResponse favoritesResponse
-                = gson.fromJson(mvcResult.getResponse().getContentAsString(), FavoritesResponse.class);
+        FavoritesResponse favoritesResponse =
+                OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), FavoritesResponse.class);
         assertThat(favoritesResponse.getFavoriteResponses()).hasSize(2);
     }
 

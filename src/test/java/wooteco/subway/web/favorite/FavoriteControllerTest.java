@@ -1,6 +1,6 @@
 package wooteco.subway.web.favorite;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FavoriteControllerTest {
-    private static final Gson gson = new Gson();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @MockBean
     FavoriteService favoriteService;
@@ -79,7 +79,7 @@ public class FavoriteControllerTest {
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
         String uri = "/auth/favorites";
-        String content = gson.toJson(favoriteRequest);
+        String content = OBJECT_MAPPER.writeValueAsString(favoriteRequest);
 
         mockMvc.perform(post(uri)
                 .header("Authorization", "Bearer " + "이메일 Token")
@@ -113,7 +113,7 @@ public class FavoriteControllerTest {
                 .andReturn();
 
         FavoritesResponse favoritesResponse =
-                gson.fromJson(mvcResult.getResponse().getContentAsString(), FavoritesResponse.class);
+                OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), FavoritesResponse.class);
         assertThat(favoritesResponse.getFavoriteResponses()).hasSize(2);
     }
 

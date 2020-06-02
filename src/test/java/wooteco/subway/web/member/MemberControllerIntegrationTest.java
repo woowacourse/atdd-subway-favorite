@@ -1,6 +1,6 @@
 package wooteco.subway.web.member;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerIntegrationTest {
-    private static final Gson gson = new Gson();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Autowired
     MemberService memberService;
@@ -76,7 +76,7 @@ public class MemberControllerIntegrationTest {
 
         String anotherEmail = "anotherEmail@gmail.com";
         String wrongToken = jwtTokenProvider.createToken(anotherEmail);
-        String updateData = gson.toJson(updateMemberRequest);
+        String updateData = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
 
         String uri = "/auth/members";
 
