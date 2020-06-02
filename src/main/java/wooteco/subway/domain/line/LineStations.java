@@ -79,10 +79,9 @@ public class LineStations {
                 .findFirst();
     }
 
-
     public int extractShortestDistance() {
         return stations.stream()
-                .mapToInt(LineStation::getDuration)
+                .mapToInt(LineStation::getDistance)
                 .sum();
     }
 
@@ -90,13 +89,5 @@ public class LineStations {
         return stations.stream()
                 .mapToInt(LineStation::getDuration)
                 .sum();
-    }
-
-    public int getTotalDistance() {
-        return stations.stream().mapToInt(LineStation::getDistance).sum();
-    }
-
-    public int getTotalDuration() {
-        return stations.stream().mapToInt(LineStation::getDuration).sum();
     }
 }
