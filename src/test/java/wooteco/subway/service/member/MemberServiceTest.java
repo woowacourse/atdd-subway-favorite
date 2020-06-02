@@ -9,13 +9,15 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.service.member.exception.DuplicateEmailException;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -37,11 +39,24 @@ public class MemberServiceTest {
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.save(any())).thenReturn(member);
 
-        memberService.createMember(member);
+        memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
+    }
+
+    @Test
+    void createMemberWithDuplicateEmail() {
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, "pobi", "123");
+        doThrow(DuplicateEmailException.class)
+            .when(memberRepository)
+            .save(any());
+
+        assertThatThrownBy(() -> memberService.createMember(memberRequest))
+            .isInstanceOf(DuplicateEmailException.class);
     }
 
     @Test
@@ -53,5 +68,23 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void updateMember() {
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("pobi", "a");
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+
+        memberService.updateMember(1L, updateMemberRequest);
+
+        verify(memberRepository).save(any());
+    }
+
+    @Test
+    void deleteMember() {
+        memberService.deleteMember(any());
+
+        verify(memberRepository).deleteById(any());
     }
 }

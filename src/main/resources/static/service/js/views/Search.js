@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -35,22 +34,24 @@ function Search() {
     getSearchResult(PATH_TYPE.DURATION)
   }
 
-  const getSearchResult = pathType => {
+  const getSearchResult = async pathType => {
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value,
       type: pathType
     }
-    api.path
+    await api.path
       .find(searchInput)
       .then(data => showSearchResult(data))
       .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
-  const onToggleFavorite = event => {
+  const onToggleFavorite = async event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
+
+    await api.favorite.create({"departure":$departureStationName.value , "arrival":$arrivalStationName.value});
 
     if (isFavorite) {
       classList.add('mdi-star-outline')
