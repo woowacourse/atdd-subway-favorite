@@ -5,7 +5,6 @@ function Join() {
   const $joinButton = document.querySelector('#join-button')
 
   const validate = ({ email, name, password, passwordCheck }) => {
-  return
     if (!email && !password && !name && !passwordCheck) {
       throw new Error(ERROR_MESSAGE.FORM_EMPTY)
     }
