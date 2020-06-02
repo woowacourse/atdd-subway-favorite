@@ -8,6 +8,8 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
+import static wooteco.subway.service.constants.ErrorMessage.*;
+
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -20,11 +22,10 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        try {
-            return memberRepository.save(member);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
-        }
+        memberRepository.findByEmail(member.getEmail())
+                .ifPresent(it -> new IllegalArgumentException(ALREADY_EXIST_MEMBER));
+
+        return memberRepository.save(member);
     }
 
     public void updateMember(Member member, UpdateMemberRequest param) {
@@ -38,9 +39,9 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(() -> new InvalidAuthenticationException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new InvalidAuthenticationException(NO_MEMBER));
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드입니다.");
+            throw new RuntimeException(WRONG_PASSWORD);
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
