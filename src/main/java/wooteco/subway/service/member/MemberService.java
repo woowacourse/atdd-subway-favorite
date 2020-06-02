@@ -5,7 +5,6 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.EntityNotFoundException;
@@ -33,7 +32,7 @@ public class MemberService {
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 id를 찾을 수 없습니다."));
+        Member member = findMemberById(id);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -43,7 +42,7 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(() -> new LoginFailException("해당 email를 찾을 수 없습니다."));
+        Member member = findMemberByEmail(param.getEmail());
         if (!member.checkPassword(param.getPassword())) {
             throw new LoginFailException("잘못된 패스워드");
         }
@@ -53,6 +52,10 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("해당 email를 찾을 수 없습니다."));
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 id를 찾을 수 없습니다."));
     }
 
     public boolean loginWithForm(String email, String password) {
