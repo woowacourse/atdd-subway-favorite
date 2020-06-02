@@ -31,7 +31,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String email = (String)webRequest.getAttribute(BearerAuthInterceptor.LOGIN_MEMBER_EMAIL, SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
-            return new InvalidAuthenticationException("비정상적인 로그인 비어있는 이메일입니다.");
+            return new InvalidAuthenticationException("비정상적인 로그인");
         }
         try {
             return memberService.findMemberByEmail(email);
