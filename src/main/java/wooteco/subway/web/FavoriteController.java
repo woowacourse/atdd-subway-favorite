@@ -32,13 +32,13 @@ public class FavoriteController {
 
     @PostMapping("/me/favorites")
     public ResponseEntity<Void> addFavorite(@LoginMember Member member, @RequestBody FavoriteCreateRequest request) {
-        memberService.addFavorite(member.getId(), request);
+        memberService.addFavorite(member, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me/favorites/{favoriteId}")
     public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long favoriteId) {
-        memberService.deleteFavorite(member.getId(), favoriteId);
+        memberService.deleteFavorite(member, favoriteId);
         return ResponseEntity.ok().build();
     }
 }

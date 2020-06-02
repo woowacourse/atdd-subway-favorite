@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -18,7 +17,6 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.exception.DuplicateMemberException;
 import wooteco.subway.exception.NoSuchMemberException;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -77,7 +75,7 @@ public class MemberServiceTest {
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
 
         UpdateMemberRequest request = new UpdateMemberRequest("NEW브라운", "NEWbrown");
-        memberService.updateMember(1L, request);
+        memberService.updateMemberById(1L, request);
 
         verify(memberRepository).save(any());
     }
@@ -88,7 +86,7 @@ public class MemberServiceTest {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        memberService.deleteMember(1L);
+        memberService.deleteMemberById(1L);
 
         verify(memberRepository).deleteById(any());
     }
@@ -97,7 +95,7 @@ public class MemberServiceTest {
     @Test
     void cannotFoundDeleteMemberTest() {
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> memberService.deleteMember(1L))
+        assertThatThrownBy(() -> memberService.deleteMemberById(1L))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessage("해당하는 멤버를 찾을 수 없습니다.");
 
@@ -113,5 +111,18 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @DisplayName("잘못된 비밀번호로 요청이 온 경우 예외가 발생하는지 테스트")
+    @Test
+    void invalidPasswordTest() {
+        String wrongPassword = "1234";
+        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD)));
+
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, wrongPassword);
+
+        assertThatThrownBy(() -> memberService.createToken(loginRequest))
+                .isInstanceOf(InvalidAuthenticationException.class)
+                .hasMessage("잘못된 패스워드");
     }
 }

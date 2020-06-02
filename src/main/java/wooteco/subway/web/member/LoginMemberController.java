@@ -30,13 +30,13 @@ public class LoginMemberController {
 
     @PutMapping("/me")
     public ResponseEntity<Void> updateOwnMember(@LoginMember Member member, @RequestBody UpdateMemberRequest request) {
-        memberService.updateMember(member.getId(), request);
+        memberService.updateMember(member, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteOwnMember(@LoginMember Member member) {
-        memberService.deleteMember(member.getId());
+        memberService.deleteMember(member);
         return ResponseEntity.noContent().build();
     }
 }

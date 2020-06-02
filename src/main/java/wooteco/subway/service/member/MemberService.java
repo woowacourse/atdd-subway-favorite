@@ -47,17 +47,24 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow(NoSuchMemberException::new);
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    public void updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
-    public void deleteMember(Long id) {
-        if (!memberRepository.findById(id).isPresent()) {
-            throw new NoSuchMemberException();
-        }
-        memberRepository.deleteById(id);
+    public void updateMemberById(Long id, UpdateMemberRequest param) {
+        Member member = memberRepository.findById(id).orElseThrow(NoSuchMemberException::new);
+        member.update(param.getName(), param.getPassword());
+        memberRepository.save(member);
+    }
+
+    public void deleteMember(Member member) {
+        memberRepository.deleteById(member.getId());
+    }
+
+    public void deleteMemberById(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(NoSuchMemberException::new);
+        memberRepository.deleteById(member.getId());
     }
 
     public String createToken(LoginRequest param) {
@@ -86,8 +93,7 @@ public class MemberService {
         return favoriteResponses;
     }
 
-    public Member addFavorite(Long memberId, FavoriteCreateRequest request) {
-        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchMemberException::new);
+    public Member addFavorite(Member member, FavoriteCreateRequest request) {
         Long sourceStationId = stationRepository.findIdByName(request.getSourceStationName());
         Long targetStationId = stationRepository.findIdByName(request.getTargetStationName());
         Favorite favorite = new Favorite(sourceStationId, targetStationId);
@@ -95,8 +101,7 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void deleteFavorite(Long memberId, Long favoriteId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchMemberException::new);
+    public void deleteFavorite(Member member, Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(NoSuchFavoriteException::new);
         member.removeFavorite(favorite);
         memberRepository.save(member);
