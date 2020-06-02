@@ -24,7 +24,7 @@ public class Favorites {
 
     public void remove(Long favoriteId) {
         Favorite findFavorite = favorites.stream()
-                .filter(favorite -> favorite.getId().equals(favoriteId))
+                .filter(favorite -> favorite.isSameId(favoriteId))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
 

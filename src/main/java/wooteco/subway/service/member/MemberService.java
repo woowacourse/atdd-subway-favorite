@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
-    private StationRepository stationRepository;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final StationRepository stationRepository;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, StationRepository stationRepository) {
         this.memberRepository = memberRepository;
