@@ -1,18 +1,26 @@
 package wooteco.subway.web.member;
 
+import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 @RestController
 public class LoginMemberController {
@@ -25,7 +33,7 @@ public class LoginMemberController {
     @PostMapping("/oauth/token")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
-        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+        return ResponseEntity.ok().body(new TokenResponse(token, TOKEN_TYPE));
     }
 
     @PostMapping("/login")

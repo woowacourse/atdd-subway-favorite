@@ -1,17 +1,19 @@
 package wooteco.subway.web.member.interceptor;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+    public static final String TOKEN_TYPE = "bearer";
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -23,7 +25,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        String token = authExtractor.extract(request, "bearer");
+        String token = authExtractor.extract(request, TOKEN_TYPE);
         if(!jwtTokenProvider.validateToken(token)) {
             throw new InvalidAuthenticationException("만료된 세션입니다.");
         };
