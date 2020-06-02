@@ -3,6 +3,7 @@ package wooteco.subway.service.path;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStations;
 import wooteco.subway.domain.line.Lines;
@@ -29,6 +30,7 @@ public class PathService {
 		this.lineRepository = lineRepository;
 	}
 
+	@Transactional(readOnly = true)
 	public PathResponse findPath(String source, String target, PathType type) {
 		validateSourceEqualsTarget(source, target);
 
