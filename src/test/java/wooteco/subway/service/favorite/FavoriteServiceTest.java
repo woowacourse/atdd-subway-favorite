@@ -10,11 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,11 +43,13 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 추가")
     @Test
     void create() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(new Station(1L, "강남역"));
+        stations.add(new Station(2L, "잠실역"));
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
+        when(stationRepository.findAll()).thenReturn(stations);
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(stationRepository.findIdByName("강남역")).thenReturn(Optional.of(1L));
-        when(stationRepository.findIdByName("잠실역")).thenReturn(Optional.of(2L));
 
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest("강남역",
                 "잠실역");
@@ -57,15 +61,17 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 조회")
     @Test
     void find() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(new Station(1L, "강남역"));
+        stations.add(new Station(2L, "잠실역"));
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
         member.addFavorite(new Favorite(1L, 2L));
 
         List<FavoriteResponse> expect = Lists.newArrayList(
                 new FavoriteResponse("강남역", "잠실역"));
 
+        when(stationRepository.findAll()).thenReturn(stations);
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(stationRepository.findNameById(1L)).thenReturn(Optional.of("강남역"));
-        when(stationRepository.findNameById(2L)).thenReturn(Optional.of("잠실역"));
 
         List<FavoriteResponse> favoriteResponses = favoriteService.find(member);
 
@@ -75,12 +81,14 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 삭제")
     @Test
     void delete() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(new Station(1L, "강남역"));
+        stations.add(new Station(2L, "잠실역"));
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
         member.addFavorite(new Favorite(1L, 2L));
 
+        when(stationRepository.findAll()).thenReturn(stations);
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(stationRepository.findIdByName("강남역")).thenReturn(Optional.of(1L));
-        when(stationRepository.findIdByName("잠실역")).thenReturn(Optional.of(2L));
 
         FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest("강남역",
                 "잠실역");

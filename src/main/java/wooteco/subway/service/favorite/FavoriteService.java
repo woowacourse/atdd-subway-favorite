@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
@@ -27,43 +28,56 @@ public class FavoriteService {
 
     @Transactional
     public void create(Member member, FavoriteCreateRequest favoriteCreateRequest) {
+        List<Station> stations = stationRepository.findAll();
         Member persistMember = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
 
-        Long source = stationRepository.findIdByName(favoriteCreateRequest.getSource())
-                .orElseThrow(() -> new IllegalArgumentException("시작역을 찾을 수 없습니다."));
-        Long target = stationRepository.findIdByName(favoriteCreateRequest.getTarget())
-                .orElseThrow(() -> new IllegalArgumentException("도착역을 찾을 수 없습니다."));
-        Favorite favorite = new Favorite(source, target);
+        Station sourceStation = findStationByName(favoriteCreateRequest.getSource(), stations);
+        Station targetStation = findStationByName(favoriteCreateRequest.getTarget(), stations);
+        Favorite favorite = new Favorite(sourceStation.getId(), targetStation.getId());
 
         persistMember.addFavorite(favorite);
 
         memberRepository.save(persistMember);
+    }
 
+    private Station findStationByName(String name, List<Station> stations) {
+        return stations.stream()
+                .filter(station -> name.equals(station.getName()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> find(Member member) {
+        List<Station> stations = stationRepository.findAll();
         Member persistMember = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
         Set<Favorite> favorites = persistMember.getFavorites();
 
         return favorites.stream()
-                .map(this::toFavoriteResponse)
+                .map(favorite -> toFavoriteResponse(favorite, stations))
                 .collect(Collectors.toList());
     }
 
-    private FavoriteResponse toFavoriteResponse(Favorite favorite) {
-        return new FavoriteResponse(
-                stationRepository.findNameById(favorite.getSource())
-                        .orElseThrow(() -> new IllegalArgumentException("시작역을 찾을 수 없습니다.")),
-                stationRepository.findNameById(favorite.getTarget())
-                        .orElseThrow(() -> new IllegalArgumentException("도착역을 찾을 수 없습니다.")));
+    private FavoriteResponse toFavoriteResponse(Favorite favorite, List<Station> stations) {
+        Station sourceStation = findStationById(favorite.getSource(), stations);
+        Station targetStation = findStationById(favorite.getTarget(), stations);
+
+        return new FavoriteResponse(sourceStation.getName(), targetStation.getName());
+    }
+
+    private Station findStationById(Long id, List<Station> stations) {
+        return stations.stream()
+                .filter(station -> id.equals(station.getId()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
     }
 
     @Transactional
     public void delete(Member member, FavoriteDeleteRequest favoriteDeleteRequest) {
-        Favorite favorite = toFavorite(favoriteDeleteRequest);
+        List<Station> stations = stationRepository.findAll();
+        Favorite favorite = toFavorite(favoriteDeleteRequest, stations);
         Member persistMember = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
 
@@ -72,11 +86,10 @@ public class FavoriteService {
         memberRepository.save(persistMember);
     }
 
-    private Favorite toFavorite(FavoriteDeleteRequest favoriteDeleteRequest) {
-        return new Favorite(
-                stationRepository.findIdByName(favoriteDeleteRequest.getSource())
-                        .orElseThrow(() -> new IllegalArgumentException("시작역을 찾을 수 없습니다.")),
-                stationRepository.findIdByName(favoriteDeleteRequest.getTarget())
-                        .orElseThrow(() -> new IllegalArgumentException("도착역을 찾을 수 없습니다.")));
+    private Favorite toFavorite(FavoriteDeleteRequest favoriteDeleteRequest, List<Station> stations) {
+        Station sourceStation = findStationByName(favoriteDeleteRequest.getSource(), stations);
+        Station targetStation = findStationByName(favoriteDeleteRequest.getTarget(), stations);
+
+        return new Favorite(sourceStation.getId(), targetStation.getId());
     }
 }
