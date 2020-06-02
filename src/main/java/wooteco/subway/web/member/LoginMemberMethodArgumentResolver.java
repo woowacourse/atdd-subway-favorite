@@ -14,6 +14,7 @@ import wooteco.subway.service.member.MemberService;
 
 @Component
 public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentResolver {
+
     private final MemberService memberService;
 
     public LoginMemberMethodArgumentResolver(MemberService memberService) {

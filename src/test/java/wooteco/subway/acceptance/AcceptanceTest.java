@@ -320,7 +320,7 @@ public class AcceptanceTest {
     public void deleteMember(String token, MemberResponse memberResponse) {
         given().when().
                 header("Authorization", "Bearer " + token).
-                delete("/members/" + memberResponse.getId()).
+                delete("/members/").
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
