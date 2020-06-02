@@ -35,7 +35,7 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(() -> new NotExistMemberDataException(param.getEmail()));
+                .orElseThrow(() -> new NotExistMemberDataException(("email = " + param.getEmail())));
 
         if (!member.checkPassword(param.getPassword())) {
             throw new InvalidPasswordException();
@@ -46,12 +46,12 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotExistMemberDataException(email));
+                .orElseThrow(() -> new NotExistMemberDataException("email = " + email));
     }
 
     public Member findMemberById(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new NotExistMemberDataException(String.valueOf(id)));
+                .orElseThrow(() -> new NotExistMemberDataException("id = " + id));
 
     }
 }
