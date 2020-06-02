@@ -55,4 +55,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 extract().as(TokenResponse.class);
     }
+
+    @Test
+    void invalidToken() {
+        given()
+            .auth()
+            .oauth2("invalidToken")
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/me/bearer")
+            .then()
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
 }
