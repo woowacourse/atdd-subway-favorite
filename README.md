@@ -32,6 +32,9 @@
         - [ ] 중복되는 테스트 변수 (properties 에 추가 고려)        
         - [ ] Request하는 기기 정보로 검증 추가
         - [ ] 로그아웃
+        - [ ] 즐겨찾기 데이터 수정 (Station 이름 -> Station id)
+            - [ ] back
+            - [ ] front
         
 # 2단계 - 즐겨찾기 기능
         
