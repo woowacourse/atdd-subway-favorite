@@ -66,6 +66,7 @@ class FavoriteControllerTest {
             .apply(documentationConfiguration(restDocumentation))
             .build();
         RestAssured.port = port;
+
         favoriteStation = new FavoriteStation(1L, "gangnam", "jamsil");
         createMember();
         response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
