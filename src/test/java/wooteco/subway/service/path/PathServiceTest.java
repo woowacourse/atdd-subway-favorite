@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.service.path.dto.PathRequest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
@@ -84,7 +85,8 @@ public class PathServiceTest {
         when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
         when(graphService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
 
-        PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
+        PathRequest pathRequest = PathRequest.of(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
+        PathResponse pathResponse = pathService.findPath(pathRequest);
 
         List<StationResponse> paths = pathResponse.getStations();
         assertThat(paths).hasSize(5);
@@ -100,12 +102,18 @@ public class PathServiceTest {
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     void findPathWithSameSourceAndTarget() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
+        assertThrows(RuntimeException.class, () -> {
+            PathRequest pathRequest = PathRequest.of(STATION_NAME3, STATION_NAME3, PathType.DISTANCE);
+            pathService.findPath(pathRequest);
+        });
     }
 
     @DisplayName("출발역과 도착역이 연결이 되지 않은 경우")
     @Test
     void findPathWithNoPath() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
+        assertThrows(RuntimeException.class, () -> {
+            PathRequest pathRequest = PathRequest.of(STATION_NAME3, STATION_NAME6, PathType.DISTANCE);
+            pathService.findPath(pathRequest);
+        });
     }
 }
