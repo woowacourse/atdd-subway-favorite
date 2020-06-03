@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -17,10 +18,13 @@ import wooteco.subway.service.member.exception.InvalidMemberIdException;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final FavoriteService favoriteService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository,
+        FavoriteService favoriteService, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.favoriteService = favoriteService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -45,6 +49,7 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id) {
+        favoriteService.deleteByMemberId(id);
         memberRepository.deleteById(id);
     }
 

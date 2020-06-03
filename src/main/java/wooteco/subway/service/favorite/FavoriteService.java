@@ -75,4 +75,13 @@ public class FavoriteService {
         List<Station> arrivals = stationRepository.findAllById(favorites.getArrivalStationIds());
         return FavoriteResponse.listOf(departures, arrivals);
     }
+
+    @Transactional
+    public void deleteByMemberId(Long memberId) {
+        favoriteRepository.deleteAllByMemberId(memberId);
+    }
+
+    public void deleteByStationId(Long stationId) {
+        favoriteRepository.deleteAllByStationId(stationId);
+    }
 }

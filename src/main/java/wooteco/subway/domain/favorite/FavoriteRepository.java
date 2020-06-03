@@ -16,4 +16,10 @@ public interface FavoriteRepository extends CrudRepository<Favorite, Long> {
         @Param("memberId") Long memberId,
         @Param("departureStationId") Long departureStationId,
         @Param("arrivalStationId") Long arrivalStationId);
+
+    @Query("DELETE FROM favorite WHERE member_id = :memberId")
+    void deleteAllByMemberId(@Param("memberId") Long memberId);
+
+    @Query("DELETE FROM favorite WHERE departure_station_id = :stationId OR arrival_station_id = :stationId")
+    void deleteAllByStationId(@Param("stationId") Long stationId);
 }
