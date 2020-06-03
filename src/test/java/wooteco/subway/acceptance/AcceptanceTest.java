@@ -64,10 +64,6 @@ public class AcceptanceTest {
         return getAll("/stations", StationResponse.class);
     }
 
-    public StationResponse getStation(Long id) {
-        return get("/stations/" + id, StationResponse.class);
-    }
-
     public void deleteStation(Long id) {
         delete("/stations/" + id);
     }

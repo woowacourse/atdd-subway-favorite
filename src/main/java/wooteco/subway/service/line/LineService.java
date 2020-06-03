@@ -2,15 +2,14 @@ package wooteco.subway.service.line;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -27,8 +26,8 @@ public class LineService {
         return lineRepository.save(line);
     }
 
-    public List<Line> findLines() {
-        return lineRepository.findAll();
+    public Lines findLines() {
+        return new Lines(lineRepository.findAll());
     }
 
     public void updateLine(Long id, LineRequest request) {

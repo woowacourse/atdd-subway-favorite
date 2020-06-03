@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
@@ -86,7 +87,7 @@ public class PathServiceTest {
     @DisplayName("일반적인 상황의 경로 찾기")
     @Test
     void findPath() {
-        when(lineService.findLines()).thenReturn(Lists.list(line1, line2));
+        when(lineService.findLines()).thenReturn(new Lines(Lists.list(line1, line2)));
         when(stationService.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
         when(stationService.findByName(STATION_NAME3)).thenReturn(station3);
         when(stationService.findByName(STATION_NAME5)).thenReturn(station5);
@@ -115,7 +116,7 @@ public class PathServiceTest {
     @Test
     void findPathWithNoPath() {
         assertThatThrownBy(() -> {
-            when(lineService.findLines()).thenReturn(new ArrayList<>());
+            when(lineService.findLines()).thenReturn(new Lines(new ArrayList<>()));
             when(stationService.findByName(any())).thenReturn(new Station(1L, STATION_NAME3));
             pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE);
         }).isInstanceOf(NotExistedPathException.class);

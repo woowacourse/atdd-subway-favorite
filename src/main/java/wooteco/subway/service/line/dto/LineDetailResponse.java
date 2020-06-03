@@ -29,7 +29,7 @@ public class LineDetailResponse {
         this.intervalTime = intervalTime;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.stations = StationResponse.listOf(stations);
+        this.stations = StationResponse.listFrom(stations);
     }
 
     public static LineDetailResponse of(Line line, List<Station> stations) {

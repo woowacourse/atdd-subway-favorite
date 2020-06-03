@@ -20,6 +20,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.doc.LineDocumentation;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
@@ -111,7 +112,7 @@ public class LineControllerTest {
         lines.add(new Line(
                 63L, "신분당선", LocalTime.of(5, 30), LocalTime.of(23, 30), 10,
                 LocalDateTime.now(), LocalDateTime.now()));
-        when(lineService.findLines()).thenReturn(lines);
+        when(lineService.findLines()).thenReturn(new Lines(lines));
 
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())

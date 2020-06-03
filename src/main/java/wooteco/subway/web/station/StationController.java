@@ -33,7 +33,7 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(StationResponse.listOf(stationService.findStations()));
+        return ResponseEntity.ok().body(StationResponse.listFrom(stationService.findStations()));
     }
 
     @DeleteMapping("/{id}")

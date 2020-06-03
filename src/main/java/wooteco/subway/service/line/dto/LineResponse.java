@@ -1,6 +1,7 @@
 package wooteco.subway.service.line.dto;
 
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,6 +38,10 @@ public class LineResponse {
         return lines.stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public static List<LineResponse> listFrom(Lines lines) {
+        return listFrom(lines.getLines());
     }
 
     public Long getId() {

@@ -23,12 +23,12 @@ public class FavoriteService {
     }
 
     public FavoriteResponse addFavorite(final Long memberId, final FavoriteRequest request) {
+        if (request.isDuplicatedStation()) {
+            throw new DuplicatedStationException();
+        }
         if (favoriteRepository.existsBy(
                 memberId, request.getSource(), request.getTarget())) {
             throw new ExistedFavoriteException();
-        }
-        if (request.isDuplicatedStation()) {
-            throw new DuplicatedStationException();
         }
         Favorite favorite = favoriteRepository.save(request.toFavorite(memberId));
         return FavoriteResponse.from(favorite);

@@ -1,6 +1,10 @@
 package wooteco.subway.domain.line;
 
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LineStations {
     private Set<LineStation> stations;
@@ -79,5 +83,25 @@ public class LineStations {
 
     public int getTotalDuration() {
         return stations.stream().mapToInt(LineStation::getDuration).sum();
+    }
+
+    public LineStation findLineStation(final Long stationId, final Long finalPreStationId) {
+        return stations.stream()
+                .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public Stations findStations(final List<Long> path, final List<Station> stations) {
+        return new Stations(path.stream()
+                .map(it -> extractStation(it, stations))
+                .collect(Collectors.toList()));
+    }
+
+    private Station extractStation(Long stationId, List<Station> stations) {
+        return stations.stream()
+                .filter(it -> it.getId().equals(stationId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 }
