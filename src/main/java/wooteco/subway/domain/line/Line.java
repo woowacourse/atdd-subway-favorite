@@ -1,99 +1,106 @@
 package wooteco.subway.domain.line;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Embedded;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.relational.core.mapping.Embedded;
+
 public class Line {
-    @Id
-    private Long id;
-    private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-    @Embedded.Empty
-    private LineStations stations = LineStations.empty();
+	@Id
+	private final Long id;
+	private final String name;
+	private final LocalTime startTime;
+	private final LocalTime endTime;
+	private final int intervalTime;
+	@CreatedDate
+	private final LocalDateTime createdAt;
+	@LastModifiedDate
+	private final LocalDateTime updatedAt;
+	@Embedded.Empty
+	private final LineStations stations;
 
-    public Line() {
-    }
+	Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+		LocalDateTime createdAt, LocalDateTime updatedAt, LineStations stations) {
+		this.id = id;
+		this.name = name;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.intervalTime = intervalTime;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.stations = stations;
+	}
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
-    }
+	public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+		return new Line(null, name, startTime, endTime, intervalTime, null, null, LineStations.empty());
+	}
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
-    }
+	public Line withId(final Long id) {
+		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, this.updatedAt,
+			this.stations);
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Line withCreatedAt(LocalDateTime createdAt) {
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, createdAt, this.updatedAt,
+			this.stations);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Line withUpdatedAt(LocalDateTime updatedAt) {
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime, this.createdAt, updatedAt,
+			this.stations);
+	}
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+	public Line update(Line line) {
+		return new Line(this.id, line.name, line.startTime, line.endTime, line.intervalTime, this.createdAt,
+			this.updatedAt, this.stations);
+	}
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
+	public void addLineStation(LineStation lineStation) {
+		stations.add(lineStation);
+	}
 
-    public int getIntervalTime() {
-        return intervalTime;
-    }
+	public void removeLineStationById(Long stationId) {
+		stations.removeById(stationId);
+	}
 
-    public Set<LineStation> getStations() {
-        return stations.getStations();
-    }
+	public List<Long> getStationIds() {
+		return stations.getStationIds();
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void update(Line line) {
-        if (line.getName() != null) {
-            this.name = line.getName();
-        }
-        if (line.getStartTime() != null) {
-            this.startTime = line.getStartTime();
-        }
-        if (line.getEndTime() != null) {
-            this.endTime = line.getEndTime();
-        }
-        if (line.getIntervalTime() != 0) {
-            this.intervalTime = line.getIntervalTime();
-        }
-    }
+	public LocalTime getStartTime() {
+		return startTime;
+	}
 
-    public void addLineStation(LineStation lineStation) {
-        stations.add(lineStation);
-    }
+	public LocalTime getEndTime() {
+		return endTime;
+	}
 
-    public void removeLineStationById(Long stationId) {
-        stations.removeById(stationId);
-    }
+	public int getIntervalTime() {
+		return intervalTime;
+	}
 
-    public List<Long> getStationIds() {
-        return stations.getStationIds();
-    }
+	public Set<LineStation> getStations() {
+		return stations.getStations();
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 }

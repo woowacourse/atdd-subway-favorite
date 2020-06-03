@@ -1,4 +1,4 @@
-var tns = (function() {
+var tns = (function () {
   var win = window
 
   var raf =
@@ -6,7 +6,7 @@ var tns = (function() {
     win.webkitRequestAnimationFrame ||
     win.mozRequestAnimationFrame ||
     win.msRequestAnimationFrame ||
-    function(cb) {
+    function (cb) {
       return setTimeout(cb, 16)
     }
 
@@ -15,7 +15,7 @@ var tns = (function() {
   var caf =
     win$1.cancelAnimationFrame ||
     win$1.mozCancelAnimationFrame ||
-    function(id) {
+    function (id) {
       clearTimeout(id)
     }
 
@@ -51,7 +51,8 @@ var tns = (function() {
     if (access) {
       try {
         storage.setItem(key, value)
-      } catch (e) {}
+      } catch (e) {
+      }
     }
     return value
   }
@@ -123,7 +124,8 @@ var tns = (function() {
           break
         }
       }
-    } catch (e) {}
+    } catch (e) {
+    }
 
     body.fake ? resetFakeBody(body, docOverflow) : div.remove()
 
@@ -258,36 +260,36 @@ var tns = (function() {
   var classListSupport = 'classList' in document.createElement('_')
 
   var hasClass = classListSupport
-    ? function(el, str) {
-        return el.classList.contains(str)
-      }
-    : function(el, str) {
-        return el.className.indexOf(str) >= 0
-      }
+    ? function (el, str) {
+      return el.classList.contains(str)
+    }
+    : function (el, str) {
+      return el.className.indexOf(str) >= 0
+    }
 
   var addClass = classListSupport
-    ? function(el, str) {
-        if (!hasClass(el, str)) {
-          el.classList.add(str)
-        }
+    ? function (el, str) {
+      if (!hasClass(el, str)) {
+        el.classList.add(str)
       }
-    : function(el, str) {
-        if (!hasClass(el, str)) {
-          el.className += ' ' + str
-        }
+    }
+    : function (el, str) {
+      if (!hasClass(el, str)) {
+        el.className += ' ' + str
       }
+    }
 
   var removeClass = classListSupport
-    ? function(el, str) {
-        if (hasClass(el, str)) {
-          el.classList.remove(str)
-        }
+    ? function (el, str) {
+      if (hasClass(el, str)) {
+        el.classList.remove(str)
       }
-    : function(el, str) {
-        if (hasClass(el, str)) {
-          el.className = el.className.replace(str, '')
-        }
+    }
+    : function (el, str) {
+      if (hasClass(el, str)) {
+        el.className = el.className.replace(str, '')
       }
+    }
 
   function hasAttr(el, attr) {
     return el.hasAttribute(attr)
@@ -308,7 +310,7 @@ var tns = (function() {
       return
     }
 
-    for (var i = els.length; i--; ) {
+    for (var i = els.length; i--;) {
       for (var key in attrs) {
         els[i].setAttribute(key, attrs[key])
       }
@@ -320,8 +322,8 @@ var tns = (function() {
     attrs = attrs instanceof Array ? attrs : [attrs]
 
     var attrLength = attrs.length
-    for (var i = els.length; i--; ) {
-      for (var j = attrLength; j--; ) {
+    for (var i = els.length; i--;) {
+      for (var j = attrLength; j--;) {
         els[i].removeAttribute(attrs[j])
       }
     }
@@ -357,7 +359,7 @@ var tns = (function() {
         Props = props.charAt(0).toUpperCase() + props.substr(1),
         prefixes = ['Webkit', 'Moz', 'ms', 'O']
 
-      prefixes.forEach(function(prefix) {
+      prefixes.forEach(function (prefix) {
         if (prefix !== 'ms' || props === 'transform') {
           arr.push(prefix + Props)
         }
@@ -426,13 +428,14 @@ var tns = (function() {
   var supportsPassive = false
   try {
     var opts = Object.defineProperty({}, 'passive', {
-      get: function() {
+      get: function () {
         supportsPassive = true
       }
     })
     window.addEventListener('test', null, opts)
-  } catch (e) {}
-  var passiveOption = supportsPassive ? { passive: true } : false
+  } catch (e) {
+  }
+  var passiveOption = supportsPassive ? {passive: true} : false
 
   function addEvents(el, obj, preventScrolling) {
     for (var prop in obj) {
@@ -451,11 +454,11 @@ var tns = (function() {
   function Events() {
     return {
       topics: {},
-      on: function(eventName, fn) {
+      on: function (eventName, fn) {
         this.topics[eventName] = this.topics[eventName] || []
         this.topics[eventName].push(fn)
       },
-      off: function(eventName, fn) {
+      off: function (eventName, fn) {
         if (this.topics[eventName]) {
           for (var i = 0; i < this.topics[eventName].length; i++) {
             if (this.topics[eventName][i] === fn) {
@@ -465,10 +468,10 @@ var tns = (function() {
           }
         }
       },
-      emit: function(eventName, data) {
+      emit: function (eventName, data) {
         data.type = eventName
         if (this.topics[eventName]) {
-          this.topics[eventName].forEach(function(fn) {
+          this.topics[eventName].forEach(function (fn) {
             fn(data, eventName)
           })
         }
@@ -490,6 +493,7 @@ var tns = (function() {
       running
 
     setTimeout(moveElement, tick)
+
     function moveElement() {
       duration -= tick
       from += positionTick
@@ -504,7 +508,7 @@ var tns = (function() {
 
   // Object.keys
   if (!Object.keys) {
-    Object.keys = function(object) {
+    Object.keys = function (object) {
       var keys = []
       for (var name in object) {
         if (Object.prototype.hasOwnProperty.call(object, name)) {
@@ -517,14 +521,14 @@ var tns = (function() {
 
   // ChildNode.remove
   if (!('remove' in Element.prototype)) {
-    Element.prototype.remove = function() {
+    Element.prototype.remove = function () {
       if (this.parentNode) {
         this.parentNode.removeChild(this)
       }
     }
   }
 
-  var tns = function(options) {
+  var tns = function (options) {
     options = extend(
       {
         container: '.slider',
@@ -617,7 +621,7 @@ var tns = (function() {
       if (localStorageAccess) {
         // remove storage when browser version changes
         if (tnsStorage['tnsApp'] && tnsStorage['tnsApp'] !== browserInfo) {
-          ;['tC', 'tPL', 'tMQ', 'tTf', 't3D', 'tTDu', 'tTDe', 'tADu', 'tADe', 'tTE', 'tAE'].forEach(function(item) {
+          ;['tC', 'tPL', 'tMQ', 'tTf', 't3D', 'tTDu', 'tTDe', 'tADu', 'tADe', 'tTE', 'tAE'].forEach(function (item) {
             tnsStorage.removeItem(item)
           })
         }
@@ -661,7 +665,7 @@ var tns = (function() {
       tnsList = ['container', 'controlsContainer', 'prevButton', 'nextButton', 'navContainer', 'autoplayButton'],
       optionsElements = {}
 
-    tnsList.forEach(function(item) {
+    tnsList.forEach(function (item) {
       if (typeof options[item] === 'string') {
         var str = options[item],
           el = doc.querySelector(str)
@@ -707,7 +711,7 @@ var tns = (function() {
         //   300: {
         //     items: 2
         //   }
-        val = typeof val === 'number' ? { items: val } : val
+        val = typeof val === 'number' ? {items: val} : val
         responsiveTem[key] = val
       }
       responsive = responsiveTem
@@ -735,6 +739,7 @@ var tns = (function() {
         }
       }
     }
+
     if (!carousel) {
       updateOptions(options)
     }
@@ -810,21 +815,21 @@ var tns = (function() {
       transformPrefix = '',
       transformPostfix = '',
       // index
-      getIndexMax = (function() {
+      getIndexMax = (function () {
         if (fixedWidth) {
-          return function() {
+          return function () {
             return center && !loop ? slideCount - 1 : Math.ceil(-rightBoundary / (fixedWidth + gutter))
           }
         } else if (autoWidth) {
-          return function() {
-            for (var i = slideCountNew; i--; ) {
+          return function () {
+            for (var i = slideCountNew; i--;) {
               if (slidePositions[i] >= -rightBoundary) {
                 return i
               }
             }
           }
         } else {
-          return function() {
+          return function () {
             if (center && carousel && !loop) {
               return slideCount - 1
             } else {
@@ -866,8 +871,8 @@ var tns = (function() {
         mouseover: mouseoverPause,
         mouseout: mouseoutRestart
       },
-      visibilityEvent = { visibilitychange: onVisibilityChange },
-      docmentKeydownEvent = { keydown: onDocumentKeydown },
+      visibilityEvent = {visibilitychange: onVisibilityChange},
+      docmentKeydownEvent = {keydown: onDocumentKeydown},
       touchEvents = {
         touchstart: onPanStart,
         touchmove: onPanMove,
@@ -945,12 +950,12 @@ var tns = (function() {
         panStart = false,
         rafIndex,
         getDist = horizontal
-          ? function(a, b) {
-              return a.x - b.x
-            }
-          : function(a, b) {
-              return a.y - b.y
-            }
+          ? function (a, b) {
+            return a.x - b.x
+          }
+          : function (a, b) {
+            return a.y - b.y
+          }
     }
 
     // disable slider when slidecount <= items
@@ -1020,8 +1025,8 @@ var tns = (function() {
       result = navAsThumbnails
         ? absIndex
         : fixedWidth || autoWidth
-        ? Math.ceil(((absIndex + 1) * pages) / slideCount - 1)
-        : Math.floor(absIndex / items)
+          ? Math.ceil(((absIndex + 1) * pages) / slideCount - 1)
+          : Math.floor(absIndex / items)
 
       // set active nav to the last one when reaches the right edge
       if (!loop && carousel && index === indexMax) {
@@ -1274,7 +1279,7 @@ var tns = (function() {
 
       // add id, class, aria attributes
       // before clone slides
-      forEach(slideItems, function(item, i) {
+      forEach(slideItems, function (item, i) {
         addClass(item, 'tns-item')
         if (!item.id) {
           item.id = slideId + '-item' + i
@@ -1295,7 +1300,7 @@ var tns = (function() {
         var fragmentBefore = doc.createDocumentFragment(),
           fragmentAfter = doc.createDocumentFragment()
 
-        for (var j = cloneCount; j--; ) {
+        for (var j = cloneCount; j--;) {
           var num = j % slideCount,
             cloneFirst = slideItems[num].cloneNode(true)
           removeAttrs(cloneFirst, 'id')
@@ -1320,7 +1325,7 @@ var tns = (function() {
         var imgs = container.querySelectorAll('img')
 
         // add img load event listener
-        forEach(imgs, function(img) {
+        forEach(imgs, function (img) {
           var src = img.src
 
           if (!lazyload) {
@@ -1339,8 +1344,8 @@ var tns = (function() {
         })
 
         // set imgsComplete
-        raf(function() {
-          imgsLoadedCheck(arrayFromNodeList(imgs), function() {
+        raf(function () {
+          imgsLoadedCheck(arrayFromNodeList(imgs), function () {
             imgsComplete = true
           })
         })
@@ -1352,9 +1357,9 @@ var tns = (function() {
 
         lazyload
           ? initSliderTransformStyleCheck()
-          : raf(function() {
-              imgsLoadedCheck(arrayFromNodeList(imgs), initSliderTransformStyleCheck)
-            })
+          : raf(function () {
+            imgsLoadedCheck(arrayFromNodeList(imgs), initSliderTransformStyleCheck)
+          })
       } else {
         // set container transform property
         if (carousel) {
@@ -1378,9 +1383,9 @@ var tns = (function() {
 
           Math.abs(left - right) <= 1
             ? initSliderTransformCore()
-            : setTimeout(function() {
-                stylesApplicationCheck()
-              }, 16)
+            : setTimeout(function () {
+              stylesApplicationCheck()
+            }, 16)
         })()
       } else {
         initSliderTransformCore()
@@ -1450,7 +1455,7 @@ var tns = (function() {
           )
           addCSSRule(sheet, '#' + slideId, 'font-size:0;', getCssRulesLength(sheet))
         } else if (carousel) {
-          forEach(slideItems, function(slide, i) {
+          forEach(slideItems, function (slide, i) {
             slide.style.marginLeft = getSlideMarginLeft(i)
           })
         }
@@ -1601,10 +1606,10 @@ var tns = (function() {
       outerWrapper.insertAdjacentHTML(
         'afterbegin',
         '<div class="tns-liveregion tns-visually-hidden" aria-live="polite" aria-atomic="true">slide <span class="current">' +
-          getLiveRegionStr() +
-          '</span>  of ' +
-          slideCount +
-          '</div>'
+        getLiveRegionStr() +
+        '</span>  of ' +
+        slideCount +
+        '</div>'
       )
       liveregionCurrent = outerWrapper.querySelector('.tns-liveregion .current')
 
@@ -1612,7 +1617,7 @@ var tns = (function() {
       if (hasAutoplay) {
         var txt = autoplay ? 'stop' : 'start'
         if (autoplayButton) {
-          setAttrs(autoplayButton, { 'data-action': txt })
+          setAttrs(autoplayButton, {'data-action': txt})
         } else if (options.autoplayButtonOutput) {
           outerWrapper.insertAdjacentHTML(
             getInsertPosition(options.autoplayPosition),
@@ -1623,7 +1628,7 @@ var tns = (function() {
 
         // add event
         if (autoplayButton) {
-          addEvents(autoplayButton, { click: toggleAutoplay })
+          addEvents(autoplayButton, {click: toggleAutoplay})
         }
 
         if (autoplay) {
@@ -1643,9 +1648,9 @@ var tns = (function() {
         // customized nav
         // will not hide the navs in case they're thumbnails
         if (navContainer) {
-          setAttrs(navContainer, { 'aria-label': 'Carousel Pagination' })
+          setAttrs(navContainer, {'aria-label': 'Carousel Pagination'})
           navItems = navContainer.children
-          forEach(navItems, function(item, i) {
+          forEach(navItems, function (item, i) {
             setAttrs(item, {
               'data-nav': i,
               tabindex: '-1',
@@ -1693,7 +1698,7 @@ var tns = (function() {
           addCSSRule(sheet, '[aria-controls^=' + slideId + '-item]', str, getCssRulesLength(sheet))
         }
 
-        setAttrs(navItems[navCurrentIndex], { 'aria-label': navStr + (navCurrentIndex + 1) + navStrCurrent })
+        setAttrs(navItems[navCurrentIndex], {'aria-label': navStr + (navCurrentIndex + 1) + navStrCurrent})
         removeAttrs(navItems[navCurrentIndex], 'tabindex')
         addClass(navItems[navCurrentIndex], navActiveClass)
 
@@ -1707,14 +1712,14 @@ var tns = (function() {
           outerWrapper.insertAdjacentHTML(
             getInsertPosition(options.controlsPosition),
             '<div class="tns-controls" aria-label="Carousel Navigation" tabindex="0"><button type="button" data-controls="prev" tabindex="-1" aria-controls="' +
-              slideId +
-              '">' +
-              controlsText[0] +
-              '</button><button type="button" data-controls="next" tabindex="-1" aria-controls="' +
-              slideId +
-              '">' +
-              controlsText[1] +
-              '</button></div>'
+            slideId +
+            '">' +
+            controlsText[0] +
+            '</button><button type="button" data-controls="next" tabindex="-1" aria-controls="' +
+            slideId +
+            '">' +
+            controlsText[1] +
+            '</button></div>'
           )
 
           controlsContainer = outerWrapper.querySelector('.tns-controls')
@@ -1740,8 +1745,8 @@ var tns = (function() {
         }
 
         if (options.controlsContainer || (options.prevButton && options.nextButton)) {
-          setAttrs(prevButton, { 'data-controls': 'prev' })
-          setAttrs(nextButton, { 'data-controls': 'next' })
+          setAttrs(prevButton, {'data-controls': 'prev'})
+          setAttrs(nextButton, {'data-controls': 'next'})
         }
 
         prevIsButton = isButton(prevButton)
@@ -1781,12 +1786,12 @@ var tns = (function() {
       }
 
       if (nested === 'inner') {
-        events.on('outerResized', function() {
+        events.on('outerResized', function () {
           resizeTasks()
           events.emit('innerLoaded', info())
         })
       } else if (responsive || fixedWidth || autoWidth || autoHeight || !horizontal) {
-        addEvents(win, { resize: onResize })
+        addEvents(win, {resize: onResize})
       }
 
       if (autoHeight) {
@@ -1822,7 +1827,7 @@ var tns = (function() {
       }
 
       // remove win event listeners
-      removeEvents(win, { resize: onResize })
+      removeEvents(win, {resize: onResize})
 
       // arrowKeys, controls, nav
       if (arrowKeys) {
@@ -1839,7 +1844,7 @@ var tns = (function() {
       removeEvents(container, hoverEvents)
       removeEvents(container, visibilityEvent)
       if (autoplayButton) {
-        removeEvents(autoplayButton, { click: toggleAutoplay })
+        removeEvents(autoplayButton, {click: toggleAutoplay})
       }
       if (autoplay) {
         clearInterval(autoplayTimer)
@@ -1861,7 +1866,7 @@ var tns = (function() {
       // cache Object values in options && reset HTML
       var htmlList = [containerHTML, controlsContainerHTML, prevButtonHTML, nextButtonHTML, navContainerHTML, autoplayButtonHTML]
 
-      tnsList.forEach(function(item, i) {
+      tnsList.forEach(function (item, i) {
         var el = item === 'container' ? outerWrapper : options[item]
 
         if (typeof el === 'object' && el) {
@@ -1888,7 +1893,7 @@ var tns = (function() {
     // === ON RESIZE ===
     // responsive || fixedWidth || autoWidth || !horizontal
     function onResize(e) {
-      raf(function() {
+      raf(function () {
         resizeTasks(getEvent(e))
       })
     }
@@ -2218,52 +2223,52 @@ var tns = (function() {
     }
 
     // (slideBy, indexMin, indexMax) => index
-    var updateIndex = (function() {
+    var updateIndex = (function () {
       return loop
         ? carousel
           ? // loop + carousel
-            function() {
-              var leftEdge = indexMin,
-                rightEdge = indexMax
+          function () {
+            var leftEdge = indexMin,
+              rightEdge = indexMax
 
-              leftEdge += slideBy
-              rightEdge -= slideBy
+            leftEdge += slideBy
+            rightEdge -= slideBy
 
-              // adjust edges when has edge paddings
-              // or fixed-width slider with extra space on the right side
-              if (edgePadding) {
-                leftEdge += 1
+            // adjust edges when has edge paddings
+            // or fixed-width slider with extra space on the right side
+            if (edgePadding) {
+              leftEdge += 1
+              rightEdge -= 1
+            } else if (fixedWidth) {
+              if ((viewport + gutter) % (fixedWidth + gutter)) {
                 rightEdge -= 1
-              } else if (fixedWidth) {
-                if ((viewport + gutter) % (fixedWidth + gutter)) {
-                  rightEdge -= 1
-                }
               }
+            }
 
-              if (cloneCount) {
-                if (index > rightEdge) {
-                  index -= slideCount
-                } else if (index < leftEdge) {
-                  index += slideCount
-                }
+            if (cloneCount) {
+              if (index > rightEdge) {
+                index -= slideCount
+              } else if (index < leftEdge) {
+                index += slideCount
               }
             }
-          : // loop + gallery
-            function() {
-              if (index > indexMax) {
-                while (index >= indexMin + slideCount) {
-                  index -= slideCount
-                }
-              } else if (index < indexMin) {
-                while (index <= indexMax - slideCount) {
-                  index += slideCount
-                }
-              }
-            }
-        : // non-loop
-          function() {
-            index = Math.max(indexMin, Math.min(indexMax, index))
           }
+          : // loop + gallery
+          function () {
+            if (index > indexMax) {
+              while (index >= indexMin + slideCount) {
+                index -= slideCount
+              }
+            } else if (index < indexMin) {
+              while (index <= indexMax - slideCount) {
+                index += slideCount
+              }
+            }
+          }
+        : // non-loop
+        function () {
+          index = Math.max(indexMin, Math.min(indexMax, index))
+        }
     })()
 
     function disableUI() {
@@ -2321,7 +2326,7 @@ var tns = (function() {
       // add class tns-transparent to cloned slides
       if (cloneCount) {
         var str = 'tns-transparent'
-        for (var i = cloneCount; i--; ) {
+        for (var i = cloneCount; i--;) {
           if (carousel) {
             addClass(slideItems[i], str)
           }
@@ -2349,7 +2354,7 @@ var tns = (function() {
       // remove class tns-transparent to cloned slides
       if (cloneCount) {
         var str = 'tns-transparent'
-        for (var i = cloneCount; i--; ) {
+        for (var i = cloneCount; i--;) {
           if (carousel) {
             removeClass(slideItems[i], str)
           }
@@ -2372,7 +2377,7 @@ var tns = (function() {
       container.className = container.className.replace(newContainerClasses.substring(1), '')
       removeAttrs(container, ['style'])
       if (loop) {
-        for (var j = cloneCount; j--; ) {
+        for (var j = cloneCount; j--;) {
           if (carousel) {
             hideElement(slideItems[j])
           }
@@ -2411,7 +2416,7 @@ var tns = (function() {
       doContainerTransformSilent()
 
       if (loop) {
-        for (var j = cloneCount; j--; ) {
+        for (var j = cloneCount; j--;) {
           if (carousel) {
             showElement(slideItems[j])
           }
@@ -2474,7 +2479,7 @@ var tns = (function() {
       // get start, end
       // - check auto width
       if (autoWidth) {
-        slidePositions.forEach(function(point, i) {
+        slidePositions.forEach(function (point, i) {
           if (i < slideCountNew) {
             if ((center || edgePadding) && point <= rangestart + 0.5) {
               start = i
@@ -2530,11 +2535,11 @@ var tns = (function() {
         var arg = getVisibleSlideRange()
         arg.push(lazyloadSelector)
 
-        getImageArray.apply(null, arg).forEach(function(img) {
+        getImageArray.apply(null, arg).forEach(function (img) {
           if (!hasClass(img, imgCompleteClass)) {
             // stop propagation transitionend event to container
             var eve = {}
-            eve[TRANSITIONEND] = function(e) {
+            eve[TRANSITIONEND] = function (e) {
               e.stopPropagation()
             }
             addEvents(img, eve)
@@ -2587,7 +2592,7 @@ var tns = (function() {
       }
 
       while (start <= end) {
-        forEach(slideItems[start].querySelectorAll(imgSelector), function(img) {
+        forEach(slideItems[start].querySelectorAll(imgSelector), function (img) {
           imgs.push(img)
         })
         start++
@@ -2600,7 +2605,7 @@ var tns = (function() {
     // and update container height if it's done
     function doAutoHeight() {
       var imgs = getImageArray.apply(null, getVisibleSlideRange())
-      raf(function() {
+      raf(function () {
         imgsLoadedCheck(imgs, updateInnerWrapperHeight)
       })
     }
@@ -2612,7 +2617,7 @@ var tns = (function() {
       }
 
       // check image classes
-      imgs.forEach(function(img, index) {
+      imgs.forEach(function (img, index) {
         if (!lazyload && img.complete) {
           imgCompleted(img)
         } // Check image.complete
@@ -2627,7 +2632,7 @@ var tns = (function() {
       }
 
       // otherwise execute this functiona again
-      raf(function() {
+      raf(function () {
         imgsLoadedCheck(imgs, cb)
       })
     }
@@ -2677,7 +2682,7 @@ var tns = (function() {
         attr2 = horizontal ? 'right' : 'bottom',
         base = slideItems[0].getBoundingClientRect()[attr]
 
-      forEach(slideItems, function(item, i) {
+      forEach(slideItems, function (item, i) {
         // skip the first slide
         if (i) {
           slidePositions.push(item.getBoundingClientRect()[attr] - base)
@@ -2695,7 +2700,7 @@ var tns = (function() {
         start = range[0],
         end = range[1]
 
-      forEach(slideItems, function(item, i) {
+      forEach(slideItems, function (item, i) {
         // show slides
         if (i >= start && i <= end) {
           if (hasAttr(item, 'aria-hidden')) {
@@ -2718,7 +2723,7 @@ var tns = (function() {
     // gallery: update slide position
     function updateGallerySlidePositions() {
       var l = index + Math.min(slideCount, items)
-      for (var i = slideCountNew; i--; ) {
+      for (var i = slideCountNew; i--;) {
         var item = slideItems[i]
 
         if (i >= index && i < l) {
@@ -2739,8 +2744,8 @@ var tns = (function() {
       }
 
       // removing '.tns-moving'
-      setTimeout(function() {
-        forEach(slideItems, function(el) {
+      setTimeout(function () {
+        forEach(slideItems, function (el) {
           removeClass(el, 'tns-moving')
         })
       }, 300)
@@ -2763,7 +2768,7 @@ var tns = (function() {
           })
           removeClass(navPrev, navActiveClass)
 
-          setAttrs(navCurrent, { 'aria-label': navStr + (navCurrentIndex + 1) + navStrCurrent })
+          setAttrs(navCurrent, {'aria-label': navStr + (navCurrentIndex + 1) + navStrCurrent})
           removeAttrs(navCurrent, 'tabindex')
           addClass(navCurrent, navActiveClass)
 
@@ -2837,8 +2842,8 @@ var tns = (function() {
       return autoWidth
         ? (viewport - gap - (slidePositions[num + 1] - slidePositions[num] - gutter)) / 2
         : fixedWidth
-        ? (viewport - fixedWidth) / 2
-        : (items - 1) / 2
+          ? (viewport - fixedWidth) / 2
+          : (items - 1) / 2
     }
 
     function getRightBoundary() {
@@ -2933,45 +2938,45 @@ var tns = (function() {
     // make transfer after click/drag:
     // 1. change 'transform' property for mordern browsers
     // 2. change 'left' property for legacy browsers
-    var transformCore = (function() {
+    var transformCore = (function () {
       return carousel
-        ? function() {
-            resetDuration(container, '')
-            if (TRANSITIONDURATION || !speed) {
-              // for morden browsers with non-zero duration or
-              // zero duration for all browsers
-              doContainerTransform()
-              // run fallback function manually
-              // when duration is 0 / container is hidden
-              if (!speed || !isVisible(container)) {
-                onTransitionEnd()
-              }
-            } else {
-              // for old browser with non-zero duration
-              jsTransform(container, transformAttr, transformPrefix, transformPostfix, getContainerTransformValue(), speed, onTransitionEnd)
-            }
-
-            if (!horizontal) {
-              updateContentWrapperHeight()
-            }
-          }
-        : function() {
-            slideItemsOut = []
-
-            var eve = {}
-            eve[TRANSITIONEND] = eve[ANIMATIONEND] = onTransitionEnd
-            removeEvents(slideItems[indexCached], eve)
-            addEvents(slideItems[index], eve)
-
-            animateSlide(indexCached, animateIn, animateOut, true)
-            animateSlide(index, animateNormal, animateIn)
-
+        ? function () {
+          resetDuration(container, '')
+          if (TRANSITIONDURATION || !speed) {
+            // for morden browsers with non-zero duration or
+            // zero duration for all browsers
+            doContainerTransform()
             // run fallback function manually
-            // when transition or animation not supported / duration is 0
-            if (!TRANSITIONEND || !ANIMATIONEND || !speed || !isVisible(container)) {
+            // when duration is 0 / container is hidden
+            if (!speed || !isVisible(container)) {
               onTransitionEnd()
             }
+          } else {
+            // for old browser with non-zero duration
+            jsTransform(container, transformAttr, transformPrefix, transformPostfix, getContainerTransformValue(), speed, onTransitionEnd)
           }
+
+          if (!horizontal) {
+            updateContentWrapperHeight()
+          }
+        }
+        : function () {
+          slideItemsOut = []
+
+          var eve = {}
+          eve[TRANSITIONEND] = eve[ANIMATIONEND] = onTransitionEnd
+          removeEvents(slideItems[indexCached], eve)
+          addEvents(slideItems[index], eve)
+
+          animateSlide(indexCached, animateIn, animateOut, true)
+          animateSlide(index, animateNormal, animateIn)
+
+          // run fallback function manually
+          // when transition or animation not supported / duration is 0
+          if (!TRANSITIONEND || !ANIMATIONEND || !speed || !isVisible(container)) {
+            onTransitionEnd()
+          }
+        }
     })()
 
     function render(e, sliderMoved) {
@@ -3223,7 +3228,7 @@ var tns = (function() {
 
     // autoplay functions
     function setAutoplayTimer() {
-      autoplayTimer = setInterval(function() {
+      autoplayTimer = setInterval(function () {
         onControlsClick(null, autoplayDirection)
       }, autoplayTimeout)
 
@@ -3236,7 +3241,7 @@ var tns = (function() {
     }
 
     function updateAutoplayButton(action, txt) {
-      setAttrs(autoplayButton, { 'data-action': action })
+      setAttrs(autoplayButton, {'data-action': action})
       autoplayButton.innerHTML = autoplayHtmlStrings[0] + action + autoplayHtmlStrings[1] + txt
     }
 
@@ -3261,6 +3266,7 @@ var tns = (function() {
         autoplayUserPaused = false
       }
     }
+
     function pause() {
       if (animating) {
         stopAutoplay()
@@ -3367,6 +3373,7 @@ var tns = (function() {
       e = e || win.event
       return isTouchEvent(e) ? e.changedTouches[0] : e
     }
+
     function getTarget(e) {
       return e.target || win.event.srcElement
     }
@@ -3425,7 +3432,7 @@ var tns = (function() {
 
         if (carousel) {
           if (!rafIndex) {
-            rafIndex = raf(function() {
+            rafIndex = raf(function () {
               panUpdate(e)
             })
           }
@@ -3451,7 +3458,7 @@ var tns = (function() {
       }
       caf(rafIndex)
       if (panStart) {
-        rafIndex = raf(function() {
+        rafIndex = raf(function () {
           panUpdate(e)
         })
       }
@@ -3468,7 +3475,8 @@ var tns = (function() {
           if (e.type) {
             events.emit(isTouchEvent(e) ? 'touchMove' : 'dragMove', info(e))
           }
-        } catch (err) {}
+        } catch (err) {
+        }
 
         var x = translateInit,
           dist = getDist(lastPosition, initPosition)
@@ -3509,13 +3517,13 @@ var tns = (function() {
             addEvents(target, {
               click: function preventClick(e) {
                 preventDefaultBehavior(e)
-                removeEvents(target, { click: preventClick })
+                removeEvents(target, {click: preventClick})
               }
             })
           }
 
           if (carousel) {
-            rafIndex = raf(function() {
+            rafIndex = raf(function () {
               if (horizontal && !autoWidth) {
                 var indexMoved = (-dist * items) / (viewport + gutter)
                 indexMoved = dist > 0 ? Math.floor(indexMoved) : Math.ceil(indexMoved)
@@ -3643,7 +3651,7 @@ var tns = (function() {
       updateSliderHeight: updateInnerWrapperHeight,
       refresh: initSliderTransform,
       destroy: destroy,
-      rebuild: function() {
+      rebuild: function () {
         return tns(extend(options, optionsElements))
       }
     }

@@ -20,3 +20,38 @@ endif::[]
 === 회원 가입
 
 operation::members/create[snippets='http-request,http-response']
+
+[[resources-members-login]]
+=== 로그인
+
+operation::oauth/token[snippets='http-request,http-response']
+
+[[resources-members-mypage]]
+=== 내정보
+
+operation::me[snippets='http-request,http-response']
+
+[[resources-members-mypage-edit]]
+=== 내정보 수정
+
+operation::me-edit[snippets='http-request,http-response']
+
+[[resources-members-mypage-delete]]
+=== 탈퇴
+
+operation::me-delete[snippets='http-request,http-response']
+
+[[resources-members-favorite-add]]
+=== 즐겨찾기 추가
+
+operation::favorite-add[snippets='http-request,http-response']
+
+[[resources-members-favorite-get]]
+=== 즐겨찾기 조회
+
+operation::favorite-get[snippets='http-request,http-response']
+
+[[resources-members-favorite-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorite-delete[snippets='http-request,request-parameters,http-response']

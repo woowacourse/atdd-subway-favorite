@@ -1,22 +1,29 @@
 package wooteco.subway.service.member.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class LoginRequest {
-    private String email;
-    private String password;
+	@Email(message = "이메일 형식이 아닙니다.")
+	@NotBlank(message = "email은 필수 입력 값입니다.")
+	private String email;
 
-    public LoginRequest() {
-    }
+	@NotBlank(message = "password은 필수 입력 값입니다.")
+	private String password;
 
-    public LoginRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
+	private LoginRequest() {
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public LoginRequest(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
 }
