@@ -11,12 +11,12 @@ public class Stations {
         this.stations = stations;
     }
 
-	public List<Station> getStations() {
-		return stations;
-	}
+    public List<Station> getStations() {
+        return stations;
+    }
 
-	public Map<Long, String> createStationIdNameMap() {
-		return stations.stream()
-			.collect(Collectors.toMap(Station::getId, Station::getName));
-	}
+    public Map<Long, String> createStationIdNameMap() {
+        return stations.stream()
+                .collect(Collectors.toMap(Station::getId, Station::getName));
+    }
 }

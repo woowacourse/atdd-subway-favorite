@@ -6,7 +6,7 @@ package wooteco.subway.exception;
  *   @author ParkDooWon
  */
 public class SameSourceTargetException extends RuntimeException {
-	public SameSourceTargetException(String message) {
-		super(message);
-	}
+    public SameSourceTargetException(String message) {
+        super(message);
+    }
 }
