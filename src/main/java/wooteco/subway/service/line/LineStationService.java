@@ -10,6 +10,7 @@ import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exceptions.NotExistLineException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
@@ -24,7 +25,7 @@ public class LineStationService {
     }
 
     public LineDetailResponse findLineWithStationsById(Long lineId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(lineId).orElseThrow(() -> new NotExistLineException(lineId));
         List<Long> lineStationIds = line.getStationIds();
         List<Station> stations = stationRepository.findAllById(lineStationIds);
 

@@ -68,24 +68,5 @@ public class MemberControllerTest {
 				.andDo(print())
 				.andDo(MemberDocumentation.createMember());
 	}
-
-	@DisplayName("회원 정보가 정상적으로 수정되는지 확인")
-	@Test
-	public void updateMember() throws Exception {
-
-		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-				"\"name\":\"" + TEST_USER_NAME + "\"," +
-				"\"password\":\"" + TEST_USER_PASSWORD + "\"," +
-				"\"confirmPassword\":\"" + TEST_USER_PASSWORD + "\"}";
-
-		this.mockMvc.perform(put("/members/{id}", 1L)
-				                     .content(inputJson)
-				                     .contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andDo(print())
-				.andDo(MemberDocumentation.updateMember());
-
-		verify(memberService).updateMember(anyLong(), any());
-	}
 }
 

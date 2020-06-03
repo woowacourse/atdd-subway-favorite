@@ -6,12 +6,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LineStations {
     private Set<LineStation> stations;
 
+    public LineStations() {
+    }
+
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;
+    }
+
+    public LineStations(List<LineStation> stations) {
+        this(new HashSet<>(stations));
     }
 
     public static LineStations empty() {
@@ -69,5 +77,19 @@ public class LineStations {
         return stations.stream()
             .filter(it -> it.hasSamePreStation(preStationId))
             .findFirst();
+    }
+
+    public List<LineStation> getStationsExcludeFirstStation() {
+        return stations.stream()
+            .filter(it -> !it.isFirstOfLine())
+            .collect(Collectors.toList());
+    }
+
+    public int getTotalDistance() {
+        return stations.stream().mapToInt(LineStation::getDistance).sum();
+    }
+
+    public int getTotalDuration() {
+        return stations.stream().mapToInt(LineStation::getDuration).sum();
     }
 }

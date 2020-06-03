@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 
@@ -59,7 +60,9 @@ public class GraphServiceTest {
 
     @Test
     void findPath() {
-        List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(), station5.getId(), PathType.DISTANCE);
+        List<Long> stationIds = graphService.findPath(new Lines(Lists.list(line1, line2)), station3.getId(),
+            station5.getId(),
+            PathType.DISTANCE);
 
         assertThat(stationIds).hasSize(5);
         assertThat(stationIds.get(0)).isEqualTo(3L);
@@ -72,7 +75,8 @@ public class GraphServiceTest {
     @Test
     void findPathWithNoPath() {
         assertThrows(IllegalArgumentException.class, () ->
-                graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
+            graphService.findPath(new Lines(Lists.list(line1, line2)), station3.getId(), station6.getId(),
+                PathType.DISTANCE)
         );
 
     }
@@ -82,7 +86,8 @@ public class GraphServiceTest {
         line2.removeLineStationById(station1.getId());
 
         assertThrows(IllegalArgumentException.class, () ->
-                graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
+            graphService.findPath(new Lines(Lists.list(line1, line2)), station3.getId(), station6.getId(),
+                PathType.DISTANCE)
         );
     }
 }

@@ -2,8 +2,6 @@ package wooteco.subway.domain.line;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class LineStation {
     private Long preStationId;
     private Long stationId;
@@ -48,6 +46,10 @@ public class LineStation {
     public boolean isLineStationOf(Long preStationId, Long stationId) {
         return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId)
             || Objects.equals(this.preStationId, stationId) && Objects.equals(this.stationId, preStationId);
+    }
+
+    public boolean isFirstOfLine() {
+        return Objects.isNull(preStationId);
     }
 
     @Override

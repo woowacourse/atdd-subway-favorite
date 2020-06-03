@@ -19,4 +19,10 @@ public class Lines {
             .flatMap(it -> it.getStationIds().stream())
             .collect(Collectors.toList());
     }
+
+    public List<LineStation> getLineStations() {
+        return lines.stream()
+            .flatMap(it -> it.getStationsExcludeFirstStation().stream())
+            .collect(Collectors.toList());
+    }
 }

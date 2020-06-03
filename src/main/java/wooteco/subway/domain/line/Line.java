@@ -81,6 +81,10 @@ public class Line extends BaseEntity {
         stations.removeById(stationId);
     }
 
+    public List<LineStation> getStationsExcludeFirstStation() {
+        return stations.getStationsExcludeFirstStation();
+    }
+
     public List<Long> getStationIds() {
         return stations.getStationIds();
     }

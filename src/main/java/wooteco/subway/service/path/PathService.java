@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.LineStations;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exceptions.NotExistFavoritePathException;
+import wooteco.subway.exceptions.NotExistStationException;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -30,24 +33,21 @@ public class PathService {
 
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
-            throw new RuntimeException();
+            throw new NotExistFavoritePathException();
         }
 
-        List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+        Lines lines = new Lines(lineRepository.findAll());
+        Station sourceStation = stationRepository.findByName(source)
+            .orElseThrow(() -> new NotExistStationException(source));
+        Station targetStation = stationRepository.findByName(target)
+            .orElseThrow(() -> new NotExistStationException(target));
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);
 
-        List<LineStation> lineStations = lines.stream()
-            .flatMap(it -> it.getStations().stream())
-            .filter(it -> Objects.nonNull(it.getPreStationId()))
-            .collect(Collectors.toList());
-
-        List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+        LineStations paths = new LineStations(extractPathLineStation(path, lines.getLineStations()));
+        int duration = paths.getTotalDuration();
+        int distance = paths.getTotalDistance();
 
         List<Station> pathStation = path.stream()
             .map(it -> extractStation(it, stations))
@@ -60,7 +60,7 @@ public class PathService {
         return stations.stream()
             .filter(it -> it.getId() == stationId)
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new NotExistStationException(stationId));
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
