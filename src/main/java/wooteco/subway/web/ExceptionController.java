@@ -11,7 +11,7 @@ import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.exception.WrongPasswordException;
 
 @RestControllerAdvice
-public class Advice {
+public class ExceptionController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> exceptionHandler(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
