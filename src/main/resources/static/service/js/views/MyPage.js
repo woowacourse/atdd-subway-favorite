@@ -8,7 +8,7 @@ function MyInfo() {
 
     const initMyInfo = async () => {
         try {
-            const member = await api.loginMember.get();
+            const member = await api.member.get();
             if (member) {
                 $email.innerText = member.email;
                 $name.innerText = member.name;

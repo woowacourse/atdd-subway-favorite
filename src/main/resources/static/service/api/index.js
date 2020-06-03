@@ -74,18 +74,6 @@ const api = (() => {
         }
     };
 
-    const loginMember = {
-        get() {
-            return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_AUTH());
-        },
-        update(updatedInfo) {
-            return request(`/me`, METHOD.PUT(updatedInfo));
-        },
-        delete() {
-            return request(`/me`, METHOD.DELETE());
-        }
-    };
-
     const line = {
         getAll() {
             return request(`/lines/detail`);
@@ -117,7 +105,6 @@ const api = (() => {
 
     return {
         member,
-        loginMember,
         line,
         path,
         favorite

@@ -12,7 +12,7 @@ function SubwayApp() {
     const renderNavigation = () => {
         const jwt = localStorage.getItem("jwt");
         if (jwt) {
-            api.loginMember
+            api.member
                 .get()
                 .then(member => {
                     if (member) {
