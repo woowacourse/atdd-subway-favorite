@@ -21,6 +21,10 @@ public class FavoritePath {
 		return new FavoritePath(null, source, target);
 	}
 
+	public boolean hasEqualStationIds(FavoritePath favoritePath) {
+		return this.sourceId.equals(favoritePath.sourceId) && this.targetId.equals(favoritePath.targetId);
+	}
+
 	public Long getId() {
 		return id;
 	}

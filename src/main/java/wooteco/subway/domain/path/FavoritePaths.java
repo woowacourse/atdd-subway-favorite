@@ -31,8 +31,7 @@ public class FavoritePaths {
 
 	private void validateDuplication(FavoritePath favoritePath) {
 		favoritePaths.stream()
-				.filter(path -> Objects.equals(path.getSourceId(), favoritePath.getSourceId()) &&
-						Objects.equals(path.getTargetId(), favoritePath.getTargetId()))
+				.filter(path -> path.hasEqualStationIds(favoritePath))
 				.findFirst()
 				.ifPresent(path -> {
 					throw new DuplicatedFavoritePathException();
