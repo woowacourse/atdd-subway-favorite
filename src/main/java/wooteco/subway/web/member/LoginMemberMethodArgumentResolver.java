@@ -10,7 +10,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import wooteco.subway.domain.member.Member;
+import wooteco.subway.service.member.IllegalEmailException;
 import wooteco.subway.service.member.MemberService;
 
 @Component
@@ -31,7 +31,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 		String email = (String)webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
 		if (StringUtils.isBlank(email)) {
-			return Member.of("", "", "");
+			throw new IllegalEmailException("이메일에 빈 값이 올 수 없습니다!");
 		}
 		try {
 			return memberService.findMemberByEmail(email);
