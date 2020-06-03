@@ -3,20 +3,21 @@ package wooteco.subway.domain.station;
 import java.util.List;
 
 public class Stations {
-    private List<Station> stations;
+    private final List<Station> stations;
 
-    public Stations(List<Station> stations) {
+    private Stations(List<Station> stations) {
         this.stations = stations;
     }
 
-    public List<Station> getStations() {
-        return stations;
+    public static Stations from(List<Station> stations) {
+        return new Stations(stations);
     }
 
-    public Station extractStationById(Long stationId) {
-        return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+    public Station getSourceStation(int pathId) {
+        return stations.get(pathId * 2);
+    }
+
+    public Station getTargetStation(int pathId) {
+        return stations.get(pathId * 2 + 1);
     }
 }

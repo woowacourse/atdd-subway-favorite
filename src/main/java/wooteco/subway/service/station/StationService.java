@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exceptions.NotExistStationException;
 import wooteco.subway.service.line.LineStationService;
 
@@ -38,7 +39,8 @@ public class StationService {
                 .orElseThrow(() -> new NotExistStationException(name));
     }
 
-    public List<Station> findStationsByIds(List<Long> stationsIds) {
-        return stationRepository.findAllById(stationsIds);
+    public Stations findStationsByIds(List<Long> stationsIds) {
+        List<Station> stations = stationRepository.findAllById(stationsIds);
+        return Stations.from(stations);
     }
 }

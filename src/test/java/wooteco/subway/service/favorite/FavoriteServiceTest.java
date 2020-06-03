@@ -11,6 +11,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.path.FavoritePath;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
 import wooteco.subway.service.favorite.dto.FavoritePathResponse;
@@ -89,8 +90,8 @@ class FavoriteServiceTest {
 		member.addFavoritePath(favoritePath1);
 		member.addFavoritePath(favoritePath2);
 
-		BDDMockito.when(stationService.findStationsByIds(anyList())).thenReturn(Arrays.asList(kangnam, hanti, dogok,
-		                                                                                      yangjae));
+		BDDMockito.when(stationService.findStationsByIds(anyList()))
+				.thenReturn(Stations.from(Arrays.asList(kangnam, hanti, dogok, yangjae)));
 
 		List<FavoritePathResponse> favoritePathRespons = favoriteService.retrievePath(member);
 
