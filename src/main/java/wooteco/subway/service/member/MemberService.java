@@ -4,7 +4,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import wooteco.subway.common.AuthorizationType;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicateEmailException;
@@ -58,7 +58,7 @@ public class MemberService {
         }
 
         String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token, "bearer");
+        return new TokenResponse(token, AuthorizationType.BEARER.getPrefix());
     }
 
     public MemberResponse findMemberResponseByEmail(String email) {

@@ -1,10 +1,14 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-
+import wooteco.subway.common.AuthorizationType;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.exception.DuplicateEmailException;
@@ -59,7 +63,7 @@ public class MemberControllerTest {
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-		token = "bearer " + jwtTokenProvider.createToken(TIGER_EMAIL);
+		token = AuthorizationType.BEARER.combineToken(jwtTokenProvider.createToken(TIGER_EMAIL));
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.addFilter(new ShallowEtagHeaderFilter())
@@ -139,12 +143,12 @@ public class MemberControllerTest {
 	@DisplayName("이메일로 회원을 조회하는데, 토큰 불량/없는 경우 302 반환.")
 	@ParameterizedTest
 	@EmptySource
-	@ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
+	@ValueSource(strings = {"1234", "1234.1234.1234"})
 	void getMemberByEmail_invalidToken(String token) throws Exception {
 
 		this.mockMvc.perform(get("/members")
 			.param("email", TIGER_EMAIL)
-			.header(HttpHeaders.AUTHORIZATION, token)
+			.header(HttpHeaders.AUTHORIZATION, AuthorizationType.BEARER.combineToken(token))
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isFound())
 			.andExpect(header().string(HttpHeaders.LOCATION, "/login"))
@@ -170,13 +174,13 @@ public class MemberControllerTest {
 	@DisplayName("아이디로 정보를 갱신할 회원을 지정하여 정보를 갱신하려는데, 토큰 불량/없는 경우 302 반환.")
 	@ParameterizedTest
 	@EmptySource
-	@ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
+	@ValueSource(strings = {"1234", "1234.1234.1234"})
 	void updateMember_invalidToken(String token) throws Exception {
 		String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", TIGER_ID)
 			.content(body)
-			.header(HttpHeaders.AUTHORIZATION, token)
+			.header(HttpHeaders.AUTHORIZATION, AuthorizationType.BEARER.combineToken(token))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isFound())
 			.andExpect(header().string(HttpHeaders.LOCATION, "/login"))
@@ -199,11 +203,11 @@ public class MemberControllerTest {
 	@DisplayName("아이디로 회원 정보를 삭제하고 싶은데, 토큰 불량/없는 경우 302 반환.")
 	@ParameterizedTest
 	@EmptySource
-	@ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
+	@ValueSource(strings = {"1234", "1234.1234.1234"})
 	void deleteMember_invalidToken(String token) throws Exception {
 		this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", TIGER_ID)
 			.accept(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, token))
+			.header(HttpHeaders.AUTHORIZATION, AuthorizationType.BEARER.combineToken(token)))
 			.andExpect(status().isFound())
 			.andExpect(header().string(HttpHeaders.LOCATION, "/login"))
 			.andDo(print())

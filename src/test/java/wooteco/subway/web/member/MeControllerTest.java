@@ -1,15 +1,19 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-
+import wooteco.subway.common.AuthorizationType;
 import wooteco.subway.doc.MeDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -70,7 +74,7 @@ public class MeControllerTest {
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        token = "bearer " + jwtTokenProvider.createToken(TIGER_EMAIL);
+        token = AuthorizationType.BEARER.combineToken(jwtTokenProvider.createToken(TIGER_EMAIL));
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .addFilter(new ShallowEtagHeaderFilter())
@@ -100,11 +104,11 @@ public class MeControllerTest {
     @DisplayName("토큰을 이용해서 내 정보를 조회한다. 토큰이 없거나 유효하지 않는 경우 302 코드 반환, Location 헤더에 로그인 페이지 표시.")
     @ParameterizedTest
     @EmptySource
-    @ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
+    @ValueSource(strings = {"1234", "1234.1234.1234"})
     void getMemberByEmail_notExistEmail(String token) throws Exception {
 
         this.mockMvc.perform(get("/me")
-            .header(HttpHeaders.AUTHORIZATION, token)
+            .header(HttpHeaders.AUTHORIZATION, AuthorizationType.BEARER.combineToken(token))
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isFound())
             .andExpect(header().string(HttpHeaders.LOCATION, "/login"))
@@ -133,13 +137,13 @@ public class MeControllerTest {
     @DisplayName("토큰이 없거나 유효하지 않는 경우 정보 수정 시, 302 코드 반환, Location 헤더에 로그인 페이지 표시.")
     @ParameterizedTest
     @EmptySource
-    @ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
+    @ValueSource(strings = {"1234", "1234.1234.1234"})
     void updateMember_invalidToken(String token) throws Exception {
         String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/me")
             .content(body)
-            .header(HttpHeaders.AUTHORIZATION, token)
+            .header(HttpHeaders.AUTHORIZATION, AuthorizationType.BEARER.combineToken(token))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isFound())
             .andExpect(header().string(HttpHeaders.LOCATION, "/login"))
@@ -166,11 +170,11 @@ public class MeControllerTest {
     @DisplayName("토큰이 없거나 무효한 경우, 내 정보 삭제시, 302 코드 반환, Location 헤더에 로그인 페이지 표시.")
     @ParameterizedTest
     @EmptySource
-    @ValueSource(strings = {"Bearer 1234", "Bearer 1234.1234.1234"})
+    @ValueSource(strings = {"1234", "1234.1234.1234"})
     void deleteMember_invalidToken(String token) throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
             .accept(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, token))
+            .header(HttpHeaders.AUTHORIZATION, AuthorizationType.BEARER.combineToken(token)))
             .andExpect(status().isFound())
             .andExpect(header().string(HttpHeaders.LOCATION, "/login"))
             .andDo(print())
