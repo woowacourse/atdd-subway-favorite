@@ -13,7 +13,7 @@ function Join() {
       throw new Error(ERROR_MESSAGE.INVALID_EMAIL_FORMAT)
     }
 
-    if (!name || name.includes(" ")) {
+    if (!name || !name.match("^\\S.*\\S$|^\\S$")) {
       throw new Error(ERROR_MESSAGE.INVALID_NAME)
     }
 
@@ -29,10 +29,10 @@ function Join() {
   const onJoin = async event => {
     event.preventDefault()
 
-    const email = document.querySelector('#email').value
-    const name = document.querySelector('#name').value
-    const password = document.querySelector('#password').value
-    const passwordCheck = document.querySelector('#password-check').value
+    const email = document.querySelector('#email').value.trim()
+    const name = document.querySelector('#name').value.trim()
+    const password = document.querySelector('#password').value.trim()
+    const passwordCheck = document.querySelector('#password-check').value.trim()
 
     const memberInfo = {
       email,

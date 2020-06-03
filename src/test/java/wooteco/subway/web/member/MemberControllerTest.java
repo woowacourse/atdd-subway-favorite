@@ -113,10 +113,16 @@ public class MemberControllerTest {
     private static Stream<Arguments> provideInvalidMemberRequest() {
         return Stream.of(
                 Arguments.arguments("brownemail.com", "브라운", "brown"),
-                Arguments.arguments("brown@email.com", "브 라운", "brown"),
+                Arguments.arguments("brown@email.com", " 브라운", "brown"),
+                Arguments.arguments("brown@email.com", "브라운 ", "brown"),
+                Arguments.arguments("brown@email.com", " 브라운 ", "brown"),
+                Arguments.arguments("brown@email.com", "브라운", " brown"),
+                Arguments.arguments("brown@email.com", "브라운", "brown "),
+                Arguments.arguments("brown@email.com", "브라운", " brown "),
                 Arguments.arguments("brown@email.com", "브라운", "bro wn"),
-                Arguments.arguments("brown@email.com", "", "brown"),
-                Arguments.arguments("brown@email.com", "브라운", "")
+                Arguments.arguments("brown@email.com", "브라운", "bro wn "),
+                Arguments.arguments("brown@email.com", "브라운", " bro wn"),
+                Arguments.arguments("brown@email.com", "브라운", " bro wn ")
         );
     }
 

@@ -21,8 +21,8 @@ function Login() {
 
   const onLogin = async event => {
     event.preventDefault()
-    const email = document.querySelector('#email').value
-    const password = document.querySelector('#password').value
+    const email = document.querySelector('#email').value.trim()
+    const password = document.querySelector('#password').value.trim()
 
     const loginInfo = {
       email,

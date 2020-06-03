@@ -197,12 +197,18 @@ public class LoginMemberControllerTest {
 
     private static Stream<Arguments> provideInvalidUpdateMemberRequest() {
         return Stream.of(
-                Arguments.arguments("", "bro wn"),
+                Arguments.arguments("", "brown"),
                 Arguments.arguments(" ", "brown"),
-                Arguments.arguments("브 라운", ""),
-                Arguments.arguments("브라운", " "),
-                Arguments.arguments(" ", " "),
-                Arguments.arguments("브 라운", "br own")
+                Arguments.arguments(" 브라운", "brown"),
+                Arguments.arguments("브라운 ", "brown"),
+                Arguments.arguments(" 브라운 ", "brown"),
+                Arguments.arguments("브라운", "bro wn"),
+                Arguments.arguments("브라운", " brown"),
+                Arguments.arguments("브라운", "brown "),
+                Arguments.arguments("브라운", " brown "),
+                Arguments.arguments("브라운", " bro wn "),
+                Arguments.arguments("브라운", " bro wn"),
+                Arguments.arguments("브라운", "bro wn ")
         );
     }
 
