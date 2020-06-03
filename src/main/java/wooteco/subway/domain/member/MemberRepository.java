@@ -10,7 +10,6 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
     @Query("select * from member where email = :email")
     Optional<Member> findByEmail(@Param("email") String email);
 
-    default boolean existsByEmail(String email) {
-        return findByEmail(email).isPresent();
-    }
+    @Query("select count(*) > 0 from member where email = :email")
+    Boolean existsByEmail(@Param("email") String email);
 }
