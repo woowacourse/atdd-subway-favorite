@@ -24,6 +24,10 @@ public class LineStation {
             || this.preStationId.equals(stationId) && this.stationId.equals(preStationId);
     }
 
+    public boolean isNotFirstLineStation() {
+        return preStationId != null;
+    }
+
     public Long getPreStationId() {
         return preStationId;
     }

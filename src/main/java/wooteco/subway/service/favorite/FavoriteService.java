@@ -40,7 +40,6 @@ public class FavoriteService {
 
     public Member saveFavorite(Long id, FavoriteRequest favoriteRequest) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchAccountException::new);
-         //
         member.addFavorite(Favorite.of(favoriteRequest));
         return memberRepository.save(member);
     }
