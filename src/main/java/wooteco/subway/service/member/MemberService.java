@@ -1,7 +1,6 @@
 package wooteco.subway.service.member;
 
 import java.util.List;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteDetail;
@@ -16,8 +15,8 @@ import wooteco.subway.service.member.exception.NotFoundMemberException;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository,
             JwtTokenProvider jwtTokenProvider) {
@@ -26,11 +25,10 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        try {
-            return memberRepository.save(member);
-        } catch (DbActionExecutionException e) {
+        if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
             throw new DuplicateMemberException(member.getEmail());
         }
+        return memberRepository.save(member);
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
