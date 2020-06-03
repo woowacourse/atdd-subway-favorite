@@ -1,18 +1,19 @@
 package wooteco.subway.service.path;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.domain.path.PathType;
-import wooteco.subway.domain.station.Station;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.path.PathType;
+import wooteco.subway.domain.station.Station;
 
 public class GraphServiceTest {
     private static final String STATION_NAME1 = "강남역";

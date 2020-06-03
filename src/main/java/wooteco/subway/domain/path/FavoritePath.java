@@ -20,9 +20,9 @@ public class FavoritePath {
         this.memberId = memberId;
     }
 
-	public FavoritePath(Long sourceId, Long targetId, Long memberId) {
-		this(null, sourceId, targetId, memberId);
-	}
+    public FavoritePath(Long sourceId, Long targetId, Long memberId) {
+        this(null, sourceId, targetId, memberId);
+    }
 
     public Long getId() {
         return id;

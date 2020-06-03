@@ -1,10 +1,10 @@
 package wooteco.subway.service.station.dto;
 
-import wooteco.subway.domain.station.Station;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import wooteco.subway.domain.station.Station;
 
 public class StationResponse {
     private Long id;
@@ -15,30 +15,30 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedAt());
     }
 
-	public static List<StationResponse> listOf(List<Station> stations) {
-		return stations.stream()
-				.map(StationResponse::of)
-				.collect(Collectors.toList());
-	}
+    public static List<StationResponse> listOf(List<Station> stations) {
+        return stations.stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
+    }
 
-	public StationResponse() {
-	}
+    public StationResponse() {
+    }
 
-	public StationResponse(Long id, String name) {
-		this.id = id;
-		this.name = name;
-		this.createdAt = null;
-	}
+    public StationResponse(Long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.createdAt = null;
+    }
 
-	public StationResponse(Long id, String name, LocalDateTime createdAt) {
-		this.id = id;
-		this.name = name;
-		this.createdAt = createdAt;
-	}
+    public StationResponse(Long id, String name, LocalDateTime createdAt) {
+        this.id = id;
+        this.name = name;
+        this.createdAt = createdAt;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

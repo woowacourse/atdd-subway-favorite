@@ -1,7 +1,15 @@
 package wooteco.subway.web;
 
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.path.FavoritePath;
@@ -10,9 +18,6 @@ import wooteco.subway.service.favorite.dto.FavoritePathResponse;
 import wooteco.subway.service.favorite.dto.FavoritePathsResponse;
 import wooteco.subway.web.dto.FavoritePathRequest;
 import wooteco.subway.web.member.LoginMember;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 public class FavoriteController {

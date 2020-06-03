@@ -1,9 +1,12 @@
 package wooteco.subway.domain.member;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 
 public class Member {
     @Id
@@ -11,6 +14,10 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    @CreatedDate
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public Member() {
     }

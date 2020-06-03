@@ -1,13 +1,10 @@
 package wooteco.subway.domain.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.AcceptanceTest.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.path.FavoritePath;
-import wooteco.subway.exceptions.DuplicatedFavoritePathException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.AcceptanceTest.*;
 
 class MemberTest {
 
