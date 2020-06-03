@@ -3,37 +3,40 @@ package wooteco.subway.domain.member;
 import java.util.Objects;
 
 public class Favorite {
-    private String source;
-    private String target;
+    private Long sourceId;
+    private Long targetId;
 
     public Favorite() {
     }
 
-    public Favorite(String source, String target) {
-        this.source = source;
-        this.target = target;
+    public Favorite(Long sourceId, Long targetId) {
+        this.sourceId = sourceId;
+        this.targetId = targetId;
     }
 
-
-    public String getSource() {
-        return source;
+    public Long getSourceId() {
+        return sourceId;
     }
 
-    public String getTarget() {
-        return target;
+    public Long getTargetId() {
+        return targetId;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Favorite)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Favorite favorite = (Favorite) o;
-        return Objects.equals(getSource(), favorite.getSource()) &&
-                Objects.equals(getTarget(), favorite.getTarget());
+        return Objects.equals(sourceId, favorite.sourceId) &&
+            Objects.equals(targetId, favorite.targetId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSource(), getTarget());
+        return Objects.hash(sourceId, targetId);
     }
 }

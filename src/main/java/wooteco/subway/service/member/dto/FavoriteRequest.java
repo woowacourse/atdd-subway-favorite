@@ -1,29 +1,28 @@
 package wooteco.subway.service.member.dto;
 
-
 import wooteco.subway.domain.member.Favorite;
 
 public class FavoriteRequest {
-    private String source;
-    private String target;
+    Long sourceId;
+    Long targetId;
 
-    public FavoriteRequest() {
+    private FavoriteRequest() {
     }
 
-    public FavoriteRequest(String source, String target) {
-        this.source = source;
-        this.target = target;
+    public FavoriteRequest(Long sourceId, Long targetId) {
+        this.sourceId = sourceId;
+        this.targetId = targetId;
     }
 
-    public String getSource() {
-        return source;
+    public Long getSourceId() {
+        return sourceId;
     }
 
-    public String getTarget() {
-        return target;
+    public Long getTargetId() {
+        return targetId;
     }
 
     public Favorite toFavorite() {
-        return new Favorite(source, target);
+        return new Favorite(sourceId, targetId);
     }
 }

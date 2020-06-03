@@ -1,13 +1,15 @@
 package wooteco.subway.docs;
 
 
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.restdocs.payload.JsonFieldType;
-
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.restdocs.payload.JsonFieldType;
 
 public class FavoriteDocumentation {
     public static RestDocumentationResultHandler createFavorite() {
@@ -16,8 +18,8 @@ public class FavoriteDocumentation {
                         headerWithName("Authorization").description("This is token which is Bearer Type")
                 ),
                 requestFields(
-                        fieldWithPath("source").type(JsonFieldType.STRING).description("The source station name"),
-                        fieldWithPath("target").type(JsonFieldType.STRING).description("The target station name")
+                        fieldWithPath("sourceId").type(JsonFieldType.NUMBER).description("The source station id"),
+                        fieldWithPath("targetId").type(JsonFieldType.NUMBER).description("The target station id")
                 )
         );
     }
@@ -28,8 +30,8 @@ public class FavoriteDocumentation {
                         headerWithName("Authorization").description("This is token which is Bearer Type")
                 ),
                 responseFields(
-                        fieldWithPath("[].source").type(JsonFieldType.STRING).description("The source station name"),
-                        fieldWithPath("[].target").type(JsonFieldType.STRING).description("The target station name")
+                        fieldWithPath("[].sourceName").type(JsonFieldType.STRING).description("The source station name"),
+                        fieldWithPath("[].targetName").type(JsonFieldType.STRING).description("The target station name")
                 )
         );
     }
@@ -40,8 +42,8 @@ public class FavoriteDocumentation {
                         headerWithName("Authorization").description("This is token which is Bearer Type")
                 ),
                 requestFields(
-                        fieldWithPath("source").type(JsonFieldType.STRING).description("The source station name"),
-                        fieldWithPath("target").type(JsonFieldType.STRING).description("The target station name")
+                        fieldWithPath("sourceName").type(JsonFieldType.STRING).description("The source station name"),
+                        fieldWithPath("targetName").type(JsonFieldType.STRING).description("The target station name")
                 )
         );
     }

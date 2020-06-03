@@ -1,13 +1,13 @@
 package wooteco.subway.service.member.dto;
 
-public class FavoriteResponse {
+public class FavoriteDeleteRequest {
     private String sourceName;
     private String targetName;
 
-    public FavoriteResponse() {
+    private FavoriteDeleteRequest() {
     }
 
-    public FavoriteResponse(String sourceName, String targetName) {
+    public FavoriteDeleteRequest(String sourceName, String targetName) {
         this.sourceName = sourceName;
         this.targetName = targetName;
     }

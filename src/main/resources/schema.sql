@@ -41,6 +41,6 @@ create table if not exists MEMBER
 create table if not exists FAVORITE
 (
     member bigint not null,
-    source varchar(255) not null,
-    target varchar(255) not null
+    source_id bigint not null,
+    target_id bigint not null
 )

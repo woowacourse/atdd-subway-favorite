@@ -1,17 +1,17 @@
 package wooteco.subway.acceptance.member;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import wooteco.subway.acceptance.AcceptanceTest;
-import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.service.member.dto.FavoriteResponse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     /*
@@ -43,25 +43,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         join(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         TokenResponse token = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         initStation();
+        List<StationResponse> stations = getStations();
+        StationResponse station1 = stations.get(0);
+        StationResponse station2 = stations.get(1);
+        StationResponse station3 = stations.get(2);
+        StationResponse station4 = stations.get(3);
 
-        findPath(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, "DISTANCE");
-        createFavorite(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, token);
-        createFavorite(STATION_NAME_HANTI, STATION_NAME_DOGOK, token);
+        findPath(station1.getName(), station2.getName(), "DISTANCE");
+        createFavorite(station1.getId(), station2.getId(), token);
+        findPath(station3.getName(), station4.getName(), "DISTANCE");
+        createFavorite(station3.getId(), station4.getId(), token);
         List<FavoriteResponse> favoriteResponse = getFavorites(token);
 
         assertThat(favoriteResponse).hasSize(2);
-        assertThat(favoriteResponse.get(0).getSource()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(favoriteResponse.get(0).getTarget()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        assertThat(favoriteResponse.get(0).getSourceName()).isEqualTo(station1.getName());
+        assertThat(favoriteResponse.get(0).getTargetName()).isEqualTo(station2.getName());
 
-        deleteFavorite(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, token);
+        deleteFavorite(station1.getName(), station2.getName(), token);
         List<FavoriteResponse> deletedResponse = getFavorites(token);
         assertThat(deletedResponse).hasSize(1);
     }
 
-    private void createFavorite(String source, String target, TokenResponse token) {
+    private void createFavorite(Long sourceId, Long targetId, TokenResponse token) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
+        params.put("sourceId", String.valueOf(sourceId));
+        params.put("targetId", String.valueOf(targetId));
 
         given()
                 .auth().oauth2(token.getAccessToken())
@@ -86,10 +92,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract().jsonPath().getList(".", FavoriteResponse.class);
     }
 
-    private void deleteFavorite(String source, String target, TokenResponse token) {
+    private void deleteFavorite(String sourceName, String targetName, TokenResponse token) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
+        params.put("sourceName", sourceName);
+        params.put("targetName", targetName);
 
         given()
                 .auth().oauth2(token.getAccessToken())

@@ -1,11 +1,11 @@
 import {
+  ERROR_MESSAGE,
   EVENT_TYPE,
-  SUCCESS_MESSAGE,
   PATH_TYPE,
-  ERROR_MESSAGE
+  SUCCESS_MESSAGE
 } from "../../utils/constants.js";
 import api from "../../api/index.js";
-import { searchResultTemplate } from "../../utils/templates.js";
+import {searchResultTemplate} from "../../utils/templates.js";
 import showSnackbar from "../../lib/snackbar/index.js";
 
 function Search() {
@@ -64,10 +64,9 @@ function Search() {
     event.preventDefault();
     try {
       const path = {
-        source: searchTargetStations[0].name,
-        target: searchTargetStations[1].name
+        sourceId: searchTargetStations[0].id,
+        targetId: searchTargetStations[1].id
       };
-      console.log(path)
       await api.favorite.create(path);
       showSnackbar(SUCCESS_MESSAGE.FAVORITE);
     } catch (e) {

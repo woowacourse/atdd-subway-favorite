@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.FavoriteService;
+import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
@@ -39,7 +40,7 @@ public class FavoriteController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @RequestBody FavoriteRequest request) {
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @RequestBody FavoriteDeleteRequest request) {
         favoriteService.deleteFavorite(member, request);
         return ResponseEntity
                 .noContent()
