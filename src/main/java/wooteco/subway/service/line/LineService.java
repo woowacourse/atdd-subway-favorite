@@ -3,6 +3,7 @@ package wooteco.subway.service.line;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -14,6 +15,7 @@ import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
 @Service
+@Transactional
 public class LineService {
     private LineStationService lineStationService;
     private LineRepository lineRepository;
@@ -27,6 +29,7 @@ public class LineService {
         return lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
@@ -56,10 +59,12 @@ public class LineService {
         lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public LineDetailResponse retrieveLine(Long id) {
         return lineStationService.findLineWithStationsById(id);
     }
 
+    @Transactional(readOnly = true)
     public WholeSubwayResponse findLinesWithStations() {
         return lineStationService.findLinesWithStations();
     }

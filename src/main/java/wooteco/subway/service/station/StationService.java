@@ -3,6 +3,7 @@ package wooteco.subway.service.station;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
@@ -10,6 +11,7 @@ import wooteco.subway.service.favorite.FavoritePathService;
 import wooteco.subway.service.line.LineStationService;
 
 @Service
+@Transactional
 public class StationService {
     private FavoritePathService favoritePathService;
     private LineStationService lineStationService;
@@ -26,6 +28,7 @@ public class StationService {
         return stationRepository.save(station);
     }
 
+    @Transactional(readOnly = true)
     public List<Station> findStations() {
         return stationRepository.findAll();
     }

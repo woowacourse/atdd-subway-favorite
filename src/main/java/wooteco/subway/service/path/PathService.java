@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
@@ -20,6 +21,7 @@ import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
     private StationRepository stationRepository;
     private LineRepository lineRepository;

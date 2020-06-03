@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -13,6 +14,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
+@Transactional
 public class MemberService {
     private FavoritePathService favoritePathService;
     private MemberRepository memberRepository;
@@ -52,6 +54,7 @@ public class MemberService {
         throw new InvalidPasswordException();
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new InvalidEmailException(email));
     }
