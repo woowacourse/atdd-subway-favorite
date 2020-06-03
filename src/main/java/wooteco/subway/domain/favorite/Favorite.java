@@ -1,8 +1,12 @@
 package wooteco.subway.domain.favorite;
 
 import java.util.Objects;
+import org.springframework.data.annotation.Id;
 
 public class Favorite {
+
+    @Id
+    private Long id;
     private final Long sourceStationId;
     private final Long targetStationId;
 

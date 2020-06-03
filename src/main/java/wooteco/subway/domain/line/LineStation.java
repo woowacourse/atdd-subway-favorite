@@ -1,8 +1,12 @@
 package wooteco.subway.domain.line;
 
 import java.util.Objects;
+import org.springframework.data.annotation.Id;
 
 public class LineStation {
+
+    @Id
+    private Long id;
     private Long preStationId;
     private Long stationId;
     private int distance;
@@ -36,8 +40,8 @@ public class LineStation {
     }
 
     public boolean isLineStationOf(Long preStationId, Long stationId) {
-        return this.preStationId == preStationId && this.stationId == stationId
-                || this.preStationId == stationId && this.stationId == preStationId;
+        return this.preStationId.equals(preStationId) && this.stationId.equals(stationId)
+            || this.preStationId.equals(stationId) && this.stationId.equals(preStationId);
     }
 
     @Override
