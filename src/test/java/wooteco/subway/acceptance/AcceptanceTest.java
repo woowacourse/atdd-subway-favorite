@@ -54,6 +54,52 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
+    /**
+     * 강남 - 역삼 - 선릉
+     * |           |
+     * |          한티
+     * |           |
+     * 양재 - 매봉 - 도곡
+     */
+    public void initStation() {
+        // 역 등록
+        createStation(STATION_NAME_KANGNAM);
+        createStation(STATION_NAME_YEOKSAM);
+        createStation(STATION_NAME_SEOLLEUNG);
+        createStation(STATION_NAME_HANTI);
+        createStation(STATION_NAME_DOGOK);
+        createStation(STATION_NAME_MAEBONG);
+        createStation(STATION_NAME_YANGJAE);
+
+        // 2호선
+        createLine(LINE_NAME_2);
+        List<LineResponse> lines = getLines();
+        List<StationResponse> stations = getStations();
+        addLineStation(lines.get(0).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(0).getId(), stations.get(0).getId(), stations.get(1).getId());
+        addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
+
+        // 분당선
+        createLine(LINE_NAME_BUNDANG);
+        lines = getLines();
+        addLineStation(lines.get(1).getId(), null, stations.get(2).getId());
+        addLineStation(lines.get(1).getId(), stations.get(2).getId(), stations.get(3).getId());
+        addLineStation(lines.get(1).getId(), stations.get(3).getId(), stations.get(4).getId());
+
+        // 3호선
+        createLine(LINE_NAME_3);
+        lines = getLines();
+        addLineStation(lines.get(2).getId(), null, stations.get(4).getId());
+        addLineStation(lines.get(2).getId(), stations.get(4).getId(), stations.get(5).getId());
+        addLineStation(lines.get(2).getId(), stations.get(5).getId(), stations.get(6).getId());
+
+        // 신분당선
+        createLine(LINE_NAME_SINBUNDANG);
+        lines = getLines();
+        addLineStation(lines.get(3).getId(), null, stations.get(0).getId());
+        addLineStation(lines.get(3).getId(), stations.get(0).getId(), stations.get(6).getId());
+    }
+
     public void createStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -117,52 +163,6 @@ public class AcceptanceTest {
 
     public WholeSubwayResponse getWholeSubway() {
         return get("/lines/detail", WholeSubwayResponse.class);
-    }
-
-    /**
-     * 강남 - 역삼 - 선릉
-     * |           |
-     * |          한티
-     * |           |
-     * 양재 - 매봉 - 도곡
-     */
-    public void initStation() {
-        // 역 등록
-        createStation(STATION_NAME_KANGNAM);
-        createStation(STATION_NAME_YEOKSAM);
-        createStation(STATION_NAME_SEOLLEUNG);
-        createStation(STATION_NAME_HANTI);
-        createStation(STATION_NAME_DOGOK);
-        createStation(STATION_NAME_MAEBONG);
-        createStation(STATION_NAME_YANGJAE);
-
-        // 2호선
-        createLine(LINE_NAME_2);
-        List<LineResponse> lines = getLines();
-        List<StationResponse> stations = getStations();
-        addLineStation(lines.get(0).getId(), null, stations.get(0).getId());
-        addLineStation(lines.get(0).getId(), stations.get(0).getId(), stations.get(1).getId());
-        addLineStation(lines.get(0).getId(), stations.get(1).getId(), stations.get(2).getId());
-
-        // 분당선
-        createLine(LINE_NAME_BUNDANG);
-        lines = getLines();
-        addLineStation(lines.get(1).getId(), null, stations.get(2).getId());
-        addLineStation(lines.get(1).getId(), stations.get(2).getId(), stations.get(3).getId());
-        addLineStation(lines.get(1).getId(), stations.get(3).getId(), stations.get(4).getId());
-
-        // 3호선
-        createLine(LINE_NAME_3);
-        lines = getLines();
-        addLineStation(lines.get(2).getId(), null, stations.get(4).getId());
-        addLineStation(lines.get(2).getId(), stations.get(4).getId(), stations.get(5).getId());
-        addLineStation(lines.get(2).getId(), stations.get(5).getId(), stations.get(6).getId());
-
-        // 신분당선
-        createLine(LINE_NAME_SINBUNDANG);
-        lines = getLines();
-        addLineStation(lines.get(3).getId(), null, stations.get(0).getId());
-        addLineStation(lines.get(3).getId(), stations.get(0).getId(), stations.get(6).getId());
     }
 
     public void createMember(final String email, final String name, final String password) {
