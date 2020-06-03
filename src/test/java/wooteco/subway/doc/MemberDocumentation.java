@@ -4,6 +4,7 @@ package wooteco.subway.doc;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultHandler;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -29,7 +30,7 @@ public class MemberDocumentation {
     public static ResultHandler deleteMember() {
         return document("members/delete",
                 requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description("The token for login which is Bearer Type")
                 )
         );
     }
@@ -41,7 +42,7 @@ public class MemberDocumentation {
                         fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
                 ),
                 requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description("The token for login which is Bearer Type")
                 )
         );
     }
@@ -52,7 +53,7 @@ public class MemberDocumentation {
                         parameterWithName("email").description("조회할 유저의 이메일")
                 ),
                 requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description("The token for login which is Bearer Type")
                 )
         );
     }

@@ -16,6 +16,7 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -276,7 +277,7 @@ public class AcceptanceTest {
 
         return
                 given().
-                        header("Authorization", "Bearer " + token).
+                        header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
                         get("/auth/members").
@@ -293,7 +294,7 @@ public class AcceptanceTest {
         String token = jwtTokenProvider.createToken(memberResponse.getEmail());
 
         given().
-                header("Authorization", "Bearer " + token).
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
@@ -308,7 +309,7 @@ public class AcceptanceTest {
         String token = jwtTokenProvider.createToken(memberResponse.getEmail());
 
         given().
-                header("Authorization", "Bearer " + token).
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 when().
                 delete("/auth/members/").
                 then().

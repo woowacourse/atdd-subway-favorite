@@ -26,6 +26,7 @@ import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -82,7 +83,7 @@ public class FavoriteControllerTest {
         String content = OBJECT_MAPPER.writeValueAsString(favoriteRequest);
 
         mockMvc.perform(post(uri)
-                .header("Authorization", "Bearer " + "이메일 Token")
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + "이메일 Token")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -106,7 +107,7 @@ public class FavoriteControllerTest {
         String uri = "/auth/favorites";
 
         MvcResult mvcResult = mockMvc.perform(get(uri)
-                .header("Authorization", "Bearer " + "이메일 Token")
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + "이메일 Token")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -133,7 +134,7 @@ public class FavoriteControllerTest {
         String uri = "/favorites";
 
         mockMvc.perform(delete(uri)
-                .header("Authorization", "Bearer " + "이메일 Token")
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + "이메일 Token")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andReturn();

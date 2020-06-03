@@ -10,6 +10,8 @@ import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
 
+import java.nio.file.AccessDeniedException;
+
 @RestController
 @RequestMapping("/auth/favorites")
 public class FavoriteController {
@@ -20,7 +22,9 @@ public class FavoriteController {
     }
 
     @PostMapping()
-    public ResponseEntity<FavoriteResponse> createFavorite(@LoginMember Member member, @RequestBody CreateFavoriteRequest request) {
+    public ResponseEntity<FavoriteResponse> createFavorite(
+            @LoginMember Member member,
+            @RequestBody CreateFavoriteRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(favoriteService.createFavorite(member, request));
     }
@@ -33,7 +37,8 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long id)
+            throws AccessDeniedException {
         favoriteService.deleteFavorite(member, id);
         return ResponseEntity
                 .noContent()

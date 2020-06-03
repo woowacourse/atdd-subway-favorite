@@ -2,6 +2,7 @@ package wooteco.subway.doc;
 
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultHandler;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -14,7 +15,7 @@ public class FavoriteDocumentation {
     public static ResultHandler select() {
         return document("favorite/select",
                 requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description("The token for login which is Bearer Type")
                 )
         );
     }
@@ -22,7 +23,7 @@ public class FavoriteDocumentation {
     public static ResultHandler create() {
         return document("favorite/create",
                 requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description("The token for login which is Bearer Type")
                 ),
                 requestFields(
                         fieldWithPath("source").type(JsonFieldType.STRING).description("The source station name"),
@@ -39,7 +40,7 @@ public class FavoriteDocumentation {
     public static ResultHandler delete() {
         return document("favorite/delete",
                 requestHeaders(
-                        headerWithName("Authorization").description("The token for login which is Bearer Type")
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description("The token for login which is Bearer Type")
                 ),
                 pathParameters(
                         parameterWithName("id").description("삭제할 즐겨찾기 아이디")

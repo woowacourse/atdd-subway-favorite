@@ -23,10 +23,9 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Long updateMember(Member member, UpdateMemberRequest param) {
+    public void updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
-        return member.getId();
     }
 
     public void deleteMember(Long id) {
@@ -47,11 +46,5 @@ public class MemberService {
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotExistMemberDataException("email = " + email));
-    }
-
-    public Member findMemberById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new NotExistMemberDataException("id = " + id));
-
     }
 }

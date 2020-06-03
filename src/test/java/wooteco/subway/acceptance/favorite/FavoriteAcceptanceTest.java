@@ -10,6 +10,7 @@ import wooteco.subway.DummyTestUserInfo;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void deleteFavorite(FavoriteResponse favoriteResponse, String token) {
         given().
-                header("Authorization", "Bearer " + token).
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 when().
                 delete("/auth/favorites/" + favoriteResponse.getId()).
                 then().
@@ -71,7 +72,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private FavoritesResponse getAllFavorite(String token) {
         return given().
-                header("Authorization", "Bearer " + token).
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
                 get("/auth/favorites").
@@ -88,7 +89,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         params.put("target", target);
 
         return given().
-                header("Authorization", "Bearer " + token).
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).

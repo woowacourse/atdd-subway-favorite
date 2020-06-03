@@ -12,8 +12,8 @@ import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.web.member.exception.NotExistFavoriteDataException;
 import wooteco.subway.web.member.exception.NotExistStationDataException;
-import wooteco.subway.web.member.exception.UnAuthorizationException;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Service
@@ -38,11 +38,6 @@ public class FavoriteService {
         return new FavoriteResponse(savedFavorite.getId(), sourceStation.getName(), targetStation.getName());
     }
 
-    public Favorite findFavoriteById(Long id) {
-        return favoriteRepository.findById(id)
-                .orElseThrow(() -> new NotExistFavoriteDataException("id : " + id));
-    }
-
     public FavoritesResponse findAllByMemberId(Long memberId) {
         Favorites favorites = new Favorites(favoriteRepository.findAllByMemberId(memberId));
 
@@ -55,15 +50,12 @@ public class FavoriteService {
         return FavoritesResponse.of(favorites, sourceStations, targetStations);
     }
 
-    public void deleteFavorite(Member member, Long id) {
+    public void deleteFavorite(Member member, Long id) throws AccessDeniedException {
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new NotExistFavoriteDataException("ID = " + id));
-        System.out.println(favorite + "fa");
-        System.out.println(member + "me");
 
         if (favorite.isNotEqualToMemberId(member.getId())) {
-            System.out.println("여기서 터지는것? ");
-            throw new UnAuthorizationException();
+            throw new AccessDeniedException("요청을 수행할 수 있는 권한이 없습니다.");
         }
         favoriteRepository.deleteById(id);
     }

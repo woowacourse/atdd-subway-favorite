@@ -29,6 +29,7 @@ import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -112,7 +113,7 @@ public class FavoriteControllerIntegrationTest {
         String content = OBJECT_MAPPER.writeValueAsString(createFavoriteRequest);
 
         mockMvc.perform(post(uri)
-                .header("Authorization", "Bearer " + wrongRequestToken)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + wrongRequestToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
                 .accept(MediaType.APPLICATION_JSON))
@@ -133,12 +134,11 @@ public class FavoriteControllerIntegrationTest {
 
 
         String token = jwtTokenProvider.createToken(member.getEmail());
-
         String uri = "/auth/favorites";
 
         //when
         MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get(uri)
-                .header("Authorization", "Bearer " + token)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(FavoriteDocumentation.select())
                 .andDo(print())
@@ -182,7 +182,7 @@ public class FavoriteControllerIntegrationTest {
         String uri = "/auth/favorites";
 
         mockMvc.perform(get(uri)
-                .header("Authorization", "Bearer" + unExistEmailToken)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer" + unExistEmailToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
@@ -194,13 +194,13 @@ public class FavoriteControllerIntegrationTest {
         //given
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역");
         Member member = memberService.createMember(new Member(EMAIL, NAME, PASSWORD));
-        FavoriteResponse present = favoriteService.createFavorite(member, favorite1);
+        FavoriteResponse createdFavorites = favoriteService.createFavorite(member, favorite1);
 
         String token = jwtTokenProvider.createToken(member.getEmail());
 
         //when
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/auth/favorites/{id}", present.getId())
-                .header("Authorization", "Bearer " + token)
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/auth/favorites/{id}", createdFavorites.getId())
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(FavoriteDocumentation.delete())
                 .andDo(print())
@@ -212,9 +212,9 @@ public class FavoriteControllerIntegrationTest {
     void deleteFavoriteFailTest() throws Exception {
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역");
         Member member = memberService.createMember(new Member(EMAIL, NAME, PASSWORD));
-        FavoriteResponse present = favoriteService.createFavorite(member, favorite1);
+        FavoriteResponse createdFavorites = favoriteService.createFavorite(member, favorite1);
 
-        String uri = "/auth/favorites/" + present.getId();
+        String uri = "/auth/favorites/" + createdFavorites.getId();
 
         mockMvc.perform(delete(uri)
                 .accept(MediaType.APPLICATION_JSON))
@@ -227,13 +227,13 @@ public class FavoriteControllerIntegrationTest {
     void deleteFavoriteFailTest2() throws Exception {
         CreateFavoriteRequest favorite1 = new CreateFavoriteRequest("강남역", "양재역");
         Member member = memberService.createMember(new Member(EMAIL, NAME, PASSWORD));
-        FavoriteResponse present = favoriteService.createFavorite(member, favorite1);
+        FavoriteResponse createdFavorites = favoriteService.createFavorite(member, favorite1);
 
         String unExistEmailToken = jwtTokenProvider.createToken("wrong@gmail.com");
-        String uri = "/auth/favorites/" + present.getId();
+        String uri = "/auth/favorites/" + createdFavorites.getId();
 
         mockMvc.perform(delete(uri)
-                .header("Authorization", "Bearer" + unExistEmailToken)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer" + unExistEmailToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());

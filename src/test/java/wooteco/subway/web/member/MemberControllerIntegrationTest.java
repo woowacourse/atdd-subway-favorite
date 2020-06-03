@@ -21,6 +21,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -60,7 +61,7 @@ public class MemberControllerIntegrationTest {
         String uri = "/auth/members";
 
         mockMvc.perform(get(uri)
-                .header("authorization", "Bearer" + token)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer" + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -81,7 +82,7 @@ public class MemberControllerIntegrationTest {
         String uri = "/auth/members";
 
         mockMvc.perform(put(uri)
-                .header("Authorization", "Bearer" + wrongToken)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer" + wrongToken)
                 .content(updateData)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -98,7 +99,7 @@ public class MemberControllerIntegrationTest {
         String token = jwtTokenProvider.createToken(member.getEmail());
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/auth/members")
-                .header("Authorization", "Bearer" + token))
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer" + token))
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember())
                 .andExpect(status().isNoContent());
@@ -122,7 +123,7 @@ public class MemberControllerIntegrationTest {
         String uri = "/auth/members";
 
         mockMvc.perform(delete(uri)
-                .header("Authorization", "Bearer " + wrongMemberEmailToken))
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + wrongMemberEmailToken))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }

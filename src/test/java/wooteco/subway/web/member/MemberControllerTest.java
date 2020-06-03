@@ -26,10 +26,13 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -166,7 +169,7 @@ public class MemberControllerTest {
 
         MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/auth/members")
                 .param("email", email)
-                .header("authorization", "Bearer 토큰값")
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer 토큰값")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -198,7 +201,7 @@ public class MemberControllerTest {
     void updateInfoTestFail() throws Exception {
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
 
-        given(memberService.updateMember(any(), any())).willReturn(1L);
+        doNothing().when(memberService).updateMember(any(), any());
 
         String updateData = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
         String uri = "/auth/members";
@@ -214,19 +217,16 @@ public class MemberControllerTest {
     @DisplayName("수정하기 성공")
     @Test
     void updateInfoTestSuccess() throws Exception {
-        Member member = new Member(1L, "ramen6315@gmail.com", "6315", "6315");
-
-        given(memberService.updateMember(any(), any())).willReturn(1L);
+        doNothing().when(memberService).updateMember(any(), any());
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(anyString())).willReturn("ramen6315@gmail.com");
-        given(memberService.findMemberById(anyLong())).willReturn(member);
 
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
         String updateData = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
 
         String uri = "/auth/members";
         mockMvc.perform(RestDocumentationRequestBuilders.put(uri)
-                .header("Authorization", "Bearer 아무토큰값")
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer 아무토큰값")
                 .content(updateData)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
