@@ -8,6 +8,7 @@ import static wooteco.subway.doc.DocumentFormatGenerator.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.ResultHandler;
 
 public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
@@ -67,6 +68,56 @@ public class MemberDocumentation {
                     .description("The error message")
             )
         );
+    }
+
+    public static RestDocumentationResultHandler login() {
+        return document("members/login",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email address").attributes(getEmailFormat()),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("accessToken").type(JsonFieldType.STRING)
+                    .description("The access Token"),
+                fieldWithPath("tokenType").type(JsonFieldType.STRING)
+                    .description("The token Type")
+            ));
+    }
+
+    public static RestDocumentationResultHandler loginNotExistEmail() {
+        return document("members/login-not-exist-email",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email address").attributes(getEmailFormat()),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            ));
+    }
+
+    public static ResultHandler loginNotMatchPassword() {
+        return document("members/login-not-match-password",
+            getDocumentRequest(),
+            getDocumentResponse(),
+            requestFields(
+                fieldWithPath("email").type(JsonFieldType.STRING)
+                    .description("The user's email address").attributes(getEmailFormat()),
+                fieldWithPath("password").type(JsonFieldType.STRING)
+                    .description("The user's password")
+            ),
+            responseFields(
+                fieldWithPath("message").type(JsonFieldType.STRING)
+                    .description("The error message")
+            ));
     }
 
     public static RestDocumentationResultHandler updateMember() {

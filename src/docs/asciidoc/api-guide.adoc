@@ -55,6 +55,26 @@ operation::members/get[snippets='http-request,http-response']
 ===== 토큰이 존재하지 않음
 operation::members/not-exist-get[snippets='http-request,http-response']
 
+[[resources-members-login]]
+=== 로그인
+
+[[resources-members-login-successful]]
+==== 성공
+
+===== 로그인 성공
+
+operation::members/login[snippets='http-request,http-response,request-fields,response-fields']
+
+[[resources-members-login-fail]]
+==== 실패
+
+===== 존재하지 않는 아이디
+
+operation::members/login-not-exist-email[snippets='http-request,http-response,request-fields,response-fields']
+
+===== 비밀번호 불일치
+
+operation::members/login-not-match-password[snippets='http-request,http-response,request-fields,response-fields']
 
 [[resources-members-update]]
 === 회원 정보 수정

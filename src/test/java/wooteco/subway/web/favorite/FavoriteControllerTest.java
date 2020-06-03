@@ -43,7 +43,7 @@ public class FavoriteControllerTest {
     private MemberService memberService;
 
     @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+    protected JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
@@ -65,7 +65,7 @@ public class FavoriteControllerTest {
 
     @Test
     public void addFavorite() throws Exception {
-        given(memberService.save(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(favoriteService.addToMember(any(), any())).willReturn(member);
 
         String inputJson = "{\"sourceId\":\"" + 1L + "\"," +
@@ -83,7 +83,7 @@ public class FavoriteControllerTest {
 
     @Test
     void deleteFavorite() throws Exception {
-        given(memberService.save(member)).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         this.mockMvc.perform(delete("/favorites/1")
             .cookie(cookie)

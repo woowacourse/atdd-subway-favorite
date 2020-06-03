@@ -16,7 +16,6 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberDetailResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
-import wooteco.subway.web.member.interceptor.Auth;
 import wooteco.subway.web.member.interceptor.IsAuth;
 import wooteco.subway.web.member.resolver.LoginMember;
 
@@ -37,19 +36,19 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/me/detail")
     public ResponseEntity<MemberDetailResponse> getMemberDetailOfMineBasic(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberDetailResponse.of(member));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/me/favorites")
     public ResponseEntity<Set<FavoriteDetailResponse>> getMemberFavorites(@LoginMember Member member) {
         Set<FavoriteDetailResponse> responses =  favoriteService.getAll(member);

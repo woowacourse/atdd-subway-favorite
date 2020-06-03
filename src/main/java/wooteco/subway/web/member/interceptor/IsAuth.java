@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IsAuth {
 
-    Auth isAuth() default Auth.NONE;
+    Auth isAuth() default Auth.AUTH;
 
 }
 

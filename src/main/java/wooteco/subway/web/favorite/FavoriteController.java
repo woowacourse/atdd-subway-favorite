@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
-import wooteco.subway.web.member.interceptor.Auth;
 import wooteco.subway.web.member.interceptor.IsAuth;
 import wooteco.subway.web.member.resolver.LoginMember;
 
@@ -24,7 +23,7 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @PostMapping("/favorites")
     public ResponseEntity<Void> create(@LoginMember Member member,
         @RequestBody FavoriteRequest favoriteRequest) {
@@ -33,7 +32,7 @@ public class FavoriteController {
             .build();
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<Void> delete(@LoginMember Member member, @PathVariable Long id) {
         favoriteService.deleteById(member, id);

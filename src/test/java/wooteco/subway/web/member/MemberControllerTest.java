@@ -32,6 +32,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.exception.InvalidTokenException;
 import wooteco.subway.web.member.exception.NotFoundMemberException;
+import wooteco.subway.web.member.exception.NotMatchPasswordException;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
@@ -127,6 +128,56 @@ public class MemberControllerTest {
             .andExpect(status().isBadRequest())
             .andDo(print())
             .andDo(MemberDocumentation.createNotMatchPasswordMember());
+    }
+
+    @Test
+    void login() throws Exception {
+        given(memberService.createToken(any())).willReturn("token");
+
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/login")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.accessToken", Matchers.is("token")))
+            .andExpect(jsonPath("$.tokenType", Matchers.is("bearer")))
+            .andDo(print())
+            .andDo(MemberDocumentation.login());
+    }
+
+    @Test
+    void loginNotExistEmail() throws Exception {
+        given(memberService.createToken(any())).willThrow(new NotFoundMemberException(TEST_OTHER_USER_EMAIL));
+
+        String inputJson = "{\"email\":\"" + TEST_OTHER_USER_EMAIL + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/login")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(MemberDocumentation.loginNotExistEmail());
+    }
+
+    @Test
+    void loginNotMatchPassword() throws Exception {
+        given(memberService.createToken(any())).willThrow(new NotMatchPasswordException("비밀번호가 일치하지 않습니다."));
+
+        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+            "\"password\":\"" + TEST_OTHER_USER_PASSWORD + "\"}";
+
+        this.mockMvc.perform(post("/login")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(inputJson))
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(MemberDocumentation.loginNotMatchPassword());
     }
 
     @Test

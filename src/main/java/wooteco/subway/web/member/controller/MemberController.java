@@ -27,7 +27,6 @@ import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.exception.ErrorResponse;
-import wooteco.subway.web.member.interceptor.Auth;
 import wooteco.subway.web.member.interceptor.IsAuth;
 
 @RestController
@@ -46,14 +45,14 @@ public class MemberController {
             .build();
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @GetMapping("/members")
     public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
         Member member = memberService.findMemberByEmail(email);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
         @Valid @RequestBody UpdateMemberRequest param) {
@@ -61,7 +60,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @IsAuth(isAuth = Auth.AUTH)
+    @IsAuth
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
