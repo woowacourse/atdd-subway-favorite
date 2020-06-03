@@ -47,3 +47,13 @@ export const ERROR_SNACK_BAR = message => {
         duration: 2000
     });
 }
+
+export const SNACK_BAR = message => {
+    console.log(message);
+    Snackbar.show({
+        text: message,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+    });
+}

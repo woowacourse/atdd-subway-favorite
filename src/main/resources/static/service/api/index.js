@@ -1,3 +1,5 @@
+import {SNACK_BAR} from '../utils/constants.js';
+
 const METHOD = {
     PUT() {
         return {
@@ -26,7 +28,10 @@ const api = (() => {
     const request = (uri, config) => fetch(uri, config)
     const requestWithJsonData = (uri, config) => fetch(uri, config).then(response => {
         if (!response.ok) {
-            response.json().then(error => alert(error.errorMessage));
+            response.json().then(error => {
+                console.log(error);
+                SNACK_BAR(error.errorMessage)
+            });
             return;
         }
         return response.json();
@@ -68,7 +73,7 @@ const api = (() => {
                 }
             }).then(response => {
                 if (!response.ok) {
-                    alert('로그인을 다시 해주세요 :)');
+                    SNACK_BAR("로그인을 다시 해주세요 :)");
                     window.location.href = "/";
                 }
                 return response.json();
@@ -116,7 +121,7 @@ const api = (() => {
                 }
             }).then(response => {
                 if (!response.ok) {
-                    alert('로그인을 다시 해주세요 :)');
+                    SNACK_BAR("로그인을 다시 해주세요 :)");
                     window.location.href = "/";
                 }
                 return response.json();
