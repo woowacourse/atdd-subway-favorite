@@ -2,12 +2,15 @@ package wooteco.subway.web.member;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
+import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.Role;
 import wooteco.subway.service.member.MemberService;
 
 @Component
@@ -28,7 +31,13 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
         try {
-            return memberService.findMemberByEmail(email);
+            Member member = memberService.findMemberByEmail(email);
+            Role role = Objects.requireNonNull(parameter.getParameterAnnotation(LoginMember.class))
+                    .role();
+            if (role.isLessThan(member.getRole())) {
+                throw new InvalidAuthenticationException("권한이 없습니다.");
+            }
+            return member;
         } catch (Exception e) {
             throw new InvalidAuthenticationException("비정상적인 로그인");
         }

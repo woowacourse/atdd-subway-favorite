@@ -13,6 +13,7 @@ public class Member {
     private String name;
     private String password;
     private Set<Favorite> favorites;
+    private Role role;
 
     public Member() {
     }
@@ -22,11 +23,17 @@ public class Member {
     }
 
     public Member(Long id, String email, String name, String password) {
+        this(id, email, name, password, new HashSet<>(), Role.USER);
+    }
+
+    public Member(Long id, String email, String name, String password,
+            Set<Favorite> favorites, Role role) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
-        this.favorites = new HashSet<>();
+        this.favorites = favorites;
+        this.role = role;
     }
 
     public Long getId() {
@@ -47,6 +54,10 @@ public class Member {
 
     public Set<Favorite> getFavorites() {
         return favorites;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public void update(String name, String password) {

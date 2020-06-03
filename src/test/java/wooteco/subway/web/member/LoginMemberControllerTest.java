@@ -63,6 +63,8 @@ public class LoginMemberControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    Member member;
+
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
             RestDocumentationContextProvider restDocumentation) {
@@ -70,6 +72,7 @@ public class LoginMemberControllerTest {
                 .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
+        this.member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
     @Test
@@ -119,7 +122,6 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("내 정보 조회")
     void getMemberOfMine() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
@@ -136,6 +138,7 @@ public class LoginMemberControllerTest {
     @DisplayName("내 정보 조회 - 토큰이 유효하지 않는 경우")
     void getMemberOfMine_invalid_token() throws Exception {
         given(jwtTokenProvider.validateToken(any())).willReturn(false);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
 
         mockMvc.perform(get("/me"))
                 .andExpect(status().isUnauthorized());
@@ -144,7 +147,6 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("내 정보 수정")
     void updateMemberOfMine() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
@@ -165,6 +167,7 @@ public class LoginMemberControllerTest {
     @DisplayName("내 정보 수정 - 토큰이 유효하지 않는 경우")
     void updateMemberOfMine_invalid_token() throws Exception {
         given(jwtTokenProvider.validateToken(any())).willReturn(false);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
 
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("updateName",
                 "updatePassword");
@@ -181,6 +184,7 @@ public class LoginMemberControllerTest {
     @MethodSource("provideInvalidUpdateMemberRequest")
     void updateMemberOfMine_failure_invalid_input(String name, String password) throws Exception {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest(name, password);
         String inputJson = objectMapper.writeValueAsString(updateMemberRequest);
 
@@ -205,7 +209,6 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("회원 탈퇴")
     void deleteMemberOfMine() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
@@ -219,6 +222,7 @@ public class LoginMemberControllerTest {
     @DisplayName("회원 탈퇴 - 토큰이 유효하지 않는 경우")
     void deleteMemberOfMine_invalid_token() throws Exception {
         given(jwtTokenProvider.validateToken(any())).willReturn(false);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
 
         mockMvc.perform(delete("/me"))
                 .andExpect(status().isUnauthorized());
@@ -237,6 +241,7 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("즐겨찾기 추가")
     void createFavorite() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         String inputJson = objectMapper.writeValueAsString(new FavoriteRequest(1L, 2L));
 
@@ -253,6 +258,7 @@ public class LoginMemberControllerTest {
     @ParameterizedTest
     @MethodSource("provideInvalidFavoriteRequest")
     void createFavorite_failure_invalid_input(Long sourceId, Long targetId) throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId, targetId);
         String inputJson = objectMapper.writeValueAsString(favoriteRequest);
@@ -277,7 +283,7 @@ public class LoginMemberControllerTest {
     void getFavorites() throws Exception {
         List<FavoriteDetail> favoriteDetails = Lists.newArrayList(
                 new FavoriteDetail(1L, 2L, "잠실역", "삼성역"));
-
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(memberService.getFavorites(any())).willReturn(favoriteDetails);
 
@@ -297,6 +303,7 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("즐겨찾기 여부 확인")
     void hasFavorite() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(memberService.hasFavorite(any(), anyLong(), anyLong())).willReturn(true);
 
@@ -312,6 +319,7 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("즐겨찾기 삭제")
     void deleteFavorite() throws Exception {
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         mockMvc.perform(delete("/me/favorites/from/{sourceId}/to/{targetId}", 1L, 2L)

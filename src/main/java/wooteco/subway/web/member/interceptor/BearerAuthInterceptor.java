@@ -11,8 +11,8 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-    private AuthorizationExtractor authExtractor;
-    private JwtTokenProvider jwtTokenProvider;
+    private final AuthorizationExtractor authExtractor;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public BearerAuthInterceptor(AuthorizationExtractor authExtractor,
             JwtTokenProvider jwtTokenProvider) {
@@ -37,13 +37,13 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request,
             HttpServletResponse response,
             Object handler,
-            ModelAndView modelAndView) throws Exception {
+            ModelAndView modelAndView) {
 
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-            Object handler, Exception ex) throws Exception {
+            Object handler, Exception ex) {
 
     }
 }

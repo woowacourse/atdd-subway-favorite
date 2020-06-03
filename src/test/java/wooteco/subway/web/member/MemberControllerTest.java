@@ -14,6 +14,7 @@ import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
 import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashSet;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.Role;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -46,11 +49,17 @@ public class MemberControllerTest {
     @MockBean
     MemberService memberService;
 
+    @MockBean
+    JwtTokenProvider jwtTokenProvider;
+
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
+
+    Member user;
+    Member admin;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
@@ -59,6 +68,10 @@ public class MemberControllerTest {
                 .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
+        this.admin = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD,
+                new HashSet<>(),
+                Role.ADMIN);
+        this.user = new Member(2L, "user@localhost", "user", "password");
     }
 
     @Test
@@ -66,7 +79,6 @@ public class MemberControllerTest {
     void register_success() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(memberService.createMember(any())).willReturn(member);
-
         MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
                 TEST_USER_PASSWORD);
         String inputJson = objectMapper.writeValueAsString(memberRequest);
@@ -85,9 +97,10 @@ public class MemberControllerTest {
     @MethodSource("provideInvalidMemberRequest")
     void register_failure_invalid_input(String email, String name, String password) throws
             Exception {
-
         MemberRequest memberRequest = new MemberRequest(email, name, password);
         String inputJson = objectMapper.writeValueAsString(memberRequest);
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         mockMvc.perform(post("/members")
                 .content(inputJson)
@@ -110,10 +123,11 @@ public class MemberControllerTest {
     @Test
     @DisplayName("이메일로 회원 정보 조회")
     void getMemberByEmail() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(memberService.findMemberByEmail(any())).willReturn(admin);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
         mockMvc.perform(get("/members")
+                .header("Authorization", "Bearer access_token")
                 .queryParam("email", TEST_USER_EMAIL)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -128,7 +142,11 @@ public class MemberControllerTest {
                 "updated_password");
         String inputJson = objectMapper.writeValueAsString(updateMemberRequest);
 
+        given(memberService.findMemberByEmail(any())).willReturn(admin);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+
         mockMvc.perform(put("/members/{id}", 1L)
+                .header("Authorization", "Bearer access_token")
                 .content(inputJson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -139,7 +157,11 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원 정보 삭제")
     void deleteMember() throws Exception {
-        mockMvc.perform(delete("/members/{id}", 1L))
+        given(memberService.findMemberByEmail(any())).willReturn(admin);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+
+        mockMvc.perform(delete("/members/{id}", 1L)
+                .header("Authorization", "Bearer access_token"))
                 .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember());

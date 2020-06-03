@@ -35,10 +35,10 @@ create table if not exists MEMBER
     email varchar(255) not null unique,
     name varchar(255) not null,
     password varchar(255) not null,
+    role varchar(255) not null,
     primary key(id)
 );
 
--- // TODO 즐겨찾기 테이블 스키마 추가
 create table if not exists FAVORITE
 (
     member bigint not null,

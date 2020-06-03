@@ -5,14 +5,20 @@ import io.restassured.specification.RequestSpecification;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.member.Role;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -41,6 +47,15 @@ public class AcceptanceTest {
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
 
+    public static final String ADMIN_EMAIL = "admin@email.com";
+    public static final String ADMIN_NAME = "admin";
+    public static final String ADMIN_PASSWORD = "admin";
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @LocalServerPort
     public int port;
 
@@ -52,6 +67,7 @@ public class AcceptanceTest {
     public static RequestSpecification given() {
         return RestAssured.given().log().all();
     }
+
 
     public StationResponse createStation(String name) {
         Map<String, String> params = new HashMap<>();
@@ -286,6 +302,11 @@ public class AcceptanceTest {
                 40, 3);
     }
 
+    public String createAdminToken(String email, String name, String password) {
+        Member admin = memberRepository.save(new Member(null, email, name, password, new HashSet<>(), Role.ADMIN));
+        return jwtTokenProvider.createToken(admin.getEmail());
+    }
+
     public String createMember(String email, String name, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -307,11 +328,12 @@ public class AcceptanceTest {
             //@formatter:on
     }
 
-    public MemberResponse getMember(String email) {
+    public MemberResponse getMember(String adminToken, String email) {
         return
                 //@formatter:off
                 given().
                         accept(MediaType.APPLICATION_JSON_VALUE).
+                        auth().oauth2(adminToken).
                 when().
                         get("/members?email=" + email).
                 then().
@@ -321,13 +343,14 @@ public class AcceptanceTest {
                  //@formatter:on
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember(String adminToken, MemberResponse memberResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
         //@formatter:off
         given().
                 body(params).
+                auth().oauth2(adminToken).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
         when().
@@ -338,9 +361,10 @@ public class AcceptanceTest {
         //@formatter:on
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
+    public void deleteMember(String adminToken, MemberResponse memberResponse) {
         //@formatter:off
         given().
+                auth().oauth2(adminToken).
         when().
                 delete("/members/" + memberResponse.getId()).
         then().
