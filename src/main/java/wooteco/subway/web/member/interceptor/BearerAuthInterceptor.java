@@ -13,6 +13,9 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+	private static final String TOKEN_TYPE = "bearer";
+	private static final String EMAIL_ATTRIBUTE = "loginMemberEmail";
+
 	private final AuthorizationExtractor authExtractor;
 	private final JwtTokenProvider jwtTokenProvider;
 
@@ -24,13 +27,13 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 		HttpServletResponse response, Object handler) {
-		final String bearer = authExtractor.extract(request, "bearer");
+		final String bearer = authExtractor.extract(request, TOKEN_TYPE);
 		if (!jwtTokenProvider.validateToken(bearer)) {
 			throw new InvalidAuthenticationException("유효하지 않은 토큰값입니다.");
 		}
 		String email = jwtTokenProvider.getSubject(bearer);
 
-		request.setAttribute("loginMemberEmail", email);
+		request.setAttribute(EMAIL_ATTRIBUTE, email);
 		return true;
 	}
 
