@@ -145,7 +145,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         body(params).
                 when().
-                        post("/favorite/me").
+                        post("/favorite-path/me").
                 then().
                         log().all();
         //@formatter:on
@@ -157,7 +157,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 given().
                         header("Authorization", authorization).
                 when().
-                        get("/favorite/me").
+                        get("/favorite-path/me").
                 then().
                         log().all();
         //@formatter:on
@@ -169,7 +169,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 given().
                         header("Authorization", authorization).
                 when().
-                        delete("/favorite/me/" + pathId).
+                        delete("/favorite-path/me/" + pathId).
                 then().
                         log().all();
         //@formatter:on

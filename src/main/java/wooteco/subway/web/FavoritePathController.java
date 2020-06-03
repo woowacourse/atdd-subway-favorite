@@ -20,28 +20,28 @@ import wooteco.subway.web.dto.FavoritePathRequest;
 import wooteco.subway.web.member.LoginMember;
 
 @RestController
-public class FavoriteController {
+public class FavoritePathController {
     private final FavoritePathService favoritePathService;
 
-    public FavoriteController(FavoritePathService favoritePathService) {
+    public FavoritePathController(FavoritePathService favoritePathService) {
         this.favoritePathService = favoritePathService;
     }
 
-    @PostMapping("/favorite/me")
+    @PostMapping("/favorite-path/me")
     public ResponseEntity<Void> registerFavoritePath(@LoginMember Member member,
         @RequestBody FavoritePathRequest request) {
         FavoritePath favoritePath = favoritePathService.registerPath(member, request.getSource(), request.getTarget());
-        return ResponseEntity.created(URI.create(String.format("/favorite/%d", favoritePath.getId()))).build();
+        return ResponseEntity.created(URI.create(String.format("/favorite-path/%d", favoritePath.getId()))).build();
     }
 
-    @GetMapping("/favorite/me")
+    @GetMapping("/favorite-path/me")
     public ResponseEntity<FavoritePathsResponse> retrieveFavoritePath(@LoginMember Member member) {
         List<FavoritePathResponse> favoritePathResponse = favoritePathService.retrievePath(member);
         FavoritePathsResponse favoritePathsResponse = new FavoritePathsResponse(favoritePathResponse);
         return ResponseEntity.ok(favoritePathsResponse);
     }
 
-    @DeleteMapping("/favorite/me/{id}")
+    @DeleteMapping("/favorite-path/me/{id}")
     public ResponseEntity<Void> deleteFavoritePath(@LoginMember Member member, @PathVariable Long id) {
         favoritePathService.deletePath(member, id);
         return ResponseEntity.noContent().build();

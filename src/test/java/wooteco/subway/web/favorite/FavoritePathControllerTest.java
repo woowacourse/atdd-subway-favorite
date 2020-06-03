@@ -45,17 +45,17 @@ import wooteco.subway.service.favorite.dto.FavoritePathResponse;
 import wooteco.subway.service.favorite.dto.FavoritePathsResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.web.FavoriteController;
+import wooteco.subway.web.FavoritePathController;
 import wooteco.subway.web.dto.ExceptionResponse;
 import wooteco.subway.web.dto.FavoritePathRequest;
 import wooteco.subway.web.member.AuthorizationExtractor;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = FavoriteController.class)
+@WebMvcTest(controllers = FavoritePathController.class)
 @AutoConfigureMockMvc
 @Import({BearerAuthInterceptor.class, AuthorizationExtractor.class, JwtTokenProvider.class})
-class FavoriteControllerTest {
+class FavoritePathControllerTest {
 	private static final String INVALID_TOKEN = "";
 	private static final String NOT_DOCUMENTATION = "";
 
@@ -139,7 +139,7 @@ class FavoriteControllerTest {
 
 	private MvcResult register(String token, String content, ResultMatcher status, String identifier) throws Exception {
 		return mockMvc.perform(
-				post("/favorite/me")
+				post("/favorite-path/me")
 						.header("Authorization", token)
 						.content(content)
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -180,7 +180,7 @@ class FavoriteControllerTest {
 
 	private MvcResult retrieve(String token, ResultMatcher status, String identifier) throws Exception {
 		ResultActions actions = mockMvc.perform(
-				MockMvcRequestBuilders.get("/favorite/me")
+				MockMvcRequestBuilders.get("/favorite-path/me")
 						.header("Authorization", token))
 				.andDo(print());
 		if (!NOT_DOCUMENTATION.equals(identifier)) {
@@ -218,7 +218,7 @@ class FavoriteControllerTest {
 
 	private MvcResult delete(String token, ResultMatcher statusCode, String identifier) throws Exception {
 		return mockMvc.perform(
-				RestDocumentationRequestBuilders.delete("/favorite/me/{id}", 1)
+				RestDocumentationRequestBuilders.delete("/favorite-path/me/{id}", 1)
 						.header("Authorization", token))
 				.andDo(FavoriteDocumentation.deleteFavorite(identifier))
 				.andDo(print())

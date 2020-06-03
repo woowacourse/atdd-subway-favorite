@@ -103,13 +103,13 @@ const api = (() => {
 
     const favorite = {
         create(data) {
-            return request(`/favorite/me`, METHOD.POST(data, getToken()))
+            return request(`/favorite-path/me`, METHOD.POST(data, getToken()))
         },
         retrieve() {
-            return requestWithJsonData(`/favorite/me`, METHOD.GET(getToken()))
+            return requestWithJsonData(`/favorite-path/me`, METHOD.GET(getToken()))
         },
         delete(pathId) {
-            return request(`/favorite/me/` + pathId, METHOD.DELETE(getToken()))
+            return request(`/favorite-path/me/` + pathId, METHOD.DELETE(getToken()))
         }
     }
 
