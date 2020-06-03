@@ -16,8 +16,7 @@ public class Lines {
 
     public List<Long> getStationIds() {
         return lines.stream()
-            .flatMap(it -> it.getStations().stream())
-            .map(LineStation::getStationId)
+            .flatMap(it -> it.getStationIds().stream())
             .collect(Collectors.toList());
     }
 }

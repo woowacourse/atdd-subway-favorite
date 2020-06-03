@@ -45,7 +45,7 @@ public class LineStations {
 
     private void extractNext(Long preStationId, List<Long> ids) {
         stations.stream()
-            .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
+            .filter(it -> it.hasSamePreStation(preStationId))
             .findFirst()
             .ifPresent(it -> {
                 Long nextStationId = it.getStationId();
@@ -61,21 +61,13 @@ public class LineStations {
 
     private Optional<LineStation> extractByStationId(Long stationId) {
         return stations.stream()
-            .filter(it -> Objects.equals(it.getStationId(), stationId))
+            .filter(it -> it.hasSameStation(stationId))
             .findFirst();
     }
 
     private Optional<LineStation> extractByPreStationId(Long preStationId) {
         return stations.stream()
-            .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
+            .filter(it -> it.hasSamePreStation(preStationId))
             .findFirst();
-    }
-
-    public int getTotalDistance() {
-        return stations.stream().mapToInt(it -> it.getDistance()).sum();
-    }
-
-    public int getTotalDuration() {
-        return stations.stream().mapToInt(it -> it.getDuration()).sum();
     }
 }

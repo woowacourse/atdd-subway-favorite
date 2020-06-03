@@ -2,6 +2,8 @@ package wooteco.subway.domain.line;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class LineStation {
     private Long preStationId;
     private Long stationId;
@@ -35,9 +37,17 @@ public class LineStation {
         this.preStationId = preStationId;
     }
 
+    public boolean hasSamePreStation(Long preStationId) {
+        return Objects.equals(this.preStationId, preStationId);
+    }
+
+    public boolean hasSameStation(Long stationId) {
+        return Objects.equals(this.stationId, stationId);
+    }
+
     public boolean isLineStationOf(Long preStationId, Long stationId) {
-        return this.preStationId == preStationId && this.stationId == stationId
-            || this.preStationId == stationId && this.stationId == preStationId;
+        return Objects.equals(this.preStationId, preStationId) && Objects.equals(this.stationId, stationId)
+            || Objects.equals(this.preStationId, stationId) && Objects.equals(this.stationId, preStationId);
     }
 
     @Override
