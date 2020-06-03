@@ -1,48 +1,34 @@
 package wooteco.subway.web.member.interceptor;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
-import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.web.member.AuthorizationExtractor;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import wooteco.subway.infra.TokenProvider;
+import wooteco.subway.web.member.AuthorizationExtractor;
+
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-    private AuthorizationExtractor authExtractor;
-    private JwtTokenProvider jwtTokenProvider;
+    private static final String LOGIN_MEMBER_ATTRIBUTE_NAME = "loginMemberEmail";
+    private static final String AUTHORIZATION_TYPE = "bearer";
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
+    private final AuthorizationExtractor authExtractor;
+    private final TokenProvider tokenProvider;
+
+    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, TokenProvider tokenProvider) {
         this.authExtractor = authExtractor;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
-        // TODO: Authorization 헤더를 통해 Bearer 값을 추출 (authExtractor.extract() 메서드 활용)
+        HttpServletResponse response, Object handler) {
+        String authHeaderValue = authExtractor.extract(request, AUTHORIZATION_TYPE);
+        String email = tokenProvider.getSubject(authHeaderValue);
 
-        // TODO: 추출한 토큰값의 유효성 검사 (jwtTokenProvider.validateToken() 메서드 활용)
-
-        // TODO: 추출한 토큰값에서 email 정보 추출 (jwtTokenProvider.getSubject() 메서드 활용)
-        String email = "";
-
-        request.setAttribute("loginMemberEmail", email);
+        request.setAttribute(LOGIN_MEMBER_ATTRIBUTE_NAME, email);
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView) throws Exception {
-
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
     }
 }

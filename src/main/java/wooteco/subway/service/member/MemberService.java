@@ -1,51 +1,72 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.exception.DuplicateEmailException;
+import wooteco.subway.exception.LoginFailException;
+import wooteco.subway.exception.MemberNotFoundException;
+import wooteco.subway.infra.TokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
+@Transactional
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private static final String TOKEN_TYPE = "bearer";
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
+
+    public MemberService(MemberRepository memberRepository, TokenProvider tokenProvider) {
         this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
     }
 
-    public Member createMember(Member member) {
-        return memberRepository.save(member);
+    public MemberResponse createMember(MemberRequest request) {
+        if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new DuplicateEmailException();
+        }
+        Member member = memberRepository.save(request.toMember());
+        return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
+    public void updateMember(Long id, UpdateMemberRequest request) {
+        Member member = memberRepository.findById(id)
+            .orElseThrow(MemberNotFoundException::new);
+        member.update(request.getName(), request.getPassword());
         memberRepository.save(member);
     }
 
     public void deleteMember(Long id) {
+        if (!memberRepository.findById(id).isPresent()) {
+            throw new MemberNotFoundException();
+        }
         memberRepository.deleteById(id);
     }
 
-    public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
-        if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+    public TokenResponse createJwtToken(LoginRequest request) {
+        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(LoginFailException::new);
+        if (!member.checkPassword(request.getPassword())) {
+            throw new LoginFailException();
         }
 
-        return jwtTokenProvider.createToken(param.getEmail());
+        String token = tokenProvider.createToken(request.getEmail());
+        return new TokenResponse(token, TOKEN_TYPE);
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }
 
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+    public MemberResponse findMemberById(long id) {
+        Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        return MemberResponse.of(member);
     }
 }
