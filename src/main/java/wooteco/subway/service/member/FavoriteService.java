@@ -34,7 +34,7 @@ public class FavoriteService {
         validate(favoriteRequest);
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
         Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
-        member.removeFavoriteById(sourceId, destinationId);
+        member.removeFavorite(Favorite.of(sourceId, destinationId));
         memberRepository.save(member);
     }
 

@@ -14,6 +14,10 @@ public class Favorite {
         this.destinationId = destinationId;
     }
 
+    public static Favorite of(Long sourceId, Long destinationId) {
+        return new Favorite(sourceId, destinationId);
+    }
+
     public Long getSourceId() {
         return sourceId;
     }

@@ -27,7 +27,7 @@ public class MemberTest {
     @Test
     @DisplayName("즐겨찾기를 삭제하는 기능 테스트")
     void removeFavorite() {
-        member.removeFavoriteById(1L, 3L);
+        member.removeFavorite(1L, 3L);
         assertFalse(member.getFavorites().contains(new Favorite(1L, 3L)));
     }
 }

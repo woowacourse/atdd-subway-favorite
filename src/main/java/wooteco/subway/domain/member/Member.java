@@ -68,7 +68,7 @@ public class Member {
         favorites.add(favorite);
     }
 
-    public void removeFavoriteById(Long sourceId, Long destinationId) {
-        favorites.remove(new Favorite(sourceId, destinationId));
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
     }
 }
