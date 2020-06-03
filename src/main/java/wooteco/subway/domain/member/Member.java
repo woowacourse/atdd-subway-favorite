@@ -1,14 +1,11 @@
 package wooteco.subway.domain.member;
 
-import static java.util.stream.Collectors.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
-
-import wooteco.subway.service.station.DuplicateFavoriteException;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 public class Member {
 	@Id
@@ -16,10 +13,11 @@ public class Member {
 	private final String email;
 	private final String name;
 	private final String password;
-	private final Set<Favorite> favorites;
+	@Embedded.Empty
+	private final Favorites favorites;
 
-	Member(Long id, String email, String name, String password,
-		final Set<Favorite> favorites) {
+	Member(final Long id, final String email, final String name, final String password,
+		final Favorites favorites) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
@@ -27,8 +25,8 @@ public class Member {
 		this.favorites = favorites;
 	}
 
-	public static Member of(String email, String name, String password) {
-		return new Member(null, email, name, password, new HashSet<>());
+	public static Member of(final String email, final String name, final String password) {
+		return new Member(null, email, name, password, Favorites.of(new HashSet<>()));
 	}
 
 	public Member withId(final Long id) {
@@ -46,19 +44,11 @@ public class Member {
 	}
 
 	public Member addFavorite(final Favorite favorite) {
-		if (this.favorites.contains(favorite)) {
-			throw new DuplicateFavoriteException("이미 존재하는 즐겨찾기 입니다.");
-		}
-		Set<Favorite> newFavorites = new HashSet<>(this.favorites);
-		newFavorites.add(favorite);
-		return new Member(this.id, this.email, this.name, this.password, newFavorites);
+		return new Member(this.id, this.email, this.name, this.password, this.favorites.add(favorite));
 	}
 
 	public Member deleteFavorite(final Favorite favorite) {
-		Set<Favorite> newFavorites = this.favorites.stream()
-			.filter(it -> !it.equals(favorite))
-			.collect(toSet());
-		return new Member(this.id, this.email, this.name, this.password, newFavorites);
+		return new Member(this.id, this.email, this.name, this.password, this.favorites.delete(favorite));
 	}
 
 	public boolean checkPassword(final String password) {
@@ -82,6 +72,6 @@ public class Member {
 	}
 
 	public Set<Favorite> getFavorites() {
-		return favorites;
+		return favorites.getFavorites();
 	}
 }
