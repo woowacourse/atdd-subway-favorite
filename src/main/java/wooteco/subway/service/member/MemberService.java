@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
@@ -27,20 +28,24 @@ public class MemberService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = findMemberById(id);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
+    @Transactional
     public String createToken(LoginRequest param) {
         Member member = findMemberByEmail(param.getEmail());
         if (!member.checkPassword(param.getPassword())) {
@@ -76,13 +81,14 @@ public class MemberService {
                 .collect(Collectors.toSet());
     }
 
+    @Transactional
     public void addFavorite(Member member, FavoriteCreateRequest favoriteCreateRequest) {
         member.addFavorite(Favorite.of(favoriteCreateRequest.getStartStationId(),
                 favoriteCreateRequest.getEndStationId()));
         memberRepository.save(member);
     }
 
-
+    @Transactional
     public void deleteFavoriteById(Member member, Long id) {
         member.removeFavorite(id);
         memberRepository.save(member);
