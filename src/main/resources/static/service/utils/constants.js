@@ -1,6 +1,5 @@
 import Snackbar from "../lib/snackbar/snackbar.js";
 
-
 export const EVENT_TYPE = {
     CLICK: 'click'
 }

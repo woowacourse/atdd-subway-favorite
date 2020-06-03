@@ -23,7 +23,7 @@ public class MemberService {
 
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
     }
 
     public void updateMember(Member member, UpdateMemberRequest updateMemberRequest) {
@@ -37,7 +37,7 @@ public class MemberService {
 
     public String createToken(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
-            .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("입력한 유저 이메일이 없습니다."));
         if (!member.checkPassword(loginRequest.getPassword())) {
             throw new IllegalArgumentException("잘못된 패스워드");
         }
@@ -47,6 +47,6 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-            .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("입력한 유저 이메일이 없습니다."));
     }
 }

@@ -4,10 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import wooteco.subway.exception.LineNotFoundException;
-import wooteco.subway.exception.LineStationNotFoundException;
-import wooteco.subway.exception.SameSourceTargetException;
-import wooteco.subway.exception.StationNotFoundException;
+import wooteco.subway.exception.*;
 import wooteco.subway.service.member.dto.ErrorResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
@@ -18,52 +15,61 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
  */
 @ControllerAdvice
 public class ExceptionController {
+
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponse> handleIllegalArgumentException() {
+		ErrorCode errorCode = ErrorCode.BAD_REQUEST;
+
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
-				.body(new ErrorResponse("INVALID_PARAM"));
+				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleException() {
+		ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+
 		return ResponseEntity
 				.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(new ErrorResponse("SYSTEM_ERROR"));
+				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
 	}
 
 	@ExceptionHandler(InvalidAuthenticationException.class)
 	public ResponseEntity<ErrorResponse> handleInvalidAuthenticationException() {
+		ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+
 		return ResponseEntity
 				.status(HttpStatus.UNAUTHORIZED)
-				.body(new ErrorResponse("UNAUTHORIZED"));
-	}
-
-	@ExceptionHandler(StationNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleStationNotFoundException() {
-		return ResponseEntity
-				.status(HttpStatus.BAD_REQUEST)
-				.body(new ErrorResponse("존재하지 않는 역입니다."));
-	}
-
-	@ExceptionHandler(LineNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleLineNotFoundException() {
-		return ResponseEntity
-				.status(HttpStatus.BAD_REQUEST)
-				.body(new ErrorResponse("존재하지 않는 노선입니다."));
-	}
-
-	@ExceptionHandler(LineStationNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleLineStationNotFoundException() {
-		return ResponseEntity
-				.status(HttpStatus.BAD_REQUEST)
-				.body(new ErrorResponse("노선에 해당 역이 없습니다."));
+				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
 	}
 
 	@ExceptionHandler(SameSourceTargetException.class)
 	public ResponseEntity<ErrorResponse> handleSameSourceTargetException() {
+		ErrorCode errorCode = ErrorCode.SAME_SOURCE_TARGET;
+
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
-				.body(new ErrorResponse("SAME_SOURCE_TARGET_STATION"));
+				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
+	}
+
+	@ExceptionHandler(StationNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleStationNotFoundException(StationNotFoundException exception) {
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(ErrorResponse.of(exception.getStatus(), exception.getErrorMessage()));
+	}
+
+	@ExceptionHandler(LineNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleLineNotFoundException(LineNotFoundException exception) {
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(ErrorResponse.of(exception.getStatus(), exception.getErrorMessage()));
+	}
+
+	@ExceptionHandler(LineStationNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleLineStationNotFoundException(LineStationNotFoundException exception) {
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(ErrorResponse.of(exception.getStatus(), exception.getErrorMessage()));
 	}
 }
