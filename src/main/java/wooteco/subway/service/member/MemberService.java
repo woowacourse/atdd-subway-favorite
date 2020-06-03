@@ -25,13 +25,11 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository,
-        StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(final MemberRepository memberRepository,
+        final JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -64,36 +62,5 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(NoSuchAccountException::new);
-    }
-
-    public List<FavoriteResponse> findAllFavoritesByMember(Member member) {
-        Map<Long, String> stationNameById = stationRepository.findAll().stream()
-            .collect(Collectors.toMap(Station::getId, Station::getName));
-
-        return member.getFavorites().stream()
-            .map(favorite ->
-                new FavoriteResponse(favorite.getId(),
-                    stationNameById.get(favorite.getSourceStationId()),
-                    stationNameById.get(favorite.getTargetStationId()))
-            ).collect(Collectors.toList());
-    }
-
-    public Member saveFavorite(Long id, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(id).orElseThrow(NoSuchAccountException::new);
-        member.addFavorite(Favorite.of(favoriteRequest));
-        return memberRepository.save(member);
-    }
-
-    public void deleteFavorite(Member member, Long favoriteId) {
-        if (member.doesNotHaveFavoriteWithId(favoriteId)) {
-            throw new IllegalArgumentException("잘못된 즐겨찾기 삭제 요청입니다.");
-        }
-        memberRepository.deleteFavoriteById(favoriteId);
-    }
-
-    public String findStationNameById(final Long stationId) {
-        return stationRepository.findById(stationId)
-            .orElseThrow(NoSuchStationException::new)
-            .getName();
     }
 }

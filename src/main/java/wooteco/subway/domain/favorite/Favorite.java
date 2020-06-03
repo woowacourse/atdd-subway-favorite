@@ -1,7 +1,5 @@
 package wooteco.subway.domain.favorite;
 
-import java.util.Objects;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
