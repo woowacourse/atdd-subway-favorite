@@ -18,12 +18,14 @@ public class LineStations {
     }
 
     public void add(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getPreStationId(), targetLineStation.getStationId());
+        updatePreStationOfNextLineStation(targetLineStation.getPreStationId(),
+                targetLineStation.getStationId());
         stations.add(targetLineStation);
     }
 
     private void remove(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
+        updatePreStationOfNextLineStation(targetLineStation.getStationId(),
+                targetLineStation.getPreStationId());
         stations.remove(targetLineStation);
     }
 

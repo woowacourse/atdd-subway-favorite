@@ -2,6 +2,13 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import wooteco.subway.web.exception.NoSuchValueException;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_FAVORITE_MESSAGE;
 
 public class Member {
     @Id
@@ -9,14 +16,13 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    private Set<Favorite> favorites;
 
     public Member() {
     }
 
     public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(null, email, name, password);
     }
 
     public Member(Long id, String email, String name, String password) {
@@ -24,6 +30,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = new HashSet<>();
     }
 
     public Long getId() {
@@ -42,6 +49,10 @@ public class Member {
         return password;
     }
 
+    public Set<Favorite> getFavorites() {
+        return favorites;
+    }
+
     public void update(String name, String password) {
         if (StringUtils.isNotBlank(name)) {
             this.name = name;
@@ -53,5 +64,26 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
+
+    public Favorite findFavorite(Long departureId, Long destinationId) {
+        return favorites.stream()
+                .filter(favorite -> Objects.equals(favorite.getDepartureId(), departureId))
+                .filter(favorite -> Objects.equals(favorite.getDestinationId(), destinationId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_FAVORITE_MESSAGE));
+    }
+
+    public void deleteFavorite(Long favoriteId) {
+        Favorite favoriteToRemove = favorites.stream()
+                .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_FAVORITE_MESSAGE));
+
+        favorites.remove(favoriteToRemove);
     }
 }

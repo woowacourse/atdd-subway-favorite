@@ -1,21 +1,24 @@
 package wooteco.subway.service.line;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.line.dto.LineDetailResponse;
-import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.dto.LineDetailResponse;
+import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.web.exception.NoSuchValueException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_LINE_MESSAGE;
+
 @Service
 public class LineStationService {
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
     public LineStationService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
@@ -23,7 +26,8 @@ public class LineStationService {
     }
 
     public LineDetailResponse findLineWithStationsById(Long lineId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(lineId)
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_LINE_MESSAGE));
         List<Long> lineStationIds = line.getStationIds();
         List<Station> stations = stationRepository.findAllById(lineStationIds);
 

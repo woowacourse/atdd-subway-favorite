@@ -1,10 +1,12 @@
 package wooteco.subway;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,6 +14,7 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -44,13 +47,13 @@ public class AcceptanceTest {
     @LocalServerPort
     public int port;
 
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
+
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     public StationResponse createStation(String name) {
@@ -154,7 +157,8 @@ public class AcceptanceTest {
         addLineStation(lineId, preStationId, stationId, 10, 10);
     }
 
-    public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+    public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
+                               Integer duration) {
         Map<String, String> params = new HashMap<>();
         params.put("preStationId", preStationId == null ? "" : preStationId.toString());
         params.put("stationId", stationId.toString());
@@ -226,28 +230,35 @@ public class AcceptanceTest {
         // 2호선
         LineResponse lineResponse1 = createLine("2호선");
         addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5, 10);
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 10);
+        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5,
+                10);
+        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5,
+                10);
 
         // 분당선
         LineResponse lineResponse2 = createLine("분당선");
         addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
-        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5, 10);
-        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5, 10);
+        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5,
+                10);
+        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5,
+                10);
 
         // 3호선
         LineResponse lineResponse3 = createLine("3호선");
         addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
-        addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5, 10);
-        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5, 10);
+        addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5,
+                10);
+        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5,
+                10);
 
         // 신분당선
         LineResponse lineResponse4 = createLine("신분당선");
         addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
+        addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(),
+                40, 3);
     }
 
-    public String createMember(String email, String name, String password) {
+    public Response createMember(String email, String name, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
@@ -259,47 +270,42 @@ public class AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/members").
+                        post("/join").
                         then().
                         log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().header("Location");
+                        extract().response();
     }
 
-    public MemberResponse getMember(String email) {
-        return
-                given().
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        get("/members?email=" + email).
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(MemberResponse.class);
+    public MemberResponse getMember(TokenResponse tokenResponse) {
+        return given()
+                .auth()
+                .oauth2(tokenResponse.getAccessToken())
+                .when()
+                .get("/members")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public TokenResponse login(String email, String password) {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("email", email);
+        params.put("password", password);
 
-        given().
+        Response response = given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                post("/login").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
-    }
-
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-                delete("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+                statusCode(HttpStatus.OK.value())
+                .extract()
+                .response();
+        String token = response.getHeader(HttpHeaders.AUTHORIZATION);
+        return TokenResponse.of(token);
     }
 }
 

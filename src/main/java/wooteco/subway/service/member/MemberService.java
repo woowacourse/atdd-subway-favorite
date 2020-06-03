@@ -1,51 +1,67 @@
 package wooteco.subway.service.member;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.exception.MemberCreationException;
+import wooteco.subway.web.exception.NoSuchValueException;
+
+import javax.validation.Valid;
+
+import static wooteco.subway.web.exception.NoSuchValueException.NO_SUCH_MEMBER_MESSAGE;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Member createMember(Member member) {
-        return memberRepository.save(member);
+    public MemberResponse createMember(@Valid MemberRequest request) {
+        Member member = request.toMember();
+        try {
+            memberRepository.save(member);
+        } catch (DbActionExecutionException e) {
+            if (e.getCause() instanceof DuplicateKeyException) {
+                throw new MemberCreationException(MemberCreationException.DUPLICATED_EMAIL);
+            }
+        }
+        return MemberResponse.of(member);
+    }
+
+    public String createToken(LoginRequest request) {
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_MEMBER_MESSAGE));
+        if (!member.checkPassword(request.getPassword())) {
+            throw new RuntimeException("잘못된 패스워드");
+        }
+
+        return jwtTokenProvider.createToken(request.getEmail());
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_MEMBER_MESSAGE));
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchValueException(NO_SUCH_MEMBER_MESSAGE));
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
-    }
-
-    public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
-        if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
-        }
-
-        return jwtTokenProvider.createToken(param.getEmail());
-    }
-
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
     }
 }

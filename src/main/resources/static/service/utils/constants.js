@@ -1,5 +1,9 @@
 export const EVENT_TYPE = {
-  CLICK: 'click'
+    CLICK: 'click'
+}
+
+export const HTTP_HEADERS = {
+  AUTHORIZATION: 'Authorization',
 }
 
 export const ERROR_MESSAGE = {
