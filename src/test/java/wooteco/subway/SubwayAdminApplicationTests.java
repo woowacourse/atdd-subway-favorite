@@ -11,5 +11,4 @@ class SubwayAdminApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

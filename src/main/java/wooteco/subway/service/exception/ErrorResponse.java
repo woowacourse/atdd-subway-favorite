@@ -1,6 +1,7 @@
 package wooteco.subway.service.exception;
 
 public class ErrorResponse {
+
 	private String errorMessage;
 
 	public ErrorResponse(String errorMessage) {

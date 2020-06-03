@@ -5,34 +5,39 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Favorites {
-    private final Set<Favorite> favorites;
 
-    public Favorites(Set<Favorite> favorites) {
-        this.favorites = favorites;
-    }
+	private final Set<Favorite> favorites;
 
-    public Set<Long> findAllIds() {
-        Set<Long> ids = new HashSet<>();
-        for (Favorite favorite : favorites) {
-            ids.add(favorite.getSourceStationId());
-            ids.add(favorite.getTargetStationId());
-        }
-        return Collections.unmodifiableSet(ids);
-    }
+	public Favorites(Set<Favorite> favorites) {
+		this.favorites = favorites;
+	}
 
-    public Set<Favorite> getFavorites() {
-        return Collections.unmodifiableSet(favorites);
-    }
+	public Set<Long> findAllIds() {
+		Set<Long> ids = new HashSet<>();
+		for (Favorite favorite : favorites) {
+			ids.add(favorite.getSourceStationId());
+			ids.add(favorite.getTargetStationId());
+		}
+		return Collections.unmodifiableSet(ids);
+	}
 
-    public boolean hasFavorite(Favorite favorite) {
-        return favorites.contains(favorite);
-    }
+	public Set<Favorite> getFavorites() {
+		return Collections.unmodifiableSet(favorites);
+	}
 
-    public void addFavorite(Favorite favorite) {
-        favorites.add(favorite);
-    }
+	public boolean hasFavorite(Favorite favorite) {
+		return favorites.stream()
+			.anyMatch(it -> it.equalPath(favorite));
+	}
 
-    public void removeFavorite(Favorite favorite) {
-        favorites.remove(favorite);
-    }
+	public void addFavorite(Favorite favorite) {
+		favorites.add(favorite);
+	}
+
+	public void removeFavorite(Favorite favorite) {
+		favorites.stream()
+			.filter(it -> it.equalPath(favorite))
+			.findFirst()
+			.ifPresent(favorites::remove);
+	}
 }

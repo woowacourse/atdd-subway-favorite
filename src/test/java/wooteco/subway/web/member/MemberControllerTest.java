@@ -34,7 +34,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.common.AuthorizationType;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.exception.DuplicateEmailException;
+import wooteco.subway.exception.AlreadyExistsEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
@@ -45,6 +45,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class MemberControllerTest {
+
 	private static final long TIGER_ID = 1L;
 	private static final String TIGER_EMAIL = "tiger@luv.com";
 	private static final String TIGER_NAME = "tiger";
@@ -62,7 +63,8 @@ public class MemberControllerTest {
 	private String token;
 
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+	public void setUp(WebApplicationContext webApplicationContext,
+		RestDocumentationContextProvider restDocumentation) {
 		token = AuthorizationType.BEARER.combineToken(jwtTokenProvider.createToken(TIGER_EMAIL));
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -77,7 +79,8 @@ public class MemberControllerTest {
 		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
 		given(memberService.createMember(any())).willReturn(MemberResponse.of(member));
 
-		String body = "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"password\" : \""
+		String body = "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME
+			+ "\", \"password\" : \""
 			+ TIGER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(post("/members")
@@ -92,9 +95,10 @@ public class MemberControllerTest {
 	@DisplayName("회원 이메일이 중복되는 경우, 등록을 성공적으로 마치지 못하며, BadRequest 상태를 반환한다.")
 	@Test
 	void createMemberWithDuplicateEmail() throws Exception {
-		given(memberService.createMember(any())).willThrow(new DuplicateEmailException());
+		given(memberService.createMember(any())).willThrow(new AlreadyExistsEmailException());
 
-		String body = "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"password\" : \""
+		String body = "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME
+			+ "\", \"password\" : \""
 			+ TIGER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(post("/members")
@@ -110,10 +114,12 @@ public class MemberControllerTest {
 	@Test
 	void getMemberByEmail() throws Exception {
 		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
-		given(memberService.findMemberResponseByEmail(TIGER_EMAIL)).willReturn(MemberResponse.of(member));
+		given(memberService.findMemberResponseByEmail(TIGER_EMAIL))
+			.willReturn(MemberResponse.of(member));
 
 		String expected =
-			"{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"id\" : " + TIGER_ID + "}";
+			"{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME + "\", \"id\" : "
+				+ TIGER_ID + "}";
 
 		this.mockMvc.perform(get("/members")
 			.param("email", TIGER_EMAIL)
@@ -159,7 +165,8 @@ public class MemberControllerTest {
 	@DisplayName("아이디로 정보를 갱신할 회원을 지정하여 정보를 갱신한 후, OK 상태코드를 반환한다.")
 	@Test
 	void updateMember() throws Exception {
-		String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
+		String body =
+			"{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", TIGER_ID)
 			.content(body)
@@ -176,7 +183,8 @@ public class MemberControllerTest {
 	@EmptySource
 	@ValueSource(strings = {"1234", "1234.1234.1234"})
 	void updateMember_invalidToken(String token) throws Exception {
-		String body = "{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
+		String body =
+			"{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
 
 		this.mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", TIGER_ID)
 			.content(body)

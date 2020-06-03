@@ -14,39 +14,40 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey;
-    private Duration validityInMilliseconds;
+	private String secretKey;
+	private Duration validityInMilliseconds;
 
-    public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey, @Value("${security.jwt.token.expire-length}") long validityInMilliseconds) {
-        this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        this.validityInMilliseconds = Duration.ofMillis(validityInMilliseconds);
-    }
+	public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
+		@Value("${security.jwt.token.expire-length}") long validityInMilliseconds) {
+		this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+		this.validityInMilliseconds = Duration.ofMillis(validityInMilliseconds);
+	}
 
-    public String createToken(String subject) {
-        Claims claims = Jwts.claims().setSubject(subject);
+	public String createToken(String subject) {
+		Claims claims = Jwts.claims().setSubject(subject);
 
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds.toMillis());
+		Date now = new Date();
+		Date validity = new Date(now.getTime() + validityInMilliseconds.toMillis());
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-    }
+		return Jwts.builder()
+			.setClaims(claims)
+			.setIssuedAt(now)
+			.setExpiration(validity)
+			.signWith(SignatureAlgorithm.HS256, secretKey)
+			.compact();
+	}
 
-    public String getSubject(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
+	public String getSubject(String token) {
+		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+	}
 
-    public boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
+	public boolean validateToken(String token) {
+		try {
+			Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+			return !claims.getBody().getExpiration().before(new Date());
+		} catch (JwtException | IllegalArgumentException e) {
+			return false;
+		}
+	}
 }
 

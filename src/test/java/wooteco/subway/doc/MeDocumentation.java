@@ -1,9 +1,14 @@
 package wooteco.subway.doc;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
@@ -11,6 +16,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultHandler;
 
 public class MeDocumentation {
+
 	public static RestDocumentationResultHandler getMember() {
 		return document("me/view",
 			requestHeaders(
@@ -18,7 +24,8 @@ public class MeDocumentation {
 			),
 			responseFields(
 				fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
-				fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+				fieldWithPath("email").type(JsonFieldType.STRING)
+					.description("The user's email address"),
 				fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
 			)
 		);
@@ -42,7 +49,8 @@ public class MeDocumentation {
 			),
 			requestFields(
 				fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-				fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+				fieldWithPath("password").type(JsonFieldType.STRING)
+					.description("The user's password")
 			)
 		);
 	}
@@ -54,7 +62,8 @@ public class MeDocumentation {
 			),
 			requestFields(
 				fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-				fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
+				fieldWithPath("password").type(JsonFieldType.STRING)
+					.description("The user's password")
 			),
 			responseHeaders(
 				headerWithName(HttpHeaders.LOCATION).description("location to redirect")
@@ -87,12 +96,14 @@ public class MeDocumentation {
 				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
 			),
 			responseFields(
-				fieldWithPath("[].sourceStation.id").type(JsonFieldType.NUMBER).description("The sourceStation's id"),
+				fieldWithPath("[].sourceStation.id").type(JsonFieldType.NUMBER)
+					.description("The sourceStation's id"),
 				fieldWithPath("[].sourceStation.name").type(JsonFieldType.STRING)
 					.description("The sourceStation's name"),
 				fieldWithPath("[].sourceStation.createdAt").type(JsonFieldType.STRING)
 					.description("The sourceStation's createAt time"),
-				fieldWithPath("[].targetStation.id").type(JsonFieldType.NUMBER).description("The targetStation's id"),
+				fieldWithPath("[].targetStation.id").type(JsonFieldType.NUMBER)
+					.description("The targetStation's id"),
 				fieldWithPath("[].targetStation.name").type(JsonFieldType.STRING)
 					.description("The targetStation's name"),
 				fieldWithPath("[].targetStation.createdAt").type(JsonFieldType.STRING)
@@ -107,7 +118,8 @@ public class MeDocumentation {
 				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
 			),
 			responseFields(
-				fieldWithPath("existence").type(JsonFieldType.BOOLEAN).description("whether favorite exists")
+				fieldWithPath("existence").type(JsonFieldType.BOOLEAN)
+					.description("whether favorite exists")
 			)
 		);
 	}
@@ -118,8 +130,10 @@ public class MeDocumentation {
 				headerWithName(HttpHeaders.AUTHORIZATION).description("token to access")
 			),
 			requestFields(
-				fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER).description("source station id"),
-				fieldWithPath("targetStationId").type(JsonFieldType.NUMBER).description("target station id")
+				fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER)
+					.description("source station id"),
+				fieldWithPath("targetStationId").type(JsonFieldType.NUMBER)
+					.description("target station id")
 			)
 		);
 	}

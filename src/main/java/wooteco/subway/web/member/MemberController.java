@@ -18,11 +18,12 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @RestController
 public class MemberController {
-    private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+	private final MemberService memberService;
+
+	public MemberController(MemberService memberService) {
+		this.memberService = memberService;
+	}
 
 	@PostMapping("/members")
 	public ResponseEntity<Void> createMember(@RequestBody @Validated MemberRequest request) {
@@ -32,21 +33,22 @@ public class MemberController {
 			.build();
 	}
 
-    @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
-        MemberResponse memberResponse = memberService.findMemberResponseByEmail(email);
-        return ResponseEntity.ok().body(memberResponse);
-    }
+	@GetMapping("/members")
+	public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
+		MemberResponse memberResponse = memberService.findMemberResponseByEmail(email);
+		return ResponseEntity.ok().body(memberResponse);
+	}
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
-    }
+	@PutMapping("/members/{id}")
+	public ResponseEntity<Void> updateMember(@PathVariable Long id,
+		@RequestBody UpdateMemberRequest param) {
+		memberService.updateMember(id, param);
+		return ResponseEntity.ok().build();
+	}
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/members/{id}")
+	public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+		memberService.deleteMember(id);
+		return ResponseEntity.noContent().build();
+	}
 }

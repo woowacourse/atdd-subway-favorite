@@ -27,19 +27,19 @@ public class MemberRequest {
 		this.password = password;
 	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public Member toMember() {
-        return new Member(email, name, password);
-    }
+	public Member toMember() {
+		return new Member(email, name, password);
+	}
 }

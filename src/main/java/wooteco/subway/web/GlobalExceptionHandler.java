@@ -11,7 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.DuplicateEmailException;
+import wooteco.subway.exception.AlreadyExistsEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.exception.LoginFailException;
 import wooteco.subway.service.exception.ErrorResponse;
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
 			.body(new ErrorResponse(e.getMessage()));
 	}
 
-	@ExceptionHandler(DuplicateEmailException.class)
+	@ExceptionHandler(AlreadyExistsEmailException.class)
 	public ResponseEntity<ErrorResponse> handleBadRequest(Exception e) {
 		return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
 	}

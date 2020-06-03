@@ -26,7 +26,7 @@ import wooteco.subway.service.station.dto.StationResponse;
 @Sql("/truncate.sql")
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class AcceptanceTest {
-	public static final long TIGER_ID = 1L;
+
 	public static final String TIGER_EMAIL = "tiger@luv.com";
 	public static final String TIGER_NAME = "tiger";
 	public static final String TIGER_PASSWORD = "prettiger";
@@ -160,7 +160,8 @@ public class AcceptanceTest {
 		addLineStation(lineId, preStationId, stationId, 10, 10);
 	}
 
-	public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance, Integer duration) {
+	public void addLineStation(Long lineId, Long preStationId, Long stationId, Integer distance,
+		Integer duration) {
 		Map<String, String> params = new HashMap<>();
 		params.put("preStationId", preStationId == null ? "" : preStationId.toString());
 		params.put("stationId", stationId.toString());
@@ -213,11 +214,7 @@ public class AcceptanceTest {
 	}
 
 	/**
-	 * 강남 - 역삼 - 선릉
-	 * |           |
-	 * |          한티
-	 * |           |
-	 * 양재 - 매봉 - 도곡
+	 * 강남 - 역삼 - 선릉 |           | |          한티 |           | 양재 - 매봉 - 도곡
 	 */
 	public void initStation() {
 		// 역 등록
@@ -232,25 +229,32 @@ public class AcceptanceTest {
 		// 2호선
 		LineResponse lineResponse1 = createLine("2호선");
 		addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
-		addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5, 10);
-		addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 10);
+		addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5,
+			10);
+		addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5,
+			10);
 
 		// 분당선
 		LineResponse lineResponse2 = createLine("분당선");
 		addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
-		addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5, 10);
-		addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5, 10);
+		addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5,
+			10);
+		addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5,
+			10);
 
 		// 3호선
 		LineResponse lineResponse3 = createLine("3호선");
 		addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
-		addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5, 10);
-		addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5, 10);
+		addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5,
+			10);
+		addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5,
+			10);
 
 		// 신분당선
 		LineResponse lineResponse4 = createLine("신분당선");
 		addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
-		addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
+		addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(),
+			40, 3);
 	}
 
 	public String createMember(String email, String name, String password) {

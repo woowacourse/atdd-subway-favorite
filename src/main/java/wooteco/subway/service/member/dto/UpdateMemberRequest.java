@@ -5,26 +5,26 @@ import javax.validation.constraints.NotNull;
 
 public class UpdateMemberRequest {
 
-    @NotEmpty
-    @NotNull
-    private String name;
-    @NotEmpty
-    @NotNull
-    private String password;
+	@NotEmpty
+	@NotNull
+	private String name;
+	@NotEmpty
+	@NotNull
+	private String password;
 
-    public UpdateMemberRequest() {
-    }
+	private UpdateMemberRequest() {
+	}
 
-    public UpdateMemberRequest(String name, String password) {
-        this.name = name;
-        this.password = password;
-    }
+	public UpdateMemberRequest(String name, String password) {
+		this.name = name;
+		this.password = password;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 }

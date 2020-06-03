@@ -1,35 +1,35 @@
 package wooteco.subway.service.line.dto;
 
+import java.time.LocalTime;
 import wooteco.subway.domain.line.Line;
 
-import java.time.LocalTime;
-
 public class LineRequest {
-    private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private int intervalTime;
 
-    public LineRequest() {
-    }
+	private String name;
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private int intervalTime;
 
-    public String getName() {
-        return name;
-    }
+	private LineRequest() {
+	}
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+	public Line toLine() {
+		return new Line(name, startTime, endTime, intervalTime);
+	}
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public int getIntervalTime() {
-        return intervalTime;
-    }
+	public LocalTime getStartTime() {
+		return startTime;
+	}
 
-    public Line toLine() {
-        return new Line(name, startTime, endTime, intervalTime);
-    }
+	public LocalTime getEndTime() {
+		return endTime;
+	}
+
+	public int getIntervalTime() {
+		return intervalTime;
+	}
 }

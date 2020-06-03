@@ -6,27 +6,27 @@ import javax.validation.constraints.NotNull;
 
 public class LoginRequest {
 
-    @Email
-    @NotEmpty
-    @NotNull
-    private String email;
-    @NotEmpty
-    @NotNull
-    private String password;
+	@Email
+	@NotEmpty
+	@NotNull
+	private String email;
+	@NotEmpty
+	@NotNull
+	private String password;
 
-    public LoginRequest() {
-    }
+	private LoginRequest() {
+	}
 
-    public LoginRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
+	public LoginRequest(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 }
