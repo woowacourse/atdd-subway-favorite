@@ -1,26 +1,22 @@
 package wooteco.subway.domain.line;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.relational.core.mapping.Embedded;
 
-public class Line {
+import wooteco.subway.jdbc.BaseEntity;
+
+public class Line extends BaseEntity {
     @Id
     private Long id;
     private String name;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
     @Embedded.Empty
     private LineStations stations = LineStations.empty();
 
@@ -62,14 +58,6 @@ public class Line {
         return stations.getStations();
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
     public void update(Line line) {
         if (line.getName() != null) {
             this.name = line.getName();
@@ -95,5 +83,20 @@ public class Line {
 
     public List<Long> getStationIds() {
         return stations.getStationIds();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Line line = (Line)o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

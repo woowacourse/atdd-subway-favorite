@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.AcceptanceTest.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -151,11 +152,13 @@ class FavoriteControllerTest {
 	@DisplayName("토큰이 유효하면 즐겨찾기 조회에 성공하는지 확인")
 	@Test
 	void retrieveFavoritePath() throws Exception {
+		LocalDateTime time = LocalDateTime.now();
+
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		Station kangnam = new Station(1L, STATION_NAME_KANGNAM);
-		Station hanti = new Station(2L, STATION_NAME_HANTI);
-		Station dogok = new Station(3L, STATION_NAME_DOGOK);
-		Station yangjae = new Station(4L, STATION_NAME_YANGJAE);
+		Station kangnam = new Station(1L, STATION_NAME_KANGNAM, time);
+		Station hanti = new Station(2L, STATION_NAME_HANTI, time);
+		Station dogok = new Station(3L, STATION_NAME_DOGOK, time);
+		Station yangjae = new Station(4L, STATION_NAME_YANGJAE, time);
 
 		BDDMockito.when(favoritePathService.retrievePath(member))
 				.thenReturn(Arrays.asList(new FavoritePathResponse(1L, StationResponse.of(kangnam),
@@ -191,9 +194,10 @@ class FavoriteControllerTest {
 	@DisplayName("토큰이 유효하면 즐겨찾기 삭제에 성공하는지 확인")
 	@Test
 	void deleteFavoritePath() throws Exception {
+		LocalDateTime time = LocalDateTime.now();
 		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		Station dogok = new Station(3L, STATION_NAME_DOGOK);
-		Station yangjae = new Station(4L, STATION_NAME_YANGJAE);
+		Station dogok = new Station(3L, STATION_NAME_DOGOK, time);
+		Station yangjae = new Station(4L, STATION_NAME_YANGJAE, time);
 
 		BDDMockito.when(favoritePathService.retrievePath(member))
 				.thenReturn(Arrays.asList(new FavoritePathResponse(2L, StationResponse.of(dogok),

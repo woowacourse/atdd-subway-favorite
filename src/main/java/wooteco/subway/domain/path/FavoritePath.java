@@ -5,7 +5,9 @@ import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public class FavoritePath {
+import wooteco.subway.jdbc.BaseEntity;
+
+public class FavoritePath extends BaseEntity {
     @Id
     private Long id;
     private Long sourceId;
@@ -14,6 +16,7 @@ public class FavoritePath {
 
     @PersistenceConstructor
     public FavoritePath(Long id, Long sourceId, Long targetId, Long memberId) {
+        super(null, null);
         this.id = id;
         this.sourceId = sourceId;
         this.targetId = targetId;
