@@ -328,7 +328,7 @@ public class AcceptanceTest {
                         .auth()
                         .oauth2(tokenResponse.getAccessToken())
                 .when()
-                        .get("/me/bearer")
+                        .get("/members")
                 .then()
                         .log().all()
                         .statusCode(HttpStatus.OK.value())
