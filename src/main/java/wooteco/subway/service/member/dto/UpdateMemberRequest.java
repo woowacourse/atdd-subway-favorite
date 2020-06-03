@@ -1,7 +1,15 @@
 package wooteco.subway.service.member.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class UpdateMemberRequest {
+
+    @NotEmpty
+    @NotNull
     private String name;
+    @NotEmpty
+    @NotNull
     private String password;
 
     public UpdateMemberRequest() {

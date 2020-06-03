@@ -1,8 +1,13 @@
 package wooteco.subway.web;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,12 +26,12 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(LoginFailException.class)
-	public ResponseEntity<ErrorResponse> handleLoginFail(LoginFailException e) {
+	public ResponseEntity<ErrorResponse> handleUnauthorized(LoginFailException e) {
 		return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler(InvalidAuthenticationException.class)
-	public ResponseEntity<ErrorResponse> handleInvalidAuthentication(
+	public ResponseEntity<ErrorResponse> handleFound(
 		InvalidAuthenticationException e) {
 		return ResponseEntity.status(HttpStatus.FOUND)
 			.header(HttpHeaders.LOCATION, "/login")
@@ -34,13 +39,28 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(DuplicateEmailException.class)
-	public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicateEmailException e) {
+	public ResponseEntity<ErrorResponse> handleBadRequest(Exception e) {
 		return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handleRuntime(Exception e) {
-		return new ResponseEntity<>(new ErrorResponse("예기치 않은 오류가 발생하였습니다."),
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+		MethodArgumentNotValidException e) {
+		BindingResult bindingResult = e.getBindingResult();
+
+		List<String> bodies = new ArrayList<>();
+		for (FieldError fieldError : bindingResult.getFieldErrors()) {
+			bodies.add("[" + fieldError.getField() + "](은)는 " + fieldError.getDefaultMessage()
+				+ " 입력된 값: [" + fieldError.getRejectedValue() + "]");
+		}
+
+		return new ResponseEntity<>(new ErrorResponse(String.join(", ", bodies)),
 			HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponse> handleInternalServerError() {
+		return new ResponseEntity<>(new ErrorResponse("예기치 않은 오류가 발생하였습니다."),
+			HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
