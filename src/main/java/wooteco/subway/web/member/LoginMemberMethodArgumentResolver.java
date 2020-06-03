@@ -34,7 +34,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
             Member member = memberService.findMemberByEmail(email);
             Role role = Objects.requireNonNull(parameter.getParameterAnnotation(LoginMember.class))
                     .role();
-            if (role.isLessThan(member.getRole())) {
+            if (role.isHigherThan(member.getRole())) {
                 throw new InvalidAuthenticationException("권한이 없습니다.");
             }
             return member;

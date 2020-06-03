@@ -1,8 +1,8 @@
 package wooteco.subway.domain.member;
 
 public enum Role {
-    ADMIN(1),
-    USER(2);
+    ADMIN(0),
+    USER(1);
 
     private final int grade;
 
@@ -10,7 +10,7 @@ public enum Role {
         this.grade = grade;
     }
 
-    public boolean isLessThan(Role role) {
-        return grade > role.grade;
+    public boolean isHigherThan(Role role) {
+        return grade < role.grade;
     }
 }
