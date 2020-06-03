@@ -14,6 +14,7 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+    public static final String BEARER = "bearer";
     private final AuthorizationExtractor authExtractor;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -29,18 +30,26 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         if (isCreateMemberMethod(request) || isLoginMethod(request)) {
             return true;
         }
-        String token = authExtractor.extract(request, "bearer");
-        if (StringUtils.isEmpty(token)) {
-            throw new InvalidAuthenticationException("존재하지 않는 토큰");
-        }
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthenticationException("유효하지 않은 토큰");
-        }
+        String token = authExtractor.extract(request, BEARER);
+        checkTokenNotEmpty(token);
+        checkTokenValidity(token);
 
         String email = jwtTokenProvider.getSubject(token);
         request.setAttribute("loginMemberEmail", email);
 
         return true;
+    }
+
+    private void checkTokenValidity(final String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new InvalidAuthenticationException("유효하지 않은 토큰");
+        }
+    }
+
+    private void checkTokenNotEmpty(final String token) {
+        if (StringUtils.isEmpty(token)) {
+            throw new InvalidAuthenticationException("존재하지 않는 토큰");
+        }
     }
 
     private boolean isLoginMethod(final HttpServletRequest request) {
