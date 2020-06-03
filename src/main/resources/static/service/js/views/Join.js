@@ -12,6 +12,7 @@ function Join() {
   const onJoinHandler = async event => {
     event.preventDefault();
     if (!isValid()) {
+      showSnackbar(ERROR_MESSAGE.JOIN_FAIL);
       return;
     }
     try {
@@ -33,7 +34,7 @@ function Join() {
     const password = $password.value;
     const passwordCheck = $passwordCheck.value;
     if (!email || !name || !password) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      showSnackbar(ERROR_MESSAGE.JOIN_FAIL);
       return false;
     }
     if (password !== passwordCheck) {

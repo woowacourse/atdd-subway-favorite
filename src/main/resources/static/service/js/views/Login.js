@@ -10,7 +10,7 @@ function Login() {
   const onLogin = async event => {
     event.preventDefault();
     if (!isValid()) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      showSnackbar(ERROR_MESSAGE.LOGIN_FAIL);
       return;
     }
     try {
@@ -24,7 +24,7 @@ function Login() {
         location.href = "/search";
         return;
       }
-      showSnackbar(ERROR_MESSAGE.COMMON);
+      showSnackbar(ERROR_MESSAGE.LOGIN_FAIL);
     } catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
@@ -33,8 +33,6 @@ function Login() {
   const isValid = () => {
     const email = $email.value;
     const password = $password.value;
-    console.log(email)
-    console.log(password)
     return email && password;
   };
 
