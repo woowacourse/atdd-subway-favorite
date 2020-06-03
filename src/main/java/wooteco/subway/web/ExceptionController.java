@@ -19,7 +19,8 @@ public class ExceptionController {
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler({NotExistStationException.class, NotExistFavoritePathException.class})
+	@ExceptionHandler({NotExistStationException.class, NotExistFavoritePathException.class,
+			NotExistFavoritePathsException.class})
 	public ExceptionResponse notExisted(RuntimeException e) {
 		return new ExceptionResponse(e.getMessage());
 	}

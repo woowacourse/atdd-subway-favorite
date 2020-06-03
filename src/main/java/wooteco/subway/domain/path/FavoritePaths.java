@@ -2,6 +2,7 @@ package wooteco.subway.domain.path;
 
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
+import wooteco.subway.exceptions.NotExistFavoritePathsException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +51,9 @@ public class FavoritePaths {
 	}
 
 	public FavoritePath getRecentlyUpdatedPath() {
+		if (favoritePaths.size() == 0) {
+			throw new NotExistFavoritePathsException();
+		}
 		return favoritePaths.get(favoritePaths.size() - 1);
 	}
 
