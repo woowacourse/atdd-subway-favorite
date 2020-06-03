@@ -3,7 +3,6 @@ package wooteco.subway.domain.line;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class LineStationTest {
     @Test
@@ -20,5 +19,8 @@ class LineStationTest {
 
         assertThat(lineStation.isLineStationOf(2L, 3L)).isTrue();
     }
+
+    // TODO: isLineStationOf 테스트 추가
+
 
 }

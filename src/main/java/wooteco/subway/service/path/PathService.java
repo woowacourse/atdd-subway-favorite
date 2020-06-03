@@ -38,10 +38,6 @@ public class PathService {
         Station targetStation = stationService.findByName(target);
 
         PathCalculator pathCalculator = new PathCalculator();
-        System.out.println(">>>>>" + lines);
-        System.out.println(sourceStation.getId());
-        System.out.println(targetStation.getId());
-        System.out.println(type + ">>>>>>");
         List<Long> path = pathCalculator.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationService.findAllById(path);
 
