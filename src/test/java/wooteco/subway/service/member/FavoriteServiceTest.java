@@ -74,6 +74,6 @@ public class FavoriteServiceTest {
         when(stationService.findStationByName(TEST_STATION_NAME_GANGNAM)).thenReturn(new Station(1L, TEST_STATION_NAME_GANGNAM));
         when(stationService.findStationByName(TEST_STATION_NAME_JAMSIL)).thenReturn(new Station(2L, TEST_STATION_NAME_JAMSIL));
 
-        assertTrue(favoriteService.ifFavoriteExist(new FavoriteRequest(TEST_STATION_NAME_GANGNAM, TEST_STATION_NAME_JAMSIL), member));
+        assertTrue(favoriteService.existsFavorite(new FavoriteRequest(TEST_STATION_NAME_GANGNAM, TEST_STATION_NAME_JAMSIL), member));
     }
 }

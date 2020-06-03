@@ -44,7 +44,7 @@ public class FavoriteService {
         return favorites.toFavoriteResponses(stationService.findStations());
     }
 
-    public boolean ifFavoriteExist(FavoriteRequest favoriteRequest, Member member) {
+    public boolean existsFavorite(FavoriteRequest favoriteRequest, Member member) {
         validate(favoriteRequest);
         Favorites favorites = new Favorites(member.getFavorites());
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();

@@ -29,7 +29,7 @@ public class FavoriteController {
 
     @GetMapping("/favorites/exists")
     public ResponseEntity<Map<String, Boolean>> ifFavoriteExists(@LoginMember Member member, @RequestParam String source, @RequestParam String destination) {
-        Boolean ifExists = favoriteService.ifFavoriteExist(new FavoriteRequest(source, destination), member);
+        Boolean ifExists = favoriteService.existsFavorite(new FavoriteRequest(source, destination), member);
         Map<String, Boolean> result = new HashMap<>();
         result.put("exists", ifExists);
         return ResponseEntity.ok().body(result);
