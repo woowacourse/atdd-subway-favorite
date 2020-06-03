@@ -1,16 +1,12 @@
 package wooteco.subway.service.member;
 
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.member.InvalidAuthenticationException;
 import wooteco.subway.web.member.NotExistEmailException;
 
 @Service
@@ -50,10 +46,5 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
     }
 }

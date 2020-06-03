@@ -1,12 +1,13 @@
 package wooteco.subway.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
-
-import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -21,7 +22,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me/bearer");
         registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me");
         registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/favorites");
     }
