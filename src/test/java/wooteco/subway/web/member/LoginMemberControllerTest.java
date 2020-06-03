@@ -1,6 +1,5 @@
 package wooteco.subway.web.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -8,8 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.servlet.http.HttpSession;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,51 +33,6 @@ class LoginMemberControllerTest {
 
 	@MockBean
 	private MemberService memberService;
-
-	@Disabled
-	@DisplayName("세션 로그인 - 회원 정보가 있는 경우(성공)")
-	@Test
-	void session_login_success() throws Exception {
-		when(memberService.loginWithForm(any())).thenReturn(true);
-
-		String body =
-			"{\"email\" : \"" + TIGER_EMAIL + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
-
-		HttpSession session = this.mockMvc.perform(post("/login")
-			.content(body)
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(print())
-			.andReturn()
-			.getRequest()
-			.getSession();
-
-		assertThat(session).isNotNull();
-		assertThat(session.getAttribute("loginMemberEmail")).isEqualTo(TIGER_EMAIL);
-	}
-
-	@Disabled
-	@DisplayName("세션 로그인 - 회원 정보가 없는 경우(실패)")
-	@Test
-	void session_login_fail() throws Exception {
-		when(memberService.loginWithForm(any())).thenReturn(false);
-
-		String body =
-			"{\"email\" : \"" + TIGER_EMAIL + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
-
-		HttpSession session = this.mockMvc.perform(post("/login")
-			.content(body)
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isUnauthorized())
-			.andDo(print())
-			.andReturn()
-			.getRequest()
-			.getSession();
-
-		assertThat(session).isNotNull();
-		assertThat(session.getAttribute("loginMemberEmail")).isNull();
-	}
 
 	@DisplayName("토큰 로그인 - 회원 정보가 있는 경우(성공)")
 	@Test
@@ -120,10 +72,5 @@ class LoginMemberControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isFound())
 			.andDo(print());
-	}
-
-	@DisplayName("displayName")
-	@Test
-	void getMemberOfMineBasic() {
 	}
 }
