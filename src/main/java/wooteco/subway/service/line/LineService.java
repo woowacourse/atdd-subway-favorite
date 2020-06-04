@@ -2,6 +2,7 @@ package wooteco.subway.service.line;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
@@ -10,6 +11,7 @@ import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
+@Transactional
 @Service
 public class LineService {
 

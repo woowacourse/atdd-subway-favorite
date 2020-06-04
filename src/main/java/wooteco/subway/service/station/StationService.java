@@ -2,10 +2,12 @@ package wooteco.subway.service.station;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.line.LineStationService;
 
+@Transactional
 @Service
 public class StationService {
 

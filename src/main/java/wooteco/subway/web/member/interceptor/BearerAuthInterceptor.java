@@ -29,16 +29,20 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 		}
 		String authHeaderValue = authExtractor
 			.extract(request, AuthorizationType.BEARER.getPrefix());
+		validateToken(authHeaderValue);
+		String email = jwtTokenProvider.getSubject(authHeaderValue);
+
+		request.setAttribute("loginMemberEmail", email);
+		return true;
+	}
+
+	private void validateToken(String authHeaderValue) {
 		if (authHeaderValue.isEmpty()) {
 			throw new InvalidAuthenticationException("로그인이 되지 않았습니다.");
 		}
 		if (isInvalidToken(authHeaderValue)) {
 			throw new InvalidAuthenticationException("유효하지 않은 토큰입니다.");
 		}
-		String email = jwtTokenProvider.getSubject(authHeaderValue);
-
-		request.setAttribute("loginMemberEmail", email);
-		return true;
 	}
 
 	private boolean isInvalidToken(String authHeaderValue) {

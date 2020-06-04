@@ -55,6 +55,22 @@ public class Member {
 		return this.password.equals(password);
 	}
 
+	public Set<Long> findAllFavoriteStationIds() {
+		return favorites.findAllIds();
+	}
+
+	public boolean hasFavorite(Favorite favorite) {
+		return favorites.hasFavorite(favorite);
+	}
+
+	public void addFavorite(Favorite favorite) {
+		favorites.addFavorite(favorite);
+	}
+
+	public void removeFavorite(Favorite favorite) {
+		favorites.removeFavorite(favorite);
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -84,15 +100,18 @@ public class Member {
 			return false;
 		}
 		Member member = (Member) o;
-		return Objects.equals(id, member.id) &&
-			Objects.equals(email, member.email) &&
-			Objects.equals(name, member.name) &&
-			Objects.equals(password, member.password);
+		if (Objects.isNull(this.id) || Objects.isNull(member.id)) {
+			return Objects.equals(email, member.email) &&
+				Objects.equals(name, member.name) &&
+				Objects.equals(password, member.password) &&
+				Objects.equals(favorites, member.favorites);
+		}
+		return id.equals(member.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, email, name, password);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -102,22 +121,7 @@ public class Member {
 			", email='" + email + '\'' +
 			", name='" + name + '\'' +
 			", password='" + password + '\'' +
+			", favorites=" + favorites +
 			'}';
-	}
-
-	public Set<Long> findAllFavoriteStationIds() {
-		return favorites.findAllIds();
-	}
-
-	public boolean hasFavorite(Favorite favorite) {
-		return favorites.hasFavorite(favorite);
-	}
-
-	public void addFavorite(Favorite favorite) {
-		favorites.addFavorite(favorite);
-	}
-
-	public void removeFavorite(Favorite favorite) {
-		favorites.removeFavorite(favorite);
 	}
 }

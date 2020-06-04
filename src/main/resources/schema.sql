@@ -28,8 +28,11 @@ create table if not exists LINE_STATION
     duration       int,
     created_at     datetime,
     updated_at     datetime,
+    primary key (id),
+    foreign key (line) references LINE (id) on delete cascade,
     foreign key (station_id) references STATION (id) on delete cascade,
-    foreign key (pre_station_id) references STATION (id) on delete cascade
+    foreign key (pre_station_id) references STATION (id) on delete cascade,
+    unique key lineStation (line, station_id, pre_station_id)
 );
 
 create table if not exists MEMBER
@@ -38,7 +41,8 @@ create table if not exists MEMBER
     email    varchar(255)          not null unique,
     name     varchar(255)          not null,
     password varchar(255)          not null,
-    primary key (id)
+    primary key (id),
+    unique key mail (email)
 );
 
 create table if not exists FAVORITE
@@ -47,6 +51,7 @@ create table if not exists FAVORITE
     member            bigint                not null,
     source_station_id bigint                not null,
     target_station_id bigint                not null,
+    primary key (id),
     foreign key (source_station_id) references STATION (id) on delete cascade,
     foreign key (target_station_id) references STATION (id) on delete cascade,
     unique key uk_favorite (member, source_station_id, target_station_id)

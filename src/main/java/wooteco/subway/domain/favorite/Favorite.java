@@ -37,14 +37,16 @@ public class Favorite {
 			return false;
 		}
 		Favorite favorite = (Favorite) o;
-		return Objects.equals(id, favorite.id) &&
-			Objects.equals(sourceStationId, favorite.sourceStationId) &&
-			Objects.equals(targetStationId, favorite.targetStationId);
+		if (Objects.isNull(this.id) || Objects.isNull(favorite.id)) {
+			return Objects.equals(sourceStationId, favorite.sourceStationId) &&
+				Objects.equals(targetStationId, favorite.targetStationId);
+		}
+		return id.equals(favorite.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, sourceStationId, targetStationId);
+		return Objects.hash(id);
 	}
 }
 

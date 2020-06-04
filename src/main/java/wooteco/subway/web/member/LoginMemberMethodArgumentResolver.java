@@ -14,6 +14,8 @@ import wooteco.subway.service.member.MemberService;
 @Component
 public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
+	private static final String LOGIN_MEMBER_EMAIL = "loginMemberEmail";
+
 	private final MemberService memberService;
 
 	public LoginMemberMethodArgumentResolver(MemberService memberService) {
@@ -28,14 +30,18 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-		String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
-		if (StringUtils.isBlank(email)) {
-			throw new InvalidAuthenticationException("로그인이 되어있지 않거나 세션이 만료되었습니다.");
-		}
+		String email = (String) webRequest.getAttribute(LOGIN_MEMBER_EMAIL, SCOPE_REQUEST);
+		validateLogin(email);
 		try {
 			return memberService.findMemberByEmail(email);
 		} catch (Exception e) {
 			throw new InvalidAuthenticationException("비정상적인 로그인");
+		}
+	}
+
+	private void validateLogin(String email) {
+		if (StringUtils.isBlank(email)) {
+			throw new InvalidAuthenticationException("로그인이 되어있지 않거나 세션이 만료되었습니다.");
 		}
 	}
 }

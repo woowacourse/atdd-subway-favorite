@@ -53,15 +53,28 @@ public class LineStation {
 			return false;
 		}
 		LineStation that = (LineStation) o;
-		return distance == that.distance &&
-			duration == that.duration &&
-			Objects.equals(id, that.id) &&
-			Objects.equals(preStationId, that.preStationId) &&
-			Objects.equals(stationId, that.stationId);
+		if (Objects.isNull(this.id) || Objects.isNull(that.id)) {
+			return distance == that.distance &&
+				duration == that.duration &&
+				Objects.equals(preStationId, that.preStationId) &&
+				Objects.equals(stationId, that.stationId);
+		}
+		return id.equals(that.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, preStationId, stationId, distance, duration);
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "LineStation{" +
+			"id=" + id +
+			", preStationId=" + preStationId +
+			", stationId=" + stationId +
+			", distance=" + distance +
+			", duration=" + duration +
+			'}';
 	}
 }

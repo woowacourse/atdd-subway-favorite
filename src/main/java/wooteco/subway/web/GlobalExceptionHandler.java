@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.AlreadyExistsEmailException;
 import wooteco.subway.exception.EntityNotFoundException;
 import wooteco.subway.exception.LoginFailException;
-import wooteco.subway.service.exception.ErrorResponse;
+import wooteco.subway.web.dto.ErrorResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @RestControllerAdvice(annotations = RestController.class)
