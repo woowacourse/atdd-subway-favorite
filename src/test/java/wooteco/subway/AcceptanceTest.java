@@ -1,20 +1,13 @@
 package wooteco.subway;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -22,6 +15,12 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -42,6 +41,14 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+
+    public StationResponse kangnamStation;
+    public StationResponse yeoksamStation;
+    public StationResponse seolleungStation;
+    public StationResponse hantiStation;
+    public StationResponse dogokStation;
+    public StationResponse maebongStation;
+    public StationResponse yangjaeStation;
 
     @LocalServerPort
     public int port;
@@ -200,7 +207,7 @@ public class AcceptanceTest {
     }
 
     // @formatter:off
-    public PathResponse findPath(String source, String target, String type) {
+    public PathResponse findPath(Long source, Long target, String type) {
         return given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -221,36 +228,36 @@ public class AcceptanceTest {
      */
     public void initStation() {
         // 역 등록
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
-        StationResponse stationResponse4 = createStation(STATION_NAME_HANTI);
-        StationResponse stationResponse5 = createStation(STATION_NAME_DOGOK);
-        StationResponse stationResponse6 = createStation(STATION_NAME_MAEBONG);
-        StationResponse stationResponse7 = createStation(STATION_NAME_YANGJAE);
+        kangnamStation = createStation(STATION_NAME_KANGNAM);
+        yeoksamStation = createStation(STATION_NAME_YEOKSAM);
+        seolleungStation = createStation(STATION_NAME_SEOLLEUNG);
+        hantiStation = createStation(STATION_NAME_HANTI);
+        dogokStation = createStation(STATION_NAME_DOGOK);
+        maebongStation = createStation(STATION_NAME_MAEBONG);
+        yangjaeStation = createStation(STATION_NAME_YANGJAE);
 
         // 2호선
         LineResponse lineResponse1 = createLine("2호선");
-        addLineStation(lineResponse1.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse1.getId(), stationResponse1.getId(), stationResponse2.getId(), 5, 10);
-        addLineStation(lineResponse1.getId(), stationResponse2.getId(), stationResponse3.getId(), 5, 10);
+        addLineStation(lineResponse1.getId(), null, kangnamStation.getId(), 0, 0);
+        addLineStation(lineResponse1.getId(), kangnamStation.getId(), yeoksamStation.getId(), 5, 10);
+        addLineStation(lineResponse1.getId(), yeoksamStation.getId(), seolleungStation.getId(), 5, 10);
 
         // 분당선
         LineResponse lineResponse2 = createLine("분당선");
-        addLineStation(lineResponse2.getId(), null, stationResponse3.getId(), 0, 0);
-        addLineStation(lineResponse2.getId(), stationResponse3.getId(), stationResponse4.getId(), 5, 10);
-        addLineStation(lineResponse2.getId(), stationResponse4.getId(), stationResponse5.getId(), 5, 10);
+        addLineStation(lineResponse2.getId(), null, seolleungStation.getId(), 0, 0);
+        addLineStation(lineResponse2.getId(), seolleungStation.getId(), hantiStation.getId(), 5, 10);
+        addLineStation(lineResponse2.getId(), hantiStation.getId(), dogokStation.getId(), 5, 10);
 
         // 3호선
         LineResponse lineResponse3 = createLine("3호선");
-        addLineStation(lineResponse3.getId(), null, stationResponse5.getId(), 0, 0);
-        addLineStation(lineResponse3.getId(), stationResponse5.getId(), stationResponse6.getId(), 5, 10);
-        addLineStation(lineResponse3.getId(), stationResponse6.getId(), stationResponse7.getId(), 5, 10);
+        addLineStation(lineResponse3.getId(), null, dogokStation.getId(), 0, 0);
+        addLineStation(lineResponse3.getId(), dogokStation.getId(), maebongStation.getId(), 5, 10);
+        addLineStation(lineResponse3.getId(), maebongStation.getId(), yangjaeStation.getId(), 5, 10);
 
         // 신분당선
         LineResponse lineResponse4 = createLine("신분당선");
-        addLineStation(lineResponse4.getId(), null, stationResponse1.getId(), 0, 0);
-        addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
+        addLineStation(lineResponse4.getId(), null, kangnamStation.getId(), 0, 0);
+        addLineStation(lineResponse4.getId(), kangnamStation.getId(), yangjaeStation.getId(), 40, 3);
     }
 
     // @formatter:off

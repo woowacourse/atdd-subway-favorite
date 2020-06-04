@@ -1,14 +1,14 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +27,14 @@ public class PathService {
         this.graphService = graphService;
     }
 
-    public PathResponse findPath(String source, String target, PathType type) {
+    public PathResponse findPath(Long source, Long target, PathType type) {
         if (Objects.equals(source, target)) {
             throw new RuntimeException();
         }
 
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+        Station sourceStation = stationRepository.findById(source).orElseThrow(RuntimeException::new);
+        Station targetStation = stationRepository.findById(target).orElseThrow(RuntimeException::new);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);

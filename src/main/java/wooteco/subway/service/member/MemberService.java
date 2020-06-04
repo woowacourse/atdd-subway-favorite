@@ -73,9 +73,9 @@ public class MemberService {
 
     @Transactional
     public void addFavorite(Member member, FavoriteRequest favoriteRequest) {
-        Station source = stationRepository.findByName(favoriteRequest.getSource())
+        Station source = stationRepository.findById(favoriteRequest.getSource())
                 .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
-        Station target = stationRepository.findByName(favoriteRequest.getTarget())
+        Station target = stationRepository.findById(favoriteRequest.getTarget())
                 .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다."));
         Favorite favorite = new Favorite(source.getId(), target.getId());
 

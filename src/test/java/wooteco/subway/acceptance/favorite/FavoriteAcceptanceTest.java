@@ -1,19 +1,18 @@
 package wooteco.subway.acceptance.favorite;
 
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import wooteco.subway.AcceptanceTest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.member.dto.FavoriteResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
+import static org.assertj.core.api.Assertions.*;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String AUTHORIZATION = "Authorization";
@@ -52,9 +51,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String token = tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken();
 
         //when
-        addFavorite(token, "강남역", "도곡역");
-        addFavorite(token, "강남역", "매봉역");
-        addFavorite(token, "강남역", "한티역");
+        addFavorite(token, kangnamStation.getId(), dogokStation.getId());
+        addFavorite(token, kangnamStation.getId(), maebongStation.getId());
+        addFavorite(token, kangnamStation.getId(), hantiStation.getId());
 
         //and
         List<FavoriteResponse> favorites = getFavorites(token);
@@ -92,8 +91,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     // @formatter:off
-    private void addFavorite(String token, String source, String target) {
-        Map<String, String> params = new HashMap<>();
+    private void addFavorite(String token, Long source, Long target) {
+        Map<String, Long> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
 

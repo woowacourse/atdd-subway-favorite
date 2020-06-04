@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {optionTemplate, searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -12,6 +11,31 @@ function Search() {
   const $searchResult = document.querySelector('#search-result')
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
+
+  function initSubwayStationOptions() {
+    fetch('/stations', {
+      method: 'GET',
+    }).then(response => response.json())
+      .then(stations => {
+        const stationsTemplate = stations.map(optionTemplate).join('');
+
+        const $arrivalStationSelectOptions = document.querySelector(
+          "#arrival-station-name"
+        );
+        const $departureStationSelectOptions = document.querySelector(
+          "#departure-station-name"
+        );
+        $departureStationSelectOptions.insertAdjacentHTML(
+          "afterbegin",
+          stationsTemplate
+        );
+
+        $arrivalStationSelectOptions.insertAdjacentHTML(
+          "afterbegin",
+          stationsTemplate
+        );
+      })
+  }
 
   const showSearchResult = data => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
@@ -72,12 +96,12 @@ function Search() {
 
     api.favorite.add(favoriteInput)
       .then(res => {
-        if (!res.ok){
+        if (!res.ok) {
           throw res
         }
         alert("추가 되었습니다.");
       }).catch(error => {
-        error.json().then(error => alert(error.message))
+      error.json().then(error => alert(error.message))
     })
   }
 
@@ -90,6 +114,7 @@ function Search() {
 
   this.init = () => {
     initEventListener()
+    initSubwayStationOptions()
   }
 }
 

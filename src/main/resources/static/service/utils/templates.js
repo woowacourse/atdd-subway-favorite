@@ -1,3 +1,5 @@
+export const optionTemplate = data => `<option value="${data.id}">${data.name}</option>`
+
 export const listItemTemplate = data =>
   `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
     ${data.name}

@@ -120,8 +120,8 @@ public class MemberControllerTest {
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
-        String inputJson = "{\"source\":\"" + "강남" + "\"," +
-                "\"target\":\"" + "잠실" + "\"" + "}";
+        String inputJson = "{\"source\":\"" + "1" + "\"," +
+                "\"target\":\"" + "6" + "\"" + "}";
 
         this.mockMvc.perform(post("/members/favorites")
                 .header("Authorization", token)
@@ -136,7 +136,7 @@ public class MemberControllerTest {
     @Test
     void getFavorites() throws Exception {
         Set<FavoriteResponse> favorites = new LinkedHashSet<>();
-        favorites.add(new FavoriteResponse(1L, "잠실", "강남"));
+        favorites.add(new FavoriteResponse(1L, "1", "5"));
         given(memberService.findFavorites(any())).willReturn(favorites);
 
         this.mockMvc.perform(get("/members/favorites")

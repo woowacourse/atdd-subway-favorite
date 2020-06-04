@@ -62,17 +62,17 @@ public class MemberServiceTest {
     @DisplayName("즐겨찾기 등록 테스트")
     @Test
     void addFavorite() {
-        Station kangNamStation = new Station(KANG_NAM_STATION_NAME);
-        Station jamSilStation = new Station(JAM_SIL_STATION_NAME);
-        when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
-        when(stationRepository.findByName(JAM_SIL_STATION_NAME)).thenReturn(Optional.of(jamSilStation));
+        Station kangNamStation = new Station(1L, KANG_NAM_STATION_NAME);
+        Station jamSilStation = new Station(2L, JAM_SIL_STATION_NAME);
+        when(stationRepository.findById(kangNamStation.getId())).thenReturn(Optional.of(kangNamStation));
+        when(stationRepository.findById(jamSilStation.getId())).thenReturn(Optional.of(jamSilStation));
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        FavoriteRequest favoriteRequest = new FavoriteRequest(KANG_NAM_STATION_NAME, JAM_SIL_STATION_NAME);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(kangNamStation.getId(), jamSilStation.getId());
 
         memberService.addFavorite(member, favoriteRequest);
 
-        verify(stationRepository).findByName(KANG_NAM_STATION_NAME);
-        verify(stationRepository).findByName(JAM_SIL_STATION_NAME);
+        verify(stationRepository).findById(kangNamStation.getId());
+        verify(stationRepository).findById(jamSilStation.getId());
         verify(memberRepository).save(any());
     }
 
@@ -95,7 +95,7 @@ public class MemberServiceTest {
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        assertThatThrownBy(()->memberService.createToken(loginRequest))
+        assertThatThrownBy(() -> memberService.createToken(loginRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -105,17 +105,17 @@ public class MemberServiceTest {
         Station kangNamStation = new Station(1L, KANG_NAM_STATION_NAME);
         Station jamSilStation = new Station(2L, JAM_SIL_STATION_NAME);
         Station dogukStation = new Station(3L, DOGOK_STATION_NAME);
-        when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
-        when(stationRepository.findByName(JAM_SIL_STATION_NAME)).thenReturn(Optional.of(jamSilStation));
-        when(stationRepository.findByName(DOGOK_STATION_NAME)).thenReturn(Optional.of(dogukStation));
+        when(stationRepository.findById(kangNamStation.getId())).thenReturn(Optional.of(kangNamStation));
+        when(stationRepository.findById(jamSilStation.getId())).thenReturn(Optional.of(jamSilStation));
+        when(stationRepository.findById(dogukStation.getId())).thenReturn(Optional.of(dogukStation));
 
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(stationRepository.findById(1L)).thenReturn(Optional.of(kangNamStation));
         when(stationRepository.findById(2L)).thenReturn(Optional.of(jamSilStation));
         when(stationRepository.findById(3L)).thenReturn(Optional.of(dogukStation));
 
-        FavoriteRequest favoriteRequest1 = new FavoriteRequest(KANG_NAM_STATION_NAME, JAM_SIL_STATION_NAME);
-        FavoriteRequest favoriteRequest2 = new FavoriteRequest(KANG_NAM_STATION_NAME, DOGOK_STATION_NAME);
+        FavoriteRequest favoriteRequest1 = new FavoriteRequest(kangNamStation.getId(), jamSilStation.getId());
+        FavoriteRequest favoriteRequest2 = new FavoriteRequest(kangNamStation.getId(), dogukStation.getId());
         memberService.addFavorite(member, favoriteRequest1);
         memberService.addFavorite(member, favoriteRequest2);
 
