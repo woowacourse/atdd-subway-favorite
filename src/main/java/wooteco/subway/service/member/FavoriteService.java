@@ -5,12 +5,15 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.exception.SameStationException;
+import wooteco.subway.service.exception.WrongStationException;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.station.StationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -40,8 +43,7 @@ public class FavoriteService {
 
     public List<FavoriteResponse> showAllFavorites(Member member) {
         Favorites favorites = member.getFavorites();
-
-        return favorites.toFavoriteResponses(stationService.findStations());
+        return toFavoriteResponses(favorites, stationService.findStations());
     }
 
     public boolean existsFavorite(FavoriteRequest favoriteRequest, Member member) {
@@ -56,5 +58,25 @@ public class FavoriteService {
         if (favoriteRequest.getSourceName().equals(favoriteRequest.getDestinationName())) {
             throw new SameStationException();
         }
+    }
+
+    public List<FavoriteResponse> toFavoriteResponses(Favorites favorites, List<Station> stations) {
+        return favorites.getFavorites().stream()
+                .map(favorite -> toFavoriteResponse(stations, favorite))
+                .collect(Collectors.toList());
+    }
+
+    private FavoriteResponse toFavoriteResponse(List<Station> stations, Favorite favorite) {
+        String sourceName = getStationName(stations, favorite.getSourceId());
+        String destinationName = getStationName(stations, favorite.getDestinationId());
+        return new FavoriteResponse(sourceName, destinationName);
+    }
+
+    private String getStationName(List<Station> stations, Long sourceId) {
+        return stations.stream()
+                .filter(station -> station.getId().equals(sourceId))
+                .map(Station::getName)
+                .findFirst()
+                .orElseThrow(WrongStationException::new);
     }
 }
