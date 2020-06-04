@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.exceptions;
 
 public class NotExistEmailException extends RuntimeException {
     public NotExistEmailException() {

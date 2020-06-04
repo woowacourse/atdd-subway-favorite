@@ -7,7 +7,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
-import wooteco.subway.web.member.NotExistEmailException;
+import wooteco.subway.web.exceptions.NotExistEmailException;
 
 @Service
 public class MemberService {
@@ -45,6 +45,6 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).orElseThrow(NotExistEmailException::new);
     }
 }
