@@ -34,11 +34,11 @@ public class FavoriteDocumentation {
 				                fieldWithPath("favoritePaths[].id").type(JsonFieldType.NUMBER).description("the favorite path's id"),
 				                fieldWithPath("favoritePaths[].source.id").type(JsonFieldType.NUMBER).description("the departure station id"),
 				                fieldWithPath("favoritePaths[].source.name").type(JsonFieldType.STRING).description(
-				                		"the departure station name"),
+						                "the departure station name"),
 				                fieldWithPath("favoritePaths[].source.createdAt").type(JsonFieldType.STRING).description("the time of creating departure station"),
 				                fieldWithPath("favoritePaths[].target.id").type(JsonFieldType.NUMBER).description("the destination station id"),
 				                fieldWithPath("favoritePaths[].target.name").type(JsonFieldType.STRING).description(
-				                		"the destination station name"),
+						                "the destination station name"),
 				                fieldWithPath("favoritePaths[].target.createdAt").type(JsonFieldType.STRING).description("the time of creating destination station")
 		                )
 		);
