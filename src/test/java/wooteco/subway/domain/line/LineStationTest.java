@@ -18,9 +18,9 @@ class LineStationTest {
         LineStation lineStation = new LineStation(2L, 3L, 10, 10);
 
         assertThat(lineStation.isLineStationOf(2L, 3L)).isTrue();
+        assertThat(lineStation.isLineStationOf(2L, 4L)).isFalse();
+        assertThat(lineStation.isLineStationOf(1L, 3L)).isFalse();
+        assertThat(lineStation.isLineStationOf(1L, 1L)).isFalse();
     }
-
-    // TODO: isLineStationOf 테스트 추가
-
 
 }

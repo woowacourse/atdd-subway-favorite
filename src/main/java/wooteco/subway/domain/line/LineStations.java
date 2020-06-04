@@ -24,10 +24,6 @@ public class LineStations {
         return new LineStations(new HashSet<>());
     }
 
-    public Set<LineStation> getStations() {
-        return stations;
-    }
-
     public void add(LineStation targetLineStation) {
         updatePreStationOfNextLineStation(targetLineStation.getPreStationId(), targetLineStation.getStationId());
         stations.add(targetLineStation);
@@ -103,5 +99,9 @@ public class LineStations {
                 .filter(it -> it.getId().equals(stationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Set<LineStation> getStations() {
+        return stations;
     }
 }

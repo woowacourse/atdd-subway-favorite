@@ -2,6 +2,9 @@ package wooteco.subway.domain.favorite;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import wooteco.subway.service.path.DuplicatedStationException;
+
+import java.util.Objects;
 
 public class Favorite {
     @Id
@@ -21,6 +24,9 @@ public class Favorite {
     }
 
     public Favorite(final Long id, final Long memberId, final Long sourceStationId, final Long targetStationId) {
+        if (Objects.equals(sourceStationId, targetStationId)) {
+            throw new DuplicatedStationException();
+        }
         this.id = id;
         this.memberId = memberId;
         this.sourceStationId = sourceStationId;

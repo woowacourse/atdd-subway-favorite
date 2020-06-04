@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class LineStationsTest {
 
@@ -42,11 +41,33 @@ class LineStationsTest {
     }
 
     @Test
-    void getStationIds() {
+    public void getStationIds() {
         final List<Long> stationIds = lineStations.getStationIds();
+
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
         assertThat(stationIds.get(2)).isEqualTo(3L);
         assertThat(stationIds.get(3)).isEqualTo(4L);
+    }
+
+
+    @Test
+    public void getTotalDistance() {
+
+    }
+
+    @Test
+    public void getTotalDuration() {
+
+    }
+
+    @Test
+    void findLineStation() {
+
+    }
+
+    @Test
+    void findStations() {
+
     }
 }
