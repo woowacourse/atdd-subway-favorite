@@ -1,22 +1,23 @@
 package wooteco.subway.service.station;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalTime;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.ActiveProfiles;
+
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 
-import java.time.LocalTime;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
+@ActiveProfiles("test")
 @SpringBootTest
-@Sql("/truncate.sql")
 public class StationServiceTest {
     @Autowired
     private StationService stationService;

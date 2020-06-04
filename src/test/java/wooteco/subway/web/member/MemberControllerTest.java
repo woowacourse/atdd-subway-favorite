@@ -18,7 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -28,10 +28,10 @@ import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 
+@ActiveProfiles("test")
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql("/truncate.sql")
 public class MemberControllerTest {
 
     public static final String TEST_AUTHORIZATION = "Authorization";
@@ -48,9 +48,9 @@ public class MemberControllerTest {
     public void setUp(WebApplicationContext webApplicationContext,
         RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .addFilter(new ShallowEtagHeaderFilter())
-                .apply(documentationConfiguration(restDocumentation))
-                .build();
+            .addFilter(new ShallowEtagHeaderFilter())
+            .apply(documentationConfiguration(restDocumentation))
+            .build();
     }
 
     @Test
@@ -59,16 +59,16 @@ public class MemberControllerTest {
         given(memberService.createMember(any())).willReturn(member);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-                "\"name\":\"" + TEST_USER_NAME + "\"," +
-                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+            "\"name\":\"" + TEST_USER_NAME + "\"," +
+            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
         this.mockMvc.perform(post("/members")
-                .content(inputJson)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print())
-                .andDo(MemberDocumentation.createMember());
+            .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andDo(print())
+            .andDo(MemberDocumentation.createMember());
 
     }
 

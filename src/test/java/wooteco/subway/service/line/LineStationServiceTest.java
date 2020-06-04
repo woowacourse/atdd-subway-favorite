@@ -1,32 +1,31 @@
 package wooteco.subway.service.line;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.jdbc.Sql;
-
-import wooteco.subway.service.line.dto.LineDetailResponse;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.dto.LineDetailResponse;
+
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-@Sql("/truncate.sql")
 public class LineStationServiceTest {
     private static final String STATION_NAME1 = "강남역";
     private static final String STATION_NAME2 = "역삼역";
