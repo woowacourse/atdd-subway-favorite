@@ -16,6 +16,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoriteResponses;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -25,6 +26,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
         createStation("잠실");
         createStation("석촌고분");
+        createStation("석촌");
     }
 
 	/*
@@ -50,9 +52,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(member).isNotBlank();
 
         TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-        createFavorite(tokenResponse);
+        createFavorite(tokenResponse, "잠실", "석촌고분");
 
-        FavoriteResponses favorites = getFavorites(tokenResponse);
+        FavoriteResponses favorites = getFavoriteResponses(tokenResponse);
         List<FavoriteResponse> favoriteResponses = favorites.getFavoriteResponses();
 
         assertThat(favoriteResponses).hasSize(1);
@@ -62,8 +64,42 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         deleteFavorite(tokenResponse, favoriteResponses.get(0).getId());
 
-        favorites = getFavorites(tokenResponse);
+        favorites = getFavoriteResponses(tokenResponse);
         assertThat(favorites.getFavoriteResponses()).hasSize(0);
+    }
+
+    /*
+	given 회원가입이 되어있다.
+	given 로그인이 되어있다.
+	given 즐겨찾기가 저장되어있다.
+	when 역 삭제 요청을 보낸다
+	then 해당 역이 삭제 되었다.
+
+	when 즐겨찾기 목록 조회 요청을 한다.
+	then 해당 역에 대한 정보가 모두 삭제된다.
+
+	when 즐겨찾기 목록 조회 요청을 한다.
+	then 즐겨찾기 목록에 이전에 삭제한 즐겨찾기가 없다.
+	*/
+
+    @DisplayName("역이 삭제될때 해당 역이 모든 즐겨찾기에서 삭제된다.")
+    @Test
+    public void favoriteScenarioDeleteStation() {
+        String member = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(member).isNotBlank();
+
+        TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        createFavorite(tokenResponse, "잠실", "석촌고분");
+        createFavorite(tokenResponse, "석촌", "잠실");
+
+        deleteStation(1L);
+        List<StationResponse> stations = getStations();
+        assertThat(stations).hasSize(2);
+
+        FavoriteResponses favorites = getFavoriteResponses(tokenResponse);
+        List<FavoriteResponse> favoriteResponses = favorites.getFavoriteResponses();
+
+        assertThat(favoriteResponses).hasSize(0);
     }
 
     private void deleteFavorite(TokenResponse tokenResponse, long id) {
@@ -76,7 +112,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.OK.value());
     }
 
-    private FavoriteResponses getFavorites(TokenResponse tokenResponse) {
+    private FavoriteResponses getFavoriteResponses(TokenResponse tokenResponse) {
         return given().auth()
             .oauth2(tokenResponse.getAccessToken())
             .when()
@@ -87,10 +123,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .extract().as(FavoriteResponses.class);
     }
 
-    private void createFavorite(TokenResponse tokenResponse) {
+    private void createFavorite(TokenResponse tokenResponse, String source, String target) {
         Map<String, String> favoriteRequest = new HashMap<>();
-        favoriteRequest.put("source", "잠실");
-        favoriteRequest.put("target", "석촌고분");
+        favoriteRequest.put("source", source);
+        favoriteRequest.put("target", target);
 
         given().auth()
             .oauth2(tokenResponse.getAccessToken())
