@@ -22,10 +22,6 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        if (request.getRequestURI().equals("/members") && request.getMethod().equals("POST")) {
-            // TODO: 2020/05/25 if문 처리 없이 연결을 제어하는 방법 고민
-            return true;
-        }
         String extracted = authExtractor.extract(request, "bearer");
         jwtTokenProvider.validateToken(extracted);
         String email = jwtTokenProvider.getSubject(extracted);

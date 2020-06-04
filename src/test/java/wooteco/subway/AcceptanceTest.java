@@ -270,7 +270,7 @@ public class AcceptanceTest {
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/members").
+                        post("/members/new").
                         then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).

@@ -65,7 +65,7 @@ public class MemberControllerTest {
                 "\"name\":\"" + TEST_USER_NAME + "\"," +
                 "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-        this.mockMvc.perform(post("/members")
+        this.mockMvc.perform(post("/members/new")
                 .content(inputJson)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))

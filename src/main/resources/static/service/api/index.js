@@ -81,7 +81,7 @@ const api = (() => {
 
   const member = {
     create(data) {
-      return request(`/members`, METHOD.POST(data))
+      return request(`/members/new`, METHOD.POST(data))
     },
     find(email) {
       return request(`/members?email=${email}`)
