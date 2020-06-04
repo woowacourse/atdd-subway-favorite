@@ -26,7 +26,7 @@ class LoginMemberControllerTest {
     void createTokenWithError() throws Exception {
         memberRepository.save(new Member("brown@email.com","brown","brown"));
 
-        String input = "\"email\" : \"brown@email.com\", \"password\" : \"wrongPassword\"\n";
+        String input = "{\"email\" : \"brown@email.com\", \"password\" : \"wrongPassword\"}";
         this.mockMvc.perform(post("/oauth/token")
                 .content(input)
                 .contentType(MediaType.APPLICATION_JSON)

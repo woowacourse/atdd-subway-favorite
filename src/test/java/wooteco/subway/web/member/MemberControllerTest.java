@@ -49,8 +49,8 @@ public class MemberControllerTest {
     @BeforeEach
     public void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .apply(documentationConfiguration(restDocumentation))
-            .build();
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
 
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         token = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyb3duQGVtYWlsLmNvbSJ9.elpAi00vJm751cMJmTLehSXD4-jHHIyHGaAcTSh3jCQ";
@@ -61,16 +61,16 @@ public class MemberControllerTest {
         given(memberService.createMember(any())).willReturn(member);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"name\":\"" + TEST_USER_NAME + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+                "\"name\":\"" + TEST_USER_NAME + "\"," +
+                "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
         this.mockMvc.perform(post("/members")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
-            .andDo(print())
-            .andDo(MemberDocumentation.createMember());
+                .content(inputJson)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(MemberDocumentation.createMember());
     }
 
     @Test
@@ -80,10 +80,10 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
         this.mockMvc.perform(get("/members")
-            .header("Authorization", token))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(MemberDocumentation.getMember());
+                .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.getMember());
     }
 
     @Test
@@ -91,16 +91,16 @@ public class MemberControllerTest {
         given(jwtTokenProvider.nonValidToken(anyString())).willReturn(false);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
         String inputJson = "{\"name\":\"" + "brown2" + "\"," +
-            "\"password\":\"" + "1234" + "\"" + "}";
+                "\"password\":\"" + "1234" + "\"" + "}";
 
         this.mockMvc.perform(put("/members/1")
-            .header("Authorization", token)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(inputJson))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(MemberDocumentation.updateMember());
+                .header("Authorization", token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(inputJson))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.updateMember());
     }
 
     @Test
@@ -109,10 +109,10 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
         this.mockMvc.perform(delete("/members/1")
-            .header("Authorization", token))
-            .andExpect(status().isNoContent())
-            .andDo(print())
-            .andDo(MemberDocumentation.deleteMember());
+                .header("Authorization", token))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteMember());
     }
 
     @Test
@@ -121,16 +121,16 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
         String inputJson = "{\"source\":\"" + "강남" + "\"," +
-            "\"target\":\"" + "잠실" + "\"" + "}";
+                "\"target\":\"" + "잠실" + "\"" + "}";
 
         this.mockMvc.perform(post("/members/favorites")
-            .header("Authorization", token)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(inputJson))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(MemberDocumentation.addFavorite());
+                .header("Authorization", token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(inputJson))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.addFavorite());
     }
 
     @Test
@@ -140,10 +140,10 @@ public class MemberControllerTest {
         given(memberService.findFavorites(any())).willReturn(favorites);
 
         this.mockMvc.perform(get("/members/favorites")
-            .header("Authorization", token))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(MemberDocumentation.getFavorites());
+                .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(MemberDocumentation.getFavorites());
     }
 
     @Test
@@ -153,9 +153,9 @@ public class MemberControllerTest {
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/favorites/{id}", 1)
-            .header("Authorization", token))
-            .andExpect(status().isNoContent())
-            .andDo(print())
-            .andDo(MemberDocumentation.deleteFavorites());
+                .header("Authorization", token))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(MemberDocumentation.deleteFavorites());
     }
 }
