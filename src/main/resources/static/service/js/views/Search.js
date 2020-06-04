@@ -1,7 +1,7 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE, SUCCESS_MESSAGE } from '../../utils/constants.js'
 import api from '../../api/index.js'
+import user from '../../api/user.js'
 import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -13,11 +13,17 @@ function Search() {
   const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
   const $minimumTimeTab = document.querySelector('#minimum-time-tab')
 
+  let sourceStationId
+  let targetStationId
+
   const showSearchResult = data => {
     const isHidden = $searchResultContainer.classList.contains('hidden')
     if (isHidden) {
       $searchResultContainer.classList.remove('hidden')
     }
+
+    sourceStationId = data.stations[0].id
+    targetStationId = data.stations[data.stations.length - 1].id
     $searchResult.innerHTML = searchResultTemplate(data)
   }
 
@@ -35,35 +41,106 @@ function Search() {
     getSearchResult(PATH_TYPE.DURATION)
   }
 
-  const getSearchResult = pathType => {
+  const getSearchResult = async pathType => {
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value,
       type: pathType
     }
-    api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+    try {
+      const path = await api.path.find(searchInput)
+      showSearchResult(path)
+
+      if (!user.isLoggedIn()) {
+        return
+      }
+
+      const { exist } = await user.hasFavorite({
+        sourceId: path.stations[0].id,
+        targetId: path.stations[path.stations.length - 1].id
+      })
+
+      exist ? setActiveOnFavorite() : setInactiveOnFavorite()
+
+    }
+    catch (error) {
+      Snackbar.show({
+        text: error.message,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+      })
+    }
   }
 
-  const onToggleFavorite = event => {
-    event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+  const setInactiveOnFavorite = () => {
+    const { classList } = $favoriteButton
+    classList.remove('mdi-star')
+    classList.remove('text-yellow-500')
+    classList.add('bg-yellow-500')
+    classList.add('mdi-star-outline')
+  }
 
-    if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
-    } else {
-      classList.remove('mdi-star-outline')
-      classList.remove('text-gray-600')
-      classList.remove('bg-yellow-500')
-      classList.add('mdi-star')
-      classList.add('text-yellow-500')
+  const setActiveOnFavorite = () => {
+    const { classList } = $favoriteButton
+    classList.add('mdi-star')
+    classList.add('text-yellow-500')
+    classList.remove('bg-yellow-500')
+    classList.remove('mdi-star-outline')
+  }
+
+  const onToggleFavorite = async event => {
+    event.preventDefault()
+    if (!user.isLoggedIn()) {
+      Snackbar.show({
+        text: ERROR_MESSAGE.LOGIN_REQUIRED,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+      })
+      return
+    }
+    const isFavorite = $favoriteButton.classList.contains('mdi-star')
+
+    try {
+      if (isFavorite) {
+        await user.deleteFavorite({
+          sourceId: sourceStationId,
+          targetId: targetStationId
+        })
+
+        Snackbar.show({
+          text: SUCCESS_MESSAGE.DELETE_FAVORITE,
+          pos: 'bottom-center',
+          showAction: false,
+          duration: 2000
+        })
+
+        setInactiveOnFavorite()
+
+      } else {
+        await user.addFavorite({
+          sourceStationId,
+          targetStationId
+        })
+
+        Snackbar.show({
+          text: SUCCESS_MESSAGE.ADD_FAVORITE,
+          pos: 'bottom-center',
+          showAction: false,
+          duration: 2000
+        })
+
+        setActiveOnFavorite()
+      }
+    }
+    catch (error) {
+      Snackbar.show({
+        text: error.message,
+        pos: 'bottom-center',
+        showAction: false,
+        duration: 2000
+      })
     }
   }
 
@@ -75,6 +152,15 @@ function Search() {
   }
 
   this.init = () => {
+    const params = (new URL(document.location)).searchParams
+    const source = params.get('source')
+    const target = params.get('target')
+
+    if (source && target) {
+      $departureStationName.value = source
+      $arrivalStationName.value = target
+      getSearchResult(PATH_TYPE.DISTANCE)
+    }
     initEventListener()
   }
 }
