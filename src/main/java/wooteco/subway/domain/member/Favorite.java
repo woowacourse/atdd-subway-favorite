@@ -6,7 +6,7 @@ public class Favorite {
     private Long sourceId;
     private Long destinationId;
 
-    public Favorite() {
+    private Favorite() {
     }
 
     public Favorite(Long sourceId, Long destinationId) {

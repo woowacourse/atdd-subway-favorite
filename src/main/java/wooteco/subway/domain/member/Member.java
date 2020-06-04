@@ -15,7 +15,7 @@ public class Member {
     @Embedded.Empty
     private Favorites favorites = Favorites.empty();
 
-    public Member() {
+    private Member() {
     }
 
     public Member(String email, String name, String password) {

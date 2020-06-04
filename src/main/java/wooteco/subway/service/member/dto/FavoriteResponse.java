@@ -4,7 +4,7 @@ public class FavoriteResponse {
     private String sourceName;
     private String destinationName;
 
-    public FavoriteResponse() {
+    private FavoriteResponse() {
     }
 
     public FavoriteResponse(String sourceName, String destinationName) {

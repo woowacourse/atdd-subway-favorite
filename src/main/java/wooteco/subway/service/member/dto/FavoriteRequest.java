@@ -8,7 +8,7 @@ public class FavoriteRequest {
     @NotBlank(message = "EMPTY_DESTINATION")
     private String destinationName;
 
-    public FavoriteRequest() {
+    private FavoriteRequest() {
     }
 
     public FavoriteRequest(@NotBlank(message = "EMPTY_SOURCE") String sourceName, @NotBlank(message = "EMPTY_DESTINATION") String destinationName) {

@@ -8,7 +8,7 @@ import java.util.Objects;
 public class ErrorResponse {
     private String message;
 
-    public ErrorResponse() {
+    private ErrorResponse() {
     }
 
     public ErrorResponse(String message) {

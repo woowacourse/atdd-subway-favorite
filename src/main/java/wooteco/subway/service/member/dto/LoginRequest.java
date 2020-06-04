@@ -10,7 +10,7 @@ public class LoginRequest {
     @NotBlank(message = "PASSWORD_EMPTY")
     private String password;
 
-    public LoginRequest() {
+    private LoginRequest() {
     }
 
     public LoginRequest(String email, String password) {
