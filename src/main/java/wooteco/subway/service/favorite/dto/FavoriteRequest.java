@@ -19,7 +19,7 @@ public class FavoriteRequest {
 	}
 
 	public Favorite toFavorite() {
-		return new Favorite(sourceStationId, targetStationId);
+		return Favorite.of(sourceStationId, targetStationId);
 	}
 
 	public Long getSourceStationId() {

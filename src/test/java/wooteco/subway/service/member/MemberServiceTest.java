@@ -51,7 +51,7 @@ public class MemberServiceTest {
 	void createMember() {
 		MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME,
 			TEST_USER_PASSWORD);
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD).withId(1L);
 
 		when(memberRepository.save(any())).thenReturn(member);
 		memberService.createMember(memberRequest);
@@ -62,7 +62,7 @@ public class MemberServiceTest {
 	@DisplayName("로그인시 Jwt 토큰 발급 기능 수행시,  jwtTokenProvider의 토큰 생성 기능을 정상 호출한다.")
 	@Test
 	void createJwtToken() {
-		Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
 		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
@@ -74,11 +74,11 @@ public class MemberServiceTest {
 	@DisplayName("회원정보 업데이트시, 요청한 정보대로 회원의 정보가 변경된다.")
 	@Test
 	void updateMember() {
-		Member member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME,
-			TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD)
+			.withId(TEST_USER_ID);
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-		Member newMember = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NEW_NAME,
-			TEST_USER_NEW_PASSWORD);
+		Member newMember = Member.of(TEST_USER_EMAIL, TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD)
+			.withId(TEST_USER_ID);
 
 		memberService.updateMember(TEST_USER_ID,
 			new UpdateMemberRequest(TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD));
@@ -98,7 +98,7 @@ public class MemberServiceTest {
 	@DisplayName("이메일을 통한 회원 정보 조회시, memberRepository의 findByEmail을 정상 호출한다.")
 	@Test
 	void findMemberByEmail() {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD).withId(1L);
 		when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
 		memberService.findMemberByEmail(TEST_USER_EMAIL);
 
@@ -120,7 +120,7 @@ public class MemberServiceTest {
 	@ParameterizedTest
 	@CsvSource(value = {"brown, true", "cu, false"})
 	void loginWithForm(String password, boolean expected) {
-		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD).withId(1L);
 		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, password);
 		when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
 		boolean actual = memberService.loginWithForm(loginRequest);

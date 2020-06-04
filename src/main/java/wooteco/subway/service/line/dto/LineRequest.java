@@ -14,7 +14,7 @@ public class LineRequest {
 	}
 
 	public Line toLine() {
-		return new Line(name, startTime, endTime, intervalTime);
+		return Line.of(name, startTime, endTime, intervalTime);
 	}
 
 	public String getName() {

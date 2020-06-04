@@ -11,35 +11,31 @@ import wooteco.subway.domain.favorite.Favorites;
 public class Member {
 
 	@Id
-	private Long id;
+	private final Long id;
 	private String email;
 	private String name;
 	private String password;
 	@Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
 	private Favorites favorites;
 
-	private Member() {
-	}
-
-	public Member(String email, String name, String password) {
-		this.email = email;
-		this.name = name;
-		this.password = password;
-	}
-
-	public Member(Long id, String email, String name, String password) {
-		this.id = id;
-		this.email = email;
-		this.name = name;
-		this.password = password;
-	}
-
-	public Member(Long id, String email, String name, String password, Favorites favorites) {
+	private Member(Long id, String email, String name, String password, Favorites favorites) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
 		this.password = password;
 		this.favorites = favorites;
+	}
+
+	public static Member of(String email, String name, String password) {
+		return new Member(null, email, name, password, null);
+	}
+
+	public static Member of(String email, String name, String password, Favorites favorites) {
+		return new Member(null, email, name, password, favorites);
+	}
+
+	public Member withId(Long id) {
+		return new Member(id, this.email, this.name, this.password, this.favorites);
 	}
 
 	public void update(String name, String password) {
@@ -100,12 +96,6 @@ public class Member {
 			return false;
 		}
 		Member member = (Member) o;
-		if (Objects.isNull(this.id) || Objects.isNull(member.id)) {
-			return Objects.equals(email, member.email) &&
-				Objects.equals(name, member.name) &&
-				Objects.equals(password, member.password) &&
-				Objects.equals(favorites, member.favorites);
-		}
 		return id.equals(member.id);
 	}
 

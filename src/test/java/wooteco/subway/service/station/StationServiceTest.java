@@ -30,13 +30,13 @@ public class StationServiceTest {
 
 	@Test
 	public void removeStation() {
-		Station station1 = stationRepository.save(new Station("강남역"));
-		Station station2 = stationRepository.save(new Station("역삼역"));
+		Station station1 = stationRepository.save(Station.of("강남역"));
+		Station station2 = stationRepository.save(Station.of("역삼역"));
 		Line line = lineRepository
-			.save(new Line("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
+			.save(Line.of("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
 
-		line.addLineStation(new LineStation(null, station1.getId(), 10, 10));
-		line.addLineStation(new LineStation(station1.getId(), station2.getId(), 10, 10));
+		line.addLineStation(LineStation.of(null, station1.getId(), 10, 10).withId(1L));
+		line.addLineStation(LineStation.of(station1.getId(), station2.getId(), 10, 10).withId(2L));
 		lineRepository.save(line);
 
 		stationService.deleteStationById(station1.getId());

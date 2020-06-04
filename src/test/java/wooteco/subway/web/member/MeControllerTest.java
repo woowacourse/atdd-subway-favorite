@@ -87,7 +87,7 @@ public class MeControllerTest {
 	@DisplayName("토큰을 이용해서 내 정보를 조회한다. OK 상태코드를 반환하고, 해당 회원의 정보를 반환하는지 확인한다.")
 	@Test
 	void getMemberByEmail() throws Exception {
-		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
+		Member member = Member.of(TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD).withId(TIGER_ID);
 		given(memberService.findMemberByEmail(TIGER_EMAIL)).willReturn(member);
 
 		String expected =
@@ -123,7 +123,7 @@ public class MeControllerTest {
 	@DisplayName("토큰값에 해당하는 계정의 회원 정보를 수정한다. 정보 수정후 OK 코드를 반환한다.")
 	@Test
 	void updateMember() throws Exception {
-		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
+		Member member = Member.of(TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD).withId(TIGER_ID);
 		given(memberService.findMemberByEmail(TIGER_EMAIL)).willReturn(member);
 		String body =
 			"{\"name\" : \"" + TIGER_NAME + "\", \"password\" : \"" + TIGER_PASSWORD + "\"}";
@@ -160,7 +160,7 @@ public class MeControllerTest {
 	@DisplayName("토큰에 포함된 이메일 회원 정보를 삭제한 후, NoContent 상태코드를 반환한다.")
 	@Test
 	void deleteMember() throws Exception {
-		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
+		Member member = Member.of(TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD).withId(TIGER_ID);
 		given(memberService.findMemberByEmail(TIGER_EMAIL)).willReturn(member);
 
 		this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")

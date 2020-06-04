@@ -6,17 +6,26 @@ import org.springframework.data.annotation.Id;
 public class LineStation {
 
 	@Id
-	private Long id;
+	private final Long id;
 	private Long preStationId;
 	private Long stationId;
 	private int distance;
 	private int duration;
 
-	public LineStation(Long preStationId, Long stationId, int distance, int duration) {
+	private LineStation(Long id, Long preStationId, Long stationId, int distance, int duration) {
+		this.id = id;
 		this.preStationId = preStationId;
 		this.stationId = stationId;
 		this.distance = distance;
 		this.duration = duration;
+	}
+
+	public static LineStation of(Long preStationId, Long stationId, int distance, int duration) {
+		return new LineStation(null, preStationId, stationId, distance, duration);
+	}
+
+	public LineStation withId(Long Id) {
+		return new LineStation(Id, this.preStationId, this.stationId, this.distance, this.duration);
 	}
 
 	public void updatePreLineStation(Long preStationId) {
@@ -53,13 +62,7 @@ public class LineStation {
 			return false;
 		}
 		LineStation that = (LineStation) o;
-		if (Objects.isNull(this.id) || Objects.isNull(that.id)) {
-			return distance == that.distance &&
-				duration == that.duration &&
-				Objects.equals(preStationId, that.preStationId) &&
-				Objects.equals(stationId, that.stationId);
-		}
-		return id.equals(that.id);
+		return Objects.equals(id, that.id);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -63,8 +64,12 @@ public class LineControllerTest {
 	}
 
 	private LineDetailResponse createMockResponse() {
-		List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-		return LineDetailResponse.of(new Line(), stations);
+		List<Station> stations = Arrays.asList(
+			Station.of("강남역").withId(1L),
+			Station.of("역삼역").withId(2L),
+			Station.of("삼성역").withId(3L));
+		Line line = Line.of("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(1L);
+		return LineDetailResponse.of(line, stations);
 	}
 }
 

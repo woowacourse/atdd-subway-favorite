@@ -6,13 +6,22 @@ import org.springframework.data.annotation.Id;
 public class Favorite {
 
 	@Id
-	private Long id;
+	private final Long id;
 	private final Long sourceStationId;
 	private final Long targetStationId;
 
-	public Favorite(long sourceStationId, long targetStationId) {
+	private Favorite(Long id, Long sourceStationId, Long targetStationId) {
+		this.id = id;
 		this.sourceStationId = sourceStationId;
 		this.targetStationId = targetStationId;
+	}
+
+	public static Favorite of(long sourceStationId, long targetStationId) {
+		return new Favorite(null, sourceStationId, targetStationId);
+	}
+
+	public Favorite withId(Long id) {
+		return new Favorite(id, this.sourceStationId, this.targetStationId);
 	}
 
 	public long getSourceStationId() {
@@ -37,11 +46,7 @@ public class Favorite {
 			return false;
 		}
 		Favorite favorite = (Favorite) o;
-		if (Objects.isNull(this.id) || Objects.isNull(favorite.id)) {
-			return Objects.equals(sourceStationId, favorite.sourceStationId) &&
-				Objects.equals(targetStationId, favorite.targetStationId);
-		}
-		return id.equals(favorite.id);
+		return Objects.equals(id, favorite.id);
 	}
 
 	@Override

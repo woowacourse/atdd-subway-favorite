@@ -47,17 +47,18 @@ class FavoriteServiceTest {
 	void setUp() {
 		favoriteService = new FavoriteService(memberRepository, stationRepository);
 		Favorites favorites = new Favorites(
-			new HashSet<>(Arrays.asList(new Favorite(FIRST_STATION_ID,
-				SECOND_STATION_ID), new Favorite(SECOND_STATION_ID, THIRD_STATION_ID))));
-		member = new Member(1L, "sample@sample", "sample", "sample", favorites);
+			new HashSet<>(Arrays.asList(
+				Favorite.of(FIRST_STATION_ID, SECOND_STATION_ID).withId(1L),
+				Favorite.of(SECOND_STATION_ID, THIRD_STATION_ID).withId(2L))));
+		member = Member.of("sample@sample", "sample", "sample", favorites).withId(1L);
 	}
 
 	@DisplayName("회원의 즐겨찾기 노선 목록 전체를 조회")
 	@Test
 	void getFavorites() {
-		Station gangnam = new Station(1L, "강남");
-		Station gangbuk = new Station(2L, "강북");
-		Station gangdong = new Station(3L, "강동");
+		Station gangnam = Station.of("강남").withId(1L);
+		Station gangbuk = Station.of("강북").withId(2L);
+		Station gangdong = Station.of("강동").withId(3L);
 		List<Station> stations = Arrays.asList(gangnam, gangbuk, gangdong);
 		when(stationRepository.findAllById(anySet())).thenReturn(stations);
 		List<FavoriteResponse> favorites1 = favoriteService.getFavorites(member);
@@ -85,6 +86,7 @@ class FavoriteServiceTest {
 		FavoriteRequest request = new FavoriteRequest(FIRST_STATION_ID, THIRD_STATION_ID);
 		favoriteService.addFavorite(member, request);
 		verify(memberRepository).save(any());
+
 		assertThat(member.getFavorites()).contains(request.toFavorite());
 	}
 
@@ -95,7 +97,8 @@ class FavoriteServiceTest {
 
 		verify(memberRepository).save(any());
 		assertThat(
-			member.getFavorites().contains(new Favorite(FIRST_STATION_ID, SECOND_STATION_ID)))
+			member.getFavorites()
+				.contains(Favorite.of(FIRST_STATION_ID, SECOND_STATION_ID).withId(1L)))
 			.isFalse();
 
 	}

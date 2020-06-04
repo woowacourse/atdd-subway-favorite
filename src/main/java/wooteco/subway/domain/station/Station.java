@@ -8,21 +8,23 @@ import org.springframework.data.annotation.Id;
 public class Station {
 
 	@Id
-	private Long id;
-	private String name;
+	private final Long id;
+	private final String name;
 	@CreatedDate
-	private LocalDateTime createdAt;
+	private final LocalDateTime createdAt;
 
-	public Station() {
-	}
-
-	public Station(String name) {
-		this.name = name;
-	}
-
-	public Station(Long id, String name) {
+	private Station(Long id, String name, LocalDateTime createdAt) {
 		this.id = id;
 		this.name = name;
+		this.createdAt = createdAt;
+	}
+
+	public static Station of(String name) {
+		return new Station(null, name, null);
+	}
+
+	public Station withId(Long id) {
+		return new Station(id, this.name, this.createdAt);
 	}
 
 	public Long getId() {
@@ -46,10 +48,6 @@ public class Station {
 			return false;
 		}
 		Station station = (Station) o;
-		if (Objects.isNull(this.id) || Objects.isNull(station.id)) {
-			return Objects.equals(name, station.name) &&
-				Objects.equals(createdAt, station.createdAt);
-		}
 		return id.equals(station.id);
 	}
 

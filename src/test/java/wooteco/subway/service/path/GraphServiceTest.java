@@ -38,22 +38,22 @@ public class GraphServiceTest {
 	void setUp() {
 		graphService = new GraphService();
 
-		station1 = new Station(1L, STATION_NAME1);
-		station2 = new Station(2L, STATION_NAME2);
-		station3 = new Station(3L, STATION_NAME3);
-		station4 = new Station(4L, STATION_NAME4);
-		station5 = new Station(5L, STATION_NAME5);
-		station6 = new Station(6L, STATION_NAME6);
+		station1 = Station.of(STATION_NAME1).withId(1L);
+		station2 = Station.of(STATION_NAME2).withId(2L);
+		station3 = Station.of(STATION_NAME3).withId(3L);
+		station4 = Station.of(STATION_NAME4).withId(4L);
+		station5 = Station.of(STATION_NAME5).withId(5L);
+		station6 = Station.of(STATION_NAME6).withId(6L);
 
-		line1 = new Line(1L, "2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
-		line1.addLineStation(new LineStation(null, 1L, 10, 10));
-		line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-		line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+		line1 = Line.of("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(1L);
+		line1.addLineStation(LineStation.of(null, 1L, 10, 10).withId(1L));
+		line1.addLineStation(LineStation.of(1L, 2L, 10, 10).withId(2L));
+		line1.addLineStation(LineStation.of(2L, 3L, 10, 10).withId(3L));
 
-		line2 = new Line(2L, "신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5);
-		line2.addLineStation(new LineStation(null, 1L, 10, 10));
-		line2.addLineStation(new LineStation(1L, 4L, 10, 10));
-		line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+		line2 = Line.of("신분당선", LocalTime.of(5, 30), LocalTime.of(22, 30), 5).withId(2L);
+		line2.addLineStation(LineStation.of(null, 1L, 10, 10).withId(4L));
+		line2.addLineStation(LineStation.of(1L, 4L, 10, 10).withId(5L));
+		line2.addLineStation(LineStation.of(4L, 5L, 10, 10).withId(6L));
 	}
 
 	@Test

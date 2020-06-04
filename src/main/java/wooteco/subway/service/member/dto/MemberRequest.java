@@ -40,6 +40,6 @@ public class MemberRequest {
 	}
 
 	public Member toMember() {
-		return new Member(email, name, password);
+		return Member.of(email, name, password);
 	}
 }

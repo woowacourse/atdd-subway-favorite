@@ -76,7 +76,7 @@ public class MemberControllerTest {
 	@DisplayName("회원등록을 성공적으로 마치면, Created 상태를 반환하는지 확인한다.")
 	@Test
 	void createMember() throws Exception {
-		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
+		Member member = Member.of(TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD).withId(TIGER_ID);
 		given(memberService.createMember(any())).willReturn(MemberResponse.of(member));
 
 		String body = "{\"email\" : \"" + TIGER_EMAIL + "\", \"name\" : \"" + TIGER_NAME
@@ -113,7 +113,7 @@ public class MemberControllerTest {
 	@DisplayName("이메일로 회원을 조회하고, OK 상태코드를 반환하고, 해당 회원의 정보를 반환하는지 확인한다.")
 	@Test
 	void getMemberByEmail() throws Exception {
-		Member member = new Member(TIGER_ID, TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD);
+		Member member = Member.of(TIGER_EMAIL, TIGER_NAME, TIGER_PASSWORD).withId(TIGER_ID);
 		given(memberService.findMemberResponseByEmail(TIGER_EMAIL))
 			.willReturn(MemberResponse.of(member));
 

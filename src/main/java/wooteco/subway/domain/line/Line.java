@@ -13,7 +13,7 @@ import org.springframework.data.relational.core.mapping.Embedded;
 public class Line {
 
 	@Id
-	private Long id;
+	private final Long id;
 	private String name;
 	private LocalTime startTime;
 	private LocalTime endTime;
@@ -23,20 +23,22 @@ public class Line {
 	@LastModifiedDate
 	private LocalDateTime updatedAt;
 	@Embedded.Empty
-	private LineStations stations = LineStations.empty();
+	private final LineStations stations = LineStations.empty();
 
-	public Line() {
-	}
-
-	public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+	private Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+		this.id = id;
 		this.name = name;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.intervalTime = intervalTime;
 	}
 
-	public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-		this(null, name, startTime, endTime, intervalTime);
+	public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+		return new Line(null, name, startTime, endTime, intervalTime);
+	}
+
+	public Line withId(Long id) {
+		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime);
 	}
 
 	public void update(Line line) {
@@ -107,16 +109,7 @@ public class Line {
 			return false;
 		}
 		Line line = (Line) o;
-		if (Objects.isNull(this.id) || Objects.isNull(line.id)) {
-			return intervalTime == line.intervalTime &&
-				Objects.equals(name, line.name) &&
-				Objects.equals(startTime, line.startTime) &&
-				Objects.equals(endTime, line.endTime) &&
-				Objects.equals(createdAt, line.createdAt) &&
-				Objects.equals(updatedAt, line.updatedAt) &&
-				Objects.equals(stations, line.stations);
-		}
-		return id.equals(line.id);
+		return Objects.equals(id, line.id);
 	}
 
 	@Override

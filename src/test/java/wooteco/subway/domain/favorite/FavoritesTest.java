@@ -14,10 +14,10 @@ class FavoritesTest {
 	@Test
 	void findAllIds() {
 		Set<Favorite> favorites = new HashSet<>(Arrays.asList(
-			new Favorite(1L, 2L),
-			new Favorite(1L, 3L),
-			new Favorite(2L, 3L),
-			new Favorite(4L, 1L)
+			Favorite.of(1L, 2L).withId(1L),
+			Favorite.of(1L, 3L).withId(2L),
+			Favorite.of(2L, 3L).withId(3L),
+			Favorite.of(4L, 1L).withId(4L)
 		));
 		Set<Long> actual = new Favorites(favorites).findAllIds();
 		HashSet<Long> expected = new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L));

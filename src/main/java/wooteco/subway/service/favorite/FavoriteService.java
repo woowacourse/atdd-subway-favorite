@@ -46,7 +46,7 @@ public class FavoriteService {
     }
 
     public FavoriteExistenceResponse hasFavoritePath(Member member, Long sourceStationId, Long targetStationId) {
-        Favorite request = new Favorite(sourceStationId, targetStationId);
+        Favorite request = Favorite.of(sourceStationId, targetStationId);
         return new FavoriteExistenceResponse(member.hasFavorite(request));
     }
 
@@ -65,7 +65,7 @@ public class FavoriteService {
     }
 
     public void removeFavorite(Member member, Long sourceId, Long targetId) {
-        Favorite favorite = new Favorite(sourceId, targetId);
+        Favorite favorite = Favorite.of(sourceId, targetId);
         member.removeFavorite(favorite);
         memberRepository.save(member);
     }
