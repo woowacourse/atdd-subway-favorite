@@ -9,8 +9,8 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -21,31 +21,32 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+    }
+
+    public void updateMember(Member member, UpdateMemberRequest updateMemberRequest) {
+        member.update(updateMemberRequest.getName(), updateMemberRequest.getPassword());
         memberRepository.save(member);
     }
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
     }
 
-    public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
-        if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+    public String createToken(LoginRequest loginRequest) {
+        Member member = memberRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("입력한 유저 이메일이 없습니다."));
+        if (!member.checkPassword(loginRequest.getPassword())) {
+            throw new IllegalArgumentException("잘못된 패스워드");
         }
 
-        return jwtTokenProvider.createToken(param.getEmail());
+        return jwtTokenProvider.createToken(loginRequest.getEmail());
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("입력한 유저 이메일이 없습니다."));
     }
 }

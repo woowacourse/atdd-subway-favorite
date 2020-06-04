@@ -1,5 +1,6 @@
 package wooteco.subway.web.member.interceptor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -11,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-    private AuthorizationExtractor authExtractor;
-    private JwtTokenProvider jwtTokenProvider;
+    private final AuthorizationExtractor authExtractor;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
         this.authExtractor = authExtractor;
@@ -20,29 +21,29 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
-        // TODO: Authorization 헤더를 통해 Bearer 값을 추출 (authExtractor.extract() 메서드 활용)
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        String token = authExtractor.extract(request, "bearer");
+        if (jwtTokenProvider.isInvalidToken(token)) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
+        }
 
-        // TODO: 추출한 토큰값의 유효성 검사 (jwtTokenProvider.validateToken() 메서드 활용)
-
-        // TODO: 추출한 토큰값에서 email 정보 추출 (jwtTokenProvider.getSubject() 메서드 활용)
-        String email = "";
+        String email = jwtTokenProvider.getSubject(token);
 
         request.setAttribute("loginMemberEmail", email);
         return true;
     }
 
     @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+            Object handler,
+            ModelAndView modelAndView) throws Exception {
 
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+            Exception exception) throws Exception {
 
     }
 }
