@@ -73,7 +73,7 @@ const api = (() => {
       return requestWithJsonData(`/favorites/${id}`);
     },
     getAll() {
-      return requestWithJsonData(`/me/favorites`);
+      return requestWithJsonData(`/favorites/me`);
     },
     delete(id) {
       return request(`/favorites/${id}`, METHOD.DELETE());

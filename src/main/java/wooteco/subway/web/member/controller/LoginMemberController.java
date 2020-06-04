@@ -1,7 +1,5 @@
 package wooteco.subway.web.member.controller;
 
-import java.util.Set;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.favorite.FavoriteService;
-import wooteco.subway.service.favorite.dto.FavoriteDetailResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberDetailResponse;
@@ -48,10 +45,4 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(MemberDetailResponse.of(member));
     }
 
-    @IsAuth
-    @GetMapping("/me/favorites")
-    public ResponseEntity<Set<FavoriteDetailResponse>> getMemberFavorites(@LoginMember Member member) {
-        Set<FavoriteDetailResponse> responses =  favoriteService.getAll(member);
-        return ResponseEntity.ok().body(responses);
-    }
 }

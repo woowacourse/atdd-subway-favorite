@@ -41,8 +41,7 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail())
-            .orElseThrow(() -> new NotFoundMemberException(param.getEmail()));
+        Member member = findMemberByEmail(param.getEmail());
         if (!member.checkPassword(param.getPassword())) {
             throw new NotMatchPasswordException("잘못된 패스워드 입니다.");
         }
