@@ -59,4 +59,8 @@ public class Favorites {
                 .filter(favorite -> favorite.getSourceId().equals(sourceId) && favorite.getDestinationId().equals(destinationId))
                 .findFirst();
     }
+
+    public boolean contains(Favorite favorite) {
+        return favorites.contains(favorite);
+    }
 }

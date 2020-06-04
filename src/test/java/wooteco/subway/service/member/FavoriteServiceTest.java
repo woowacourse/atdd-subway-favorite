@@ -66,7 +66,7 @@ public class FavoriteServiceTest {
 
         verify(memberRepository).save(any());
 
-        assertThat(member.getFavorites().size()).isEqualTo(0);
+        assertThat(member.getFavorites().getFavorites().size()).isEqualTo(0);
     }
 
     @Test

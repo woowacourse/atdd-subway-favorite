@@ -4,8 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
 
-import java.util.Set;
-
 public class Member {
     @Id
     private Long id;
@@ -47,8 +45,8 @@ public class Member {
         return password;
     }
 
-    public Set<Favorite> getFavorites() {
-        return favorites.getFavorites();
+    public Favorites getFavorites() {
+        return new Favorites(favorites.getFavorites());
     }
 
     public void update(String name, String password) {

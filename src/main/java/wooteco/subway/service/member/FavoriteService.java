@@ -39,14 +39,14 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> showAllFavorites(Member member) {
-        Favorites favorites = new Favorites(member.getFavorites());
+        Favorites favorites = member.getFavorites();
 
         return favorites.toFavoriteResponses(stationService.findStations());
     }
 
     public boolean existsFavorite(FavoriteRequest favoriteRequest, Member member) {
         validate(favoriteRequest);
-        Favorites favorites = new Favorites(member.getFavorites());
+        Favorites favorites = member.getFavorites();
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
         Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
         return favorites.findById(sourceId, destinationId).isPresent();
