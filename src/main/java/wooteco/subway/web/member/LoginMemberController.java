@@ -4,7 +4,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
-import wooteco.subway.service.member.dto.*;
+import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class LoginMemberController {
@@ -15,10 +21,15 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
+    public ResponseEntity<Void> login(@RequestBody LoginRequest param, HttpServletResponse response) {
         String token = memberService.createToken(param);
+
+        Cookie cookie = new Cookie("Bearer", token);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+
         return ResponseEntity.ok()
-                .body(new TokenResponse(token, "Bearer"));
+                .build();
     }
 
     @PostMapping("/members")

@@ -1,11 +1,11 @@
 package wooteco.subway.acceptance.member;
 
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,14 +33,16 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
      * When: 회원 탈퇴 요청을 한다.
      * Then: 회원 탈퇴가 완료되었다.
      */
+
     @Test
     void manageLoginMember() {
         join(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-        TokenResponse token = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
-        assertThat(token.getTokenType()).isEqualTo("Bearer");
-        assertThat(token.getAccessToken()).isNotBlank();
+        Response response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.cookie("Bearer")).isNotEmpty();
 
+        String token = response.cookie("Bearer");
         MemberResponse member = getMemberByToken(token);
         assertThat(member.getId()).isNotNull();
         assertThat(member.getEmail()).isEqualTo(TEST_USER_EMAIL);
@@ -55,9 +57,9 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
         deleteMember(token);
     }
 
-    private MemberResponse getMemberByToken(TokenResponse tokenResponse) {
+    private MemberResponse getMemberByToken(String token) {
         return given()
-                .auth().oauth2(tokenResponse.getAccessToken())
+                .cookie("Bearer", token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -68,13 +70,13 @@ public class LoginMemberAcceptanceTest extends AcceptanceTest {
                 .extract().as(MemberResponse.class);
     }
 
-    private void updateMember(String name, String password, TokenResponse tokenResponse) {
+    private void updateMember(String name, String password, String token) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("password", password);
 
         given().body(params)
-                .auth().oauth2(tokenResponse.getAccessToken())
+                .cookie("Bearer", token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .put("/me")

@@ -1,11 +1,11 @@
 package wooteco.subway.acceptance.member;
 
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.FavoriteResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,9 +41,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavorite() {
         join(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        TokenResponse token = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        Response response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         initStation();
 
+        String token = response.getCookie("Bearer");
         findPath(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, "DISTANCE");
         createFavorite(STATION_NAME_KANGNAM, STATION_NAME_SEOLLEUNG, token);
         createFavorite(STATION_NAME_HANTI, STATION_NAME_DOGOK, token);
@@ -58,13 +60,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(deletedResponse).hasSize(1);
     }
 
-    private void createFavorite(String source, String target, TokenResponse token) {
+    private void createFavorite(String source, String target, String token) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
 
         given()
-                .auth().oauth2(token.getAccessToken())
+                .cookie("Bearer", token)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -74,9 +76,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    private List<FavoriteResponse> getFavorites(TokenResponse token) {
+    private List<FavoriteResponse> getFavorites(String token) {
         return given()
-                .auth().oauth2(token.getAccessToken())
+                .cookie("Bearer", token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/me/favorites")
@@ -86,13 +88,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract().jsonPath().getList(".", FavoriteResponse.class);
     }
 
-    private void deleteFavorite(String source, String target, TokenResponse token) {
+    private void deleteFavorite(String source, String target, String token) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
 
         given()
-                .auth().oauth2(token.getAccessToken())
+                .cookie("Bearer", token)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()

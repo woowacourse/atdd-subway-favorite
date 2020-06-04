@@ -13,18 +13,18 @@ import javax.servlet.http.HttpServletResponse;
 public class BearerAuthInterceptor implements HandlerInterceptor {
     private static final String BEARER_TOKEN = "Bearer";
 
-    private AuthorizationExtractor authExtractor;
+    private CookieExtractor cookieExtractor;
     private JwtTokenProvider jwtTokenProvider;
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
-        this.authExtractor = authExtractor;
+    public BearerAuthInterceptor(CookieExtractor cookieExtractor, JwtTokenProvider jwtTokenProvider) {
+        this.cookieExtractor = cookieExtractor;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        String token = authExtractor.extract(request, BEARER_TOKEN);
+        String token = cookieExtractor.extract(request, BEARER_TOKEN);
 
         if (StringUtils.isEmpty(token)) {
             throw new CustomException(new IllegalArgumentException("Token이 존재하지 않습니다."));

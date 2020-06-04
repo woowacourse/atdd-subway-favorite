@@ -14,19 +14,15 @@ function Login() {
       return;
     }
     try {
-      const loginMember = {
-        email: $email.value,
-        password: $password.value
-      };
-      const jwt = await api.loginMember.login(loginMember);
-      if (jwt) {
-        localStorage.setItem("jwt", `${jwt.tokenType} ${jwt.accessToken}`);
+        const loginMember = {
+            email: $email.value,
+            password: $password.value
+        };
+        await api.loginMember.login(loginMember);
         location.href = "/";
-        return;
-      }
-      showSnackbar(ERROR_MESSAGE.COMMON);
     } catch (e) {
-      showSnackbar(ERROR_MESSAGE.COMMON);
+        console.dir(e);
+        showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
 

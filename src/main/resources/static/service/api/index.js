@@ -1,19 +1,9 @@
 const METHOD = {
-    GET_WITH_AUTH() {
-        return {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: localStorage.getItem("jwt") || ""
-            }
-        };
-    },
     PUT(data) {
         return {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: localStorage.getItem("jwt") || ""
             },
             body: JSON.stringify({
                 ...data
@@ -23,9 +13,6 @@ const METHOD = {
     DELETE() {
         return {
             method: "DELETE",
-            headers: {
-                Authorization: localStorage.getItem("jwt") || ""
-            }
         };
     },
     DELETE_BY_DATA(data) {
@@ -33,7 +20,6 @@ const METHOD = {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: localStorage.getItem("jwt") || ""
             },
             body: JSON.stringify({
                 ...data
@@ -45,7 +31,6 @@ const METHOD = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: localStorage.getItem("jwt") || ""
             },
             body: JSON.stringify({
                 ...data
@@ -81,10 +66,10 @@ const api = (() => {
 
     const loginMember = {
         login(loginInfo) {
-            return requestWithJsonData(`/login`, METHOD.POST(loginInfo));
+            return request(`/login`, METHOD.POST(loginInfo));
         },
         get() {
-            return requestWithJsonData(`/me`, METHOD.GET_WITH_AUTH());
+            return requestWithJsonData(`/me`);
         },
         update(updatedInfo) {
             return request(`/me`, METHOD.PUT(updatedInfo));
@@ -116,7 +101,7 @@ const api = (() => {
             return request(`/me/favorites`, METHOD.POST(favoritePath));
         },
         getAll() {
-            return requestWithJsonData(`/me/favorites`, METHOD.GET_WITH_AUTH());
+            return requestWithJsonData(`/me/favorites`);
         },
         delete(data) {
             return request(`/me/favorites`, METHOD.DELETE_BY_DATA(data));

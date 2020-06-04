@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +13,6 @@ import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -319,7 +319,7 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    protected TokenResponse login(String email, String password) {
+    protected Response login(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -329,16 +329,12 @@ public class AcceptanceTest {
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/login").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().as(TokenResponse.class);
+                post("/login");
     }
 
-    protected void deleteMember(TokenResponse token) {
+    protected void deleteMember(String token) {
         given()
-                .auth().oauth2(token.getAccessToken())
+                .cookie("Bearer", token)
                 .when()
                 .delete("/me")
                 .then()
