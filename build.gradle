@@ -20,14 +20,14 @@ dependencies {
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
 	implementation 'org.jgrapht:jgrapht-core:1.0.1'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	implementation 'com.google.code.gson:gson:2.8.6'
-	testImplementation 'io.rest-assured:rest-assured:3.3.0'
+	implementation 'com.google.code.gson:gson'
+	testImplementation 'io.rest-assured:rest-assured'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	runtimeOnly 'com.h2database:h2'
-	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 ext {
