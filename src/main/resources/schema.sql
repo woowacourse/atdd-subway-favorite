@@ -42,7 +42,9 @@ create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
     member_id bigint not null,
-    source varchar(255),
-    target varchar(255) not null,
-    primary key(id)
+    source_id bigint(255),
+    target_id bigint(255),
+    primary key(id),
+    FOREIGN KEY(source_id) REFERENCES STATION,
+    FOREIGN KEY(target_id) REFERENCES STATION
 );

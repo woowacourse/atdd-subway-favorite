@@ -8,14 +8,14 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface FavoriteRepository extends CrudRepository<Favorite, Long> {
-	@Query("SELECT * FROM FAVORITE WHERE member_id=:memberId")
-	List<Favorite> findByMemberId(@Param("memberId") Long memberId);
+    @Query("SELECT * FROM FAVORITE WHERE member_id=:memberId")
+    List<Favorite> findByMemberId(@Param("memberId") Long memberId);
 
-	@Modifying
-	@Query("DELETE FROM FAVORITE WHERE member_id=:memberId AND id=:favoriteId")
-	void deleteByMemberIdAndId(@Param("memberId") Long memberId, @Param("favoriteId") Long favoriteId);
+    @Modifying
+    @Query("DELETE FROM FAVORITE WHERE member_id=:memberId AND id=:favoriteId")
+    void deleteByMemberIdAndId(@Param("memberId") Long memberId, @Param("favoriteId") Long favoriteId);
 
-	@Modifying
-	@Query("DELETE FROM FAVORITE WHERE member_id=:memberId")
-	void deleteAllByMemberId(@Param("memberId") Long memberId);
+    @Modifying
+    @Query("DELETE FROM FAVORITE WHERE member_id=:memberId")
+    void deleteAllByMemberId(@Param("memberId") Long memberId);
 }

@@ -34,6 +34,7 @@ import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -41,6 +42,8 @@ import wooteco.subway.service.member.MemberService;
 @AutoConfigureMockMvc
 public class FavoriteControllerTest {
 
+    private static final long JAMSIL_STATION = 1L;
+    private static final long SEOKCHONGOBUN_STATION = 2L;
     @MockBean
     protected MemberService memberService;
     @MockBean
@@ -63,13 +66,13 @@ public class FavoriteControllerTest {
     @Test
     public void createFavorite() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        Favorite favorite = new Favorite(1L, "잠실", "석촌고분");
+        Favorite favorite = Favorite.of(1L, JAMSIL_STATION, SEOKCHONGOBUN_STATION);
 
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
-        given(favoriteService.createFavorite(any())).willReturn(favorite);
+        given(favoriteService.createFavorite(any(), any())).willReturn(favorite);
 
         Map<String, String> favoriteRequest = new HashMap<>();
         favoriteRequest.put("source", "잠실");
@@ -89,15 +92,16 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    public void getFavorites() throws Exception {
+    public void getFavoriteResponse() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        Favorite favorite = new Favorite(1L, 1L, "잠실", "석촌고분");
+        Favorite favorite = Favorite.of(1L, 1L, JAMSIL_STATION, SEOKCHONGOBUN_STATION);
+        FavoriteResponse favoriteResponse = new FavoriteResponse(1L, "잠실", "석촌고분");
 
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
-        given(favoriteService.getFavorites(any())).willReturn(Arrays.asList(favorite));
+        given(favoriteService.getFavoriteResponse(any())).willReturn(Arrays.asList(favoriteResponse));
 
         this.mockMvc.perform(get("/favorite/me")
             .header("authorization", "Bearer 1q2w3e4r")

@@ -3,41 +3,49 @@ package wooteco.subway.domain.favorite;
 import org.springframework.data.annotation.Id;
 
 public class Favorite {
-	@Id
-	private Long id;
-	private Long memberId;
-	private String source;
-	private String target;
+    @Id
+    private Long id;
+    private Long memberId;
+    private Long sourceId;
+    private Long targetId;
 
-	public Favorite() {
-	}
+    public Favorite() {
+    }
 
-	public Favorite(Long memberId, String source, String target) {
-		this.memberId = memberId;
-		this.source = source;
-		this.target = target;
-	}
+    private Favorite(Long memberId, Long sourceId, Long targetId) {
+        this.memberId = memberId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
+    }
 
-	public Favorite(Long id, Long memberId, String source, String target) {
-		this.id = id;
-		this.memberId = memberId;
-		this.source = source;
-		this.target = target;
-	}
+    private Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
+        this.id = id;
+        this.memberId = memberId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public static Favorite of(Long memberId, Long sourceId, Long targetId) {
+        return new Favorite(memberId, sourceId, targetId);
+    }
 
-	public Long getMemberId() {
-		return memberId;
-	}
+    public static Favorite of(Long id, Long memberId, Long sourceId, Long targetId) {
+        return new Favorite(id, memberId, sourceId, targetId);
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getTarget() {
-		return target;
-	}
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Long getSourceId() {
+        return sourceId;
+    }
+
+    public Long getTargetId() {
+        return targetId;
+    }
 }
