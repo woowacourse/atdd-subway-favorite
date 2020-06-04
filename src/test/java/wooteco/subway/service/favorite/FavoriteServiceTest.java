@@ -30,7 +30,7 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        favoriteService = new FavoriteService(memberRepository, stationRepository);
+        favoriteService = new FavoriteService(memberRepository);
     }
 
     @Test

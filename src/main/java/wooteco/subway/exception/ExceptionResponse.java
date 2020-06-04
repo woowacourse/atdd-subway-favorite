@@ -7,8 +7,16 @@ public class ExceptionResponse {
         this.message = e.getMessage();
     }
 
+    private ExceptionResponse(String message) {
+        this.message = message;
+    }
+
     public static ExceptionResponse of(Exception e) {
         return new ExceptionResponse(e);
+    }
+
+    public static ExceptionResponse of(String message) {
+        return new ExceptionResponse(message);
     }
 
     public String getMessage() {

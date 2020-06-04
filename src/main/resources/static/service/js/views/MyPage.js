@@ -1,10 +1,7 @@
-import {
-  EVENT_TYPE,
-  ERROR_MESSAGE,
-  SUCCESS_MESSAGE
-} from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE } from "../../utils/constants.js";
 import api from "../../api/index.js";
 import Snackbar from "../../lib/snackbar/snackbar.js";
+import { initNavigation } from '../../utils/templates.js';
 
 function MyInfo() {
   const $email = document.querySelector("#email");
@@ -20,12 +17,12 @@ function MyInfo() {
       const $userId = document.querySelector(".dropdown-menu");
       const id = $userId.dataset.id;
       api.member
-        .delete(id)
-        .then(() => {
-          localStorage.setItem("jwt", "");
-          location.href = "/";
-        })
-        .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
+      .delete(id)
+      .then(() => {
+        localStorage.setItem("jwt", "");
+        location.href = "/";
+      })
+      .catch(() => Snackbar.show({ text: `${ERROR_MESSAGE.COMMON}` }));
     }
   };
 
@@ -40,26 +37,42 @@ function MyInfo() {
     const $userId = document.querySelector(".dropdown-menu");
     const id = $userId.dataset.id;
     api.member
-      .update(id, updatedInfo)
-      .then((response) => {
-        if(!response.ok) {
-          alert(ERROR_MESSAGE.PASSWORD_CHECK);
-          return;
-        }
-        alert(SUCCESS_MESSAGE.SAVE);
-      });
+    .update(id, updatedInfo)
+    .then((response) => {
+      if (!response.ok) {
+        alert(ERROR_MESSAGE.PASSWORD_CHECK);
+        return;
+      }
+      alert(SUCCESS_MESSAGE.SAVE);
+    });
   };
 
   const initMyInfo = () => {
     api.loginMember
+    .get()
+    .then(member => {
+      $email.value = member.email;
+      $name.value = member.name;
+
+    })
+    .catch(() => Snackbar.show({ text: `${ERROR_MESSAGE.COMMON}` }));
+  };
+  const renderNavigation = () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      api.loginMember
       .get()
       .then(member => {
-        $email.value = member.email;
-        $name.value = member.name;
-
+        if (member) {
+          initNavigation(member);
+        }
       })
-      .catch(() => Snackbar.show({text: `${ERROR_MESSAGE.COMMON}`}));
+      .catch(() => initNavigation());
+    } else {
+      initNavigation();
+    }
   };
+
 
   this.init = () => {
     initMyInfo();

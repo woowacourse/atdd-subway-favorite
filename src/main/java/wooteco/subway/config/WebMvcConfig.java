@@ -24,7 +24,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(bearerAuthInterceptor)
             .addPathPatterns("/**")
-            .excludePathPatterns("/members/**", "/oauth/token", "/paths", "/", "/map", "/search", "/join", "/login",
+            .excludePathPatterns("/members/**", "/service/**", "/oauth/token", "/paths", "/", "/map", "/search",
+                "/join", "/login", "/favorite-page", "/mypage",
                 "/lines/**", "/stations/**");
     }
 

@@ -3,6 +3,7 @@ package wooteco.subway.doc;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -40,6 +41,10 @@ public class FavoriteDocumentation {
 
     public static ResultHandler deleteFavorite() {
         return document("favorites/delete",
+            requestParameters(
+                parameterWithName("source").description("The source station's name"),
+                parameterWithName("target").description("The target station's name")
+            ),
             requestHeaders(
                 headerWithName("Authorization").description("The token for login which is Bearer Type")
             )

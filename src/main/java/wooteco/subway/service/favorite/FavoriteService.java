@@ -8,17 +8,13 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favorite.FavoriteStation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.station.StationRepository;
 
 @Service
 public class FavoriteService {
     private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
 
-    public FavoriteService(MemberRepository memberRepository,
-        StationRepository stationRepository) {
+    public FavoriteService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
     }
 
     public void save(Member member, FavoriteStation favoriteStation) {
