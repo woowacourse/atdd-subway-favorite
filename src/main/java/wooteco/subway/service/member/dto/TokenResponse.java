@@ -12,6 +12,11 @@ public class TokenResponse {
         this.tokenType = tokenType;
     }
 
+    public static TokenResponse of(String token) {
+        String[] tokenInfo = token.split(" ");
+        return new TokenResponse(tokenInfo[1], tokenInfo[0]);
+    }
+
     public String getAccessToken() {
         return accessToken;
     }
