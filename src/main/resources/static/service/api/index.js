@@ -29,7 +29,6 @@ const api = (() => {
     const requestWithJsonData = (uri, config) => fetch(uri, config).then(response => {
         if (!response.ok) {
             response.json().then(error => {
-                console.log(error);
                 SNACK_BAR(error.errorMessage)
             });
             return;
@@ -80,7 +79,6 @@ const api = (() => {
             })
         },
         update(memberId, data) {
-            console.log("### memberId : " + memberId);
             return fetch(`/members/${memberId}`, {
                 method: 'PUT',
                 headers: {
@@ -101,8 +99,8 @@ const api = (() => {
     };
 
     const favorite = {
-        create(data) {
-            return fetch(`/members/favorites`, {
+        create(memberId, data) {
+            return fetch(`/members/${memberId}/favorites`, {
                 method: 'POST',
                 headers: {
                     'Authorization': getToken(),
@@ -113,8 +111,8 @@ const api = (() => {
                 })
             })
         },
-        find() {
-            return fetch(`/members/favorites`, {
+        find(memberId) {
+            return fetch(`/members/${memberId}/favorites`, {
                 headers: {
                     'Authorization': getToken(),
                     'Content-Type': 'application/json'
@@ -127,8 +125,8 @@ const api = (() => {
                 return response.json();
             })
         },
-        delete(data) {
-            return fetch(`/members/favorites/${data.favoriteId}`, {
+        delete(memberId, data) {
+            return fetch(`/members/${memberId}/favorites/${data.favoriteId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': getToken(),

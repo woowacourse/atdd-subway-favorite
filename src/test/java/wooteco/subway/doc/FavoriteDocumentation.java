@@ -41,10 +41,6 @@ public class FavoriteDocumentation {
 
 	public static ResultHandler deleteFavorite() {
 		return document("favorite/delete",
-			requestFields(
-				fieldWithPath("departStationId").type(JsonFieldType.STRING).description("The depart station's id"),
-				fieldWithPath("arriveStationId").type(JsonFieldType.STRING).description("The arrive station's id")
-			),
 			requestHeaders(
 				headerWithName("Authorization").description("The token for login which is Bearer Type")
 			)

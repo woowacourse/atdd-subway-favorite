@@ -4,11 +4,17 @@ import {ERROR_SNACK_BAR, EVENT_TYPE, SUCCESS_SNACK_BAR} from "../../utils/consta
 
 function Favorite() {
     const $favoriteList = document.querySelector('#favorite-list')
+    let memberId
+
+    const loadMemberId = async () => {
+        await api.member
+            .find()
+            .then(data => memberId = data.id)
+    }
 
     const loadFavoriteList = () => {
-        api
-            .favorite
-            .find()
+        api.favorite
+            .find(memberId)
             .then(async favorites => {
                 $favoriteList.innerHTML = await favorites.map(edge => edgeItemTemplate(edge)).join('');
             })
@@ -24,7 +30,7 @@ function Favorite() {
             const favoriteId = {
                 "favoriteId": $target.closest(".edge-item").dataset.favoriteId
             };
-            await api.favorite.delete(favoriteId)
+            await api.favorite.delete(memberId, favoriteId)
             await loadFavoriteList()
             SUCCESS_SNACK_BAR("COMMON");
         } catch (e) {
@@ -36,7 +42,8 @@ function Favorite() {
         $favoriteList.addEventListener(EVENT_TYPE.CLICK, onDeleteHandler)
     }
 
-    this.init = () => {
+    this.init = async () => {
+        await loadMemberId()
         loadFavoriteList()
         initEventListener()
     }

@@ -64,11 +64,11 @@ public class FavoritesControllerTest {
 
     @Test
     void addFavorite() throws Exception {
-        mockMvc.perform(post("/members/favorites")
-            .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN)
-            .content("{\"departStationId\": \"1\"," + "\"arriveStationId\": \"2\"}")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/members/1/favorites")
+                .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN)
+                .content("{\"departStationId\": \"1\"," + "\"arriveStationId\": \"2\"}")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(FavoriteDocumentation.addFavorite());
@@ -76,14 +76,15 @@ public class FavoritesControllerTest {
 
     @Test
     void getFavorites() throws Exception {
+        given(memberService.findMemberById(1L)).willReturn(MEMBER_BROWN);
         given(favoritesService.getFavorites(MEMBER_BROWN)).willReturn(
                 Arrays.asList(
                         new FavoriteResponse(1L, "강남", "잠실"),
                         new FavoriteResponse(2L, "잠실", "잠실나루")));
 
-        mockMvc.perform(get("/members/favorites")
-            .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN)
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/members/1/favorites")
+                .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(FavoriteDocumentation.getFavorites());
@@ -91,13 +92,10 @@ public class FavoritesControllerTest {
 
     @Test
     void deleteFavorite() throws Exception {
-        mockMvc.perform(delete("/members/favorites/1")
-                .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN)
-                .content("{\"departStationId\": \"1\"," + "\"arriveStationId\": \"2\"}")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent())
-            .andDo(print())
-            .andDo(FavoriteDocumentation.deleteFavorite());
+        mockMvc.perform(delete("/members/1/favorites/1")
+                .header(AUTHORIZATION_HEADER, BEARER_JWT_TOKEN))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(FavoriteDocumentation.deleteFavorite());
     }
 }

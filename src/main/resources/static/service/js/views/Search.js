@@ -11,6 +11,13 @@ function Search() {
     const $searchResult = document.querySelector('#search-result')
     const $shortestDistanceTab = document.querySelector('#shortest-distance-tab')
     const $minimumTimeTab = document.querySelector('#minimum-time-tab')
+    let memberId
+
+    const loadMemberId = () => {
+        api.member
+            .find()
+            .then(data => memberId = data.id)
+    }
 
     const showSearchResult = data => {
         const isHidden = $searchResultContainer.classList.contains('hidden')
@@ -61,8 +68,6 @@ function Search() {
             "arriveStationId": $searchResultContainer.dataset.arriveStationId
         }
 
-        console.log(data)
-
         if (isFavorite) {
             classList.add('mdi-star-outline')
             classList.add('text-gray-600')
@@ -70,7 +75,8 @@ function Search() {
             classList.remove('mdi-star')
             classList.remove('text-yellow-500')
         } else {
-            api.favorite.create(data)
+            api.favorite
+                .create(memberId, data)
                 .then(response => {
                     if (!response.ok) {
                         ERROR_SNACK_BAR("FAVORITE_SAVE_FAILED");
@@ -93,6 +99,7 @@ function Search() {
     }
 
     this.init = () => {
+        loadMemberId()
         initEventListener()
     }
 }
