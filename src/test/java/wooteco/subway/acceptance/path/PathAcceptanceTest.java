@@ -2,6 +2,8 @@ package wooteco.subway.acceptance.path;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -11,6 +13,19 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathAcceptanceTest extends AcceptanceTest {
+    private PathResponse findPath(String source, String target, String type) {
+        return
+                given().
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/paths?source=" + source + "&target=" + target + "&type=" + type).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(PathResponse.class);
+    }
+
     @DisplayName("거리 기준으로 경로 조회")
     @Test
     public void findPathByDistance() {

@@ -7,9 +7,11 @@ import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.AcceptanceTest.*;
 
 class MemberTest {
+	public static final String TEST_USER_EMAIL = "brown@email.com";
+	public static final String TEST_USER_NAME = "브라운";
+	public static final String TEST_USER_PASSWORD = "brown";
 
 	@DisplayName("이름만 갱신 시 반영되는지 확인")
 	@Test

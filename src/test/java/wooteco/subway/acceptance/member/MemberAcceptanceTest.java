@@ -16,6 +16,25 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+    private ExceptionResponse createMemberFailed(String email, String name, String password, String confirmPassword,
+                                                 int statusCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        params.put("password", password);
+        params.put("confirmPassword", confirmPassword);
+
+        return post("/members", params, statusCode, ExceptionResponse.class);
+    }
+
+    private ExceptionResponse loginFailed(String email, String password, int statusCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return post("/oauth/token", params, statusCode, ExceptionResponse.class);
+    }
+
     /**
      * Scenario: 회원 가입을 구현한다.
      * <p>
