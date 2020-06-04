@@ -7,6 +7,7 @@ import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -38,4 +39,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favoriteResponses.get(0).getSourceName()).isEqualTo(STATION_NAME_SEOLLEUNG);
         assertThat(favoriteResponses.get(0).getDestinationName()).isEqualTo(STATION_NAME_YANGJAE);
     }
+
+    @DisplayName("잘못된 토큰으로 요청할 경우")
+    @Test
+    void wrongMember() {
+        assertThatThrownBy(() -> getMember(TEST_USER_EMAIL, "wrongtoken"))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("500");
+    }
+
 }

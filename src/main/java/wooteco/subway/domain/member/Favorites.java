@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class Favorites {
 
+    public static final String FAVORITE_NOT_EXIST = "등록되어 있지 않은 즐겨찾기입니다.";
     private final Set<Favorite> favorites;
 
     public Favorites(Set<Favorite> favorites) {
@@ -25,7 +26,10 @@ public class Favorites {
     }
 
     public void remove(Favorite favorite) {
-        favorites.remove(favorite);
+        if (!favorites.remove(favorite)) {
+            throw new IllegalArgumentException(FAVORITE_NOT_EXIST);
+        }
+        ;
     }
 
     public Optional<Favorite> findById(Long sourceId, Long destinationId) {

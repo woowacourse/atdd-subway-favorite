@@ -278,11 +278,15 @@ public class AcceptanceTest {
     }
 
     public MemberResponse getMember(String email) {
+        return getMember(email, createToken());
+    }
+
+    public MemberResponse getMember(String email, String token) {
         return
                 given().
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        header("Authorization", "bearer " + createToken()).
+                        header("Authorization", "bearer " + token).
                         get("/members?email=" + email).
                         then().
                         log().all().
