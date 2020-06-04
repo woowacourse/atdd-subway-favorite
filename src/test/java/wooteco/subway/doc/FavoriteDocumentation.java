@@ -1,6 +1,7 @@
 package wooteco.subway.doc;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -14,8 +15,7 @@ public class FavoriteDocumentation {
     public static RestDocumentationResultHandler createFavorite() {
         return document("favorites/create",
                 requestFields(
-                        fieldWithPath("sourceName").type(JsonFieldType.STRING).description("The source station's name"),
-                        fieldWithPath("destinationName").type(JsonFieldType.STRING).description("The destination station's name")
+                        getRequestFieldDescriptors()
                 ),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
@@ -38,8 +38,7 @@ public class FavoriteDocumentation {
     public static RestDocumentationResultHandler removeFavorite() {
         return document("favorites/remove",
                 requestFields(
-                        fieldWithPath("sourceName").type(JsonFieldType.STRING).description("The source station's name"),
-                        fieldWithPath("destinationName").type(JsonFieldType.STRING).description("The destination station's name")
+                        getRequestFieldDescriptors()
                 ),
                 requestHeaders(
                         headerWithName("Authorization").description("The token for login which is Bearer Type")
@@ -60,5 +59,10 @@ public class FavoriteDocumentation {
                         fieldWithPath("exists").description("whether favorite that is searched exists or not")
                 )
         );
+    }
+
+    private static FieldDescriptor[] getRequestFieldDescriptors() {
+        return new FieldDescriptor[]{fieldWithPath("sourceName").type(JsonFieldType.STRING).description("The source station's name"),
+                fieldWithPath("destinationName").type(JsonFieldType.STRING).description("The destination station's name")};
     }
 }
