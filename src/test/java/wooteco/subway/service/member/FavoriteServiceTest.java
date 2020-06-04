@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -68,6 +69,13 @@ class FavoriteServiceTest {
         FavoriteRequest request = new FavoriteRequest(station2.getId(), station3.getId());
         favoriteService.createFavorite(member, request);
         assertThat(member.getFavorites()).contains(request.toFavorite());
+    }
+
+    @Test
+    void createFavorite_Fail_When_Duplicate() {
+        FavoriteRequest request = new FavoriteRequest(station1.getId(), station2.getId());
+        assertThatThrownBy(() -> favoriteService.createFavorite(member, request))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

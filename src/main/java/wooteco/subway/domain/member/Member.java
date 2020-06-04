@@ -1,10 +1,9 @@
 package wooteco.subway.domain.member;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.Id;
 
 public class Member {
     @Id
@@ -12,7 +11,7 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private Set<Favorite> favorites = new LinkedHashSet<>();
+    private final Set<Favorite> favorites = new LinkedHashSet<>();
 
     public Member() {
     }
@@ -38,6 +37,9 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
+        if (this.favorites.contains(favorite)) {
+            throw new IllegalArgumentException("이미 등록되어있는 즐겨찾기입니다.");
+        }
         this.favorites.add(favorite);
     }
 
