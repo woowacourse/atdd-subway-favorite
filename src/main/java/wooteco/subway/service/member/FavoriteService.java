@@ -5,6 +5,7 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.service.exception.SameStationException;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
@@ -41,7 +42,7 @@ public class FavoriteService {
     public List<FavoriteResponse> showAllFavorites(Member member) {
         Favorites favorites = new Favorites(member.getFavorites());
 
-        return favorites.toFavoriteResponses(stationService.findStations());
+        return FavoriteResponse.toFavoriteResponses(new Stations(stationService.findStations()), favorites);
     }
 
     public boolean ifFavoriteExist(FavoriteRequest favoriteRequest, Member member) {
@@ -49,7 +50,7 @@ public class FavoriteService {
         Favorites favorites = new Favorites(member.getFavorites());
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
         Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
-        return favorites.findById(sourceId, destinationId).isPresent();
+        return favorites.existsFavorite(sourceId, destinationId);
     }
 
     private void validate(FavoriteRequest favoriteRequest) {

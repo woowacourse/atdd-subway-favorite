@@ -1,5 +1,7 @@
 package wooteco.subway.domain.station;
 
+import wooteco.subway.service.exception.WrongStationException;
+
 import java.util.List;
 
 public class Stations {
@@ -15,8 +17,8 @@ public class Stations {
 
     public Station extractStationById(Long stationId) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
+                .filter(it -> it.getId().equals(stationId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(WrongStationException::new);
     }
 }
