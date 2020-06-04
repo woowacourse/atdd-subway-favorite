@@ -14,14 +14,16 @@ public class MemberDocumentation {
 	public static RestDocumentationResultHandler createMember() {
 		return document("members/create",
 		                requestFields(
-				                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email " +
-						                                                                              "address"),
-				                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
-				                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password"),
-						fieldWithPath("confirmPassword").type(JsonFieldType.STRING).description("The user's confirm password")
-				),
+			                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email " +
+				                                                                              "address"),
+			                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
+			                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password"),
+			                fieldWithPath("confirmPassword").type(JsonFieldType.STRING).description("The user's " +
+				                                                                                        "confirm " +
+				                                                                                        "password")
+		                ),
 		                responseHeaders(
-				                headerWithName("Location").description("The user's location who just created")
+			                headerWithName("Location").description("The user's location who just created")
 		                )
 		);
 	}
@@ -29,11 +31,12 @@ public class MemberDocumentation {
 	public static RestDocumentationResultHandler updateMember() {
 		return document("members/update",
 		                requestFields(
-				                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email").optional(),
-				                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name").optional(),
-				                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password").optional(),
-				                fieldWithPath("confirmPassword").type(JsonFieldType.STRING).description("The user's " +
-						                                                                                        "confirm password").optional()
+			                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email").optional(),
+			                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name").optional(),
+			                fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password").optional(),
+			                fieldWithPath("confirmPassword").type(JsonFieldType.STRING).description("The user's " +
+				                                                                                        "confirm " +
+				                                                                                        "password").optional()
 		                )
 		);
 	}
