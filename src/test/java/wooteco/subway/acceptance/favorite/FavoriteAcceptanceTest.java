@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,15 @@ import wooteco.subway.service.favorite.dto.FavoriteResponses;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        createStation("잠실");
+        createStation("석촌고분");
+    }
+
 	/*
 	given 회원가입이 되어있다.
 	given 로그인이 되어있다.

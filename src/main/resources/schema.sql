@@ -45,6 +45,6 @@ create table if not exists FAVORITE
     source_id bigint(255),
     target_id bigint(255),
     primary key(id),
-    FOREIGN KEY(source_id) REFERENCES STATION,
-    FOREIGN KEY(target_id) REFERENCES STATION
+    FOREIGN KEY(source_id) REFERENCES STATION ON DELETE CASCADE ,
+    FOREIGN KEY(target_id) REFERENCES STATION ON DELETE CASCADE
 );

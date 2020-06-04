@@ -47,20 +47,23 @@ public class FavoriteServiceTest {
         Favorite favorite = Favorite.of(1L, SAMSEOK, DONGSAN);
 
         when(favoriteRepository.save(any())).thenReturn(favorite);
+        when(stationRepository.findByName("삼척")).thenReturn(Optional.of(new Station(1L, "삼척")));
+        when(stationRepository.findByName("동산")).thenReturn(Optional.of(new Station(2L, "동산")));
+
         Favorite persistFavorite = favoriteService.createFavorite(1L, favoriteRequest);
 
         assertThat(persistFavorite).isEqualTo(favorite);
     }
 
     @Test
-    public void getFavoritesTest() {
+    public void getFavoriteResponseTest() {
         Favorite favorite = Favorite.of(1L, JAMSIL, SEOKCHONGOBUN);
         Station sourceStation = new Station(1L, "잠실");
         Station targetStation = new Station(2L, "석촌고분");
 
         when(favoriteRepository.findByMemberId(any())).thenReturn(Arrays.asList(favorite));
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(sourceStation));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(targetStation));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(sourceStation));
+        when(stationRepository.findById(4L)).thenReturn(Optional.of(targetStation));
 
         List<FavoriteResponse> favorites = favoriteService.getFavoriteResponse(1L);
 
