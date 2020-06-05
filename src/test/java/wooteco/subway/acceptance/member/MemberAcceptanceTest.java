@@ -3,8 +3,14 @@ package wooteco.subway.acceptance.member;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,23 +30,52 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Response response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         // then : 회원이 로그인을 성공한다.
-        MemberResponse memberResponse = getMember(TEST_USER_EMAIL, response.getSessionId(), getTokenResponse(response));
+        MemberResponse memberResponse = getMember(TEST_USER_EMAIL, response.getSessionId(), getResponse(TokenResponse.class, response));
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
         // when : 회원 정보를 업데이트한다.
-        updateMember(memberResponse, response.getSessionId(), getTokenResponse(response));
+        updateMember(memberResponse, response.getSessionId(), getResponse(TokenResponse.class, response));
 
         // then : 회원 정보 업데이트가 성공한다.
-        MemberResponse updatedMember = getMember(TEST_USER_EMAIL, response.getSessionId(), getTokenResponse(response));
+        MemberResponse updatedMember = getMember(TEST_USER_EMAIL, response.getSessionId(), getResponse(TokenResponse.class, response));
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 
         // when : 회원 정보를 삭제한다.
-        deleteMember(memberResponse, response.getSessionId(), getTokenResponse(response));
+        deleteMember(memberResponse, response.getSessionId(), getResponse(TokenResponse.class, response));
 
         // then : 회원 정보가 삭제되었다.
         Response deletedMemberResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
         assertThat(deletedMemberResponse.getStatusCode()).isEqualTo(404);
+    }
+
+    private void updateMember(MemberResponse memberResponse, String sessionId, TokenResponse tokenResponse) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "NEW_" + TEST_USER_NAME);
+        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+
+        given().
+                cookie("JSESSIONID", sessionId).
+                header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put("/members/" + memberResponse.getId()).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    private void deleteMember(MemberResponse memberResponse, String sessionId, TokenResponse tokenResponse) {
+        given().
+                cookie("JSESSIONID", sessionId).
+                header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
+                when().
+                delete("/members/" + memberResponse.getId()).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
+import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
@@ -43,5 +44,10 @@ public class WholeSubwayAcceptanceTest extends AcceptanceTest {
 		assertThat(response.size()).isEqualTo(2);
 		assertThat(response.get(0).getStations().size()).isEqualTo(3);
 		assertThat(response.get(1).getStations().size()).isEqualTo(3);
+	}
+
+	private WholeSubwayResponse retrieveWholeSubway() {
+		return
+				get("/lines/detail", WholeSubwayResponse.class);
 	}
 }

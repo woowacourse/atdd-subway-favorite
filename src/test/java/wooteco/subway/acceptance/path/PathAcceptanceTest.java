@@ -43,4 +43,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.get(2).getName()).isEqualTo(STATION_NAME_MAEBONG);
         assertThat(path.get(3).getName()).isEqualTo(STATION_NAME_DOGOK);
     }
+
+    private PathResponse findPath(String source, String target, String type) {
+        return get("/paths?source=" + source + "&target=" + target + "&type=" + type, PathResponse.class);
+    }
 }

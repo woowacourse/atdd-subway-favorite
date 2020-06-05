@@ -37,4 +37,8 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(secondLine.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
+
+    private void removeLineStation(Long lineId, Long stationId) {
+        delete("/lines/" + lineId + "/stations/" + stationId);
+    }
 }

@@ -3,8 +3,6 @@ package wooteco.subway.acceptance;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
@@ -21,7 +19,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
 		String sessionId = response.getSessionId();
 
-		TokenResponse tokenResponse = getTokenResponse(response);
+		TokenResponse tokenResponse = getResponse(TokenResponse.class, response);
 
 		MemberResponse memberResponse = myInfoAuth(tokenResponse, sessionId, id);
 
@@ -30,17 +28,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 	}
 
-
 	private MemberResponse myInfoAuth(TokenResponse tokenResponse, String sessionId, String memberId) {
-		return given().
-				cookie("JSESSIONID", sessionId).
-				header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				get("/members/" + memberId).
-				then().
-				log().all().
-				statusCode(HttpStatus.OK.value()).
-				extract().as(MemberResponse.class);
+		return getWithAuth("/members/" + memberId, MemberResponse.class, sessionId,
+				tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken());
 	}
 }
