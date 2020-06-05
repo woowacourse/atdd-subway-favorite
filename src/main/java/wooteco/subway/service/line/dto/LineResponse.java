@@ -26,7 +26,7 @@ public class LineResponse {
                 .collect(Collectors.toList());
     }
 
-    public LineResponse() {
+    private LineResponse() {
     }
 
     public LineResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt) {

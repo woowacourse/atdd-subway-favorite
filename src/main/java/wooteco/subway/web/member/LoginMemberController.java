@@ -5,11 +5,12 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
-import javax.servlet.http.HttpSession;
-import java.util.Map;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class LoginMemberController {
@@ -19,27 +20,38 @@ public class LoginMemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/oauth/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
-        String token = memberService.createToken(param);
-        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
-    }
-
     @PostMapping("/login")
-    public ResponseEntity login(@RequestParam Map<String, String> paramMap, HttpSession session) {
-        String email = paramMap.get("email");
-        String password = paramMap.get("password");
-        if (!memberService.loginWithForm(email, password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-        }
+    public ResponseEntity<Void> login(@RequestBody LoginRequest param, HttpServletResponse response) {
+        String token = memberService.createToken(param);
 
-        session.setAttribute("loginMemberEmail", email);
+        Cookie cookie = new Cookie("Bearer", token);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
+    @PostMapping("/members")
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
+        memberService.createMember(view.toMember());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> getMember(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest request) {
+        memberService.updateMember(member, request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
+        return ResponseEntity.noContent().build();
     }
 }

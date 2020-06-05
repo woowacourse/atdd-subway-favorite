@@ -3,18 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <title>RunningMap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+    />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link href="/service/lib/snackbar/snackbar.css" rel="stylesheet" />
     <link href="/service/css/app.css" rel="stylesheet" />
   </head>
   <body class="bg-gray-200 h-screen">
-    <div class="flex justify-center items-center app-container py-10">
-      <div class="max-w-md width-350px rounded bg-white shadow-lg p-6">
-        <div class="font-bold text-xl mb-4 text-center">나의 정보 수정</div>
+    <div class="flex justify-center items-center app-container">
+      <div class="max-w-md width-350px rounded bg-white shadow-lg p-6 relative">
+        <div class="font-bold text-xl mb-4 text-center">나의 정보</div>
         <form class="bg-white rounded">
           <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="email">
+            <label
+              class="block text-gray-600 text-sm font-bold mb-2"
+              for="email"
+            >
               email
             </label>
             <input
@@ -25,7 +38,10 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="name">
+            <label
+              class="block text-gray-600 text-sm font-bold mb-2"
+              for="name"
+            >
               name
             </label>
             <input
@@ -36,7 +52,10 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="password">
+            <label
+              class="block text-gray-600 text-sm font-bold mb-2"
+              for="password"
+            >
               password
             </label>
             <input
@@ -46,30 +65,24 @@
               placeholder="password"
             />
           </div>
-          <div class="mb-4">
-            <label class="block text-gray-600 text-sm font-bold mb-2" for="password-check">
-              password 확인
-            </label>
-            <input
-              class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password-check"
-              type="password"
-              placeholder="password 확인"
-            />
-          </div>
-          <a
-            href="/index.html"
+          <button
+            id="update-button"
             class="w-full text-sm text-center bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
             type="button"
           >
             저장
-          </a>
-          <button class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+          </button>
+          <button
+            id="sign-out-button"
+            class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+          >
             탈퇴
           </button>
         </form>
       </div>
     </div>
     <script type="module" src="/service/js/App.js"></script>
+    <script type="module" src="/service/js/views/MyPage.js"></script>
   </body>
 </html>
