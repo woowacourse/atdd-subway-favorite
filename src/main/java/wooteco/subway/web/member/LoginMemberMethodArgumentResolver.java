@@ -7,7 +7,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
@@ -30,7 +29,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
-            return new Member();
+            throw new InvalidAuthenticationException("ILLEGAL_ACCESS");
         }
         try {
             return memberService.findMemberByEmail(email);

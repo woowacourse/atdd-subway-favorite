@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.exception.MemberNotFoundException;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.web.member.InvalidAuthenticationException;
@@ -26,7 +27,7 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new InvalidAuthenticationException("ILLEGAL_ACCESS"));
+        Member member = findMemberById(id);
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -47,5 +48,9 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new InvalidAuthenticationException("ILLEGAL_ACCESS"));
+    }
+
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 }

@@ -38,22 +38,21 @@ public class FavoriteService {
         validate(favoriteRequest);
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
         Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
-        member.removeFavoriteById(sourceId, destinationId);
+        member.removeFavorite(new Favorite(sourceId, destinationId));
         memberRepository.save(member);
     }
 
     public List<FavoriteResponse> showAllFavorites(Member member) {
-        Favorites favorites = new Favorites(member.getFavorites());
+        Favorites favorites = member.getFavorites();
 
         return FavoriteResponse.toFavoriteResponses(new Stations(stationService.findStations()), favorites);
     }
 
-    public boolean ifFavoriteExist(FavoriteRequest favoriteRequest, Member member) {
+    public boolean hasFavorite(FavoriteRequest favoriteRequest, Member member) {
         validate(favoriteRequest);
-        Favorites favorites = new Favorites(member.getFavorites());
         Long sourceId = stationService.findStationByName(favoriteRequest.getSourceName()).getId();
         Long destinationId = stationService.findStationByName(favoriteRequest.getDestinationName()).getId();
-        return favorites.existsFavorite(sourceId, destinationId);
+        return member.hasFavorite(new Favorite(sourceId, destinationId));
     }
 
     private void validate(FavoriteRequest favoriteRequest) {

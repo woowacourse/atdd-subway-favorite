@@ -21,13 +21,13 @@ public class MemberTest {
     @DisplayName("즐겨찾기를 추가하는 기능 테스트")
     void addFavorite() {
         member.addFavorite(new Favorite(4L, 5L));
-        assertTrue(member.getFavorites().contains(new Favorite(4L, 5L)));
+        assertTrue(member.getFavorites().getFavorites().contains(new Favorite(4L, 5L)));
     }
 
     @Test
     @DisplayName("즐겨찾기를 삭제하는 기능 테스트")
     void removeFavorite() {
-        member.removeFavoriteById(1L, 3L);
-        assertFalse(member.getFavorites().contains(new Favorite(1L, 3L)));
+        member.removeFavorite(new Favorite(1L, 3L));
+        assertFalse(member.getFavorites().getFavorites().contains(new Favorite(1L, 3L)));
     }
 }

@@ -27,8 +27,8 @@ public class Favorites {
         favorites.remove(favorite);
     }
 
-    public boolean existsFavorite(Long sourceId, Long destinationId) {
+    public boolean hasFavorite(Favorite favorite) {
         return favorites.stream()
-                .anyMatch(favorite -> favorite.getSourceId().equals(sourceId) && favorite.getDestinationId().equals(destinationId));
+                .anyMatch(it -> it.equals(favorite));
     }
 }

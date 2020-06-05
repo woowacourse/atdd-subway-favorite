@@ -66,7 +66,7 @@ public class FavoriteServiceTest {
 
         verify(memberRepository).save(any());
 
-        assertThat(member.getFavorites().size()).isEqualTo(0);
+        assertThat(member.getFavorites().getFavorites().size()).isEqualTo(0);
     }
 
     @Test
@@ -74,6 +74,6 @@ public class FavoriteServiceTest {
         when(stationService.findStationByName(TEST_STATION_NAME_GANGNAM)).thenReturn(new Station(1L, TEST_STATION_NAME_GANGNAM));
         when(stationService.findStationByName(TEST_STATION_NAME_JAMSIL)).thenReturn(new Station(2L, TEST_STATION_NAME_JAMSIL));
 
-        assertTrue(favoriteService.ifFavoriteExist(new FavoriteRequest(TEST_STATION_NAME_GANGNAM, TEST_STATION_NAME_JAMSIL), member));
+        assertTrue(favoriteService.hasFavorite(new FavoriteRequest(TEST_STATION_NAME_GANGNAM, TEST_STATION_NAME_JAMSIL), member));
     }
 }
