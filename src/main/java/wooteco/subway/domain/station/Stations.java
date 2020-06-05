@@ -21,4 +21,12 @@ public class Stations {
                 .findFirst()
                 .orElseThrow(WrongStationException::new);
     }
+
+    public Station extractStation(Long id) {
+        return stations
+                .stream()
+                .filter(it -> it.getId().equals(id))
+                .findFirst()
+                .orElseThrow(WrongStationException::new);
+    }
 }

@@ -24,7 +24,7 @@ public class PageController {
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
     public String stationPage(Model model) {
-        model.addAttribute("stations", stationService.findStations());
+        model.addAttribute("stations", stationService.findStations().getStations());
         return "admin/admin-station";
     }
 

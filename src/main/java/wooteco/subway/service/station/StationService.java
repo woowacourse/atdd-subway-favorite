@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.service.exception.WrongStationException;
 import wooteco.subway.service.line.LineStationService;
 
@@ -30,8 +31,8 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public List<Station> findStations() {
-        return stationRepository.findAll();
+    public Stations findStations() {
+        return new Stations(stationRepository.findAll());
     }
 
     public Station findStationByName(String name) {
@@ -39,7 +40,7 @@ public class StationService {
                 .orElseThrow(WrongStationException::new);
     }
 
-    public List<Station> findStationsById(List<Long> ids) {
-        return stationRepository.findAllById(ids);
+    public Stations findStationsById(List<Long> ids) {
+        return new Stations(stationRepository.findAllById(ids));
     }
 }

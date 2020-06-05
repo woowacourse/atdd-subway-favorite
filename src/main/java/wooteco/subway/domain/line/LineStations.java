@@ -1,5 +1,7 @@
 package wooteco.subway.domain.line;
 
+import wooteco.subway.service.exception.WrongStationException;
+
 import java.util.*;
 
 public class LineStations {
@@ -67,10 +69,33 @@ public class LineStations {
     }
 
     public int getTotalDistance() {
-        return stations.stream().mapToInt(it -> it.getDistance()).sum();
+        return stations.stream().mapToInt(LineStation::getDistance).sum();
     }
 
     public int getTotalDuration() {
-        return stations.stream().mapToInt(it -> it.getDuration()).sum();
+        return stations.stream().mapToInt(LineStation::getDuration).sum();
+    }
+
+    public LineStations extractPathLineStation(List<Long> path) {
+        Long preStationId = null;
+        Set<LineStation> paths = new LinkedHashSet<>();
+
+        for (Long stationId : path) {
+            if (preStationId == null) {
+                preStationId = stationId;
+                continue;
+            }
+
+            Long finalPreStationId = preStationId;
+            LineStation lineStation = stations.stream()
+                    .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
+                    .findFirst()
+                    .orElseThrow(WrongStationException::new);
+
+            paths.add(lineStation);
+            preStationId = stationId;
+        }
+
+        return new LineStations(paths);
     }
 }
