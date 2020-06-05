@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static wooteco.subway.AcceptanceTest.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
@@ -64,8 +66,8 @@ class FavoriteServiceTest {
 			new FavoriteResponse("강남역", "잠실역"));
 
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-		when(stationRepository.findNameById(1L)).thenReturn(Optional.of("강남역"));
-		when(stationRepository.findNameById(2L)).thenReturn(Optional.of("잠실역"));
+		when(stationRepository.findAllById(any())).thenReturn(
+			Arrays.asList(new Station(1L, "강남역"), new Station(2L, "잠실역")));
 
 		List<FavoriteResponse> favoriteResponses = favoriteService.find(member);
 

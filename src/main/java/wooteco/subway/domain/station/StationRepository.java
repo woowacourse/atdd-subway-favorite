@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface StationRepository extends CrudRepository<Station, Long> {
 	@Override
-	List<Station> findAllById(Iterable ids);
+	List<Station> findAllById(Iterable<Long> longs);
 
 	@Override
 	List<Station> findAll();

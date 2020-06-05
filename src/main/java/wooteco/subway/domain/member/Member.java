@@ -90,6 +90,15 @@ public class Member {
 		return favorites;
 	}
 
+	public Set<Long> getAllStationIds() {
+		Set<Long> stationIds = new HashSet<>();
+		for (Favorite favorite : favorites) {
+			stationIds.add(favorite.getSourceId());
+			stationIds.add(favorite.getTargetId());
+		}
+		return stationIds;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

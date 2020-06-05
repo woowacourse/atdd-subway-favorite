@@ -1,6 +1,8 @@
 package wooteco.subway.service.favorite;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
@@ -43,17 +46,27 @@ public class FavoriteService {
 	@Transactional(readOnly = true)
 	public List<FavoriteResponse> find(Member member) {
 		Member persistMember = findMemberById(member);
+
+		Map<Long, String> stationIdNameMap = mapStationIdToName(
+			persistMember.getAllStationIds());
+
 		Set<Favorite> favorites = persistMember.getFavorites();
 
 		return favorites.stream()
-			.map(this::toFavoriteResponse)
+			.map(favorite -> new FavoriteResponse(
+				stationIdNameMap.get(favorite.getSourceId()),
+				stationIdNameMap.get(favorite.getTargetId())))
 			.collect(Collectors.toList());
 	}
 
-	private FavoriteResponse toFavoriteResponse(Favorite favorite) {
-		return new FavoriteResponse(
-			findStationNameById(favorite.getSourceId()),
-			findStationNameById(favorite.getTargetId()));
+	private Map<Long, String> mapStationIdToName(Set<Long> stationIds) {
+		List<Station> stations = stationRepository.findAllById(stationIds);
+
+		Map<Long, String> stationIdNameMap = new HashMap<>();
+		for (Station station : stations) {
+			stationIdNameMap.put(station.getId(), station.getName());
+		}
+		return stationIdNameMap;
 	}
 
 	@Transactional
@@ -73,11 +86,6 @@ public class FavoriteService {
 
 	private Long findStationIdByName(String stationName) {
 		return stationRepository.findIdByName(stationName)
-			.orElseThrow(IllegalArgumentException::new);
-	}
-
-	private String findStationNameById(long stationId) {
-		return stationRepository.findNameById(stationId)
 			.orElseThrow(IllegalArgumentException::new);
 	}
 
