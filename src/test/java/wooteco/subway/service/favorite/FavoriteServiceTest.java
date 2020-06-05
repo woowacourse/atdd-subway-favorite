@@ -80,9 +80,9 @@ class FavoriteServiceTest {
 		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
 		member.addFavorite(Favorite.of(1L, 2L));
 
+		when(stationRepository.findAllByName(any())).thenReturn(
+			Arrays.asList(new Station(1L, "강남역"), new Station(2L, "잠실역")));
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-		when(stationRepository.findIdByName("강남역")).thenReturn(Optional.of(1L));
-		when(stationRepository.findIdByName("잠실역")).thenReturn(Optional.of(2L));
 
 		FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest("강남역",
 			"잠실역");

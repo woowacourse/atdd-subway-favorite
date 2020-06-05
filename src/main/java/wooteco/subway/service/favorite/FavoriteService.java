@@ -1,5 +1,6 @@
 package wooteco.subway.service.favorite;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,10 +91,30 @@ public class FavoriteService {
 	}
 
 	private Favorite toFavorite(FavoriteDeleteRequest favoriteDeleteRequest) {
+		List<String> stationNames = Arrays.asList(favoriteDeleteRequest.getSource(),
+			favoriteDeleteRequest.getTarget());
+		List<Station> stations = stationRepository.findAllByName(stationNames);
+
 		return Favorite.of(
-			stationRepository.findIdByName(favoriteDeleteRequest.getSource())
-				.orElseThrow(() -> new IllegalArgumentException("출발역을 찾을 수 없습니다.")),
-			stationRepository.findIdByName(favoriteDeleteRequest.getTarget())
-				.orElseThrow(() -> new IllegalArgumentException("도착역을 찾을 수 없습니다.")));
+			findSourceStationIdFromRequestInStations(favoriteDeleteRequest, stations),
+			findTargetStationIdFromRequestInStations(favoriteDeleteRequest, stations));
+	}
+
+	private Long findSourceStationIdFromRequestInStations(
+		FavoriteDeleteRequest favoriteDeleteRequest, List<Station> stations) {
+		return stations.stream()
+			.filter(station -> station.equalName(favoriteDeleteRequest.getSource()))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("출발역을 찾을 수 없습니다."))
+			.getId();
+	}
+
+	private Long findTargetStationIdFromRequestInStations(
+		FavoriteDeleteRequest favoriteDeleteRequest, List<Station> stations) {
+		return stations.stream()
+			.filter(station -> station.equalName(favoriteDeleteRequest.getTarget()))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("도착역을 찾을 수 없습니다."))
+			.getId();
 	}
 }
