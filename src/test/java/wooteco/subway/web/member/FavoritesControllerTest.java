@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wooteco.subway.domain.Token.TokenType.BEARER;
 import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_EMAIL;
 import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
 import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
@@ -42,7 +43,7 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 @WebMvcTest(controllers = FavoritesController.class)
 public class FavoritesControllerTest {
     private static final Member MEMBER_BROWN = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-    private static final String BEARER_JWT_TOKEN = "Bearer BEARER_JWT_TOKEN";
+    private static final String BEARER_JWT_TOKEN = BEARER + " BEARER_JWT_TOKEN";
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     protected MockMvc mockMvc;

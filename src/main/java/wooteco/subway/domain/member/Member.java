@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
 
 public class Member {
+    public static final String LOGIN_MEMBER_EMAIL = "loginMemberEmail";
+
     @Id
     private Long id;
     private String email;

@@ -1,5 +1,8 @@
 package wooteco.subway.web.member.interceptor;
 
+import static wooteco.subway.domain.Token.TokenType.BEARER;
+import static wooteco.subway.domain.member.Member.LOGIN_MEMBER_EMAIL;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +26,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String token = authExtractor.extract(request, "bearer");
+        String token = authExtractor.extract(request, BEARER.getTokenName());
         if (!jwtTokenProvider.validateToken(token)) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
@@ -31,7 +34,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
         String email = jwtTokenProvider.getSubject(token);
 
-        request.setAttribute("loginMemberEmail", email);
+        request.setAttribute(LOGIN_MEMBER_EMAIL, email);
         return true;
     }
 

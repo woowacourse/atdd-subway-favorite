@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
+import static wooteco.subway.domain.member.Member.LOGIN_MEMBER_EMAIL;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -28,7 +29,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String email = (String)webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
+        String email = (String)webRequest.getAttribute(LOGIN_MEMBER_EMAIL, SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
             throw new InvalidAuthenticationException("이메일이 존재하지 않습니다.");
         }
