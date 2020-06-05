@@ -1,21 +1,23 @@
 package wooteco.subway.service.member;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.domain.member.Member;
-import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.member.dto.LoginRequest;
-
-import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.dto.LoginRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -35,6 +37,7 @@ public class MemberServiceTest {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
     }
 
+    @DisplayName("회원가입")
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -44,6 +47,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("회원가입 후 토큰 발급")
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

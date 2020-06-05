@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.line.Line;
@@ -57,6 +58,7 @@ public class GraphServiceTest {
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
     }
 
+    @DisplayName("경로 조회")
     @Test
     void findPath() {
         List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(), station5.getId(),
@@ -70,6 +72,7 @@ public class GraphServiceTest {
         assertThat(stationIds.get(4)).isEqualTo(5L);
     }
 
+    @DisplayName("경로가 존재하지 않을 때 예외 발생")
     @Test
     void findPathWithNoPath() {
         assertThrows(IllegalArgumentException.class, () ->
@@ -78,6 +81,7 @@ public class GraphServiceTest {
 
     }
 
+    @DisplayName("경로가 연결되지 않았을 때 예외 발생")
     @Test
     void findPathWithDisconnected() {
         line2.removeLineStationById(station1.getId());

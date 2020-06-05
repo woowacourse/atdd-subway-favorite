@@ -6,6 +6,7 @@ import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
 import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -24,6 +25,7 @@ public class MemberRepositoryTest {
         MEMBER_BROWN.addFavorite(new Favorite(3L, 4L));
     }
 
+    @DisplayName("즐겨찾기 추가")
     @Test
     void addFavorite() {
         Member persistMember = memberRepository.save(MEMBER_BROWN);
@@ -34,6 +36,7 @@ public class MemberRepositoryTest {
         assertThat(resultMember.getFavorites().size()).isEqualTo(3);
     }
 
+    @DisplayName("즐겨찾기 제거")
     @Test
     void deleteFavorite() {
         MEMBER_BROWN.deleteFavorite(new Favorite(2L, 3L));

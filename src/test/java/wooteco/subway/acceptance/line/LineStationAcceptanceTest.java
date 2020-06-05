@@ -1,17 +1,17 @@
 package wooteco.subway.acceptance.line;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.AcceptanceTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
-
-    @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
+    @DisplayName("지하철 노선에서 지하철역 추가, 제거, 조회")
     @Test
     void manageLineStation() {
         StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);

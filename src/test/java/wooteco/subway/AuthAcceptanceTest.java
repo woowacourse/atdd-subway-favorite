@@ -9,7 +9,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    @DisplayName("Bearer Auth")
+    @DisplayName("Bearer 인증")
     @Test
     void myInfoWithBearerAuth() {
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

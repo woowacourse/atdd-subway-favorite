@@ -78,7 +78,7 @@ public class PathServiceTest {
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
     }
 
-    @DisplayName("일반적인 상황의 경로 찾기")
+    @DisplayName("연결된 두 역이 주어졌을 때 경로 찾기")
     @Test
     void findPath() {
         when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2));

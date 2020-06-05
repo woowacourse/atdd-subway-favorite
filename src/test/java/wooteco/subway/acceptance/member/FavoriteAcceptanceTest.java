@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
     }
 
+    @DisplayName("즐겨찾기 목록 추가, 제거, 조회")
     @Test
     void manageFavorites() {
         FavoriteCreateRequest YONGSAN_TO_JAMSIL = new FavoriteCreateRequest(2L, 4L);

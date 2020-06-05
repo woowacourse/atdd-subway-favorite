@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -43,6 +44,7 @@ public class FavoritesServiceTest {
         MEMBER_BROWN = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
+    @DisplayName("즐겨찾기 추가")
     @Test
     void addFavorite() {
         BDDMockito.given(stationRepository.findAllById(anyList()))
@@ -54,6 +56,7 @@ public class FavoritesServiceTest {
         assertThat(favorites.size()).isEqualTo(1);
     }
 
+    @DisplayName("즐겨찾기 조회")
     @Test
     void getFavorites() {
         BDDMockito.given(stationRepository.findAllById(anyList()))
@@ -66,6 +69,7 @@ public class FavoritesServiceTest {
         assertThat(favorites.size()).isEqualTo(2);
     }
 
+    @DisplayName("즐겨찾기 제거")
     @Test
     void deleteFavorite() {
         MEMBER_BROWN.addFavorite(new Favorite(1L, 2L));

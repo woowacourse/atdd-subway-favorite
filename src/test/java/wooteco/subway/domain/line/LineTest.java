@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,12 +22,14 @@ public class LineTest {
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
     }
 
+    @DisplayName("노선에 역 추가")
     @Test
     void addLineStation() {
         line.addLineStation(new LineStation(null, 4L, 10, 10));
         assertThat(line.getStations()).hasSize(4);
     }
 
+    @DisplayName("노선 내에 속해있는 역 조회")
     @Test
     void getLineStations() {
         List<Long> stationIds = line.getStationIds();
@@ -37,8 +40,9 @@ public class LineTest {
         assertThat(stationIds.get(2)).isEqualTo(3L);
     }
 
-    @ParameterizedTest
+    @DisplayName("노선 내에 속해있는 역 제거")
     @ValueSource(longs = {1L, 2L, 3L})
+    @ParameterizedTest
     void removeLineStation(Long stationId) {
         line.removeLineStationById(stationId);
 

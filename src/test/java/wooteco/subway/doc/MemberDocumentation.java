@@ -1,14 +1,19 @@
 package wooteco.subway.doc;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-public class MemberDocumentation {
+import wooteco.subway.web.member.AuthorizationExtractor;
 
+public class MemberDocumentation {
     public static RestDocumentationResultHandler createMember() {
         return document("members/create",
                 requestFields(
@@ -36,22 +41,24 @@ public class MemberDocumentation {
 
     public static RestDocumentationResultHandler readMember() {
         return document("members/get",
-            requestHeaders(
-                headerWithName("Authorization").description("The token for login which is Bearer Type")
-            ),
-            responseFields(
-                fieldWithPath("id").description("The user's id"),
-                fieldWithPath("email").description("The user's email"),
-                fieldWithPath("name").description("The user's name")
-            )
+                requestHeaders(
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description(
+                                "The token for login which is Bearer Type")
+                ),
+                responseFields(
+                        fieldWithPath("id").description("The user's id"),
+                        fieldWithPath("email").description("The user's email"),
+                        fieldWithPath("name").description("The user's name")
+                )
         );
     }
 
     public static RestDocumentationResultHandler deleteMember() {
         return document("members/delete",
-            requestHeaders(
-                headerWithName("Authorization").description("The token for login which is Bearer Type")
-            )
+                requestHeaders(
+                        headerWithName(AuthorizationExtractor.AUTHORIZATION).description(
+                                "The token for login which is Bearer Type")
+                )
         );
     }
 }
