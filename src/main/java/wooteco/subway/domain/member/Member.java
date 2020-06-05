@@ -2,9 +2,8 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class Member {
@@ -13,7 +12,8 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private Set<Favorite> favorites;
+    @Embedded.Empty
+    private Favorites favorites;
 
     public Member() {
     }
@@ -23,7 +23,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.favorites = new LinkedHashSet<>();
+        this.favorites = new Favorites();
     }
 
     public Member(String email, String name, String password) {
@@ -47,7 +47,7 @@ public class Member {
     }
 
     public Set<Favorite> getFavorites() {
-        return favorites;
+        return favorites.getFavorites();
     }
 
     public void update(String name, String password) {
@@ -64,12 +64,10 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
+        favorites.add(favorite);
     }
 
     public void deleteFavoriteBy(Long favoriteId) {
-        this.favorites.remove(favorites.stream()
-                .filter(favorite -> Objects.equals(favorite.getId(), favoriteId))
-                .findAny().orElseThrow(IllegalArgumentException::new));
+        favorites.deleteFavoriteBy(favoriteId);
     }
 }
