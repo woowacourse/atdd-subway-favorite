@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -18,22 +19,26 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public void updateMember(Member member, UpdateMemberRequest updateMemberRequest) {
         member.update(updateMemberRequest.getName(), updateMemberRequest.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Member member) {
         memberRepository.delete(member);
     }
 
+    @Transactional(readOnly = true)
     public String createToken(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
-            .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(IllegalArgumentException::new);
         if (!member.checkPassword(loginRequest.getPassword())) {
             throw new IllegalArgumentException("잘못된 패스워드");
         }
@@ -41,13 +46,9 @@ public class MemberService {
         return jwtTokenProvider.createToken(loginRequest.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-            .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

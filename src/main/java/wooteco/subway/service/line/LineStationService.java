@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -24,15 +25,17 @@ public class LineStationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public LineDetailResponse findLineWithStationsById(Long lineId) {
         Line line = lineRepository.findById(lineId)
-            .orElseThrow(() -> new EntityNotFoundException("노선을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("노선을 찾을 수 없습니다."));
         List<Long> lineStationIds = line.getStationIds();
         List<Station> stations = stationRepository.findAllById(lineStationIds);
 
         return LineDetailResponse.of(line, mapStations(lineStationIds, stations));
     }
 
+    @Transactional(readOnly = true)
     public WholeSubwayResponse findLinesWithStations() {
         Lines lines = new Lines(lineRepository.findAll());
         List<Station> stations = stationRepository.findAllById(lines.getStationIds());
@@ -50,6 +53,7 @@ public class LineStationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteLineStationByStationId(Long stationId) {
         List<Line> lines = lineRepository.findAll();
         lines.forEach(line -> line.removeLineStationById(stationId));

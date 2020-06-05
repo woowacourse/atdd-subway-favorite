@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -30,6 +31,7 @@ public class PathService {
         this.graphService = graphService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
             throw new SameSourceTargetException("입력한 출발역과 도착역이 같습니다.");
@@ -37,9 +39,9 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationRepository.findByName(source)
-            .orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
         Station targetStation = stationRepository.findByName(target)
-            .orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);
@@ -62,9 +64,9 @@ public class PathService {
 
     private Station extractStation(Long stationId, List<Station> stations) {
         return stations.stream()
-            .filter(station -> station.getId().equals(stationId))
-            .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
+                .filter(station -> station.getId().equals(stationId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
@@ -79,9 +81,9 @@ public class PathService {
 
             Long finalPreStationId = preStationId;
             LineStation lineStation = lineStations.stream()
-                .filter(lineStation1 -> lineStation1.isLineStationOf(finalPreStationId, stationId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("노선에 속한 역이 없습니다."));
+                    .filter(lineStation1 -> lineStation1.isLineStationOf(finalPreStationId, stationId))
+                    .findFirst()
+                    .orElseThrow(() -> new EntityNotFoundException("노선에 속한 역이 없습니다."));
 
             paths.add(lineStation);
             preStationId = stationId;
