@@ -38,7 +38,7 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(() -> new InvalidAuthenticationException("WRONG_EMAIL"));
+        Member member = findMemberByEmail(param.getEmail());
         if (!member.checkPassword(param.getPassword())) {
             throw new InvalidAuthenticationException("WRONG_PASSWORD");
         }
@@ -47,7 +47,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new InvalidAuthenticationException("ILLEGAL_ACCESS"));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException("WRONG_EMAIL"));
     }
 
     private Member findMemberById(Long id) {

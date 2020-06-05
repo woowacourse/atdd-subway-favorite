@@ -11,7 +11,7 @@ public class FavoriteRequest {
     private FavoriteRequest() {
     }
 
-    public FavoriteRequest(@NotBlank(message = "EMPTY_SOURCE") String sourceName, @NotBlank(message = "EMPTY_DESTINATION") String destinationName) {
+    public FavoriteRequest(String sourceName, String destinationName) {
         this.sourceName = sourceName;
         this.destinationName = destinationName;
     }
