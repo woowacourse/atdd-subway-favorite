@@ -4,17 +4,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.FavoriteService;
+import wooteco.subway.service.member.dto.ExistsResponse;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteService favoriteService;
 
     public FavoriteController(FavoriteService favoriteService) {
         this.favoriteService = favoriteService;
@@ -28,11 +27,10 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites/exists")
-    public ResponseEntity<Map<String, Boolean>> ifFavoriteExists(@LoginMember Member member, @RequestParam String source, @RequestParam String destination) {
-        Boolean ifExists = favoriteService.hasFavorite(new FavoriteRequest(source, destination), member);
-        Map<String, Boolean> result = new HashMap<>();
-        result.put("exists", ifExists);
-        return ResponseEntity.ok().body(result);
+    public ResponseEntity<ExistsResponse> hadFavorite(@LoginMember Member member, @RequestParam String source, @RequestParam String destination) {
+        boolean hasFavorite = favoriteService.hasFavorite(new FavoriteRequest(source, destination), member);
+        ExistsResponse existsResponse = new ExistsResponse(hasFavorite);
+        return ResponseEntity.ok().body(existsResponse);
     }
 
     @PostMapping("/favorites")
