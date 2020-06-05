@@ -15,26 +15,26 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
     @Test
     void manageLineStation() {
         // given : 역이 존재한다.
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        StationResponse kangNamYeok = createStation(STATION_NAME_KANGNAM);
+        StationResponse yeokSamYeok = createStation(STATION_NAME_YEOKSAM);
+        StationResponse seolLenungYeok = createStation(STATION_NAME_SEOLLEUNG);
         // and : 노선이 존재한다.
-        LineResponse lineResponse = createLine("2호선");
+        LineResponse secondLine = createLine("2호선");
 
         // when : 구간을 추가한다.
-        addLineStation(lineResponse.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
+        addLineStation(secondLine.getId(), null, kangNamYeok.getId());
+        addLineStation(secondLine.getId(), kangNamYeok.getId(), yeokSamYeok.getId());
+        addLineStation(secondLine.getId(), yeokSamYeok.getId(), seolLenungYeok.getId());
 
         // then : 구간이 추가되었다.
-        LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
+        LineDetailResponse lineDetailResponse = getLine(secondLine.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
         // when : 구간을 제거한다.
-        removeLineStation(lineResponse.getId(), stationResponse2.getId());
+        removeLineStation(secondLine.getId(), yeokSamYeok.getId());
 
         // then : 구간이 제거되었다.
-        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
+        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(secondLine.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
     }
 }
