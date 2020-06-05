@@ -1,25 +1,27 @@
 package wooteco.subway.service.line;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.line.dto.LineStationCreateRequest;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.domain.station.Station;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.line.dto.LineStationCreateRequest;
+
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
     private static final String STATION_NAME1 = "강남역";

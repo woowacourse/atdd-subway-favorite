@@ -1,22 +1,25 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.web.exceptions.NotExistEmailException;
 
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
@@ -45,7 +48,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    void createToken() {
+    void createTokenWithValidAttributes() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
@@ -53,5 +56,14 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @Test
+    void createTokenWithInvalidAttributes() {
+        when(memberRepository.findByEmail(anyString())).thenThrow(new NotExistEmailException());
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        assertThatThrownBy(() -> memberService.createToken(loginRequest))
+            .isInstanceOf(NotExistEmailException.class);
     }
 }
