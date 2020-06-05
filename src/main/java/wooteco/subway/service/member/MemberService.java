@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -10,24 +11,27 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new InvalidAuthenticationException("ILLEGAL_ACCESS"));
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
