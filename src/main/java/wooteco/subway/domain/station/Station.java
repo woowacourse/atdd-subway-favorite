@@ -1,38 +1,44 @@
 package wooteco.subway.domain.station;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
-import java.time.LocalDateTime;
-
 public class Station {
-    @Id
-    private Long id;
-    private String name;
-    @CreatedDate
-    private LocalDateTime createdAt;
+	@Id
+	private final Long id;
+	private final String name;
+	@CreatedDate
+	private final LocalDateTime createdAt;
 
-    public Station() {
-    }
+	Station(Long id, String name, LocalDateTime createdAt) {
+		this.id = id;
+		this.name = name;
+		this.createdAt = createdAt;
+	}
 
-    public Station(String name) {
-        this.name = name;
-    }
+	public static Station of(String name) {
+		return new Station(null, name, null);
+	}
 
-    public Station(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+	public Station withId(final Long id) {
+		return new Station(id, this.name, this.createdAt);
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Station withCreatedAt(final LocalDateTime createdAt) {
+		return new Station(this.id, this.name, createdAt);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public String getName() {
+		return name;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 }
