@@ -14,50 +14,63 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-    private final AuthorizationExtractor authExtractor;
-    private final JwtTokenProvider jwtTokenProvider;
+	private final AuthorizationExtractor authExtractor;
+	private final JwtTokenProvider jwtTokenProvider;
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor,
-        JwtTokenProvider jwtTokenProvider) {
-        this.authExtractor = authExtractor;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	public BearerAuthInterceptor(AuthorizationExtractor authExtractor,
+		JwtTokenProvider jwtTokenProvider) {
+		this.authExtractor = authExtractor;
+		this.jwtTokenProvider = jwtTokenProvider;
+	}
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) {
-        if (isCreateMemberMethod(request) || isLoginMethod(request)) {
-            return true;
-        }
-        String token = authExtractor.extract(request, "bearer");
-        if (StringUtils.isEmpty(token)) {
-            throw new InvalidAuthenticationException("존재하지 않는 토큰");
-        }
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthenticationException("유효하지 않은 토큰");
-        }
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+		Object handler) {
+		if (isCreateMemberMethod(request) || isLoginMethod(request)) {
+			return true;
+		}
+		String token = authExtractor.extract(request, "bearer");
 
-        String email = jwtTokenProvider.getSubject(token);
-        request.setAttribute("loginMemberEmail", email);
+		validate(token);
 
-        return true;
-    }
+		String email = jwtTokenProvider.getSubject(token);
+		request.setAttribute("loginMemberEmail", email);
 
-    private boolean isLoginMethod(final HttpServletRequest request) {
-        return request.getMethod().equals("POST") && request.getRequestURI().equals("/me/login");
-    }
+		return true;
+	}
 
-    private boolean isCreateMemberMethod(final HttpServletRequest request) {
-        return request.getMethod().equals("POST") && request.getRequestURI().equals("/me");
-    }
+	private void validate(String token) {
+		checkEmptyToken(token);
+		checkInvalidToken(token);
+	}
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-        ModelAndView modelAndView) throws Exception {
-    }
+	private void checkInvalidToken(String token) {
+		if (!jwtTokenProvider.validateToken(token)) {
+			throw new InvalidAuthenticationException("유효하지 않은 토큰");
+		}
+	}
 
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-        Object handler, Exception ex) throws Exception {
-    }
+	private void checkEmptyToken(String token) {
+		if (StringUtils.isEmpty(token)) {
+			throw new InvalidAuthenticationException("존재하지 않는 토큰");
+		}
+	}
+
+	private boolean isLoginMethod(final HttpServletRequest request) {
+		return request.getMethod().equals("POST") && request.getRequestURI().equals("/me/login");
+	}
+
+	private boolean isCreateMemberMethod(final HttpServletRequest request) {
+		return request.getMethod().equals("POST") && request.getRequestURI().equals("/me");
+	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+		ModelAndView modelAndView) throws Exception {
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+		Object handler, Exception ex) throws Exception {
+	}
 }

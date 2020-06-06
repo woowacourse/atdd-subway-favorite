@@ -28,92 +28,102 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
-    public static final String TEST_USER_EMAIL = "brown@email.com";
-    public static final String TEST_USER_NAME = "브라운";
-    public static final String TEST_USER_PASSWORD = "brown";
+	public static final String TEST_USER_EMAIL = "brown@email.com";
+	public static final String TEST_USER_NAME = "브라운";
+	public static final String TEST_USER_PASSWORD = "brown";
 
-    private MemberService memberService;
-    private Member member;
+	private MemberService memberService;
+	private Member member;
 
-    @Mock
-    private StationRepository stationRepository;
-    @Mock
-    private MemberRepository memberRepository;
-    @Mock
-    private JwtTokenProvider jwtTokenProvider;
+	@Mock
+	private StationRepository stationRepository;
+	@Mock
+	private MemberRepository memberRepository;
+	@Mock
+	private JwtTokenProvider jwtTokenProvider;
 
-    @BeforeEach
-    void setUp() {
-        this.memberService = new MemberService(memberRepository, stationRepository,
-            jwtTokenProvider);
-        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-    }
+	@BeforeEach
+	void setUp() {
+		this.memberService = new MemberService(memberRepository, stationRepository,
+			jwtTokenProvider);
+		member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		member.addFavorite(new Favorite(1L, 2L));
+	}
 
-    @Test
-    void createMember() {
-        memberService.createMember(member);
-        verify(memberRepository).save(any());
-    }
+	@Test
+	void createMember() {
+		memberService.createMember(member);
+		verify(memberRepository).save(any());
+	}
 
-    @Test
-    void createToken() {
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
-        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+	@Test
+	void createToken() {
+		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-        memberService.createToken(loginRequest);
+		memberService.createToken(loginRequest);
 
-        verify(jwtTokenProvider).createToken(anyString());
-    }
+		verify(jwtTokenProvider).createToken(anyString());
+	}
 
-    @Test
-    void updateMember() {
-        given(memberRepository.findById(any())).willReturn(Optional.of(member));
-        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("CU", "1234");
-        memberService.updateMember(1L, updateMemberRequest);
-        verify(memberRepository).save(any());
-    }
+	@Test
+	void updateMember() {
+		given(memberRepository.findById(any())).willReturn(Optional.of(member));
+		UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("CU", "1234");
+		memberService.updateMember(1L, updateMemberRequest);
+		verify(memberRepository).save(any());
+	}
 
-    @Test
-    void deleteMember() {
-        doNothing().when(memberRepository).deleteById(any());
-        memberService.deleteMember(1L);
-        verify(memberRepository).deleteById(any());
-    }
+	@Test
+	void deleteMember() {
+		doNothing().when(memberRepository).deleteById(any());
+		memberService.deleteMember(1L);
+		verify(memberRepository).deleteById(any());
+	}
 
-    @DisplayName("즐겨찾기에 경로 추가")
-    @Test
-    void saveFavorite() {
-        given(memberRepository.findById(any())).willReturn(Optional.of(member));
-        given(memberRepository.save(any())).willReturn(member);
+	@DisplayName("즐겨찾기에 경로 추가")
+	@Test
+	void saveFavorite() {
+		FavoriteRequest favorite = new FavoriteRequest(1L, 2L);
 
-        FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        Member savedMember = memberService.saveFavorite(member.getId(), favoriteRequest);
-        assertThat(savedMember.getFavorites().size()).isEqualTo(1);
-    }
+		Station 일원역 = new Station(1L, "일원역");
+		Station 잠실역 = new Station(2L, "잠실역");
 
-    @DisplayName("즐겨찾기에 있는 경로 삭제")
-    @Test
-    void deleteFavorite() {
-        Favorite favorite = new Favorite(1L, 1L, 2L, 1L);
-        member.addFavorite(favorite);
-        memberService.deleteFavorite(member, favorite.getId());
-        verify(memberRepository).deleteFavoriteById(favorite.getId());
-    }
+		given(memberRepository.save(any())).willReturn(any());
+		given(stationRepository.findById(1L)).willReturn(Optional.of(일원역));
+		given(stationRepository.findById(2L)).willReturn(Optional.of(잠실역));
 
-    @DisplayName("즐겨찾기에 있는 경로 조회")
-    @Test
-    void findAll() {
-        member.addFavorite(new Favorite(1L, 2L));
-        member.addFavorite(new Favorite(2L, 3L));
-        member.addFavorite(new Favorite(3L, 4L));
+		FavoriteResponse favoriteResponse = memberService.saveFavorite(member, favorite);
 
-        given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
-            new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
+		assertThat(favoriteResponse.getSourceStation()).isEqualTo(일원역.getName());
+		assertThat(favoriteResponse.getTargetStation()).isEqualTo(잠실역.getName());
+	}
 
-        List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMember(
-            member);
+	@DisplayName("즐겨찾기에 있는 경로 삭제")
+	@Test
+	void deleteFavorite() {
+		given(memberRepository.save(any())).willReturn(any());
 
-        assertThat(allFavoritesByMemberId).isNotNull();
-        assertThat(allFavoritesByMemberId).hasSize(3);
-    }
+		Favorite favorite = new Favorite(1L, 2L);
+		memberService.deleteFavorite(member, FavoriteRequest.of(favorite));
+
+		verify(memberRepository).save(any());
+	}
+
+	@DisplayName("즐겨찾기에 있는 경로 조회")
+	@Test
+	void findAll() {
+		member.addFavorite(new Favorite(1L, 2L));
+		member.addFavorite(new Favorite(2L, 3L));
+		member.addFavorite(new Favorite(3L, 4L));
+
+		given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
+			new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
+
+		List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMember(
+			member);
+
+		assertThat(allFavoritesByMemberId).isNotNull();
+		assertThat(allFavoritesByMemberId).hasSize(3);
+	}
 }

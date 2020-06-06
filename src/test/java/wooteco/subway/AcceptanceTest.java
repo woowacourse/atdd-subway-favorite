@@ -96,17 +96,20 @@ public class AcceptanceTest {
 		params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");
 
-		return
-			given().
-				body(params).
-				contentType(MediaType.APPLICATION_JSON_VALUE).
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				post("/lines").
-				then().
-				log().all().
-				statusCode(HttpStatus.CREATED.value()).
-				extract().as(LineResponse.class);
+		return requestApi("/lines", params, HttpStatus.CREATED.value(), LineResponse.class);
+	}
+
+	private <R> R requestApi(String url, Map<String, String> params, int statusCode, Class<R> returnType) {
+		return given().
+			body(params).
+			contentType(MediaType.APPLICATION_JSON_VALUE).
+			accept(MediaType.APPLICATION_JSON_VALUE).
+			when().
+			post(url).
+			then().
+			log().all().
+			statusCode(statusCode).
+			extract().as(returnType);
 	}
 
 	public LineDetailResponse getLine(Long id) {

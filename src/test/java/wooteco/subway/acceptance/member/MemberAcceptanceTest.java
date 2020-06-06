@@ -157,7 +157,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 			.get("/me")
 			.then()
 			.log().all()
-			.extract().asString();
-		assertThat(message).contains("유효하지 않은 토큰");
+			.extract()
+			.asString();
+
+		assertThat(message).contains("잘못된 요청입니다.");
 	}
 }

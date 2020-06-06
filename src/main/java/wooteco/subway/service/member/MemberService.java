@@ -24,76 +24,77 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
-    private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+	private final MemberRepository memberRepository;
+	private final StationRepository stationRepository;
+	private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository,
-        StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
-        this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	public MemberService(MemberRepository memberRepository,
+		StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
+		this.memberRepository = memberRepository;
+		this.stationRepository = stationRepository;
+		this.jwtTokenProvider = jwtTokenProvider;
+	}
 
-    public Member createMember(Member member) {
-        try {
-            return memberRepository.save(member);
-        } catch (DbActionExecutionException e) {
-            throw new DuplicateEmailException();
-        }
-    }
+	public Member createMember(Member member) {
+		try {
+			return memberRepository.save(member);
+		} catch (DbActionExecutionException e) {
+			throw new DuplicateEmailException();
+		}
+	}
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
-        memberRepository.save(member);
-    }
+	public void updateMember(Long id, UpdateMemberRequest param) {
+		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		member.update(param.getName(), param.getPassword());
+		memberRepository.save(member);
+	}
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
-    }
+	public void deleteMember(Long id) {
+		memberRepository.deleteById(id);
+	}
 
-    public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail())
-            .orElseThrow(NoSuchAccountException::new);
-        if (!member.checkPassword(param.getPassword())) {
-            throw new WrongPasswordException();
-        }
-        return jwtTokenProvider.createToken(param.getEmail());
-    }
+	public String createToken(LoginRequest param) {
+		Member member = memberRepository.findByEmail(param.getEmail())
+			.orElseThrow(NoSuchAccountException::new);
+		if (!member.checkPassword(param.getPassword())) {
+			throw new WrongPasswordException();
+		}
+		return jwtTokenProvider.createToken(param.getEmail());
+	}
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(NoSuchAccountException::new);
-    }
+	public Member findMemberByEmail(String email) {
+		return memberRepository.findByEmail(email).orElseThrow(NoSuchAccountException::new);
+	}
 
-    public List<FavoriteResponse> findAllFavoritesByMember(Member member) {
-        Map<Long, String> stationNameById = stationRepository.findAll().stream()
-            .collect(Collectors.toMap(Station::getId, Station::getName));
+	public List<FavoriteResponse> findAllFavoritesByMember(Member member) {
+		Map<Long, String> stationNameById = stationRepository.findAll().stream()
+			.collect(Collectors.toMap(Station::getId, Station::getName));
 
-        return member.getFavorites().stream()
-            .map(favorite ->
-                new FavoriteResponse(favorite.getId(),
-                    stationNameById.get(favorite.getSourceStationId()),
-                    stationNameById.get(favorite.getTargetStationId()))
-            ).collect(Collectors.toList());
-    }
+		return member.getFavorites().stream()
+			.map(favorite ->
+				new FavoriteResponse(stationNameById.get(favorite.getSourceStationId()),
+					stationNameById.get(favorite.getTargetStationId()))
+			).collect(Collectors.toList());
+	}
 
-    public Member saveFavorite(Long id, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(id).orElseThrow(NoSuchAccountException::new);
-        member.addFavorite(Favorite.of(favoriteRequest));
-        return memberRepository.save(member);
-    }
+	public FavoriteResponse saveFavorite(Member member, FavoriteRequest favoriteRequest) {
+		member.addFavorite(Favorite.of(favoriteRequest));
 
-    public void deleteFavorite(Member member, Long favoriteId) {
-        if (member.doesNotHaveFavoriteWithId(favoriteId)) {
-            throw new IllegalArgumentException("잘못된 즐겨찾기 삭제 요청입니다.");
-        }
-        memberRepository.deleteFavoriteById(favoriteId);
-    }
+		memberRepository.save(member);
 
-    public String findStationNameById(final Long stationId) {
-        return stationRepository.findById(stationId)
-            .orElseThrow(NoSuchStationException::new)
-            .getName();
-    }
+		String sourceName = findStationNameById(favoriteRequest.getSourceStationId());
+		String targetName = findStationNameById(favoriteRequest.getTargetStationId());
+		return new FavoriteResponse(sourceName, targetName);
+	}
+
+	public void deleteFavorite(Member member, FavoriteRequest favorite) {
+		member.deleteFavorite(favorite.getSourceStationId(), favorite.getTargetStationId());
+		memberRepository.save(member);
+	}
+
+	private String findStationNameById(Long stationId) {
+		return stationRepository.findById(stationId)
+			.orElseThrow(NoSuchStationException::new)
+			.getName();
+	}
 }
