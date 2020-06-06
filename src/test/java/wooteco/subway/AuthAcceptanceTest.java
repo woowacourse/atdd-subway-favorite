@@ -34,7 +34,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .get("/me")
             .then()
             .assertThat()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static TokenResponse successLogin(String email, String password) {

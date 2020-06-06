@@ -1,10 +1,12 @@
 package wooteco.subway.web.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import wooteco.subway.web.exception.dto.ErrorResponse;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
@@ -13,6 +15,13 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ErrorResponse> notExpectedException() {
         return ResponseEntity.badRequest()
             .body(ErrorResponse.of("개발자도 예상하지 못한 문제입니다!"));
+    }
+
+    @ExceptionHandler(InvalidAuthenticationException.class)
+    public ResponseEntity<ErrorResponse> invalidAuthenticationException(
+        InvalidAuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse.of(e.getMessage()));
     }
 
     @ExceptionHandler(SameStationException.class)

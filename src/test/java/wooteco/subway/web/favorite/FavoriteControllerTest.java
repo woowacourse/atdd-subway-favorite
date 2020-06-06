@@ -97,7 +97,8 @@ public class FavoriteControllerTest {
             favoriteResponse);
 
         String response = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/me/favorites/source/{source}/target/{target}", 1, 2)
+            RestDocumentationRequestBuilders.get("/me/favorites/source/{source}/target/{target}", 1,
+                2)
                 .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -133,7 +134,8 @@ public class FavoriteControllerTest {
     @Test
     void deleteFavorite() throws Exception {
         this.mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/me/favorites/source/{source}/target/{target}", 1, 2)
+            RestDocumentationRequestBuilders.delete("/me/favorites/source/{source}/target/{target}",
+                1, 2)
                 .header("Authorization", token))
             .andExpect(status().isNoContent())
             .andDo(print())

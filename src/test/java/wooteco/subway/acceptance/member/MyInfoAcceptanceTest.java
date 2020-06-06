@@ -57,7 +57,7 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
             delete(ME_URL).
             then().
             log().all().
-            statusCode(HttpStatus.BAD_REQUEST.value());
+            statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static void updateMemberWithBearerAuth(TokenResponse tokenResponse) {
@@ -90,7 +90,7 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
             put(ME_URL).
             then().
             log().all().
-            statusCode(HttpStatus.BAD_REQUEST.value());
+            statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("사용자 실패 CRUD 및 성공 CRUD")

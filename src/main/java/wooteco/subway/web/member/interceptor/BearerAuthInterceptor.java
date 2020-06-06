@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
@@ -29,7 +30,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         final String accessToken = authExtractor.extract(request, "bearer");
 
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다!");
+            throw new InvalidAuthenticationException("유효하지 않은 토큰입니다!");
         }
 
         final String loginId = jwtTokenProvider.getSubject(accessToken);

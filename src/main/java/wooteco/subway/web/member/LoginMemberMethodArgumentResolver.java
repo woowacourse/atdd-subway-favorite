@@ -24,7 +24,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String id = (String)webRequest.getAttribute(LOGIN_MEMBER_ID, SCOPE_REQUEST);
         if (StringUtils.isBlank(id)) {
-            return null;
+            throw new InvalidAuthenticationException("유효하지 않은 토큰입니다!!");
         }
         return Long.valueOf(id);
     }
