@@ -19,6 +19,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
@@ -28,6 +29,7 @@ import wooteco.subway.web.member.login.BearerAuthInterceptor;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -44,7 +46,9 @@ import static wooteco.subway.AcceptanceTest.*;
 public class FavoriteControllerTest {
 
     @MockBean
-    private MemberService memberService;
+    private FavoriteService favoriteService;
+    @MockBean
+    private MemberRepository memberRepository;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
@@ -61,10 +65,13 @@ public class FavoriteControllerTest {
     @DisplayName("본인의 모든 즐겨찾기 목록을 요청했을때 OK 응답이 오는지 테스트")
     @Test
     void getFavoritesTest() throws Exception {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         FavoriteResponse response = new FavoriteResponse(1L, 1L, 2L, STATION_NAME_KANGNAM, STATION_NAME_DOGOK);
+
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
-        given(memberService.findAllFavoriteResponses(any())).willReturn(Arrays.asList(response));
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        given(favoriteService.findAllFavoriteResponses(any())).willReturn(Arrays.asList(response));
 
         this.mockMvc.perform(get("/me/favorites")
                 .header("Authorization", "Bearer " + TEST_TOKEN)
@@ -77,11 +84,12 @@ public class FavoriteControllerTest {
     @DisplayName("본인의 계정에 즐겨찾기를 추가했을때 OK 응답이 오는지 테스트")
     @Test
     void addFavoriteTest() throws Exception {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
-        given(memberService.findMemberByEmail(any())).willReturn(new Member());
-        given(memberService.addFavorite(any(), any())).willReturn(new Member());
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        doNothing().when(favoriteService).createFavorite(any(), any());
 
         String inputJson = "{\"sourceStationName\":\"" + STATION_NAME_KANGNAM + "\"," +
                 "\"targetStationName\":\"" + STATION_NAME_DOGOK + "\"}";
@@ -98,11 +106,12 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기 id로 즐겨찾기를 삭제했을때 OK응답이 오는지 테스트")
     @Test
     void deleteFavoriteTest() throws Exception {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
-        given(memberService.findMemberByEmail(any())).willReturn(new Member());
-        doNothing().when(memberService).deleteMember(any());
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        doNothing().when(favoriteService).deleteFavorite(any());
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me/favorites/{id}", 1L)
                 .header("Authorization", "Bearer " + TEST_TOKEN))

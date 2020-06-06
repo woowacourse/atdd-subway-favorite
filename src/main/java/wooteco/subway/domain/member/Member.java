@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import wooteco.subway.domain.favorite.Favorite;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Member {
@@ -13,7 +14,6 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private Set<Favorite> favorites = new HashSet<>();
 
     public Member() {
     }
@@ -29,14 +29,6 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
-    }
-
-    public Member(Long id, String email, String name, String password, Set<Favorite> favorites) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.favorites = favorites;
     }
 
     public Long getId() {
@@ -55,10 +47,6 @@ public class Member {
         return password;
     }
 
-    public Set<Favorite> getFavorites() {
-        return favorites;
-    }
-
     public void update(String name, String password) {
         if (StringUtils.isNotBlank(name)) {
             this.name = name;
@@ -72,11 +60,16 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public void addFavorite(Favorite favorite) {
-        favorites.add(favorite);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id);
     }
 
-    public void removeFavorite(Favorite favorite) {
-        favorites.remove(favorite);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

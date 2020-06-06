@@ -8,20 +8,22 @@ import java.util.Objects;
 public class Favorite {
     @Id
     private Long id;
+    private Long memberId;
     private Long sourceStationId;
     private Long targetStationId;
 
     public Favorite() {
     }
 
-    public Favorite(Long id, Long sourceStationId, Long targetStationId) {
+    public Favorite(Long id, Long memberId, Long sourceStationId, Long targetStationId) {
         this.id = id;
+        this.memberId = memberId;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
     }
 
-    public Favorite(Long sourceStationId, Long targetStationId) {
-        this(null, sourceStationId, targetStationId);
+    public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
+        this(null, memberId, sourceStationId, targetStationId);
     }
 
     public Long getId() {
@@ -34,6 +36,10 @@ public class Favorite {
 
     public Long getTargetStationId() {
         return targetStationId;
+    }
+
+    public Long getMemberId() {
+        return memberId;
     }
 
     @Override

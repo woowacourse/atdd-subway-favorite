@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.SubwayAdminApplication;
-import wooteco.subway.service.station.NoSuchStationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

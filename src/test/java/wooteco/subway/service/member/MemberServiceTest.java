@@ -22,8 +22,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -36,15 +35,13 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
-    private StationRepository stationRepository;
-    @Mock
     private FavoriteRepository favoriteRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, stationRepository, favoriteRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, favoriteRepository, jwtTokenProvider);
     }
 
     @DisplayName("멤버 생성 테스트")
@@ -89,6 +86,18 @@ public class MemberServiceTest {
         memberService.deleteMemberById(1L);
 
         verify(memberRepository).deleteById(any());
+    }
+
+    @DisplayName("멤버 삭제시, 즐겨찾기 목록도 같이 삭제되는지 테스트")
+    @Test
+    void deleteMemberTest2() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
+        doNothing().when(memberRepository).deleteById(any());
+
+        memberService.deleteMember(member);
+
+        verify(favoriteRepository).deleteAllByMemberId(any());
     }
 
     @DisplayName("멤버 삭제 시, 삭제하고자 하는 멤버를 찾을 수 없을 때 예외가 발생하는지 테스트")
