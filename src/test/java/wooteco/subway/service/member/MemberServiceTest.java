@@ -71,7 +71,7 @@ public class MemberServiceTest {
         Member member = mock(Member.class);
         UpdateMemberRequest request = mock(UpdateMemberRequest.class);
 
-        when(member.isNotPersistent()).thenReturn(false);
+        when(member.isIdNotExist()).thenReturn(false);
         when(member.isNotMe(request.getEmail())).thenReturn(false);
 
         memberService.updateMember(member, request);
@@ -81,10 +81,9 @@ public class MemberServiceTest {
 
     @Test
     void updateMemberWhenNotPersistent() {
-        String testEmail = "test@test.com";
         Member member = mock(Member.class);
         UpdateMemberRequest request = mock(UpdateMemberRequest.class);
-        when(member.isNotPersistent()).thenReturn(true);
+        when(member.isIdNotExist()).thenReturn(true);
 
         assertThatThrownBy(() -> memberService.updateMember(member, request))
             .isInstanceOf(IllegalArgumentException.class)
@@ -97,7 +96,7 @@ public class MemberServiceTest {
         Member mockMember = mock(Member.class);
         Station startStation = new Station("신정역");
         Station endStation = new Station("목동역");
-        when(mockMember.isNotPersistent()).thenReturn(false);
+        when(mockMember.isIdNotExist()).thenReturn(false);
         doNothing().when(mockMember).removeFavoritePath(startStation, endStation);
 
         // when
@@ -113,7 +112,7 @@ public class MemberServiceTest {
         Member mockMember = mock(Member.class);
         Station startStation = new Station("신정역");
         Station endStation = new Station("목동역");
-        when(mockMember.isNotPersistent()).thenReturn(true);
+        when(mockMember.isIdNotExist()).thenReturn(true);
 
         // when & then
         assertThatThrownBy(() -> memberService.removeFavoritePath(startStation, endStation, mockMember))
