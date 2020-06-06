@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,10 +12,6 @@ import wooteco.subway.exceptions.DuplicatedEmailException;
 import wooteco.subway.exceptions.DuplicatedFavoritePathException;
 import wooteco.subway.exceptions.InvalidEmailException;
 import wooteco.subway.exceptions.InvalidPasswordException;
-import wooteco.subway.exceptions.NotExistFavoritePathException;
-import wooteco.subway.exceptions.NotExistLineException;
-import wooteco.subway.exceptions.NotExistLineStationException;
-import wooteco.subway.exceptions.NotExistStationException;
 import wooteco.subway.exceptions.ResourceNotExistException;
 import wooteco.subway.web.dto.ExceptionResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;

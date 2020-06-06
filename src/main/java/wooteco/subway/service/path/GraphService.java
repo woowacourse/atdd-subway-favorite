@@ -1,15 +1,12 @@
 package wooteco.subway.service.path;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.PathType;

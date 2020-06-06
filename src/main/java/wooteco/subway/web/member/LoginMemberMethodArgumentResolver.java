@@ -2,8 +2,6 @@ package wooteco.subway.web.member;
 
 import static org.springframework.web.context.request.RequestAttributes.*;
 
-import javax.validation.Valid;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
