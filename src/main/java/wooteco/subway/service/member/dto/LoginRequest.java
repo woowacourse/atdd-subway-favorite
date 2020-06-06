@@ -9,9 +9,6 @@ public class LoginRequest {
     @NotBlank(message = "비밀번호는 공란이 될 수 없습니다!")
     private String password;
 
-    public LoginRequest() {
-    }
-
     public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;

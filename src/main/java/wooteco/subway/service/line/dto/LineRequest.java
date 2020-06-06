@@ -10,9 +10,6 @@ public class LineRequest {
     private LocalTime endTime;
     private int intervalTime;
 
-    public LineRequest() {
-    }
-
     public String getName() {
         return name;
     }

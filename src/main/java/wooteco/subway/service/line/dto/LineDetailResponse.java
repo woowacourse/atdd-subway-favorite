@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -18,11 +19,11 @@ public class LineDetailResponse {
     private LocalDateTime updatedAt;
     private List<StationResponse> stations;
 
-    public LineDetailResponse() {
-    }
-
-    public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
-        LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
+    public LineDetailResponse(@JsonProperty("id") Long id, @JsonProperty("name") String name,
+        @JsonProperty("startTime") LocalTime startTime,
+        @JsonProperty("endTime") LocalTime endTime, @JsonProperty("intervalTime") int intervalTime,
+        @JsonProperty("createdAt") LocalDateTime createdAt, @JsonProperty("updatedAt") LocalDateTime updatedAt,
+        @JsonProperty("stations") List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;

@@ -4,9 +4,6 @@ public class FavoritePathRequest {
     private String source;
     private String target;
 
-    public FavoritePathRequest() {
-    }
-
     public FavoritePathRequest(String source, String target) {
         this.source = source;
         this.target = target;

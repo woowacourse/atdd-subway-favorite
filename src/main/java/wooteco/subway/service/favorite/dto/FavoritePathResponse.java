@@ -11,9 +11,6 @@ public class FavoritePathResponse {
     private StationResponse source;
     private StationResponse target;
 
-    public FavoritePathResponse() {
-    }
-
     public FavoritePathResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
         this.source = source;

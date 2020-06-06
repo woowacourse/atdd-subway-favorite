@@ -6,9 +6,6 @@ public class UpdateMemberRequest {
     private String password;
     private String confirmPassword;
 
-    public UpdateMemberRequest() {
-    }
-
     public UpdateMemberRequest(String name, String password, String confirmPassword) {
         this.name = name;
         this.password = password;
