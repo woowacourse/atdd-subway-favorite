@@ -22,13 +22,13 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        String bearer = authExtractor.extract(request, "BEARER");
+        final String bearer = authExtractor.extract(request, "BEARER");
 
         if (!jwtTokenProvider.validateToken(bearer)) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
-        String email = jwtTokenProvider.getSubject(bearer);
+        final String email = jwtTokenProvider.getSubject(bearer);
         request.setAttribute("loginMemberEmail", email);
         return true;
     }
