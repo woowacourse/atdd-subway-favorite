@@ -16,6 +16,7 @@ import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
+import wooteco.subway.exceptions.NotExistLineStationException;
 import wooteco.subway.exceptions.NotExistStationException;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
@@ -79,7 +80,7 @@ public class PathService {
             LineStation lineStation = lineStations.stream()
                 .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotExistLineStationException(finalPreStationId, stationId));
 
             paths.add(lineStation);
             preStationId = stationId;

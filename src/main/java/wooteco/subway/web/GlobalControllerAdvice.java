@@ -15,7 +15,9 @@ import wooteco.subway.exceptions.InvalidEmailException;
 import wooteco.subway.exceptions.InvalidPasswordException;
 import wooteco.subway.exceptions.NotExistFavoritePathException;
 import wooteco.subway.exceptions.NotExistLineException;
+import wooteco.subway.exceptions.NotExistLineStationException;
 import wooteco.subway.exceptions.NotExistStationException;
+import wooteco.subway.exceptions.ResourceNotExistException;
 import wooteco.subway.web.dto.ExceptionResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
@@ -32,9 +34,8 @@ public class GlobalControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({NotExistStationException.class, NotExistFavoritePathException.class,
-        NotExistLineException.class})
-    public ExceptionResponse notExisted(RuntimeException e) {
+    @ExceptionHandler({ResourceNotExistException.class})
+    public ExceptionResponse notExisted(ResourceNotExistException e) {
         return new ExceptionResponse(e.getMessage());
     }
 
