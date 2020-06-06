@@ -28,10 +28,10 @@ public class MemberService {
 	@Transactional(readOnly = true)
 	public String createToken(LoginRequest param) {
 		Member member = memberRepository.findByEmail(param.getEmail())
-		                                .orElseThrow(RuntimeException::new);
+		                                .orElseThrow(() -> new InvalidMemberException("email이 동일한 member가 존재하지 않습니다."));
 
 		if (!member.checkPassword(param.getPassword())) {
-			throw new RuntimeException("잘못된 패스워드");
+			throw new InvalidMemberException("패스워드가 일치하지 않습니다.");
 		}
 
 		return jwtTokenProvider.createToken(param.getEmail());
@@ -39,12 +39,14 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		return memberRepository.findByEmail(email)
+		                       .orElseThrow(() -> new InvalidMemberException("email이 동일한 member가 존재하지 않습니다."));
 	}
 
 	@Transactional
 	public void updateMember(Long id, UpdateMemberRequest param) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = memberRepository.findById(id)
+		                                .orElseThrow(() -> new InvalidMemberException("id에 해당하는 member가 존재하지 않습니다."));
 		updateMember(member, param);
 	}
 

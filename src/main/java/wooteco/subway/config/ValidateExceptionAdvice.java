@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import wooteco.subway.service.member.InvalidMemberException;
+
 @RestControllerAdvice
 public class ValidateExceptionAdvice {
 
@@ -22,6 +24,13 @@ public class ValidateExceptionAdvice {
 		return ResponseEntity
 			.badRequest()
 			.body(errorMessage);
+	}
+
+	@ExceptionHandler(InvalidMemberException.class)
+	public ResponseEntity<String> handleInvalidMemberException(InvalidMemberException e) {
+		return ResponseEntity
+			.badRequest()
+			.body(e.getMessage());
 	}
 
 }
