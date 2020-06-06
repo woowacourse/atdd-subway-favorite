@@ -37,9 +37,14 @@ public class FavoriteService {
         List<FavoriteResponse> favoriteStations = new ArrayList<>();
 
         for (FavoriteStation favoriteStation : member.getFavoriteStations()) {
-            Station source = stationRepository.findById(favoriteStation.getSource())
+            List<Station> stations = stationRepository.findAll();
+            Station source = stations.stream()
+                    .filter(station -> station.getId().equals(favoriteStation.getSource()))
+                    .findFirst()
                     .orElseThrow(NoSuchElementException::new);
-            Station target = stationRepository.findById(favoriteStation.getTarget())
+            Station target = stations.stream()
+                    .filter(station -> station.getId().equals(favoriteStation.getTarget()))
+                    .findFirst()
                     .orElseThrow(NoSuchElementException::new);
             favoriteStations.add(
                     new FavoriteResponse(member.getId(), StationResponse.of(source), StationResponse.of(target)));
