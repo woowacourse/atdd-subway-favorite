@@ -8,6 +8,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static wooteco.subway.BearerAuthInterceptorTest.*;
+import static wooteco.subway.acceptance.AcceptanceTest.*;
 import static wooteco.subway.web.BearerAuthInterceptor.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -41,13 +43,11 @@ import wooteco.subway.web.LoginMemberMethodArgumentResolver;
 @AutoConfigureMockMvc
 @SpringBootTest
 class LoginMemberControllerTest {
+
 	private static final Gson GSON = new Gson();
-	private static final String TEST_USER_EMAIL = "test@email.com";
-	private static final String TEST_USER_NAME = "타미";
-	private static final String TEST_USER_PASSWORD = "password";
-	private static final String TOKEN = "This.is.token";
 
 	private Member member;
+	private MockMvc mockMvc;
 
 	@MockBean
 	private MemberService memberService;
@@ -57,12 +57,10 @@ class LoginMemberControllerTest {
 
 	@MockBean
 	private LoginMemberMethodArgumentResolver resolver;
-
-	private MockMvc mockMvc;
-
+	
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-		this.member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		this.member = new Member(TEST_USER_ID, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 		                              .addFilter(new ShallowEtagHeaderFilter())
@@ -76,14 +74,14 @@ class LoginMemberControllerTest {
 	void login() throws Exception {
 		LoginRequest request = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
-		given(memberService.createToken(any())).willReturn(TOKEN);
+		given(memberService.createToken(any())).willReturn(TEST_TOKEN_SECRET_KEY);
 
 		mockMvc.perform(post("/login")
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(GSON.toJson(request)))
 		       .andExpect(status().isOk())
-		       .andExpect(jsonPath("$.accessToken", is(TOKEN)))
+		       .andExpect(jsonPath("$.accessToken", is(TEST_TOKEN_SECRET_KEY)))
 		       .andExpect(jsonPath("$.tokenType", is(BEARER_TOKEN)))
 		       .andDo(LoginMemberDocumentation.login());
 	}
@@ -108,7 +106,7 @@ class LoginMemberControllerTest {
 
 		MvcResult result = mockMvc.perform(get("/me")
 			.accept(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + TOKEN))
+			.header("Authorization", "Bearer " + TEST_TOKEN_SECRET_KEY))
 		                          .andExpect(status().isOk())
 		                          .andDo(LoginMemberDocumentation.getMember())
 		                          .andReturn();
@@ -130,7 +128,7 @@ class LoginMemberControllerTest {
 		mockMvc.perform(put("/me")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(GSON.toJson(request))
-			.header("Authorization", "Bearer " + TOKEN))
+			.header("Authorization", "Bearer " + TEST_TOKEN_SECRET_KEY))
 		       .andExpect(status().isNoContent())
 		       .andDo(LoginMemberDocumentation.updateMember());
 	}
@@ -142,7 +140,7 @@ class LoginMemberControllerTest {
 		given(resolver.resolveArgument(any(), any(), any(), any())).willReturn(member);
 
 		mockMvc.perform(delete("/me")
-			.header("Authorization", "Bearer " + TOKEN))
+			.header("Authorization", "Bearer " + TEST_TOKEN_SECRET_KEY))
 		       .andExpect(status().isNoContent())
 		       .andDo(LoginMemberDocumentation.deleteMember());
 	}

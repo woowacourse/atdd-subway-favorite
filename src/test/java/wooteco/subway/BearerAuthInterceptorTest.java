@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 import static wooteco.subway.web.AuthorizationExtractor.*;
 import static wooteco.subway.web.BearerAuthInterceptor.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,17 +23,23 @@ public class BearerAuthInterceptorTest {
 
 	public static final String TEST_TOKEN_SECRET_KEY = " this.is.token";
 
+	private MockHttpServletRequest request;
+	private MockHttpServletResponse response;
+
 	@Autowired
 	private BearerAuthInterceptor interceptor;
 
 	@MockBean
 	private JwtTokenProvider jwtTokenProvider;
 
+	@BeforeEach
+	void setUp() {
+		request = new MockHttpServletRequest();
+		response = new MockHttpServletResponse();
+	}
+
 	@Test
 	void preHandle_EmptyToken() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-
 		assertThatThrownBy(() -> interceptor.preHandle(request, response, null))
 			.isInstanceOf(InvalidAuthenticationException.class)
 			.hasMessage("Token이 존재하지 않습니다.");
@@ -40,9 +47,7 @@ public class BearerAuthInterceptorTest {
 
 	@Test
 	void preHandle_InvalidToken() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(AUTHORIZATION, BEARER_TOKEN + TEST_TOKEN_SECRET_KEY);
-		MockHttpServletResponse response = new MockHttpServletResponse();
 
 		assertThatThrownBy(() -> interceptor.preHandle(request, response, null))
 			.isInstanceOf(InvalidAuthenticationException.class)
@@ -51,9 +56,7 @@ public class BearerAuthInterceptorTest {
 
 	@Test
 	void preHandle_ValidToken() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(AUTHORIZATION, BEARER_TOKEN + TEST_TOKEN_SECRET_KEY);
-		MockHttpServletResponse response = new MockHttpServletResponse();
 		given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
 		assertThat(interceptor.preHandle(request, response, null)).isTrue();

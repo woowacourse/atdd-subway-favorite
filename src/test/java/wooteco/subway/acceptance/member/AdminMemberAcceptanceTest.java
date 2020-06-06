@@ -28,4 +28,5 @@ public class AdminMemberAcceptanceTest extends AcceptanceTest {
 
 		deleteMember(memberResponse);
 	}
+
 }
