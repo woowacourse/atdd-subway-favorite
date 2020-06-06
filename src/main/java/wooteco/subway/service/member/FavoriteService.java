@@ -12,6 +12,7 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.service.path.PathService;
 
 @Service
 public class FavoriteService {
@@ -20,14 +21,17 @@ public class FavoriteService {
 
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
+    private final PathService pathService;
 
     public FavoriteService(MemberRepository memberRepository,
-        StationRepository stationRepository) {
+        StationRepository stationRepository, PathService pathService) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
+        this.pathService = pathService;
     }
 
     public void createFavorite(Member member, FavoriteRequest request) {
+        pathService.validatePath(request.getSourceId(), request.getTargetId());
         Favorite favorite = request.toFavorite();
         member.addFavorite(favorite);
         memberRepository.save(member);
