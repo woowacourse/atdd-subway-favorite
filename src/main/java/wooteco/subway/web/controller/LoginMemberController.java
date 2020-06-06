@@ -1,5 +1,7 @@
 package wooteco.subway.web.controller;
 
+import static wooteco.subway.web.BearerAuthInterceptor.*;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +22,6 @@ import wooteco.subway.web.LoginMember;
 @RestController
 public class LoginMemberController {
 
-	private static final String BEARER_TOKEN_TYPE = "Bearer";
-
 	private final MemberService memberService;
 
 	public LoginMemberController(MemberService memberService) {
@@ -33,7 +33,7 @@ public class LoginMemberController {
 		String token = memberService.createToken(param);
 		return ResponseEntity
 			.ok()
-			.body(new TokenResponse(token, BEARER_TOKEN_TYPE));
+			.body(new TokenResponse(token, BEARER_TOKEN));
 	}
 
 	@PostMapping("/members")

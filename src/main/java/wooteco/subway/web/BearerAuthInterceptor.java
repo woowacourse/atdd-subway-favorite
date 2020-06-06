@@ -1,5 +1,7 @@
 package wooteco.subway.web;
 
+import static wooteco.subway.web.LoginMemberMethodArgumentResolver.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,8 +14,7 @@ import wooteco.subway.infra.JwtTokenProvider;
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
 
-	private static final String BEARER_TOKEN_TYPE = "Bearer";
-	private static final String EMAIL_ATTRIBUTE = "loginMemberEmail";
+	public static final String BEARER_TOKEN = "Bearer";
 
 	private final AuthorizationExtractor authExtractor;
 	private final JwtTokenProvider jwtTokenProvider;
@@ -26,7 +27,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 		HttpServletResponse response, Object handler) {
-		String token = authExtractor.extract(request, BEARER_TOKEN_TYPE);
+		String token = authExtractor.extract(request, BEARER_TOKEN);
 
 		if (StringUtils.isEmpty(token)) {
 			throw new InvalidAuthenticationException("Token이 존재하지 않습니다.");
@@ -37,7 +38,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 		}
 
 		String email = jwtTokenProvider.getSubject(token);
-		request.setAttribute(EMAIL_ATTRIBUTE, email);
+		request.setAttribute(MEMBER_EMAIL_ATTRIBUTE, email);
 
 		return true;
 	}

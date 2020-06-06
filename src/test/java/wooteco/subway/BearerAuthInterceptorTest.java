@@ -3,6 +3,8 @@ package wooteco.subway;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
+import static wooteco.subway.web.AuthorizationExtractor.*;
+import static wooteco.subway.web.BearerAuthInterceptor.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import wooteco.subway.web.InvalidAuthenticationException;
 
 @SpringBootTest
 public class BearerAuthInterceptorTest {
+
+	public static final String TEST_TOKEN_SECRET_KEY = " this.is.token";
+
 	@Autowired
 	private BearerAuthInterceptor interceptor;
 
@@ -36,7 +41,7 @@ public class BearerAuthInterceptorTest {
 	@Test
 	void preHandle_InvalidToken() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Authorization", "Bearer this.is.token");
+		request.addHeader(AUTHORIZATION, BEARER_TOKEN + TEST_TOKEN_SECRET_KEY);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 
 		assertThatThrownBy(() -> interceptor.preHandle(request, response, null))
@@ -47,10 +52,11 @@ public class BearerAuthInterceptorTest {
 	@Test
 	void preHandle_ValidToken() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Authorization", "Bearer this.is.token");
+		request.addHeader(AUTHORIZATION, BEARER_TOKEN + TEST_TOKEN_SECRET_KEY);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
 		assertThat(interceptor.preHandle(request, response, null)).isTrue();
 	}
+
 }

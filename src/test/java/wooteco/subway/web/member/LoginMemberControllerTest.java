@@ -8,6 +8,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static wooteco.subway.web.BearerAuthInterceptor.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,7 +84,7 @@ class LoginMemberControllerTest {
 			.content(GSON.toJson(request)))
 		       .andExpect(status().isOk())
 		       .andExpect(jsonPath("$.accessToken", is(TOKEN)))
-		       .andExpect(jsonPath("$.tokenType", is("Bearer")))
+		       .andExpect(jsonPath("$.tokenType", is(BEARER_TOKEN)))
 		       .andDo(LoginMemberDocumentation.login());
 	}
 

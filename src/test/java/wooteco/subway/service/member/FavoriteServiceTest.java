@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.acceptance.AcceptanceTest.*;
 
 import java.util.List;
 
@@ -21,17 +22,6 @@ import wooteco.subway.service.member.dto.FavoriteResponse;
 @Sql("/truncate.sql")
 class FavoriteServiceTest {
 
-	private static final String TEST_EMAIL = "email@email.com";
-	private static final String TEST_NAME = "한글";
-	private static final String TEST_PASSWORD = "password";
-	private static final String STATION_NAME_KANGNAM = "강남역";
-	private static final String STATION_NAME_YEOKSAM = "역삼역";
-	private static final String STATION_NAME_SEOLLEUNG = "선릉역";
-	private static final String STATION_NAME_HANTI = "한티역";
-	private static final String STATION_NAME_DOGOK = "도곡역";
-	private static final String STATION_NAME_MAEBONG = "매봉역";
-	private static final String STATION_NAME_YANGJAE = "양재역";
-
 	private FavoriteService favoriteService;
 
 	@Autowired
@@ -42,7 +32,7 @@ class FavoriteServiceTest {
 	@BeforeEach
 	void setUp() {
 		favoriteService = new FavoriteService(memberRepository);
-		member = new Member(TEST_EMAIL, TEST_NAME, TEST_PASSWORD);
+		member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		member.addFavorite(new Favorite(STATION_NAME_YEOKSAM, STATION_NAME_DOGOK));
 		member.addFavorite(new Favorite(STATION_NAME_HANTI, STATION_NAME_YANGJAE));
 		member.addFavorite(new Favorite(STATION_NAME_DOGOK, STATION_NAME_MAEBONG));
