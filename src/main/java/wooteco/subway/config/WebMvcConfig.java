@@ -35,7 +35,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/mypage")
                 .excludePathPatterns("/edit")
                 .excludePathPatterns("/oauth/token")
-                .excludePathPatterns("/service/**");
+                .excludePathPatterns("/service/**")
+                .excludePathPatterns("/favorites");
     }
 
     @Override

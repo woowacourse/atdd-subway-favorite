@@ -36,6 +36,11 @@ function Favorite() {
   }
 
   this.init = () => {
+    if (localStorage.getItem("tokenType") === null || localStorage.getItem("accessToken") === null) {
+      alert(ERROR_MESSAGE.LOGIN_FIRST)
+      location.href = "/login"
+      return;
+    }
     loadFavoriteList()
     initEventListeners()
   }
