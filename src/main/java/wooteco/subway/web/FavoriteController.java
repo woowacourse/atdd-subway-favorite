@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.service.favorite.FavoriteService;
@@ -21,6 +22,7 @@ import wooteco.subway.web.exception.SameStationException;
 import wooteco.subway.web.member.LoginMemberId;
 
 @RestController
+@RequestMapping("/me")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -39,7 +41,7 @@ public class FavoriteController {
         Long id = favoriteService.addFavorite(memberId, request);
 
         return ResponseEntity
-            .created(URI.create("/favorites/" + id))
+            .created(URI.create("/me/favorites/" + id))
             .build();
     }
 

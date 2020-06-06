@@ -78,7 +78,7 @@ public class FavoriteControllerTest {
         String favoriteRequest = "{\"source\":1,\"target\":2}";
         given(favoriteService.addFavorite(anyLong(), any(FavoriteRequest.class))).willReturn(1L);
 
-        this.mockMvc.perform(post("/favorites")
+        this.mockMvc.perform(post("/me/favorites")
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", token)
             .content(favoriteRequest))
@@ -97,7 +97,7 @@ public class FavoriteControllerTest {
             favoriteResponse);
 
         String response = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/favorites/source/{source}/target/{target}", 1, 2)
+            RestDocumentationRequestBuilders.get("/me/favorites/source/{source}/target/{target}", 1, 2)
                 .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -119,7 +119,7 @@ public class FavoriteControllerTest {
         given(favoriteService.getFavorites(any())).willReturn(favoriteResponses);
 
         String response = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/favorites")
+            RestDocumentationRequestBuilders.get("/me/favorites")
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -133,7 +133,7 @@ public class FavoriteControllerTest {
     @Test
     void deleteFavorite() throws Exception {
         this.mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/favorites/source/{source}/target/{target}", 1, 2)
+            RestDocumentationRequestBuilders.delete("/me/favorites/source/{source}/target/{target}", 1, 2)
                 .header("Authorization", token))
             .andExpect(status().isNoContent())
             .andDo(print())
@@ -145,7 +145,7 @@ public class FavoriteControllerTest {
     @Test
     void deleteFavoriteById() throws Exception {
         this.mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/favorites/{favoriteId}", 1)
+            RestDocumentationRequestBuilders.delete("/me/favorites/{favoriteId}", 1)
                 .header("Authorization", token))
             .andExpect(status().isNoContent())
             .andDo(print())

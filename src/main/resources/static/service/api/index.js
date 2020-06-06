@@ -83,20 +83,20 @@ const api = (() => {
 
   const favorite = {
     add(addFavoriteRequest) {
-      return request("/favorites", METHOD.POST(addFavoriteRequest))
+      return request("/me/favorites", METHOD.POST(addFavoriteRequest))
     },
     remove(removeFavoriteRequest) {
-      return request(`/favorites/source/${removeFavoriteRequest.source}/source/${removeFavoriteRequest.target}`,
+      return request(`/me/favorites/source/${removeFavoriteRequest.source}/source/${removeFavoriteRequest.target}`,
         METHOD.DELETE());
     },
     removeById(favoriteId) {
-      return request(`/favorites/${favoriteId}`, METHOD.DELETE());
+      return request(`/me/favorites/${favoriteId}`, METHOD.DELETE());
     },
     get(source, target) {
-      return request(`/favorites/source/${source}/target/${target}`, METHOD.GET());
+      return request(`/me/favorites/source/${source}/target/${target}`, METHOD.GET());
     },
     getAll() {
-      return requestWithJsonData("/favorites", METHOD.GET());
+      return requestWithJsonData("/me/favorites", METHOD.GET());
     }
   }
 

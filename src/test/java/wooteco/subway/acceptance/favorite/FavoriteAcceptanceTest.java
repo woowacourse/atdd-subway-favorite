@@ -57,7 +57,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            post("/favorites").
+            post("/me/favorites").
             then().
             statusCode(HttpStatus.CREATED.value()).
             extract().header("Location");
@@ -67,7 +67,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
-            get("/favorites/source/" + source + "/target/" + target).
+            get("/me/favorites/source/" + source + "/target/" + target).
             then().
             statusCode(HttpStatus.OK.value()).
             extract().as(FavoriteResponse.class);
@@ -77,7 +77,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
-            get("/favorites").
+            get("/me/favorites").
             then().
             statusCode(HttpStatus.OK.value()).
             extract().
@@ -90,7 +90,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         given().auth().
             oauth2(tokenResponse.getAccessToken()).
             when().
-            delete("/favorites/source/" + source + "/target/" + target).
+            delete("/me/favorites/source/" + source + "/target/" + target).
             then().
             statusCode(HttpStatus.NO_CONTENT.value());
     }
