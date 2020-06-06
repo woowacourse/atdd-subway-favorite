@@ -1,5 +1,7 @@
 package wooteco.subway.web.member.interceptor;
 
+import static wooteco.subway.web.member.LoginMemberMethodArgumentResolver.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,7 +34,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
         final String loginId = jwtTokenProvider.getSubject(accessToken);
 
-        request.setAttribute("loginMemberId", loginId);
+        request.setAttribute(LOGIN_MEMBER_ID, loginId);
         return true;
     }
 

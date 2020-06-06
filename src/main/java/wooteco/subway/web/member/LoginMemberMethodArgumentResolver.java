@@ -12,6 +12,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentResolver {
+    public static final String LOGIN_MEMBER_ID = "loginMemberId";
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(LoginMemberId.class);
@@ -20,7 +22,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String id = (String)webRequest.getAttribute("loginMemberId", SCOPE_REQUEST);
+        String id = (String)webRequest.getAttribute(LOGIN_MEMBER_ID, SCOPE_REQUEST);
         if (StringUtils.isBlank(id)) {
             return null;
         }
