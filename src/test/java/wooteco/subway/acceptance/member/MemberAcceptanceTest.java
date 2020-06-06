@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.acceptance.AcceptanceTest;
-import wooteco.subway.domain.member.MemberConstructException;
 import wooteco.subway.service.member.CreateMemberException;
 import wooteco.subway.service.member.dto.MemberErrorResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
@@ -79,19 +78,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         requestBody.put("name", TEST_NAME);
         requestBody.put("password", TEST_PASSWORD);
 
-        MemberErrorResponse response =
-            given().
-                body(requestBody).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-                post("/join").
-            then().
-                log().all().
-                statusCode(HttpStatus.BAD_REQUEST.value()).
-                extract().as(MemberErrorResponse.class);
-
-            assertThat(response.getMessage()).isEqualTo(MemberConstructException.EMPTY_NAME_MESSAGE);
+        given().
+            body(requestBody).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+            post("/join").
+        then().
+            log().all().
+            statusCode(HttpStatus.BAD_REQUEST.value()).
+            extract().as(MemberErrorResponse.class);
     }
 
     @DisplayName("내 정보 확인에 필요한 내 정보 가져오기")

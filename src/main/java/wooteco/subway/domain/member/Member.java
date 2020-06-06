@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import javax.validation.constraints.NotBlank;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -15,14 +16,16 @@ public class Member {
     public static final String NOT_ME_MESSAGE = "본인의 이메일이 아닙니다.";
     @Id
     private Long id;
+    @NotBlank
     private String email;
+    @NotBlank
     private String name;
+    @NotBlank
     private String password;
     @Column("member_id")
     private Set<FavoritePath> favoritePaths = new HashSet<>();
 
-    public Member() {
-    }
+    public Member() {}
 
     public Member(String email, String name, String password) {
         validate(email, name, password);
@@ -40,28 +43,11 @@ public class Member {
 
     private void validate(String email, String name, String password) {
         validateEmail(email);
-        validateName(name);
-        validatePassword(password);
     }
 
     private void validateEmail(String email) {
-        if (Objects.isNull(email) || email.isEmpty()) {
-            throw new MemberConstructException(MemberConstructException.EMPTY_EMAIL_MESSAGE);
-        }
         if (!email.contains("@")) {
             throw new MemberConstructException(MemberConstructException.INVALID_EMAIL_FORM_MESSAGE);
-        }
-    }
-
-    private void validateName(String name) {
-        if (Objects.isNull(name) || name.isEmpty()) {
-            throw new MemberConstructException(MemberConstructException.EMPTY_NAME_MESSAGE);
-        }
-    }
-
-    private void validatePassword(String password) {
-        if (Objects.isNull(password) || password.isEmpty()) {
-            throw new MemberConstructException(MemberConstructException.EMPTY_PASSWORD_MESSAGE);
         }
     }
 

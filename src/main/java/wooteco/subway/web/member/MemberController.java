@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
             .created(URI.create("/members/" + member.getId()))
@@ -38,7 +39,7 @@ public class MemberController {
     }
 
     @PutMapping("/members")
-    public ResponseEntity<MemberResponse> updateMember(@RequestBody UpdateMemberRequest param, @LoginMember Member member) {
+    public ResponseEntity<MemberResponse> updateMember(@RequestBody UpdateMemberRequest param, @LoginMember @Valid Member member) {
         if (member.isNotMe(param.getEmail())) {
             throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
         }
@@ -47,7 +48,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/members")
-    public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
+    public ResponseEntity<Void> deleteMember(@LoginMember @Valid Member member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
