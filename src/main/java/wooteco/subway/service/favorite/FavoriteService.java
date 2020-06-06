@@ -58,17 +58,17 @@ public class FavoriteService {
     }
 
     public void removeFavorite(Long memberId, Long source, Long target) {
-        boolean ok = favoriteRepository.deleteByMemberIdAndSourceAndTarget(memberId, source,
+        boolean isDeleted = favoriteRepository.deleteByMemberIdAndSourceAndTarget(memberId, source,
             target);
-        if (!ok) {
-            throw new IllegalArgumentException("삭제 실패했습니다!");
+        if (!isDeleted) {
+            throw new IllegalArgumentException("삭제에 실패했습니다!");
         }
     }
 
     public void removeFavoriteById(Long memberId, Long favoriteId) {
-        boolean ok = favoriteRepository.deleteByIdWithMemberId(memberId, favoriteId);
-        if (!ok) {
-            throw new IllegalArgumentException("삭제 실패했습니다!");
+        boolean isDeleted = favoriteRepository.deleteByIdWithMemberId(memberId, favoriteId);
+        if (!isDeleted) {
+            throw new IllegalArgumentException("삭제에 실패했습니다!");
         }
     }
 }
