@@ -3,6 +3,7 @@ package wooteco.subway.web.member.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,8 +14,12 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
+    private static final String INVALID_TOKEN_MESSAGE = "유효하지 않은 토큰입니다!";
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
+
+    @Value("${web.request.login.member.email.key}")
+    private String loginMemberEmailKey;
 
     public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
         this.authExtractor = authExtractor;
@@ -23,29 +28,16 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
-        String credentials = authExtractor.extract(request, "bearer");
+        HttpServletResponse response, Object handler) {
+        String credentials = authExtractor.extractBearer(request);
 
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new InvalidAuthenticationException("유효하지 않은 토큰입니다!");
+            throw new InvalidAuthenticationException(INVALID_TOKEN_MESSAGE);
         }
 
         String email = jwtTokenProvider.getSubject(credentials);
 
-        request.setAttribute("loginMemberEmail", email);
+        request.setAttribute(loginMemberEmailKey, email);
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView) throws Exception {
-
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
     }
 }
