@@ -53,8 +53,7 @@ public class MemberService {
 	}
 
 	public TokenResponse createJwtToken(LoginRequest request) {
-		Member member = memberRepository.findByEmail(request.getEmail())
-			.orElseThrow(RuntimeException::new);
+		Member member = findMember(request.getEmail());
 		if (!member.checkPassword(request.getPassword())) {
 			throw new LoginFailException();
 		}
@@ -63,14 +62,18 @@ public class MemberService {
 		return new TokenResponse(token, AuthorizationType.BEARER.getPrefix());
 	}
 
+	private Member findMember(String email) {
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new EntityNotFoundException("해당하는 이메일이 없습니다."));
+	}
+
 	public MemberResponse findMemberResponseByEmail(String email) {
 		return MemberResponse.of(findMemberByEmail(email));
 	}
 
 	@Transactional(readOnly = true)
 	public Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email)
-			.orElseThrow(() -> new EntityNotFoundException("해당하는 이메일이 없습니다."));
+		return findMember(email);
 	}
 
 	public boolean loginWithForm(LoginRequest request) {

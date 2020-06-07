@@ -76,6 +76,15 @@ public class MemberServiceTest {
 		assertThat(jwtToken.getTokenType()).isEqualTo(AuthorizationType.BEARER.getPrefix());
 	}
 
+	@DisplayName("로그인시 Jwt 토큰 발급 기능 수행시, 회원정보가 없을 경우 예외발생")
+	@Test
+	void createJwtToken_noMember_throwException() {
+		LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+		assertThatThrownBy(() -> memberService.createJwtToken(loginRequest))
+			.isInstanceOf(EntityNotFoundException.class);
+	}
+
 	@DisplayName("회원정보 업데이트시, 요청한 정보대로 회원의 정보가 변경된다.")
 	@Test
 	void updateMember() {
@@ -89,6 +98,16 @@ public class MemberServiceTest {
 			new UpdateMemberRequest(TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD));
 
 		assertThat(member).isEqualTo(newMember);
+	}
+
+	@DisplayName("회원정보 업데이트시, 회원정보가 없을 경우 예외발생")
+	@Test
+	void updateMember_noMember_throwException() {
+		UpdateMemberRequest request
+			= new UpdateMemberRequest(TEST_USER_NEW_NAME, TEST_USER_NEW_PASSWORD);
+
+		assertThatThrownBy(() -> memberService.updateMember(TEST_USER_ID, request))
+			.isInstanceOf(EntityNotFoundException.class);
 	}
 
 	@DisplayName("회원정보 삭제시, memberRepository의 deleteById를 정상 호출한다.")
