@@ -109,7 +109,7 @@ public class Member {
         this.favoritePaths.add(favoritePath);
     }
 
-    public boolean isNotPersistent() {
+    public boolean hasNotId() {
         return Objects.isNull(this.getId());
     }
 

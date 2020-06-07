@@ -81,7 +81,7 @@ public class MemberService {
     }
 
     private void validatePersistence(Member member) {
-        if (member.isNotPersistent()) {
+        if (member.hasNotId()) {
             throw new IllegalArgumentException(NOT_MANAGED_BY_REPOSITORY);
         }
     }
