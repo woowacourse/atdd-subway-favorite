@@ -90,7 +90,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getName()).isEqualTo(TEST_USER_NAME);
 
         // Update
-        updateMember(response.getAccessToken(), memberResponse);
+        updateMember(response.getAccessToken());
         MemberResponse updatedMember = getMember(response.getAccessToken(), TEST_USER_EMAIL);
         assertThat(updatedMember.getName()).isEqualTo("NEW_" + TEST_USER_NAME);
 

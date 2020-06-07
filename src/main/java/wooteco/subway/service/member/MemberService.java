@@ -34,7 +34,7 @@ public class MemberService {
 
     public void updateMember(Member member, UpdateMemberRequest param) {
         validatePersistence(member);
-        if (member.isNotMe(param.getEmail())) {
+        if (member.isNotMe(param.getEmail(), param.getPassword())) {
             throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
         }
         member.update(param.getName(), param.getPassword());

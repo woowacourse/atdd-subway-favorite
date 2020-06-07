@@ -72,7 +72,7 @@ public class MemberServiceTest {
         UpdateMemberRequest request = mock(UpdateMemberRequest.class);
 
         when(member.hasNotId()).thenReturn(false);
-        when(member.isNotMe(request.getEmail())).thenReturn(false);
+        when(member.isNotMe(request.getEmail(), request.getPassword())).thenReturn(false);
 
         memberService.updateMember(member, request);
 

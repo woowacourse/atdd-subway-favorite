@@ -143,7 +143,7 @@ public class Member {
         this.favoritePaths.removeIf(favoritePath -> favoritePath.match(start, end));
     }
 
-    public boolean isNotMe(String email) {
-        return !this.email.equals(email);
+    public boolean isNotMe(String email, String password) {
+        return !this.email.equals(email) || !this.password.equals(password);
     }
 }

@@ -297,11 +297,11 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(String token, MemberResponse memberResponse) {
+    public void updateMember(String token) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("email", TEST_USER_EMAIL);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("password", TEST_USER_PASSWORD);
 
         given().
                 header("Authorization", "Bearer " + token).

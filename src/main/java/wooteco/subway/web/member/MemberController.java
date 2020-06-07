@@ -40,7 +40,7 @@ public class MemberController {
 
     @PutMapping("/members")
     public ResponseEntity<MemberResponse> updateMember(@RequestBody UpdateMemberRequest param, @LoginMember Member member) {
-        if (member.isNotMe(param.getEmail())) {
+        if (member.isNotMe(param.getEmail(), param.getPassword())) {
             throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
         }
         memberService.updateMember(member, param);
