@@ -22,7 +22,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import wooteco.subway.domain.favorite.FavoriteStation;
-import wooteco.subway.service.favorite.FavoritesResponse;
+import wooteco.subway.service.favorite.FavoriteResponse;
+import wooteco.subway.service.favorite.FavoriteResponses;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 
@@ -60,33 +61,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 PathResponse = findPath("gangnam", "jamsil", "DISTANCE");
             }),
             DynamicTest.dynamicTest("사용자가 즐겨찾기를 추가한다.", () -> {
-                addFavorite(tokenResponse, "gangnam", "jamsil");
+                addFavorite(tokenResponse, 1L, 2L);
             }),
             DynamicTest.dynamicTest("즐겨찾기 페이지에 자신이 저장한 즐겨찾기가 있다.", () -> {
-                assertThat(getFavorites(tokenResponse).getFavoriteStations()).hasSize(1);
+                assertThat(getFavorites(tokenResponse).getFavoriteResponses()).hasSize(1);
             }),
             DynamicTest.dynamicTest("즐겨찾기 페이지에서 재조회를 요청한다", () -> {
-                List<FavoriteStation> favoriteStations = getFavorites(tokenResponse).getFavoriteStations();
-                findPath(favoriteStations.get(0).getSource(), favoriteStations.get(0).getTarget(), "DISTANCE");
+                List<FavoriteResponse> favoriteStations = getFavorites(tokenResponse).getFavoriteResponses();
+                findPath(favoriteStations.get(0).getSourceName(), favoriteStations.get(0).getTargetName(), "DISTANCE");
             }),
             DynamicTest.dynamicTest("즐겨찾기 목록에서 삭제할 수 있다.", () -> {
-                List<FavoriteStation> favoriteStations = getFavorites(tokenResponse).getFavoriteStations();
-                deleteFavorite(tokenResponse, favoriteStations.get(0).getSource(), favoriteStations.get(0).getTarget());
-                assertThat(getFavorites(tokenResponse).getFavoriteStations()).hasSize(0);
+                List<FavoriteResponse> favoriteStations = getFavorites(tokenResponse).getFavoriteResponses();
+                deleteFavorite(tokenResponse, favoriteStations.get(0).getId());
+                assertThat(getFavorites(tokenResponse).getFavoriteResponses()).hasSize(0);
             })
         );
     }
 
-    private void deleteFavorite(TokenResponse tokenResponse, String source, String target) throws Exception {
-        mockMvc.perform(delete("/favorites")
+    private void deleteFavorite(TokenResponse tokenResponse, Long id) throws Exception {
+        mockMvc.perform(delete("/favorites/" + id)
             .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
-            .param("source", source)
-            .param("target", target)
         )
             .andExpect(status().isOk());
     }
 
-    private FavoritesResponse getFavorites(TokenResponse tokenResponse) throws Exception {
+    private FavoriteResponses getFavorites(TokenResponse tokenResponse) throws Exception {
         final MvcResult authorization = this.mockMvc.perform(get("/favorites")
             .header("Authorization", "Bearer" + tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON)
@@ -95,11 +94,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .andDo(print())
             .andReturn();
         final String result = authorization.getResponse().getContentAsString();
-        return objectMapper.readValue(result, FavoritesResponse.class);
+        return objectMapper.readValue(result, FavoriteResponses.class);
     }
 
-    private void addFavorite(TokenResponse tokenResponse, String source, String target) throws Exception {
-        Map<String, String> model = new HashMap<>();
+    private void addFavorite(TokenResponse tokenResponse, Long source, Long target) throws Exception {
+        Map<String, Long> model = new HashMap<>();
         model.put("source", source);
         model.put("target", target);
         this.mockMvc.perform(post("/favorites")

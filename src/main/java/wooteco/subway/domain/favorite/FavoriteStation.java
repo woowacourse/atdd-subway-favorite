@@ -2,56 +2,58 @@ package wooteco.subway.domain.favorite;
 
 import java.util.Objects;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("FAVORITE")
 public class FavoriteStation {
-
+    @Id
+    private Long id;
     @Column("member")
     private Long memberId;
-    private String source;
-    private String target;
+    @Column("source_id")
+    private Long sourceId;
+    @Column("target_id")
+    private Long targetId;
 
     public FavoriteStation() {
     }
 
-    public FavoriteStation(Long memberId, String source, String target) {
+    public FavoriteStation(Long memberId, Long sourceId, Long targetId) {
         this.memberId = memberId;
-        this.source = source;
-        this.target = target;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
     }
 
-    public boolean isSameSourceAndTarget(String source, String target) {
-        return this.source.equals(source) && this.target.equals(target);
+    public FavoriteStation(Long id, Long memberId, Long sourceId, Long targetId) {
+        this.id = id;
+        this.memberId = memberId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getMemberId() {
         return memberId;
     }
 
-    public String getSource() {
-        return source;
+    public Long getSourceId() {
+        return sourceId;
     }
 
-    public String getTarget() {
-        return target;
+    public Long getTargetId() {
+        return targetId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        FavoriteStation that = (FavoriteStation)o;
-        return Objects.equals(memberId, that.memberId) &&
-            Objects.equals(source, that.source) &&
-            Objects.equals(target, that.target);
+    public boolean isSameSourceId(Long sourceId) {
+        return Objects.equals(this.sourceId, sourceId);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(memberId, source, target);
+    public boolean isSameTargetId(Long targetId) {
+        return Objects.equals(this.targetId, targetId);
     }
 }

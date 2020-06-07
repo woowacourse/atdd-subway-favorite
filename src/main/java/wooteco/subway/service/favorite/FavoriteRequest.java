@@ -5,14 +5,22 @@ import wooteco.subway.domain.member.Member;
 
 public class FavoriteRequest {
 
-    private String source;
-    private String target;
+    private Long source;
+    private Long target;
 
-    public String getSource() {
+    public FavoriteRequest() {
+    }
+
+    public FavoriteRequest(Long source, Long target) {
+        this.source = source;
+        this.target = target;
+    }
+
+    public Long getSource() {
         return source;
     }
 
-    public String getTarget() {
+    public Long getTarget() {
         return target;
     }
 

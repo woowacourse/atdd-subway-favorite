@@ -34,8 +34,10 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.FavoriteStation;
+import wooteco.subway.service.favorite.FavoriteRequest;
+import wooteco.subway.service.favorite.FavoriteResponse;
+import wooteco.subway.service.favorite.FavoriteResponses;
 import wooteco.subway.service.favorite.FavoriteService;
-import wooteco.subway.service.favorite.FavoritesResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -67,7 +69,7 @@ class FavoriteControllerTest {
             .build();
         RestAssured.port = port;
 
-        favoriteStation = new FavoriteStation(1L, "gangnam", "jamsil");
+        favoriteStation = new FavoriteStation(1L, 1L, 2L);
         createMember();
         response = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
     }
@@ -84,7 +86,7 @@ class FavoriteControllerTest {
             .header("Authorization", "Bearer " + response.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(favoriteStation))
+            .content(objectMapper.writeValueAsString(new FavoriteRequest(1L,2L)))
         )
             .andExpect(status().isOk())
             .andDo(print())
@@ -94,7 +96,7 @@ class FavoriteControllerTest {
     @Test
     void showAll() throws Exception {
         when(favoriteService.findAll(any())).thenReturn(
-            new FavoritesResponse(Arrays.asList(new FavoriteStation(1L, "gangnam", "jamsil"))));
+            FavoriteResponses.of(Arrays.asList(new FavoriteResponse(new FavoriteStation(1L, 1L, 1L, 2L), "gangname", "jamsil"))));
 
         mockMvc.perform(get("/favorites")
             .header("Authorization", "Bearer " + response.getAccessToken())
@@ -107,11 +109,9 @@ class FavoriteControllerTest {
 
     @Test
     void deleteByNames() throws Exception {
-        doNothing().when(favoriteService).delete(any(), any(), any());
+        doNothing().when(favoriteService).delete(any());
 
-        mockMvc.perform(delete("/favorites")
-            .param("source", "gangnam")
-            .param("target", "jamsil")
+        mockMvc.perform(delete("/favorites/" + 1L)
             .header("Authorization", "Bearer " + response.getAccessToken())
         )
             .andExpect(status().isOk())

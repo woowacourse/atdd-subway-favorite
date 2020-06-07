@@ -16,9 +16,8 @@ public class FavoriteDocumentation {
                 headerWithName("Authorization").description("The token for login which is Bearer Type")
             ),
             requestFields(
-                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("The member's id"),
-                fieldWithPath("source").type(JsonFieldType.STRING).description("The favorite's start station"),
-                fieldWithPath("target").type(JsonFieldType.STRING).description("The favorite's arrival station")
+                fieldWithPath("source").type(JsonFieldType.NUMBER).description("The source id"),
+                fieldWithPath("target").type(JsonFieldType.NUMBER).description("The target id")
             )
         );
     }
@@ -29,22 +28,24 @@ public class FavoriteDocumentation {
                 headerWithName("Authorization").description("The token for login which is Bearer Type")
             ),
             responseFields(
-                fieldWithPath("favoriteStations[0].memberId").type(JsonFieldType.NUMBER)
-                    .description("The user's favorites set"),
-                fieldWithPath("favoriteStations[0].source").type(JsonFieldType.STRING)
-                    .description("The user's favorites set"),
-                fieldWithPath("favoriteStations[0].target").type(JsonFieldType.STRING)
-                    .description("The user's favorites set")
+                fieldWithPath("favoriteResponses[0].id").type(JsonFieldType.NUMBER)
+                    .description("The favorite's id"),
+                fieldWithPath("favoriteResponses[0].memberId").type(JsonFieldType.NUMBER)
+                    .description("The favorite's memberId"),
+                fieldWithPath("favoriteResponses[0].sourceId").type(JsonFieldType.NUMBER)
+                    .description("The favorite's sourceId"),
+                fieldWithPath("favoriteResponses[0].targetId").type(JsonFieldType.NUMBER)
+                    .description("The favorite's targetId"),
+                fieldWithPath("favoriteResponses[0].sourceName").type(JsonFieldType.STRING)
+                    .description("The favorite's sourceName"),
+                fieldWithPath("favoriteResponses[0].targetName").type(JsonFieldType.STRING)
+                    .description("The favorite's targetName")
             )
         );
     }
 
     public static ResultHandler deleteFavorite() {
         return document("favorites/delete",
-            requestParameters(
-                parameterWithName("source").description("The source station's name"),
-                parameterWithName("target").description("The target station's name")
-            ),
             requestHeaders(
                 headerWithName("Authorization").description("The token for login which is Bearer Type")
             )
