@@ -1,49 +1,82 @@
 package wooteco.subway.service.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.dto.FavoriteRequest;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
+import wooteco.subway.service.member.dto.MemberRequest;
 
 import java.util.Optional;
+import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+    private static final String KANG_NAM_STATION_NAME = "강남역";
+    private static final String JAM_SIL_STATION_NAME = "잠실역";
+    private static final String DOGOK_STATION_NAME = "도곡역";
 
     private MemberService memberService;
 
     @Mock
+    private StationRepository stationRepository;
+
+    @Mock
     private MemberRepository memberRepository;
+
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, stationRepository, jwtTokenProvider);
     }
 
+    @DisplayName("회원가입 테스트")
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
-        memberService.createMember(member);
+        memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("즐겨찾기 등록 테스트")
+    @Test
+    void addFavorite() {
+        Station kangNamStation = new Station(1L, KANG_NAM_STATION_NAME);
+        Station jamSilStation = new Station(2L, JAM_SIL_STATION_NAME);
+        when(stationRepository.findById(kangNamStation.getId())).thenReturn(Optional.of(kangNamStation));
+        when(stationRepository.findById(jamSilStation.getId())).thenReturn(Optional.of(jamSilStation));
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(kangNamStation.getId(), jamSilStation.getId());
+
+        memberService.addFavorite(member, favoriteRequest);
+
+        verify(stationRepository).findById(kangNamStation.getId());
+        verify(stationRepository).findById(jamSilStation.getId());
+        verify(memberRepository).save(any());
+    }
+
+    @DisplayName("토큰을 생성하는 테스트")
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -53,5 +86,54 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @DisplayName("토큰 생성 실패")
+    @Test
+    void createTokenWithError() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, "wrongPassword");
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+
+        assertThatThrownBy(() -> memberService.createToken(loginRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("모든 즐겨찾기 조회")
+    @Test
+    void getFavorites() {
+        Station kangNamStation = new Station(1L, KANG_NAM_STATION_NAME);
+        Station jamSilStation = new Station(2L, JAM_SIL_STATION_NAME);
+        Station dogukStation = new Station(3L, DOGOK_STATION_NAME);
+        when(stationRepository.findById(kangNamStation.getId())).thenReturn(Optional.of(kangNamStation));
+        when(stationRepository.findById(jamSilStation.getId())).thenReturn(Optional.of(jamSilStation));
+        when(stationRepository.findById(dogukStation.getId())).thenReturn(Optional.of(dogukStation));
+
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(kangNamStation));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(jamSilStation));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(dogukStation));
+
+        FavoriteRequest favoriteRequest1 = new FavoriteRequest(kangNamStation.getId(), jamSilStation.getId());
+        FavoriteRequest favoriteRequest2 = new FavoriteRequest(kangNamStation.getId(), dogukStation.getId());
+        memberService.addFavorite(member, favoriteRequest1);
+        memberService.addFavorite(member, favoriteRequest2);
+
+        Set<FavoriteResponse> favorites = memberService.findFavorites(member);
+
+        assertThat(favorites.size()).isEqualTo(2);
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        member.addFavorite(new Favorite(1L, 1L, 2L));
+        member.addFavorite(new Favorite(2L, 1L, 3L));
+        memberService.deleteFavorites(1L, member);
+
+        assertThat(member.getFavorites().size()).isEqualTo(1);
+
+        verify(memberRepository).save(member);
     }
 }

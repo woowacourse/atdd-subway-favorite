@@ -13,6 +13,8 @@ function AdminLine() {
   const $subwayLineFormSubmitButton = document.querySelector('#submit-button')
   const $submitButton = document.querySelector('#submit-button')
   const $subwayLineCreateButton = document.querySelector('#subway-line-create-btn')
+  const $backgroundColor = document.querySelector('#subway-line-color');
+
   let $activeSubwayLineItem = null
 
   const subwayLineModal = new Modal()
@@ -22,7 +24,8 @@ function AdminLine() {
       name: $subwayLineNameInput.value,
       startTime: $subwayLineStartTime.value,
       endTime: $subwayLineEndTime.value,
-      intervalTime: $subwayIntervalTime.value
+      intervalTime: $subwayIntervalTime.value,
+      backgroundColor : $backgroundColor.value
     }
     api.line
       .create(newSubwayLine)
@@ -69,6 +72,7 @@ function AdminLine() {
         $subwayLineStartTime.value = line.startTime
         $subwayLineEndTime.value = line.endTime
         $subwayIntervalTime.value = line.intervalTime
+        $backgroundColor.value = line.backgroundColor
         subwayLineModal.toggle()
         $submitButton.classList.add('update-submit-button')
       })
@@ -82,7 +86,8 @@ function AdminLine() {
       name: $subwayLineNameInput.value,
       startTime: $subwayLineStartTime.value,
       endTime: $subwayLineEndTime.value,
-      intervalTime: $subwayIntervalTime.value
+      intervalTime: $subwayIntervalTime.value,
+      backgroundColor : $backgroundColor.value
     }
     api.line
       .update($activeSubwayLineItem.dataset.id, updatedSubwayLine)
@@ -106,6 +111,7 @@ function AdminLine() {
     $subwayLineStartTime.value = ''
     $subwayLineEndTime.value = ''
     $subwayIntervalTime.value = ''
+    $backgroundColor.value = ''
   }
 
   const onSelectColorHandler = event => {

@@ -8,6 +8,7 @@ public class LineRequest {
     private String name;
     private LocalTime startTime;
     private LocalTime endTime;
+    private String backgroundColor;
     private int intervalTime;
 
     public LineRequest() {
@@ -30,6 +31,6 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return new Line(name, startTime, endTime, intervalTime);
+        return new Line(name, startTime, endTime, intervalTime, backgroundColor);
     }
 }

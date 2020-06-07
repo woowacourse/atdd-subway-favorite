@@ -1,3 +1,5 @@
+export const optionTemplate = data => `<option value="${data.id}">${data.name}</option>`
+
 export const listItemTemplate = data =>
   `<div class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${data.id}">
     ${data.name}
@@ -26,7 +28,7 @@ export const subwayLinesItemTemplate = line => {
   const stations = line.stations ? line.stations.map(station => listItemTemplate(station)).join('') : null
   return `<div class="inline-block w-1/2 px-2">
             <div class="rounded-sm w-full slider-list">
-              <div class="border ${line.bgColor ? line.bgColor : ''} lint-name px-4 py-1">${line.name}</div>
+              <div class="border ${line.backgroundColor ? line.backgroundColor : ''} lint-name px-4 py-1">${line.name}</div>
               <div class="overflow-y-auto height-90">
               ${stations}
               </div>
@@ -73,3 +75,15 @@ export const pathStationTemplate = (name, index, lastIndex) => {
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
+
+export const favoriteItemTemplate = favorite => {
+  return `<li data-favorite-id="${favorite.id}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+            <span class="mdi mdi-subway-variant mr-2"></span>
+            <span>${favorite.source ? favorite.source : "출발역"}</span>
+            <span class="mdi mdi-arrow-right text-gray-500"></span>
+            <span>${favorite.target ? favorite.target : "도착역"}</span>
+            <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+              <span class="mdi mdi-delete"></span>
+            </button>
+          </li>`;
+};

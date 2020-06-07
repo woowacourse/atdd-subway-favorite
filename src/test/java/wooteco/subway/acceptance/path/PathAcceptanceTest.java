@@ -9,7 +9,7 @@ import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class PathAcceptanceTest extends AcceptanceTest {
     @Override
@@ -22,7 +22,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("거리 기준으로 경로 조회")
     @Test
     public void findPathByDistance() {
-        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE");
+        PathResponse pathResponse = findPath(kangnamStation.getId(), dogokStation.getId(), "DISTANCE");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(5);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
@@ -35,8 +35,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("소요시간 기준으로 경로 조회")
     @Test
     public void findPathByDuration() {
-        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DURATION");
+        PathResponse pathResponse = findPath(kangnamStation.getId(), dogokStation.getId(), "DURATION");
         List<StationResponse> path = pathResponse.getStations();
+
         assertThat(path).hasSize(4);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
         assertThat(path.get(1).getName()).isEqualTo(STATION_NAME_YANGJAE);

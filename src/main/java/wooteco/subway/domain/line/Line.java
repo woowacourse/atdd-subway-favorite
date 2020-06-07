@@ -16,6 +16,7 @@ public class Line {
     private String name;
     private LocalTime startTime;
     private LocalTime endTime;
+    private String backgroundColor;
     private int intervalTime;
     @CreatedDate
     private LocalDateTime createdAt;
@@ -27,15 +28,16 @@ public class Line {
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
+        this.backgroundColor = backgroundColor;
     }
 
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
+    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime, String backgroundColor) {
+        this(null, name, startTime, endTime, intervalTime, backgroundColor);
     }
 
     public Long getId() {
@@ -68,6 +70,10 @@ public class Line {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
     public void update(Line line) {

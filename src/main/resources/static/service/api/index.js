@@ -1,12 +1,23 @@
 const METHOD = {
-  PUT() {
+  PUT(data) {
     return {
-      method: 'PUT'
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
     return {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers : {
+        'content-type': 'application/json',
+        'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+      }
     }
   },
   POST(data) {
@@ -41,9 +52,68 @@ const api = (() => {
     }
   }
 
+  const member = {
+    create(params){
+      return request(`/members`, METHOD.POST(params));
+    },
+    login(params){
+      return request('/oauth/token', METHOD.POST(params));
+    },
+    get(){
+      return request('/members', {
+          method : 'get',
+          headers : {
+              'content-type': 'application/json',
+              'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+          }
+      });
+    },
+    update(id, param){
+      return request(`/members/${id}`, METHOD.PUT(param))
+    },
+    delete(id){
+      return request(`members/${id}`,METHOD.DELETE())
+    }
+  }
+
+  const favorite = {
+    add(params){
+      return request('/members/favorites', {
+        method : 'post',
+        headers : {
+          'content-type': 'application/json',
+          'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+        },
+        body: JSON.stringify({
+          ...params
+        })
+      });
+    },
+    get(){
+      return request('/members/favorites', {
+        method : 'get',
+        headers : {
+          'content-type': 'application/json',
+          'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+        }
+      });
+    },
+    delete(id){
+      return request('/members/favorites/' + id, {
+        method : 'delete',
+        headers : {
+          'content-type': 'application/json',
+          'Authorization' : 'bearer ' + localStorage.getItem("jwt")
+        }
+      });
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member,
+    favorite
   }
 })()
 
