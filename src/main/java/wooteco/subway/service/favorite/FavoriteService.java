@@ -6,8 +6,7 @@ import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
-import wooteco.subway.service.favorite.dto.FavoriteResponse;
-import wooteco.subway.exception.NoSuchStationException;
+import wooteco.subway.service.favorite.dto.FavoriteResponses;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,18 +21,19 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public List<FavoriteResponse> findAllFavoriteResponses(Long memberId) {
-        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+    public FavoriteResponses findAllFavoriteResponses(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+        List<Long> sourceStationIds = new ArrayList<>();
+        List<Long> targetStationIds = new ArrayList<>();
         for (Favorite favorite : favorites) {
-            Station sourceStation = stationRepository.findById(favorite.getSourceStationId()).orElseThrow(NoSuchStationException::new);
-            Station targetStation = stationRepository.findById(favorite.getTargetStationId()).orElseThrow(NoSuchStationException::new);
-            String sourceStationName = sourceStation.getName();
-            String targetStationName = targetStation.getName();
-            favoriteResponses.add(FavoriteResponse.of(favorite, sourceStationName, targetStationName));
+            sourceStationIds.add(favorite.getSourceStationId());
+            targetStationIds.add(favorite.getTargetStationId());
         }
-        return favoriteResponses;
 
+        List<Station> sourceStations = stationRepository.findAllById(sourceStationIds);
+        List<Station> targetStations = stationRepository.findAllById(targetStationIds);
+
+        return FavoriteResponses.of(favorites, sourceStations, targetStations);
     }
 
     public void createFavorite(Long memberId, FavoriteCreateRequest request) {
