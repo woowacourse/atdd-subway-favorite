@@ -7,10 +7,10 @@ public class LineStation {
 
 	@Id
 	private final Long id;
-	private Long preStationId;
-	private Long stationId;
-	private int distance;
-	private int duration;
+	private final Long preStationId;
+	private final Long stationId;
+	private final int distance;
+	private final int duration;
 
 	private LineStation(Long id, Long preStationId, Long stationId, int distance, int duration) {
 		this.id = id;
@@ -28,8 +28,8 @@ public class LineStation {
 		return new LineStation(Id, this.preStationId, this.stationId, this.distance, this.duration);
 	}
 
-	public void updatePreLineStation(Long preStationId) {
-		this.preStationId = preStationId;
+	public LineStation makeLineStationUpdateBy(Long preStationId) {
+		return new LineStation(this.id, preStationId, this.stationId, this.distance, this.duration);
 	}
 
 	public boolean isLineStationOf(Long preStationId, Long stationId) {

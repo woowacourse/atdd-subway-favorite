@@ -44,8 +44,8 @@ public class MemberService {
 	public void updateMember(Long id, UpdateMemberRequest request) {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException(id + "에 해당하는 회원이 없습니다."));
-		member.update(request.getName(), request.getPassword());
-		memberRepository.save(member);
+		Member updatedMember = member.makeMemberUpdateBy(request.getName(), request.getPassword());
+		memberRepository.save(updatedMember);
 	}
 
 	public void deleteMember(Long id) {

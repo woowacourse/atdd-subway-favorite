@@ -12,11 +12,11 @@ public class Member {
 
 	@Id
 	private final Long id;
-	private String email;
-	private String name;
-	private String password;
+	private final String email;
+	private final String name;
+	private final String password;
 	@Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
-	private Favorites favorites;
+	private final Favorites favorites;
 
 	private Member(Long id, String email, String name, String password, Favorites favorites) {
 		this.id = id;
@@ -38,13 +38,16 @@ public class Member {
 		return new Member(id, this.email, this.name, this.password, this.favorites);
 	}
 
-	public void update(String name, String password) {
-		if (StringUtils.isNotBlank(name)) {
-			this.name = name;
+	public Member makeMemberUpdateBy(String name, String password) {
+		return new Member(this.id, this.email, findFirstNotBlank(name, this.name),
+			findFirstNotBlank(password, this.password), this.favorites);
+	}
+
+	private String findFirstNotBlank(String priorityFirst, String prioritySecond) {
+		if (StringUtils.isNotBlank(priorityFirst)) {
+			return priorityFirst;
 		}
-		if (StringUtils.isNotBlank(password)) {
-			this.password = password;
-		}
+		return prioritySecond;
 	}
 
 	public boolean checkPassword(String password) {

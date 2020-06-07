@@ -27,6 +27,10 @@ public class Station {
 		return new Station(id, this.name, this.createdAt);
 	}
 
+	public Station withCreatedAt(LocalDateTime createdAt) {
+		return new Station(this.id, this.name, createdAt);
+	}
+
 	public Long getId() {
 		return id;
 	}

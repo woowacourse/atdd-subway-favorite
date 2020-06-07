@@ -14,46 +14,71 @@ public class Line {
 
 	@Id
 	private final Long id;
-	private String name;
-	private LocalTime startTime;
-	private LocalTime endTime;
-	private int intervalTime;
+	private final String name;
+	private final LocalTime startTime;
+	private final LocalTime endTime;
+	private final int intervalTime;
 	@CreatedDate
-	private LocalDateTime createdAt;
+	private final LocalDateTime createdAt;
 	@LastModifiedDate
-	private LocalDateTime updatedAt;
+	private final LocalDateTime updatedAt;
 	@Embedded.Empty
-	private final LineStations stations = LineStations.empty();
+	private final LineStations stations;
 
-	private Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+	public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime,
+		LocalDateTime createdAt, LocalDateTime updatedAt, LineStations stations) {
 		this.id = id;
 		this.name = name;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.intervalTime = intervalTime;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.stations = stations;
 	}
 
 	public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-		return new Line(null, name, startTime, endTime, intervalTime);
+		return new Line(null, name, startTime, endTime, intervalTime, null, null,
+			LineStations.empty());
 	}
 
 	public Line withId(Long id) {
-		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime);
+		return new Line(id, this.name, this.startTime, this.endTime, this.intervalTime,
+			this.createdAt, this.updatedAt, this.stations);
 	}
 
-	public void update(Line line) {
-		if (line.getName() != null) {
-			this.name = line.getName();
+	public Line withCreatedAt(LocalDateTime createdAt) {
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime,
+			createdAt, this.updatedAt, this.stations);
+	}
+
+	public Line withUpdatedAt(LocalDateTime updatedAt) {
+		return new Line(this.id, this.name, this.startTime, this.endTime, this.intervalTime,
+			this.createdAt, this.updatedAt, this.stations);
+	}
+
+	public Line makeLineUpdateBy(Line line) {
+		String updateName = findFirstNotNull(line.name, name);
+		LocalTime updateStartTime = findFirstNotNull(line.startTime, startTime);
+		LocalTime updateEndTime = findFirstNotNull(line.endTime, endTime);
+		int updateIntervalTime = findFirstNotDefault(line.intervalTime, intervalTime);
+
+		return new Line(this.id, updateName, updateStartTime, updateEndTime, updateIntervalTime,
+			this.createdAt, this.updatedAt, this.stations);
+	}
+
+	private <T> T findFirstNotNull(T priorityFirst, T prioritySecond) {
+		if (Objects.nonNull(priorityFirst)) {
+			return priorityFirst;
 		}
-		if (line.getStartTime() != null) {
-			this.startTime = line.getStartTime();
+		return prioritySecond;
+	}
+
+	private int findFirstNotDefault(int priorityFirst, int prioritySecond) {
+		if (priorityFirst != 0) {
+			return priorityFirst;
 		}
-		if (line.getEndTime() != null) {
-			this.endTime = line.getEndTime();
-		}
-		if (line.getIntervalTime() != 0) {
-			this.intervalTime = line.getIntervalTime();
-		}
+		return prioritySecond;
 	}
 
 	public void addLineStation(LineStation lineStation) {

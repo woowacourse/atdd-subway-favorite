@@ -24,17 +24,17 @@ public class Favorite {
 		return new Favorite(id, this.sourceStationId, this.targetStationId);
 	}
 
+	public boolean equalPath(Favorite favorite) {
+		return this.sourceStationId.equals(favorite.sourceStationId)
+			&& this.targetStationId.equals(favorite.targetStationId);
+	}
+
 	public long getSourceStationId() {
 		return sourceStationId;
 	}
 
 	public long getTargetStationId() {
 		return targetStationId;
-	}
-
-	public boolean equalPath(Favorite favorite) {
-		return this.sourceStationId.equals(favorite.sourceStationId)
-			&& this.targetStationId.equals(favorite.targetStationId);
 	}
 
 	@Override

@@ -59,7 +59,12 @@ public class LineStations {
 
 	private void updatePreStationOfNextLineStation(Long targetStationId, Long newPreStationId) {
 		extractByPreStationId(targetStationId)
-			.ifPresent(it -> it.updatePreLineStation(newPreStationId));
+			.ifPresent(it -> changeUpdatePreLineStation(newPreStationId, it));
+	}
+
+	private void changeUpdatePreLineStation(Long newPreStationId, LineStation it) {
+		stations.remove(it);
+		stations.add(it.makeLineStationUpdateBy(newPreStationId));
 	}
 
 	private Optional<LineStation> extractByStationId(Long stationId) {
