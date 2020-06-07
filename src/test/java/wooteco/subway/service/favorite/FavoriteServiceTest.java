@@ -1,9 +1,7 @@
 package wooteco.subway.service.favorite;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anySet;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -85,7 +83,6 @@ class FavoriteServiceTest {
 	void addFavorite() {
 		FavoriteRequest request = new FavoriteRequest(FIRST_STATION_ID, THIRD_STATION_ID);
 		favoriteService.addFavorite(member, request);
-		verify(memberRepository).save(any());
 
 		assertThat(member.getFavorites()).contains(request.toFavorite());
 	}
@@ -95,11 +92,9 @@ class FavoriteServiceTest {
 	void removeFavorite() {
 		favoriteService.removeFavorite(member, FIRST_STATION_ID, SECOND_STATION_ID);
 
-		verify(memberRepository).save(any());
 		assertThat(
 			member.getFavorites()
 				.contains(Favorite.of(FIRST_STATION_ID, SECOND_STATION_ID).withId(1L)))
 			.isFalse();
-
 	}
 }

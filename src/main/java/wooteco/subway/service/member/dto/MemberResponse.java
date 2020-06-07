@@ -1,5 +1,6 @@
 package wooteco.subway.service.member.dto;
 
+import java.util.Objects;
 import wooteco.subway.domain.member.Member;
 
 public class MemberResponse {
@@ -31,5 +32,24 @@ public class MemberResponse {
 
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		MemberResponse that = (MemberResponse) o;
+		return Objects.equals(id, that.id) &&
+			Objects.equals(email, that.email) &&
+			Objects.equals(name, that.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, email, name);
 	}
 }
