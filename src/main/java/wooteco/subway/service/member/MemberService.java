@@ -9,8 +9,8 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -23,12 +23,20 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        updateMember(member, param);
+    }
+
+    public void updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public void deleteMember(Member member) {
+        deleteMember(member.getId());
     }
 
     public String createToken(LoginRequest param) {
@@ -42,10 +50,5 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
     }
 }
