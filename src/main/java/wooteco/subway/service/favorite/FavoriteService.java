@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 
 @Service
 public class FavoriteService {
+    private static final String STATION_NOT_EXIST_ERROR_MESSAGE = "해당 역이 존재하지 않습니다.";
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
 
@@ -41,11 +42,11 @@ public class FavoriteService {
             Station source = stations.stream()
                     .filter(station -> station.getId().equals(favoriteStation.getSource()))
                     .findFirst()
-                    .orElseThrow(NoSuchElementException::new);
+                    .orElseThrow(() -> new NoSuchElementException(STATION_NOT_EXIST_ERROR_MESSAGE));
             Station target = stations.stream()
                     .filter(station -> station.getId().equals(favoriteStation.getTarget()))
                     .findFirst()
-                    .orElseThrow(NoSuchElementException::new);
+                    .orElseThrow(() -> new NoSuchElementException(STATION_NOT_EXIST_ERROR_MESSAGE));
             favoriteStations.add(
                     new FavoriteResponse(member.getId(), StationResponse.of(source), StationResponse.of(target)));
         }

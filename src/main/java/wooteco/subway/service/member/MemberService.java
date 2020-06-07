@@ -12,6 +12,10 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
+    public static final String WRONG_PASSWORD_ERROR_MESSAGE = "잘못된 패스워드";
+    public static final String NO_EXIST_USER_ERROR_MESSAGE = "존재하지 않는 유저입니다.";
+    public static final String NO_EXIST_ID_ERROR_MESSAGE = "존재하지 않는 Id입니다.";
+    private static final String DB_SAVE_ERROR_MESSAGE = "사용자 저장에 실패하였습니다.";
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -24,7 +28,7 @@ public class MemberService {
         try {
             return memberRepository.save(member);
         } catch (DbActionExecutionException e) {
-            throw new DuplicateEmailException("사용자 저장에 실패하였습니다.", e);
+            throw new DuplicateEmailException(DB_SAVE_ERROR_MESSAGE, e);
         }
     }
 
@@ -45,7 +49,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
                 .orElseThrow(RuntimeException::new);
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new RuntimeException(WRONG_PASSWORD_ERROR_MESSAGE);
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
@@ -53,7 +57,7 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchMemberException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new NoSuchMemberException(NO_EXIST_USER_ERROR_MESSAGE));
     }
 
     public boolean isExistMember(String email) {
@@ -67,7 +71,7 @@ public class MemberService {
 
     public Member findById(Long id) {
         final Member findMember = memberRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Id입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NO_EXIST_ID_ERROR_MESSAGE));
         return findMember;
     }
 }
