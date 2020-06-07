@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -32,12 +33,13 @@ import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.web.FavoriteController;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(RestDocumentationExtension.class)
 class FavoriteControllerTest {
-    private final String uri = "/favorites";
+    private final String uri = FavoriteController.FAVORITES_URI;
 
     @MockBean
     private FavoriteService favoriteService;
@@ -104,8 +106,12 @@ class FavoriteControllerTest {
     void deleteFavorite() throws Exception {
         String inputJson = "{\"departure\" : \"잠실역\", \"arrival\" : \"석촌역\"}";
 
+        String email = "test@test.com";
+        given(memberService.findMemberByEmail(email)).willReturn(new MemberResponse(1L, email, "test"));
+        String token = jwtTokenProvider.createToken(email);
+
         mockMvc.perform(delete(uri)
-            .header("Authorization", "bearer tokenValues")
+            .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
             .content(inputJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())

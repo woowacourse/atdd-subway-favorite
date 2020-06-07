@@ -2,6 +2,7 @@ package wooteco.subway.acceptance.favorite;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.*;
+import static wooteco.subway.web.FavoriteController.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +76,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             when().
-            post("/favorites").
+            post(FAVORITES_URI).
             then().
             log().all().
             statusCode(HttpStatus.CREATED.value()).
@@ -89,7 +90,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            get("/favorites").
+            get(FAVORITES_URI).
             then().
             log().all().
             statusCode(HttpStatus.OK.value()).
@@ -106,7 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             body(params).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             when().
-            delete("/favorites").
+            delete(FAVORITES_URI).
             then().
             log().all().
             statusCode(HttpStatus.OK.value());

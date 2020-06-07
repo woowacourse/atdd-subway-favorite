@@ -1,5 +1,7 @@
 package wooteco.subway.config;
 
+import static wooteco.subway.web.FavoriteController.*;
+
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/me/bearer");
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/favorites");
+        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns(FAVORITES_URI);
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.exception.DuplicateEmailException;
@@ -31,10 +32,12 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private FavoriteService favoriteService;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, favoriteService, jwtTokenProvider);
     }
 
     @Test
