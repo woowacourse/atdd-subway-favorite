@@ -22,6 +22,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.util.HttpMethod;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -59,20 +60,11 @@ public class AcceptanceTest {
 		Map<String, String> params = new HashMap<>();
 		params.put("name", name);
 
-		return
-			given().
-				body(params).
-				contentType(MediaType.APPLICATION_JSON_VALUE).
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				post("/stations").
-				then().
-				log().all().
-				statusCode(HttpStatus.CREATED.value()).
-				extract().as(StationResponse.class);
+		return HttpMethod.POST.request("/stations", params, HttpStatus.CREATED, StationResponse.class);
 	}
 
 	public List<StationResponse> getStations() {
+		// Todo : 리턴타입이 배열이면 문제 발생
 		return
 			given().when().
 				get("/stations").
@@ -96,20 +88,8 @@ public class AcceptanceTest {
 		params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");
 
-		return requestApi("/lines", params, HttpStatus.CREATED.value(), LineResponse.class);
-	}
-
-	private <R> R requestApi(String url, Map<String, String> params, int statusCode, Class<R> returnType) {
-		return given().
-			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			post(url).
-			then().
-			log().all().
-			statusCode(statusCode).
-			extract().as(returnType);
+		return HttpMethod.POST
+			.request("/lines", params, HttpStatus.CREATED, LineResponse.class);
 	}
 
 	public LineDetailResponse getLine(Long id) {
@@ -126,7 +106,6 @@ public class AcceptanceTest {
 		params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");
-
 		given().
 			body(params).
 			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -276,18 +255,6 @@ public class AcceptanceTest {
 			log().all().
 			statusCode(HttpStatus.NO_CONTENT.value()).
 			extract().statusCode();
-	}
-
-	public MemberResponse getMember(String email) {
-		return
-			given().
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				get("/members?email=" + email).
-				then().
-				log().all().
-				statusCode(HttpStatus.OK.value()).
-				extract().as(MemberResponse.class);
 	}
 
 	public MemberResponse getMember(String email, TokenResponse tokenResponse
