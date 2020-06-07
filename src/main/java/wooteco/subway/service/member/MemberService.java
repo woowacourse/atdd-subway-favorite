@@ -12,9 +12,9 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
-    public static final String WRONG_PASSWORD_ERROR_MESSAGE = "잘못된 패스워드";
-    public static final String NO_EXIST_USER_ERROR_MESSAGE = "존재하지 않는 유저입니다.";
-    public static final String NO_EXIST_ID_ERROR_MESSAGE = "존재하지 않는 Id입니다.";
+    private static final String WRONG_PASSWORD_ERROR_MESSAGE = "잘못된 패스워드";
+    private static final String NO_EXIST_USER_ERROR_MESSAGE = "존재하지 않는 유저입니다.";
+    private static final String NO_EXIST_ID_ERROR_MESSAGE = "존재하지 않는 Id입니다.";
     private static final String DB_SAVE_ERROR_MESSAGE = "사용자 저장에 실패하였습니다.";
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;

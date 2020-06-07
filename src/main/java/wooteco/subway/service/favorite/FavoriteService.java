@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 @Service
 public class FavoriteService {
     private static final String STATION_NOT_EXIST_ERROR_MESSAGE = "해당 역이 존재하지 않습니다.";
+    private static final String ALREADY_EXIST_FAVORITE_ERROR_MESSAGE = "이미 등록된 즐겨찾기입니다.";
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
 
@@ -28,7 +29,7 @@ public class FavoriteService {
 
     public void save(Member member, FavoriteStation favoriteStation) {
         if (member.contain(favoriteStation)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ALREADY_EXIST_FAVORITE_ERROR_MESSAGE);
         }
         member.addFavoriteStation(favoriteStation);
         memberRepository.save(member);
