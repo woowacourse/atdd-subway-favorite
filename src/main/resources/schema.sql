@@ -43,7 +43,9 @@ create table  if not exists FAVORITE_PATH
     id bigint auto_increment,
     member_id bigint not null,
     start_station_id bigint not null,
+    start_station_name varchar(255) not null,
     end_station_id bigint not null,
+    end_station_name varchar(255) not null ,
     primary key(id),
     unique member_start_end(member_id, start_station_id, end_station_id)
 )

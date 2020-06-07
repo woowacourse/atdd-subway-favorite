@@ -41,9 +41,8 @@ public class FavoritePathService {
         List<FavoritePath> favoritePaths = memberService.findFavoritePathsOf(member);
 
         for (FavoritePath favoritePath : favoritePaths) {
-            String startStationName = stationService.findNameById(favoritePath.getStartStationId());
-            String endStationName = stationService.findNameById(favoritePath.getEndStationId());
-
+            String startStationName = favoritePath.getStartStationName();
+            String endStationName = favoritePath.getEndStationName();
             FavoritePathResponse favoritePathResponse = new FavoritePathResponse(startStationName,
                 endStationName);
 

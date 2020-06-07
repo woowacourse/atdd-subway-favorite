@@ -4,24 +4,22 @@ import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import wooteco.subway.domain.station.Station;
 
-//@Table
 public class FavoritePath {
     @Id
     private Long id;
     private Long startStationId;
+    private String startStationName;
     private Long endStationId;
+    private String endStationName;
 
     public FavoritePath() {
     }
 
     public FavoritePath(Station start, Station end) {
         this.startStationId = start.getId();
+        this.startStationName = start.getName();
         this.endStationId = end.getId();
-    }
-
-    public FavoritePath(Long startStationId, Long endStationId) {
-        this.startStationId = startStationId;
-        this.endStationId = endStationId;
+        this.endStationName = end.getName();
     }
 
     public Long getId() {
@@ -32,8 +30,16 @@ public class FavoritePath {
         return startStationId;
     }
 
+    public String getStartStationName() {
+        return startStationName;
+    }
+
     public Long getEndStationId() {
         return endStationId;
+    }
+
+    public String getEndStationName() {
+        return endStationName;
     }
 
     public boolean match(Station start, Station end) {

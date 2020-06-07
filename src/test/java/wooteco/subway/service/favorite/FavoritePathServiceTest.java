@@ -52,9 +52,6 @@ class FavoritePathServiceTest {
             new FavoritePath(start, end));
         when(memberService.findFavoritePathsOf(member)).thenReturn(foundFavoritePaths);
 
-        when(stationService.findNameById(start.getId())).thenReturn(start.getName());
-        when(stationService.findNameById(end.getId())).thenReturn(end.getName());
-
         // when
         List<FavoritePathResponse> favoritePathResponses = favoritePathService.findAllOf(member);
 
