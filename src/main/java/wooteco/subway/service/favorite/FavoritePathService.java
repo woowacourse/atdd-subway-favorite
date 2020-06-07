@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favoritepath.FavoritePath;
+import wooteco.subway.domain.favoritepath.RegisterFavoritePathException;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.member.MemberService;
@@ -24,8 +25,11 @@ public class FavoritePathService {
     public void register(String startStationName, String endStationName, Member member) {
         Station startStation = stationService.findByName(startStationName);
         Station endStation = stationService.findByName(endStationName);
-
         FavoritePath favoritePath = new FavoritePath(startStation, endStation);
+        if (member.has(favoritePath)) {
+            throw new RegisterFavoritePathException(RegisterFavoritePathException.ALREADY_REGISTERED_MESSAGE);
+        }
+
         memberService.addFavoritePath(member, favoritePath);
     }
 

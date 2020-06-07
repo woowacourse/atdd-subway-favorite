@@ -146,4 +146,8 @@ public class Member {
     public boolean isNotMe(String email, String password) {
         return !this.email.equals(email) || !this.password.equals(password);
     }
+
+    public boolean has(FavoritePath favoritePath) {
+        return this.favoritePaths.contains(favoritePath);
+    }
 }

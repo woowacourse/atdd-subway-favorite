@@ -24,15 +24,6 @@ class MemberTest {
         this.member = new Member(TEST_EMAIL, TEST_NAME, TEST_PASSWORD);
     }
 
-    @Test
-    void update() {
-
-    }
-
-    @Test
-    void checkPassword() {
-    }
-
     @DisplayName("즐겨찾기 경로 추가")
     @Test
     void addFavoritePath() {
@@ -62,6 +53,17 @@ class MemberTest {
 
         // then : member 객체에서 favorite path A 가 삭제된다.
         assertThat(member.getFavoritePaths()).hasSize(givenSize - 1);
+    }
+
+    @DisplayName("즐겨찾기를 가지고 있는지 확인")
+    @Test
+    void has() {
+        Station start = new Station(1L, "신정역");
+        Station end = new Station(2L, "목동역");
+        FavoritePath favoritePath = new FavoritePath(start, end);
+        assertThat(member.has(favoritePath)).isEqualTo(false);
+        member.addFavoritePath(favoritePath);
+        assertThat(member.has(new FavoritePath(start, end))).isEqualTo(true);
     }
 
 
