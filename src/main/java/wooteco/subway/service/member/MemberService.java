@@ -24,7 +24,7 @@ public class MemberService {
         try {
             return memberRepository.save(member);
         } catch (DbActionExecutionException e) {
-            throw new DuplicateEmailException("가입되어 있는 사용자입니다.");
+            throw new DuplicateEmailException("사용자 저장에 실패하였습니다.", e);
         }
     }
 
@@ -42,7 +42,8 @@ public class MemberService {
     }
 
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(param.getEmail())
+                .orElseThrow(RuntimeException::new);
         if (!member.checkPassword(param.getPassword())) {
             throw new RuntimeException("잘못된 패스워드");
         }
