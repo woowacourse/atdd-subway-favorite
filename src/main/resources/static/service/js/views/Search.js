@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
-import api from '../../api/index.js'
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE, SUCCESS_MESSAGE } from '../../utils/constants.js'
+import api from '../../../service/api/index.js'
 import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -35,7 +34,7 @@ function Search() {
     getSearchResult(PATH_TYPE.DURATION)
   }
 
-  const getSearchResult = pathType => {
+  const getSearchResult = (pathType="DISTANCE") => {
     const searchInput = {
       source: $departureStationName.value,
       target: $arrivalStationName.value,
@@ -49,6 +48,28 @@ function Search() {
 
   const onToggleFavorite = event => {
     event.preventDefault()
+    const favoriteInput = {
+      source: $departureStationName.value,
+      target: $arrivalStationName.value,
+    }
+
+    fetch("/favorites", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwt") || ""
+      },
+      body: JSON.stringify({
+        ...favoriteInput
+      })
+    }).then(response => {
+      if(!response.ok) {
+        alert(ERROR_MESSAGE.DUPLICATION_CHECK);
+        return;
+      }
+      alert(SUCCESS_MESSAGE.SAVE)
+    })
+
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
     const classList = $favoriteButton.classList
 

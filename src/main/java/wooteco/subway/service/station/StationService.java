@@ -1,11 +1,12 @@
 package wooteco.subway.service.station;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.line.LineStationService;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.LineStationService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class StationService {
@@ -28,5 +29,9 @@ public class StationService {
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
+    }
+
+    public Station findByName(String stationName) {
+        return stationRepository.findByName(stationName).orElseThrow(NoSuchElementException::new);
     }
 }

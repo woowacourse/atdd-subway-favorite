@@ -1,6 +1,6 @@
 import { EVENT_TYPE, ERROR_MESSAGE, KEY_TYPE } from '../../utils/constants.js'
 import { listItemTemplate } from '../../utils/templates.js'
-import api from '../../api/index.js'
+import api from '../../api'
 
 function AdminStation() {
   const $stationInput = document.querySelector('#station-name')
