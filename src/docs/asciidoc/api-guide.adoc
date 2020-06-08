@@ -11,7 +11,7 @@ endif::[]
 :operation-http-response-title: Example Response
 
 [[resources]]
-= Resources
+= 지하철 어플리케이션
 
 [[resources-members]]
 == Member
@@ -19,4 +19,31 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,request-fields,request-body,http-response']
+
+=== 회원 조회
+
+operation::members/find[snippets='http-request,http-response']
+
+=== 회원 수정
+
+operation::members/update[snippets='http-request,request-fields,request-body,http-response']
+
+=== 회원 삭제
+
+operation::members/delete[snippets='http-request,http-response']
+
+[[resources-favorites]]
+== Favorites
+
+=== 즐겨찾기 추가
+
+operation::favorites/create[snippets='http-request,request-fields,request-body,http-response']
+
+=== 즐겨찾기 조회
+
+operation::favorites/find[snippets='http-request,http-response']
+
+=== 즐겨찾기 제거
+
+operation::favorites/delete[snippets='http-request,http-response']

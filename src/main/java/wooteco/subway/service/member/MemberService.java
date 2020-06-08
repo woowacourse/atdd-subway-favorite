@@ -1,8 +1,12 @@
 package wooteco.subway.service.member;
 
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.DuplicateEmailException;
+import wooteco.subway.exception.NoSuchMemberException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -18,12 +22,19 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        return memberRepository.save(member);
+        try {
+            return memberRepository.save(member);
+        } catch (DbActionExecutionException e) {
+            throw new DuplicateEmailException("가입되어 있는 사용자입니다.");
+        }
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
+        if (!member.getPassword().equals(param.getPassword())) {
+            throw new IllegalArgumentException();
+        }
+        member.update(param.getName(), param.getNewPassword());
         memberRepository.save(member);
     }
 
@@ -41,11 +52,21 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchMemberException("존재하지 않는 유저입니다."));
+    }
+
+    public boolean isExistMember(String email) {
+        return memberRepository.findByEmail(email).isPresent();
     }
 
     public boolean loginWithForm(String email, String password) {
         Member member = findMemberByEmail(email);
         return member.checkPassword(password);
+    }
+
+    public Member findById(Long id) {
+        final Member findMember = memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Id입니다."));
+        return findMember;
     }
 }

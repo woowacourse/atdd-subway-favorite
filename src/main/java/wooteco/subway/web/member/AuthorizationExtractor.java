@@ -1,10 +1,11 @@
 package wooteco.subway.web.member;
 
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.stereotype.Component;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AuthorizationExtractor {

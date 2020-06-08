@@ -3,6 +3,8 @@ package wooteco.subway.domain.member;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
+import wooteco.subway.domain.favorite.FavoriteStation;
+
 public class Member {
     @Id
     private Long id;
