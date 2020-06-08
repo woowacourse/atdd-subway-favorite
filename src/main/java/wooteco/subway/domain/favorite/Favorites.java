@@ -27,15 +27,30 @@ public class Favorites {
 	}
 
 	public Favorites add(Favorite favorite) {
-		Set<Favorite> newFavorites = new HashSet<>(favorites);
-		newFavorites.add(favorite);
-		return new Favorites(newFavorites);
+		Set<Favorite> addedFavorites = new HashSet<>(favorites);
+		addedFavorites.add(favorite);
+
+		if (isSizeEqual(addedFavorites)) {
+			throw new IllegalArgumentException("중복된 요소를 추가할 수 없습니다.");
+		}
+
+		return new Favorites(addedFavorites);
 	}
 
-	public Favorites removeFavorite(long sourceId, long targetId) {
-		return new Favorites(favorites.stream()
+	public Favorites remove(long sourceId, long targetId) {
+		Set<Favorite> removedFavorites = favorites.stream()
 			.filter(fav -> !fav.equalsSourceAndTarget(sourceId, targetId))
-			.collect(Collectors.toCollection(HashSet::new)));
+			.collect(Collectors.toCollection(HashSet::new));
+
+		if (isSizeEqual(removedFavorites)) {
+			throw new IllegalArgumentException("제거할 요소를 찾을 수 없습니다.");
+		}
+
+		return new Favorites(removedFavorites);
+	}
+
+	private boolean isSizeEqual(Set<Favorite> other) {
+		return favorites.size() == other.size();
 	}
 
 	public Set<Long> getAllStationIds() {

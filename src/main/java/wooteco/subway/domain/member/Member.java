@@ -62,7 +62,7 @@ public class Member {
 
 	public Member removeFavorite(long sourceId, long targetId) {
 		return new Member(this.id, this.email, this.name, this.password,
-			favorites.removeFavorite(sourceId, targetId));
+			favorites.remove(sourceId, targetId));
 	}
 
 	public Set<Long> getAllStationIds() {
