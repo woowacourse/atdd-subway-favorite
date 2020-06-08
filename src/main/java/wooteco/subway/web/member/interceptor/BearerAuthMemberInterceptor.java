@@ -22,7 +22,7 @@ public class BearerAuthMemberInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
+                             HttpServletResponse response, Object handler) throws InvalidAuthenticationException {
         String token = authExtractor.extract(request, "Bearer");
         validateToken(token);
         String email = jwtTokenProvider.getSubject(token);
@@ -30,7 +30,7 @@ public class BearerAuthMemberInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private void validateToken(String token) {
+    private void validateToken(String token) throws InvalidAuthenticationException {
         if (token.isEmpty() || !jwtTokenProvider.validateToken(token)) {
             throw new InvalidAuthenticationException();
         }

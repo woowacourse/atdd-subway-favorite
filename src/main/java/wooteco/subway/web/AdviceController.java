@@ -21,11 +21,11 @@ public class AdviceController {
      * javax.validation.Valid or @Validated 으로 binding error 발생시 발생한다.
      * HttpMessageConverter 에서 등록한 HttpMessageConverter binding 못할경우 발생
      * 주로 @RequestBody, @RequestPart 어노테이션에서 발생
-     *
+     * <p>
      * 찾는 데이터가 존재하지 않을 때, 비밀번호가 틀렸을 때
      */
     @ExceptionHandler({NotExistDataException.class, InvalidPasswordException.class, MethodArgumentNotValidException.class})
-    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(Exception e) {
         final ErrorResponse response = new ErrorResponse(BAD_REQUEST, e.getMessage());
         return ResponseEntity.status(BAD_REQUEST)
                 .body(response);
