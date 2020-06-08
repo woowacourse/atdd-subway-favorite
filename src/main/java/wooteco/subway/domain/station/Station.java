@@ -38,29 +38,6 @@ public class Station {
         this.favoritesTarget = new HashSet<>();
     }
 
-    public void addFavoritesSource(Favorite favorite) {
-        this.favoritesSource.add(favorite);
-    }
-
-    public void addFavoritesTarget(Favorite favorite) {
-        this.favoritesTarget.add(favorite);
-    }
-
-    // public Station(String name) {
-    //     this.name = name;
-    //     favorites = new HashSet<>();
-    // }
-    //
-    // public Station(Long id, String name) {
-    //     this.id = id;
-    //     this.name = name;
-    //     favorites = new HashSet<>();
-    // }
-    //
-    // public void addFavorite(Favorite favorite) {
-    //     this.favorites.add(favorite);
-    // }
-
     public Long getId() {
         return id;
     }
@@ -80,10 +57,6 @@ public class Station {
     public Set<Favorite> getFavoritesTarget() {
         return favoritesTarget;
     }
-
-    // public Set<Favorite> getFavorites() {
-    //     return favorites;
-    // }
 
     @Override
     public String toString() {
