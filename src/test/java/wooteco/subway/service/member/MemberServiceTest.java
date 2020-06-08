@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberNotfoundException;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -29,10 +30,10 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberServiceTest {
-    public static final String TEST_USER_EMAIL = "brown@email.com";
-    public static final String TEST_USER_NAME = "브라운";
-    public static final String TEST_USER_PASSWORD = "brown";
+class MemberServiceTest {
+    private static final String TEST_USER_EMAIL = "brown@email.com";
+    private static final String TEST_USER_NAME = "브라운";
+    private static final String TEST_USER_PASSWORD = "brown";
 
     private MemberService memberService;
 
@@ -68,36 +69,41 @@ public class MemberServiceTest {
 
     @Test
     void updateMemberSuccessCase() {
-        Member member = mock(Member.class);
+        //given
+        Member mockMember = mock(Member.class);
         UpdateMemberRequest request = mock(UpdateMemberRequest.class);
-
-        when(member.hasNotId()).thenReturn(false);
-        when(member.isNotMe(request.getEmail(), request.getPassword())).thenReturn(false);
-
-        memberService.updateMember(member, request);
-
-        verify(memberRepository).save(member);
+        String email = "testEmail";
+        when(mockMember.getEmail()).thenReturn(email);
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.of(mockMember));
+        //when
+        memberService.updateMember(mockMember, request);
+        //then
+        verify(memberRepository).save(mockMember);
     }
 
     @Test
     void updateMemberWhenNotPersistent() {
-        String testEmail = "test@test.com";
+        String email = "test@test.com";
         Member member = mock(Member.class);
+        when(member.getEmail()).thenReturn(email);
         UpdateMemberRequest request = mock(UpdateMemberRequest.class);
-        when(member.hasNotId()).thenReturn(true);
+        when(memberRepository.findByEmail(email))
+                .thenThrow(new MemberNotfoundException(MemberNotfoundException.INVALID_EMAIL_MESSAGE));
 
         assertThatThrownBy(() -> memberService.updateMember(member, request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(MemberService.NOT_MANAGED_BY_REPOSITORY);
+            .isInstanceOf(MemberNotfoundException.class)
+            .hasMessage(MemberNotfoundException.INVALID_EMAIL_MESSAGE);
     }
 
     @Test
     void removeFavoritePathSuccessCase() {
         // given
+        String email = "testEmail";
         Member mockMember = mock(Member.class);
+        when(mockMember.getEmail()).thenReturn(email);
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.of(mockMember));
         Station startStation = new Station("신정역");
         Station endStation = new Station("목동역");
-        when(mockMember.hasNotId()).thenReturn(false);
         doNothing().when(mockMember).removeFavoritePath(startStation, endStation);
 
         // when
@@ -110,15 +116,18 @@ public class MemberServiceTest {
     @Test
     void removeFavoritePathFailCase() {
         // given
+        String email = "testEmail";
         Member mockMember = mock(Member.class);
+        when(mockMember.getEmail()).thenReturn(email);
+        when(memberRepository.findByEmail(email))
+                .thenThrow(new MemberNotfoundException(MemberNotfoundException.INVALID_EMAIL_MESSAGE));
         Station startStation = new Station("신정역");
         Station endStation = new Station("목동역");
-        when(mockMember.hasNotId()).thenReturn(true);
 
         // when & then
         assertThatThrownBy(() -> memberService.removeFavoritePath(startStation, endStation, mockMember))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(MemberService.NOT_MANAGED_BY_REPOSITORY);
+            .isInstanceOf(MemberNotfoundException.class)
+            .hasMessage(MemberNotfoundException.INVALID_EMAIL_MESSAGE);
         verify(mockMember, times(0))
             .removeFavoritePath(startStation, endStation);
     }

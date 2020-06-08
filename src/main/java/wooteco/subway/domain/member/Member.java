@@ -39,33 +39,6 @@ public class Member {
         this.password = password;
     }
 
-    private void validate(String email, String name, String password) {
-        validateEmail(email);
-        validateName(name);
-        validatePassword(password);
-    }
-
-    private void validateName(String name) {
-        if (Objects.isNull(name) || name.isEmpty()) {
-            throw new MemberConstructException(MemberConstructException.EMPTY_NAME_MESSAGE);
-        }
-    }
-
-    private void validatePassword(String password) {
-        if (Objects.isNull(password) || password.isEmpty()) {
-            throw new MemberConstructException(MemberConstructException.EMPTY_PASSWORD_MESSAGE);
-        }
-    }
-
-    private void validateEmail(String email) {
-        if (Objects.isNull(email) || email.isEmpty()) {
-            throw new MemberConstructException(MemberConstructException.EMPTY_EMAIL_MESSAGE);
-        }
-        if (!email.contains("@")) {
-            throw new MemberConstructException(MemberConstructException.INVALID_EMAIL_FORM_MESSAGE);
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -93,6 +66,36 @@ public class Member {
         }
     }
 
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public void addFavoritePath(FavoritePath favoritePath) {
+        this.favoritePaths.add(favoritePath);
+    }
+
+    public Set<FavoritePath> getFavoritePaths() {
+        return Collections.unmodifiableSet(favoritePaths);
+    }
+
+    public void removeFavoritePath(Station start, Station end) {
+        this.favoritePaths.removeIf(favoritePath -> favoritePath.match(start, end));
+    }
+
+    public boolean isNotMe(String email, String password) {
+        return !this.email.equals(email) || !this.password.equals(password);
+    }
+
+    public boolean has(FavoritePath favoritePath) {
+        return this.favoritePaths.contains(favoritePath);
+    }
+
+    private void validate(String email, String name, String password) {
+        validateEmail(email);
+        validateName(name);
+        validatePassword(password);
+    }
+
     private void validate(String name, String password) {
         if (Objects.isNull(name) || name.isEmpty()) {
             throw new IllegalArgumentException("이름이 비어있습니다.");
@@ -102,20 +105,25 @@ public class Member {
         }
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    private void validateName(String name) {
+        if (Objects.isNull(name) || name.isEmpty()) {
+            throw new MemberConstructException(MemberConstructException.EMPTY_NAME_MESSAGE);
+        }
     }
 
-    public void addFavoritePath(FavoritePath favoritePath) {
-        this.favoritePaths.add(favoritePath);
+    private void validatePassword(String password) {
+        if (Objects.isNull(password) || password.isEmpty()) {
+            throw new MemberConstructException(MemberConstructException.EMPTY_PASSWORD_MESSAGE);
+        }
     }
 
-    public boolean hasNotId() {
-        return Objects.isNull(this.getId());
-    }
-
-    public Set<FavoritePath> getFavoritePaths() {
-        return Collections.unmodifiableSet(favoritePaths);
+    private void validateEmail(String email) {
+        if (Objects.isNull(email) || email.isEmpty()) {
+            throw new MemberConstructException(MemberConstructException.EMPTY_EMAIL_MESSAGE);
+        }
+        if (!email.contains("@")) {
+            throw new MemberConstructException(MemberConstructException.INVALID_EMAIL_FORM_MESSAGE);
+        }
     }
 
     @Override
@@ -128,27 +136,14 @@ public class Member {
         }
         Member member = (Member) o;
         return Objects.equals(id, member.id) &&
-            Objects.equals(email, member.email) &&
-            Objects.equals(name, member.name) &&
-            Objects.equals(password, member.password) &&
-            Objects.equals(favoritePaths, member.favoritePaths);
+                Objects.equals(email, member.email) &&
+                Objects.equals(name, member.name) &&
+                Objects.equals(password, member.password) &&
+                Objects.equals(favoritePaths, member.favoritePaths);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, email, name, password, favoritePaths);
-    }
-
-    public void removeFavoritePath(Station start, Station end) {
-        // set 에서 favorite path 를 찾아서 remove
-        this.favoritePaths.removeIf(favoritePath -> favoritePath.match(start, end));
-    }
-
-    public boolean isNotMe(String email, String password) {
-        return !this.email.equals(email) || !this.password.equals(password);
-    }
-
-    public boolean has(FavoritePath favoritePath) {
-        return this.favoritePaths.contains(favoritePath);
     }
 }

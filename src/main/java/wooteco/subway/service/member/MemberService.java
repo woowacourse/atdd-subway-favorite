@@ -4,6 +4,7 @@ import org.springframework.data.relational.core.conversion.DbActionExecutionExce
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberNotfoundException;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -17,7 +18,6 @@ import java.util.Objects;
 
 @Service
 public class MemberService {
-    static final String NOT_MANAGED_BY_REPOSITORY = "repository에 영속되지 않는 member 객체를 update 할 수 없습니다.";
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -39,7 +39,7 @@ public class MemberService {
     }
 
     public void updateMember(Member member, UpdateMemberRequest param) {
-        validatePersistence(member);
+        member = findMemberByEmail(member.getEmail());
         if (member.isNotMe(param.getEmail(), param.getPassword())) {
             throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
         }
@@ -61,7 +61,8 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotfoundException(MemberNotfoundException.INVALID_EMAIL_MESSAGE));
     }
 
     public boolean loginWithForm(String email, String password) {
@@ -70,7 +71,7 @@ public class MemberService {
     }
 
     public void removeFavoritePath(Station startStation, Station endStation, Member member) {
-        validatePersistence(member);
+        member = findMemberByEmail(member.getEmail());
         member.removeFavoritePath(startStation, endStation);
         memberRepository.save(member);
     }
@@ -81,14 +82,8 @@ public class MemberService {
     }
 
     public void addFavoritePath(Member member, FavoritePath favoritePath) {
+        member = findMemberByEmail(member.getEmail());
         member.addFavoritePath(favoritePath);
-        validatePersistence(member);
         memberRepository.save(member);
-    }
-
-    private void validatePersistence(Member member) {
-        if (member.hasNotId()) {
-            throw new IllegalArgumentException(NOT_MANAGED_BY_REPOSITORY);
-        }
     }
 }

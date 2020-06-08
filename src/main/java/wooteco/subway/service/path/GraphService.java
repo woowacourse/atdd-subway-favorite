@@ -12,13 +12,13 @@ import java.util.Objects;
 
 @Service
 public class GraphService {
-    public List<Long> findPath(List<Line> lines, Long source, Long target, PathType type) {
+    List<Long> findPath(List<Line> lines, Long source, Long target, PathType type) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         lines.stream()
                 .flatMap(it -> it.getStationIds().stream())
-                .forEach(it -> graph.addVertex(it));
+                .forEach(graph::addVertex);
 
         lines.stream()
                 .flatMap(it -> it.getStations().stream())

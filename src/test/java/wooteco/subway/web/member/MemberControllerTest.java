@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.acceptance.AcceptanceTest.TEST_USER_EMAIL;
 import static wooteco.subway.acceptance.AcceptanceTest.TEST_USER_PASSWORD;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +32,7 @@ import wooteco.subway.service.member.MemberService;
 @SpringBootTest
 @Sql("/truncate.sql")
 public class MemberControllerTest {
+    private static final String TEST_USER_NAME = "브라운";
 
     @MockBean
     protected MemberService memberService;
