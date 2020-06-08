@@ -18,4 +18,4 @@ insert into LINE_STATION values (2, 4, null, 0, 10, CURRENT_TIMESTAMP(), CURRENT
 insert into LINE_STATION values (2, 2, 4, 9, 10, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() );
 insert into LINE_STATION values (2, 5, 2, 3, 10, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() );
 
-insert into FAVORITE values (1, 1, 1, 5);
+insert into FAVORITE values (1, 1, 5);
