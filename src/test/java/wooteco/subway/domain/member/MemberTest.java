@@ -51,14 +51,13 @@ class MemberTest {
 			Favorite.of(1L, 2L));
 	}
 
-	@DisplayName("같은 즐겨찾기 추가하면 추가가 안 되어야함")
+	@DisplayName("중복된 즐겨찾기를 추가하면 예외를 발생시킨다.")
 	@Test
 	void addDuplicatedFavorite() {
-		Member added = member.addFavorite(Favorite.of(1L, 2L))
-			.addFavorite(Favorite.of(1L, 2L));
+		Member given = member.addFavorite(Favorite.of(1L, 2L));
 
-		assertThat(added.getFavorites().getFavorites()).containsExactly(
-			Favorite.of(1L, 2L));
+		assertThatThrownBy(() -> given.addFavorite(Favorite.of(1L, 2L)))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("즐겨찾기 삭제")
@@ -70,11 +69,10 @@ class MemberTest {
 		assertThat(member.getFavorites().getFavorites()).isEmpty();
 	}
 
-	@DisplayName("없는 즐겨찾기 삭제 시도를 하면 아무런 일도 일어나지 않는다.")
+	@DisplayName("없는 즐겨찾기 삭제 시도를 하면 예외를 발생시킨다.")
 	@Test
 	void removeInvalidFavorite() {
-		Member removed = member.removeFavorite(1L, 2L);
-
-		assertThat(removed.getFavorites().getFavorites()).isEmpty();
+		assertThatThrownBy(() -> member.removeFavorite(1L, 2L))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

@@ -77,8 +77,8 @@ class FavoriteServiceTest {
 	@DisplayName("즐겨찾기 삭제")
 	@Test
 	void delete() {
-		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		member.addFavorite(Favorite.of(1L, 2L));
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD)
+			.addFavorite(Favorite.of(1L, 2L));
 
 		when(stationRepository.findAllByName(any())).thenReturn(
 			Arrays.asList(new Station(1L, "강남역"), new Station(2L, "잠실역")));
