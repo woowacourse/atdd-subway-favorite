@@ -64,7 +64,6 @@ public class AcceptanceTest {
 	}
 
 	public List<StationResponse> getStations() {
-		// Todo : 리턴타입이 배열이면 문제 발생
 		return
 			given().when().
 				get("/stations").
@@ -102,7 +101,6 @@ public class AcceptanceTest {
 	}
 
 	public List<LineResponse> getLines() {
-		// todo
 		return
 			given().when().
 				get("/lines").
@@ -206,7 +204,7 @@ public class AcceptanceTest {
 	public MemberResponse getMember(TokenResponse tokenResponse) {
 		return
 			given().
-				header("Authorization",
+				header("AuthorizationAuthorization",
 					tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.when()

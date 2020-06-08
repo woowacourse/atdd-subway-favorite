@@ -46,7 +46,7 @@ public class FavoriteDocumentation {
 				headerWithName("Authorization").description(
 					"The token for login which is Bearer Type")
 			),
-			requestFields( // Todo : 문서화도 변경 필요
+			requestFields(
 				fieldWithPath("sourceStationId").type(JsonFieldType.NUMBER)
 					.description("The favorite's source station id"),
 				fieldWithPath("targetStationId").type(JsonFieldType.NUMBER)
