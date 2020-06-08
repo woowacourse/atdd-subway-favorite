@@ -1,4 +1,4 @@
-import { subwayLinesItemTemplate } from '../../utils/templates.js'
+import {subwayLinesItemTemplate} from '../../utils/templates.js'
 import tns from '../../lib/slider/tiny-slider.js'
 import api from '../../api/index.js'
 

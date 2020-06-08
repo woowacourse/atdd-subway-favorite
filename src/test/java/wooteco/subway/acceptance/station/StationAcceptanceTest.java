@@ -2,8 +2,8 @@ package wooteco.subway.acceptance.station;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
 
@@ -18,13 +18,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
         createStation(STATION_NAME_YEOKSAM);
         createStation(STATION_NAME_SEOLLEUNG);
         // then
-        List<StationResponse> stations = getStations();
+        List<StationResponse> stations = getList("/stations", StationResponse.class);
         assertThat(stations.size()).isEqualTo(3);
 
         // when
-        deleteStation(stations.get(0).getId());
+        delete("/stations/" + stations.get(0).getId());
         // then
-        List<StationResponse> stationsAfterDelete = getStations();
+        List<StationResponse> stationsAfterDelete = getList("/stations", StationResponse.class);
         assertThat(stationsAfterDelete.size()).isEqualTo(2);
     }
 }

@@ -17,6 +17,47 @@ endif::[]
 == Member
 
 [[resources-members-create]]
-=== 회원 가입
+=== 회원가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,http-response,request-fields']
+
+[[resources-login-member]]
+== Login Member
+
+[[resources-login-member-login]]
+=== 로그인
+
+operation::login[snippets='http-request,http-response,request-fields']
+
+[[resources-login-member-retreive]]
+=== 내 정보 조회
+
+operation::me/retrieve[snippets='http-request,http-response']
+
+[[resources-login-member-update]]
+=== 내 정보 수정
+
+operation::me/update[snippets='http-request,http-response,request-fields']
+
+[[resources-login-member-delete]]
+=== 탈퇴
+
+operation::me/delete[snippets='http-request,http-response']
+
+[[resources-favorite]]
+== Favorite
+
+[[resources-favorite-create]]
+=== 즐겨찾기 등록
+
+operation::favorite/create[snippets='http-request,http-response,request-fields,request-headers']
+
+[[resources-favorite-retrieve]]
+=== 즐겨찾기 조회
+
+operation::favorite/retrieve[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-favorite-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorite/delete[snippets='http-request,http-response,request-headers,path-parameters']
