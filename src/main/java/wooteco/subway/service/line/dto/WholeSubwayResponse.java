@@ -2,6 +2,8 @@ package wooteco.subway.service.line.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class WholeSubwayResponse {
     private List<LineDetailResponse> lineDetailResponse;
 
@@ -9,10 +11,7 @@ public class WholeSubwayResponse {
         return new WholeSubwayResponse(lineDetailResponses);
     }
 
-    public WholeSubwayResponse() {
-    }
-
-    public WholeSubwayResponse(List<LineDetailResponse> lineDetailResponse) {
+    public WholeSubwayResponse(@JsonProperty("lineDetailResponse") List<LineDetailResponse> lineDetailResponse) {
         this.lineDetailResponse = lineDetailResponse;
     }
 

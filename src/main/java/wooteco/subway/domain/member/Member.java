@@ -1,9 +1,13 @@
 package wooteco.subway.domain.member;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
-public class Member {
+import wooteco.subway.jdbc.BaseEntity;
+
+public class Member extends BaseEntity {
     @Id
     private Long id;
     private String email;
@@ -20,10 +24,21 @@ public class Member {
     }
 
     public Member(Long id, String email, String name, String password) {
+        this(email, name, password);
         this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
+    }
+
+    public void update(String name, String password) {
+        if (StringUtils.isNotBlank(name)) {
+            this.name = name;
+        }
+        if (StringUtils.isNotBlank(password)) {
+            this.password = password;
+        }
+    }
+
+    public boolean hasIdenticalPasswordWith(String password) {
+        return Objects.equals(this.password, password);
     }
 
     public Long getId() {
@@ -42,16 +57,18 @@ public class Member {
         return password;
     }
 
-    public void update(String name, String password) {
-        if (StringUtils.isNotBlank(name)) {
-            this.name = name;
-        }
-        if (StringUtils.isNotBlank(password)) {
-            this.password = password;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Member member = (Member)o;
+        return Objects.equals(id, member.id);
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,0 +1,29 @@
+package wooteco.subway.domain.path;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+public interface FavoritePathRepository extends CrudRepository<FavoritePath, Long> {
+    @Query("SELECT * FROM favorite_path WHERE member_id=:member_id")
+    List<FavoritePath> findAllByMemberId(@Param("member_id") Long memberId);
+
+    @Query("SELECT * FROM favorite_path WHERE member_id=:member_id AND id=:path_id")
+    Optional<FavoritePath> findByMemberIdAndPathId(@Param("member_id") Long memberId, @Param("path_id") Long pathId);
+
+    @Query("SELECT * FROM favorite_path WHERE member_id=:member_id AND source_id=:source_id AND target_id=:target_id")
+    Optional<FavoritePath> findByUniqueField(@Param("member_id") Long memberId, @Param("source_id") Long sourceId,
+        @Param("target_id") Long targetId);
+
+    @Modifying
+    @Query("DELETE FROM favorite_path WHERE member_id=:member_id")
+    void deleteByMemberId(@Param("member_id") Long memberId);
+
+    @Modifying
+    @Query("DELETE FROM favorite_path WHERE source_id=:station_id OR target_id=:station_id")
+    void deleteByStationId(@Param("station_id") Long stationId);
+}

@@ -1,10 +1,11 @@
 package wooteco.subway.service.station.dto;
 
-import wooteco.subway.domain.station.Station;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import wooteco.subway.domain.station.Station;
 
 public class StationResponse {
     private Long id;
@@ -17,14 +18,17 @@ public class StationResponse {
 
     public static List<StationResponse> listOf(List<Station> stations) {
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
-    public StationResponse() {
+    public StationResponse(Long id, String name) {
+        this(id, name, null);
     }
 
-    public StationResponse(Long id, String name, LocalDateTime createdAt) {
+    public StationResponse(@JsonProperty Long id,
+        @JsonProperty String name,
+        @JsonProperty LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;

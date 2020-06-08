@@ -1,25 +1,29 @@
 package wooteco.subway;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import wooteco.subway.web.dto.ExceptionResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -247,11 +251,12 @@ public class AcceptanceTest {
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
     }
 
-    public String createMember(String email, String name, String password) {
+    private ValidatableResponse createMember(String email, String name, String password, String confirmPassword) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
         params.put("password", password);
+        params.put("confirmPassword", confirmPassword);
 
         return
                 given().
@@ -261,45 +266,60 @@ public class AcceptanceTest {
                         when().
                         post("/members").
                         then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().header("Location");
+                        log().all();
     }
 
-    public MemberResponse getMember(String email) {
+    public String createMemberSuccessfully(String email, String name, String password, String confirmPassword) {
+        return createMember(email, name, password, confirmPassword).
+                statusCode(HttpStatus.CREATED.value()).
+                extract().header("Location");
+    }
+
+    public ExceptionResponse createMemberFailed(String email, String name, String password, String confirmPassword,
+                                                int statusCode) {
+        return createMember(email, name, password, confirmPassword).
+                statusCode(statusCode).
+                extract().as(ExceptionResponse.class);
+    }
+
+    public TokenResponse loginSuccessfully(String email, String password) {
+        return login(email, password).
+                statusCode(HttpStatus.OK.value()).
+                extract().as(TokenResponse.class);
+    }
+
+    public ExceptionResponse loginFailed(String email, String password, int statusCode) {
+        return login(email, password)
+                .statusCode(statusCode)
+                .extract().as(ExceptionResponse.class);
+    }
+
+    private ValidatableResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
         return
                 given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/members?email=" + email).
+                        post("/oauth/token").
                         then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(MemberResponse.class);
+                        log().all();
     }
 
-    public void updateMember(MemberResponse memberResponse) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
+    public MemberResponse getMyInfo(TokenResponse tokenResponse) {
+        return given().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                get("/me").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
-    }
-
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-                delete("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+                statusCode(HttpStatus.OK.value()).
+                extract().as(MemberResponse.class);
     }
 }
 
