@@ -28,6 +28,10 @@ public class Favorite {
 		return this.sourceId == sourceId && this.targetId == targetId;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	public long getSourceId() {
 		return sourceId;
 	}
@@ -50,7 +54,7 @@ public class Favorite {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(sourceId, targetId);
+		return Objects.hash(id, sourceId, targetId);
 	}
 
 	@Override

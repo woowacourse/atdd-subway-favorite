@@ -25,11 +25,13 @@ class MemberRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		givenMember = Member.of("kuenhwi@gmail.com", "그니", "1234");
+		givenMember = memberRepository.save(givenMember);
+
 		givenFavorite1 = Favorite.of(1L, 2L).withId(1L);
 		givenFavorite2 = Favorite.of(2L, 3L).withId(2L);
 
-		givenMember.addFavorite(givenFavorite1);
-		givenMember.addFavorite(givenFavorite2);
+		givenMember = givenMember.addFavorite(givenFavorite1)
+			.addFavorite(givenFavorite2);
 
 		memberRepository.save(givenMember);
 	}
@@ -54,13 +56,13 @@ class MemberRepositoryTest {
 	@Test
 	void saveAfterRemove() {
 		Member member = memberRepository.findById(1L)
-			.orElseThrow(IllegalArgumentException::new);
+			.orElseThrow(IllegalArgumentException::new)
+			.removeFavorite(givenFavorite2.getSourceId(), givenFavorite2.getTargetId());
 
-		member.removeFavorite(givenFavorite2.getSourceId(), givenFavorite2.getTargetId());
 		memberRepository.save(member);
-
 		Member saved = memberRepository.findById(1L)
 			.orElseThrow(IllegalArgumentException::new);
+
 		assertThat(member).isEqualTo(saved);
 	}
 
@@ -70,12 +72,13 @@ class MemberRepositoryTest {
 		Member member = memberRepository.findById(1L)
 			.orElseThrow(IllegalArgumentException::new);
 
-		Favorite favorite = Favorite.of(3L, 4L);
-		member.addFavorite(favorite);
-		memberRepository.save(member);
+		Member added = member
+			.addFavorite(Favorite.of(3L, 4L));
+		memberRepository.save(added);
 
 		Member saved = memberRepository.findById(1L)
 			.orElseThrow(IllegalArgumentException::new);
-		assertThat(saved.getFavorites()).contains(favorite.withId(3L));
+
+		assertThat(member.addFavorite(Favorite.of(3L, 4L).withId(3L))).isEqualTo(saved);
 	}
 }

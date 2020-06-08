@@ -1,11 +1,8 @@
 package wooteco.subway.service.favorite;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +11,7 @@ import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationIdNameMap;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteDeleteRequest;
@@ -32,50 +30,37 @@ public class FavoriteService {
 
 	@Transactional
 	public void create(Member member, FavoriteCreateRequest favoriteCreateRequest) {
-		Member persistMember = findMemberById(member);
-
 		Long source = findStationIdByName(favoriteCreateRequest.getSource());
 		Long target = findStationIdByName(favoriteCreateRequest.getTarget());
 		Favorite favorite = Favorite.of(source, target);
 
-		persistMember.addFavorite(favorite);
+		Member persistMember = findMemberById(member)
+			.addFavorite(favorite);
 
 		memberRepository.save(persistMember);
-
 	}
 
 	@Transactional(readOnly = true)
 	public List<FavoriteResponse> find(Member member) {
 		Member persistMember = findMemberById(member);
 
-		Map<Long, String> stationIdNameMap = mapStationIdToName(
+		StationIdNameMap stationIdNameMap = mapStationIdToName(
 			persistMember.getAllStationIds());
 
-		Set<Favorite> favorites = persistMember.getFavorites();
-
-		return favorites.stream()
-			.map(favorite -> new FavoriteResponse(
-				stationIdNameMap.get(favorite.getSourceId()),
-				stationIdNameMap.get(favorite.getTargetId())))
-			.collect(Collectors.toList());
+		return FavoriteResponse.listOf(persistMember.getFavorites(), stationIdNameMap);
 	}
 
-	private Map<Long, String> mapStationIdToName(Set<Long> stationIds) {
+	private StationIdNameMap mapStationIdToName(Set<Long> stationIds) {
 		List<Station> stations = stationRepository.findAllById(stationIds);
 
-		Map<Long, String> stationIdNameMap = new HashMap<>();
-		for (Station station : stations) {
-			stationIdNameMap.put(station.getId(), station.getName());
-		}
-		return stationIdNameMap;
+		return StationIdNameMap.of(stations);
 	}
 
 	@Transactional
 	public void delete(Member member, FavoriteDeleteRequest favoriteDeleteRequest) {
 		Favorite favorite = toFavorite(favoriteDeleteRequest);
-		Member persistMember = findMemberById(member);
-
-		persistMember.removeFavorite(favorite.getSourceId(), favorite.getTargetId());
+		Member persistMember = findMemberById(member)
+			.removeFavorite(favorite.getSourceId(), favorite.getTargetId());
 
 		memberRepository.save(persistMember);
 	}

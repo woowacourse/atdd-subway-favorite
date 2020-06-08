@@ -1,14 +1,14 @@
 package wooteco.subway.domain.member;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.Favorites;
 
 public class Member {
 	@Id
@@ -17,9 +17,10 @@ public class Member {
 	private final String name;
 	private final String password;
 
-	private final Set<Favorite> favorites;
+	@Embedded.Empty
+	private final Favorites favorites;
 
-	Member(Long id, String email, String name, String password, Set<Favorite> favorites) {
+	Member(Long id, String email, String name, String password, Favorites favorites) {
 		validateIsNotBlank(email);
 		validateIsNotBlank(name);
 		validateIsNotBlank(password);
@@ -39,15 +40,11 @@ public class Member {
 	}
 
 	public static Member of(String email, String name, String password) {
-		return new Member(null, email, name, password, new HashSet<>());
+		return new Member(null, email, name, password, Favorites.empty());
 	}
 
 	public Member withId(Long id) {
 		return new Member(id, this.email, this.name, this.password, this.favorites);
-	}
-
-	public Member withFavorites(Set<Favorite> favorites) {
-		return new Member(this.id, this.email, this.name, this.password, this.favorites);
 	}
 
 	public Member updateNameAndPassword(String name, String password) {
@@ -58,16 +55,18 @@ public class Member {
 		return this.password.equals(password);
 	}
 
-	public void addFavorite(Favorite favorite) {
-		favorites.add(favorite);
+	public Member addFavorite(Favorite favorite) {
+		return new Member(this.id, this.email, this.name, this.password,
+			favorites.add(favorite));
 	}
 
-	public void removeFavorite(long sourceId, long targetId) {
-		Set<Favorite> updated = favorites.stream()
-			.filter(fav -> !fav.equalsSourceAndTarget(sourceId, targetId))
-			.collect(Collectors.toCollection(HashSet::new));
-		favorites.clear();
-		favorites.addAll(updated);
+	public Member removeFavorite(long sourceId, long targetId) {
+		return new Member(this.id, this.email, this.name, this.password,
+			favorites.removeFavorite(sourceId, targetId));
+	}
+
+	public Set<Long> getAllStationIds() {
+		return favorites.getAllStationIds();
 	}
 
 	public Long getId() {
@@ -87,16 +86,7 @@ public class Member {
 	}
 
 	public Set<Favorite> getFavorites() {
-		return favorites;
-	}
-
-	public Set<Long> getAllStationIds() {
-		Set<Long> stationIds = new HashSet<>();
-		for (Favorite favorite : favorites) {
-			stationIds.add(favorite.getSourceId());
-			stationIds.add(favorite.getTargetId());
-		}
-		return stationIds;
+		return favorites.getFavorites();
 	}
 
 	@Override

@@ -53,14 +53,14 @@ class FavoriteServiceTest {
 			"잠실역");
 		favoriteService.create(member, favoriteCreateRequest);
 
-		verify(memberRepository).save(member);
+		verify(memberRepository).save(member.addFavorite(Favorite.of(1L, 2L)));
 	}
 
 	@DisplayName("즐겨찾기 조회")
 	@Test
 	void find() {
-		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD);
-		member.addFavorite(Favorite.of(1L, 2L));
+		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_EMAIL, TEST_USER_PASSWORD)
+			.addFavorite(Favorite.of(1L, 2L));
 
 		List<FavoriteResponse> expect = Lists.newArrayList(
 			new FavoriteResponse("강남역", "잠실역"));

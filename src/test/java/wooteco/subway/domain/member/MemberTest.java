@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.Sets;
 import wooteco.subway.domain.favorite.Favorite;
 
 class MemberTest {
@@ -47,26 +46,24 @@ class MemberTest {
 	@DisplayName("즐겨찾기 추가")
 	@Test
 	void addFavorite() {
-		member.addFavorite(Favorite.of(1L, 2L));
-		assertThat(member.getFavorites()).isEqualTo(Sets.newHashSet(
-			Favorite.of(1L, 2L)));
+		Member added = member.addFavorite(Favorite.of(1L, 2L));
+		assertThat(added.getFavorites()).containsExactly(Favorite.of(1L, 2L));
 	}
 
 	@DisplayName("같은 즐겨찾기 추가하면 추가가 안 되어야함")
 	@Test
 	void addDuplicatedFavorite() {
-		member.addFavorite(Favorite.of(1L, 2L));
-		member.addFavorite(Favorite.of(1L, 2L));
+		Member added = member.addFavorite(Favorite.of(1L, 2L))
+			.addFavorite(Favorite.of(1L, 2L));
 
-		assertThat(member.getFavorites()).isEqualTo(Sets.newHashSet(
-			Favorite.of(1L, 2L)));
+		assertThat(added.getFavorites()).containsExactly(Favorite.of(1L, 2L));
 	}
 
 	@DisplayName("즐겨찾기 삭제")
 	@Test
 	void removeFavorite() {
-		member.addFavorite(Favorite.of(1L, 2L));
-		member.removeFavorite(1L, 2L);
+		member.addFavorite(Favorite.of(1L, 2L))
+			.removeFavorite(1L, 2L);
 
 		assertThat(member.getFavorites()).isEmpty();
 	}
@@ -74,8 +71,8 @@ class MemberTest {
 	@DisplayName("없는 즐겨찾기 삭제 시도를 하면 아무런 일도 일어나지 않는다.")
 	@Test
 	void removeInvalidFavorite() {
-		member.removeFavorite(1L, 2L);
+		Member removed = member.removeFavorite(1L, 2L);
 
-		assertThat(member.getFavorites()).isEmpty();
+		assertThat(removed.getFavorites()).isEmpty();
 	}
 }
