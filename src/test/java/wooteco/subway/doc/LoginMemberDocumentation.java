@@ -91,6 +91,8 @@ public class LoginMemberDocumentation {
                     "The token for login which is Bearer Type")
             ),
             responseFields(
+                fieldWithPath("[].id").type(JsonFieldType.NUMBER)
+                    .description("The favorite's identity"),
                 fieldWithPath("[].sourceId").type(JsonFieldType.NUMBER)
                     .description("The departure station's identity"),
                 fieldWithPath("[].targetId").type(JsonFieldType.NUMBER)
@@ -109,10 +111,8 @@ public class LoginMemberDocumentation {
                     "The token for login which is Bearer Type")
             ),
             pathParameters(
-                parameterWithName("sourceId")
-                    .description("The departure station's identity"),
-                parameterWithName("targetId")
-                    .description("The target station's identity")
+                parameterWithName("favoriteId")
+                    .description("The favorite's identity")
             )
         );
     }

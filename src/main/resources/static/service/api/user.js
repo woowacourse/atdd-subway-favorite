@@ -69,7 +69,7 @@ export default (() => {
     throw new Error("즐겨찾기를 불러오는데 실패했습니다.")
   })
 
-  const deleteFavorite = ({ sourceId, targetId }) => request(`/me/favorites/from/${sourceId}/to/${targetId}`,
+  const deleteFavorite = ({ favoriteId }) => request(`/me/favorites/${favoriteId}`,
     {
       headers,
       method: 'DELETE'

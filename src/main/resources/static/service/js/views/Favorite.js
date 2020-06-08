@@ -14,12 +14,10 @@ function Favorite() {
   const onRemoveHandler = async event => {
     if (event.target.classList.contains("mdi-delete")) {
       const $edgeItem = event.target.closest(".edge-item")
-      const sourceId = $edgeItem.dataset.sourceId
-      const targetId = $edgeItem.dataset.targetId
+      const favoriteId = $edgeItem.dataset.id
       try {
         await user.deleteFavorite({
-          sourceId,
-          targetId
+          favoriteId
         })
         Snackbar.show({
           text: SUCCESS_MESSAGE.DELETE_FAVORITE,

@@ -129,7 +129,7 @@ export const initNavigation = member => {
 };
 
 export const edgeItemTemplate = edge => {
-  return `<li data-source-id="${edge.sourceId}" data-target-id="${edge.targetId}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+  return `<li data-id="${edge.id}" data-source-id="${edge.sourceId}" data-target-id="${edge.targetId}" class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
             <a href="/search?source=${edge.sourceName}&target=${edge.targetName}">
               <span class="mdi mdi-subway-variant mr-2"></span>
               <span>${edge.sourceName ? edge.sourceName : "출발역"}</span>

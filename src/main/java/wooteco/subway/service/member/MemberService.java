@@ -1,13 +1,9 @@
 package wooteco.subway.service.member;
 
-import java.util.List;
-
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.domain.favorite.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -67,25 +63,5 @@ public class MemberService {
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(NotFoundMemberException::new);
-    }
-
-    @Transactional
-    public void addFavorite(Member member, Favorite favorite) {
-        member.addFavorite(favorite);
-        memberRepository.save(member);
-    }
-
-    public List<FavoriteDetail> getFavorites(Member member) {
-        return memberRepository.findFavoritesById(member.getId());
-    }
-
-    @Transactional
-    public void removeFavorite(Member member, Long sourceId, Long targetId) {
-        member.removeFavorite(new Favorite(sourceId, targetId));
-        memberRepository.save(member);
-    }
-
-    public boolean hasFavorite(Member member, Long sourceId, Long targetId) {
-        return member.hasFavorite(new Favorite(sourceId, targetId));
     }
 }

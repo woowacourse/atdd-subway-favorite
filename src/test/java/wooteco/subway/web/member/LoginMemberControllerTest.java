@@ -36,6 +36,7 @@ import wooteco.subway.doc.LoginMemberDocumentation;
 import wooteco.subway.domain.favorite.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -48,6 +49,9 @@ import wooteco.subway.service.member.exception.NotFoundMemberException;
 public class LoginMemberControllerTest {
     @MockBean
     MemberService memberService;
+
+    @MockBean
+    private FavoriteService favoriteService;
 
     @MockBean
     JwtTokenProvider jwtTokenProvider;
@@ -232,7 +236,9 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("즐겨찾기 추가")
     void createFavorite() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
         String inputJson = objectMapper.writeValueAsString(new FavoriteRequest(1L, 2L));
 
         mockMvc.perform(post("/me/favorites")
@@ -271,16 +277,19 @@ public class LoginMemberControllerTest {
     @DisplayName("즐겨찾기 조회")
     void getFavorites() throws Exception {
         List<FavoriteDetail> favoriteDetails = Lists.newArrayList(
-            new FavoriteDetail(1L, 2L, "잠실역", "삼성역"));
+            new FavoriteDetail(5L, 1L, 2L, "잠실역", "삼성역"));
 
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        given(memberService.getFavorites(any())).willReturn(favoriteDetails);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(favoriteService.getFavorites(any())).willReturn(favoriteDetails);
 
         mockMvc.perform(get("/me/favorites")
             .header("Authorization", "Bearer access_token")
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
+            .andExpect(jsonPath("[0].id").value(favoriteDetails.get(0).getId()))
             .andExpect(jsonPath("[0].sourceId").value(favoriteDetails.get(0).getSourceId()))
             .andExpect(jsonPath("[0].targetId").value(favoriteDetails.get(0).getTargetId()))
             .andExpect(jsonPath("[0].sourceName").value(favoriteDetails.get(0).getSourceName()))
@@ -292,8 +301,10 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("즐겨찾기 여부 확인")
     void hasFavorite() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        given(memberService.hasFavorite(any(), anyLong(), anyLong())).willReturn(true);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
+        given(favoriteService.hasFavorite(any(), anyLong(), anyLong())).willReturn(true);
 
         mockMvc.perform(get("/me/favorites/from/{sourceId}/to/{targetId}", 1L, 2L)
             .header("Authorization", "Bearer access_token")
@@ -307,9 +318,11 @@ public class LoginMemberControllerTest {
     @Test
     @DisplayName("즐겨찾기 삭제")
     void deleteFavorite() throws Exception {
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(memberService.findMemberByEmail(any())).willReturn(member);
 
-        mockMvc.perform(delete("/me/favorites/from/{sourceId}/to/{targetId}", 1L, 2L)
+        mockMvc.perform(delete("/me/favorites/{favoriteId}", 1L)
             .header("Authorization", "Bearer access_token"))
             .andExpect(status().isNoContent())
             .andDo(print())

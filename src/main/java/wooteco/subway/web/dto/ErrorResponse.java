@@ -13,13 +13,13 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    public ErrorResponse(String message,
-        BindingResult bindingResult) {
+    public ErrorResponse(String message, BindingResult bindingResult) {
         this.message = message;
         this.errors = bindingResult.getFieldErrors()
             .stream()
             .map(fieldError -> new FieldError(fieldError.getField(), fieldError.getRejectedValue(),
-                fieldError.getDefaultMessage())).collect(Collectors.toList());
+                fieldError.getDefaultMessage()))
+            .collect(Collectors.toList());
     }
 
     public String getMessage() {

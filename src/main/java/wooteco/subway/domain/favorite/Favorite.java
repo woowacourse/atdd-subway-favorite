@@ -1,17 +1,34 @@
 package wooteco.subway.domain.favorite;
 
-import java.util.Objects;
+import org.springframework.data.annotation.Id;
 
 public class Favorite {
+    @Id
+    private Long id;
+    private Long memberId;
     private Long sourceStationId;
     private Long targetStationId;
 
     public Favorite() {
     }
 
-    public Favorite(Long sourceStationId, Long targetStationId) {
+    public Favorite(Long id, Long memberId, Long sourceStationId, Long targetStationId) {
+        this.id = id;
+        this.memberId = memberId;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+    }
+
+    public static Favorite of(Long memberId, Long sourceStationId, Long targetStationId) {
+        return new Favorite(null, memberId, sourceStationId, targetStationId);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Long getSourceStationId() {
@@ -22,21 +39,4 @@ public class Favorite {
         return targetStationId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Favorite)) {
-            return false;
-        }
-        Favorite favorite = (Favorite)o;
-        return Objects.equals(sourceStationId, favorite.sourceStationId) &&
-            Objects.equals(targetStationId, favorite.targetStationId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sourceStationId, targetStationId);
-    }
 }

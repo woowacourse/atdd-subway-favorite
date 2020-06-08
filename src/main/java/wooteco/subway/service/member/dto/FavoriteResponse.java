@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import wooteco.subway.domain.favorite.FavoriteDetail;
 
 public class FavoriteResponse {
+    private Long id;
     private Long sourceId;
     private Long targetId;
     private String sourceName;
@@ -14,8 +15,9 @@ public class FavoriteResponse {
     public FavoriteResponse() {
     }
 
-    public FavoriteResponse(Long sourceId, Long targetId, String sourceName,
+    public FavoriteResponse(Long id, Long sourceId, Long targetId, String sourceName,
         String targetName) {
+        this.id = id;
         this.sourceId = sourceId;
         this.targetId = targetId;
         this.sourceName = sourceName;
@@ -23,7 +25,7 @@ public class FavoriteResponse {
     }
 
     public FavoriteResponse(FavoriteDetail favoriteDetail) {
-        this(favoriteDetail.getSourceId(), favoriteDetail.getTargetId(),
+        this(favoriteDetail.getId(), favoriteDetail.getSourceId(), favoriteDetail.getTargetId(),
             favoriteDetail.getSourceName(), favoriteDetail.getTargetName());
     }
 
@@ -31,6 +33,10 @@ public class FavoriteResponse {
         return favorites.stream()
             .map(FavoriteResponse::new)
             .collect(Collectors.toList());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getSourceId() {

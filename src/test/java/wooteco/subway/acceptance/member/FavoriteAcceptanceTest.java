@@ -49,7 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favoriteResponse.get(0).getTargetName()).isEqualTo(stationResponse1.getName());
 
         // 4. 즐겨찾기 제거
-        removeFavorite(tokenResponse, stationResponse.getId(), stationResponse1.getId());
+        removeFavorite(tokenResponse, favoriteResponse.get(0).getId());
         FavoriteExistResponse favoriteExistResponse = hasFavorite(tokenResponse,
             stationResponse.getId(), stationResponse1.getId());
         assertThat(favoriteExistResponse.isExist()).isFalse();
@@ -104,14 +104,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //@formatter:on
     }
 
-    private void removeFavorite(TokenResponse tokenResponse, Long sourceId, Long targetId) {
+    private void removeFavorite(TokenResponse tokenResponse, Long favoriteId) {
         //@formatter:off
         given()
             .auth()
             .oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when()
-            .delete("/me/favorites/from/" + sourceId +"/to/" + targetId)
+            .delete("/me/favorites/" + favoriteId)
         .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());

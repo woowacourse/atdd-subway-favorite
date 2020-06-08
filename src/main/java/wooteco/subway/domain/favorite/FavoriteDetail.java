@@ -1,16 +1,23 @@
 package wooteco.subway.domain.favorite;
 
 public class FavoriteDetail {
+    private Long id;
     private Long sourceId;
     private Long targetId;
     private String sourceName;
     private String targetName;
 
-    public FavoriteDetail(Long sourceId, Long targetId, String sourceName, String targetName) {
+    public FavoriteDetail(Long id, Long sourceId, Long targetId, String sourceName,
+        String targetName) {
+        this.id = id;
         this.sourceId = sourceId;
         this.targetId = targetId;
         this.sourceName = sourceName;
         this.targetName = targetName;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getSourceId() {
