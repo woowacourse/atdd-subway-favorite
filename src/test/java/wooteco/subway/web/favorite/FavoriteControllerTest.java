@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static wooteco.subway.AcceptanceTest.*;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,7 +101,8 @@ public class FavoriteControllerTest {
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
-        given(favoriteService.getFavoriteResponse(any())).willReturn(Arrays.asList(favoriteResponse));
+        given(favoriteService.getFavoriteResponseByMemberId(any())).willReturn(
+            Collections.singletonList(favoriteResponse));
 
         this.mockMvc.perform(get("/favorite/me")
             .header("authorization", "Bearer 1q2w3e4r")

@@ -46,7 +46,7 @@ public class StationRepositoryTest {
 
         stationRepository.delete(jamsil);
 
-        List<FavoriteResponse> favoriteResponse = favoriteService.getFavoriteResponse(1L);
+        List<FavoriteResponse> favoriteResponse = favoriteService.getFavoriteResponseByMemberId(1L);
 
         assertThat(favoriteResponse).hasSize(0);
     }

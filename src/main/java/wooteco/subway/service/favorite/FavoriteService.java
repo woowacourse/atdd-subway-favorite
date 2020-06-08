@@ -36,7 +36,7 @@ public class FavoriteService {
             .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
     }
 
-    public List<FavoriteResponse> getFavoriteResponse(Long id) {
+    public List<FavoriteResponse> getFavoriteResponseByMemberId(Long id) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(id);
 
         return favorites.stream()

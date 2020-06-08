@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,11 +61,11 @@ public class FavoriteServiceTest {
         Station sourceStation = new Station(1L, "잠실");
         Station targetStation = new Station(2L, "석촌고분");
 
-        when(favoriteRepository.findByMemberId(any())).thenReturn(Arrays.asList(favorite));
+        when(favoriteRepository.findByMemberId(any())).thenReturn(Collections.singletonList(favorite));
         when(stationRepository.findById(3L)).thenReturn(Optional.of(sourceStation));
         when(stationRepository.findById(4L)).thenReturn(Optional.of(targetStation));
 
-        List<FavoriteResponse> favorites = favoriteService.getFavoriteResponse(1L);
+        List<FavoriteResponse> favorites = favoriteService.getFavoriteResponseByMemberId(1L);
 
         assertThat(favorites).hasSize(1);
         assertThat(favorites.get(0).getSource()).isEqualTo("잠실");

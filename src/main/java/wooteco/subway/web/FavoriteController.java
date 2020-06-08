@@ -34,7 +34,7 @@ public class FavoriteController {
 
     @GetMapping("/favorite/me")
     public ResponseEntity<FavoriteResponses> getFavorites(@LoginMember Member member) {
-        return ResponseEntity.ok(FavoriteResponses.of(favoriteService.getFavoriteResponse(member.getId())));
+        return ResponseEntity.ok(FavoriteResponses.of(favoriteService.getFavoriteResponseByMemberId(member.getId())));
     }
 
     @DeleteMapping("/favorite/me/{id}")
