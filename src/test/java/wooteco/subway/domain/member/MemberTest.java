@@ -47,7 +47,8 @@ class MemberTest {
 	@Test
 	void addFavorite() {
 		Member added = member.addFavorite(Favorite.of(1L, 2L));
-		assertThat(added.getFavorites()).containsExactly(Favorite.of(1L, 2L));
+		assertThat(added.getFavorites().getFavorites()).containsExactly(
+			Favorite.of(1L, 2L));
 	}
 
 	@DisplayName("같은 즐겨찾기 추가하면 추가가 안 되어야함")
@@ -56,7 +57,8 @@ class MemberTest {
 		Member added = member.addFavorite(Favorite.of(1L, 2L))
 			.addFavorite(Favorite.of(1L, 2L));
 
-		assertThat(added.getFavorites()).containsExactly(Favorite.of(1L, 2L));
+		assertThat(added.getFavorites().getFavorites()).containsExactly(
+			Favorite.of(1L, 2L));
 	}
 
 	@DisplayName("즐겨찾기 삭제")
@@ -65,7 +67,7 @@ class MemberTest {
 		member.addFavorite(Favorite.of(1L, 2L))
 			.removeFavorite(1L, 2L);
 
-		assertThat(member.getFavorites()).isEmpty();
+		assertThat(member.getFavorites().getFavorites()).isEmpty();
 	}
 
 	@DisplayName("없는 즐겨찾기 삭제 시도를 하면 아무런 일도 일어나지 않는다.")
@@ -73,6 +75,6 @@ class MemberTest {
 	void removeInvalidFavorite() {
 		Member removed = member.removeFavorite(1L, 2L);
 
-		assertThat(removed.getFavorites()).isEmpty();
+		assertThat(removed.getFavorites().getFavorites()).isEmpty();
 	}
 }

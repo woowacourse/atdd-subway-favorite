@@ -1,12 +1,8 @@
 package wooteco.subway.service.favorite.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.domain.station.StationIdNameMap;
 
 public class FavoriteResponse {
 	private String source;
@@ -20,13 +16,17 @@ public class FavoriteResponse {
 		this.target = target;
 	}
 
-	public static List<FavoriteResponse> listOf(Set<Favorite> favorites,
-		StationIdNameMap stationIdNameMap) {
-		return favorites.stream()
-			.map(favorite -> new FavoriteResponse(
-				stationIdNameMap.getNameById(favorite.getSourceId()),
-				stationIdNameMap.getNameById(favorite.getTargetId())))
-			.collect(Collectors.toList());
+	public static List<FavoriteResponse> listOf(List<String> sourceNames,
+		List<String> targetNames) {
+		List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+
+		int size = sourceNames.size();
+		for (int i = 0; i < size; i++) {
+			favoriteResponses.add(
+				new FavoriteResponse(sourceNames.get(i), targetNames.get(i)));
+		}
+
+		return favoriteResponses;
 	}
 
 	public String getSource() {

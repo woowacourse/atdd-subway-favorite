@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
@@ -47,7 +48,11 @@ public class FavoriteService {
 		StationIdNameMap stationIdNameMap = mapStationIdToName(
 			persistMember.getAllStationIds());
 
-		return FavoriteResponse.listOf(persistMember.getFavorites(), stationIdNameMap);
+		Favorites favorites = persistMember.getFavorites();
+		List<String> orderedSourceNames = stationIdNameMap.getSourceNames(favorites);
+		List<String> orderedTargetNames = stationIdNameMap.getTargetNames(favorites);
+
+		return FavoriteResponse.listOf(orderedSourceNames, orderedTargetNames);
 	}
 
 	private StationIdNameMap mapStationIdToName(Set<Long> stationIds) {

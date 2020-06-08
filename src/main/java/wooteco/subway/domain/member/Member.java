@@ -85,8 +85,8 @@ public class Member {
 		return password;
 	}
 
-	public Set<Favorite> getFavorites() {
-		return favorites.getFavorites();
+	public Favorites getFavorites() {
+		return favorites;
 	}
 
 	@Override
