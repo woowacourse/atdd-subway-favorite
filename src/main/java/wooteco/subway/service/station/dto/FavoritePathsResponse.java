@@ -1,8 +1,9 @@
 package wooteco.subway.service.station.dto;
 
+import wooteco.subway.domain.favoritepath.FavoritePath;
+
 import java.util.ArrayList;
 import java.util.List;
-import wooteco.subway.domain.favoritepath.FavoritePath;
 
 public class FavoritePathsResponse {
     private List<FavoritePathRequest> favoritePathRequests;

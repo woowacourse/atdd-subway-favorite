@@ -1,15 +1,16 @@
 package wooteco.subway.domain.member;
 
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.station.Station;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Member {
     public static final String NOT_ME_MESSAGE = "본인의 이메일이 아닙니다.";

@@ -45,7 +45,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.BAD_REQUEST.value()).
                 extract().as(MemberErrorResponse.class);
-        assertThat(response.getErrorMessage()).isEqualTo(CreateMemberException.WRONG_CREATE_MESSAGE);
+        assertThat(response.getErrorMessage()).contains("Unique index or primary key violation");
     }
 
     @DisplayName("요구되는 입력에 빈 값이 있는 경우의 회원가입")
@@ -100,10 +100,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("로그인 없이 내 정보 가져오기")
     @Test
-    //todo: csv로 다양한 케이스
     void retrieveMyInfoWithoutLogin() {
-
-        
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();
 
@@ -118,7 +115,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("로그인 없이 회원정보 수정하기")
     @Test
-        //todo: csv로 다양한 케이스
     void updateMyInfoWithoutLogin() {
         String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         assertThat(location).isNotBlank();

@@ -1,8 +1,9 @@
 package wooteco.subway.domain.favoritepath;
 
-import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import wooteco.subway.domain.station.Station;
+
+import java.util.Objects;
 
 public class FavoritePath {
     @Id

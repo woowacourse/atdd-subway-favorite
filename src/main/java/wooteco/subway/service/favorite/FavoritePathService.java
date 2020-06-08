@@ -1,7 +1,5 @@
 package wooteco.subway.service.favorite;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.favoritepath.RegisterFavoritePathException;
@@ -10,6 +8,9 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.FavoritePathResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FavoritePathService {

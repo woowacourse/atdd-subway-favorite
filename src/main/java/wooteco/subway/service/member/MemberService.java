@@ -1,8 +1,5 @@
 package wooteco.subway.service.member;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favoritepath.FavoritePath;
@@ -12,6 +9,11 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MemberService {
@@ -28,7 +30,11 @@ public class MemberService {
         try {
             return memberRepository.save(member);
         } catch (DbActionExecutionException e) {
-            throw new CreateMemberException(CreateMemberException.WRONG_CREATE_MESSAGE);
+            Throwable cause = e.getCause();
+            if (Objects.isNull(cause)) {
+                throw e;
+            }
+            throw new CreateMemberException(cause.getMessage());
         }
     }
 
