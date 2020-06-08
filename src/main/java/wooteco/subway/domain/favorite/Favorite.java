@@ -45,13 +45,4 @@ public class Favorite {
         return !this.memberEmail.equals(email);
     }
 
-    @Override
-    public String toString() {
-        return "Favorite{" +
-                "id=" + id +
-                ", memberEmail='" + memberEmail + '\'' +
-                ", source='" + source + '\'' +
-                ", target='" + target + '\'' +
-                '}';
-    }
 }

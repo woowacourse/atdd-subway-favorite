@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/stations")
 public class StationController {
     private final StationService stationService;
 
@@ -18,7 +19,7 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostMapping("/stations")
+    @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
         Station persistStation = stationService.createStation(view.toStation());
 
@@ -27,12 +28,12 @@ public class StationController {
                 .body(StationResponse.of(persistStation));
     }
 
-    @GetMapping("/stations")
+    @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(StationResponse.listOf(stationService.findStations()));
     }
 
-    @DeleteMapping("/stations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();

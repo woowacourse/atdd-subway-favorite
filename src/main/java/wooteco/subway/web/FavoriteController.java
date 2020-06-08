@@ -15,6 +15,7 @@ import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
 import java.util.List;
 
 @RestController
+@RequestMapping("/favorites")
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
@@ -22,21 +23,21 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @PostMapping("/favorites")
+    @PostMapping
     public ResponseEntity<FavoriteResponse> createFavorite(@LoginMember Member member, @RequestBody CreateFavoriteRequest request) {
         Favorite present = favoriteService.save(request, member.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(FavoriteResponse.of(present));
     }
 
-    @GetMapping("/favorites")
+    @GetMapping
     public ResponseEntity<FavoritesResponse> createFavorite(@LoginMember Member member) {
         List<FavoriteResponse> favorites = favoriteService.findAllByEmail(member.getEmail());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new FavoritesResponse(favorites));
     }
 
-    @DeleteMapping("/favorites/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFavorite(@CreateFavorite Favorite favorite) {
         favoriteService.deleteFavorite(favorite);
         return ResponseEntity
