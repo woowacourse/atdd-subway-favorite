@@ -36,102 +36,102 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LoginMemberControllerTest {
-    @Autowired
-    protected MockMvc mockMvc;
-    Member member;
-    @MockBean
-    private MemberService memberService;
-    @MockBean
-    private BearerAuthInterceptor bearerAuthInterceptor;
-    @MockBean
-    private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
+	@Autowired
+	protected MockMvc mockMvc;
+	Member member;
+	@MockBean
+	private MemberService memberService;
+	@MockBean
+	private BearerAuthInterceptor bearerAuthInterceptor;
+	@MockBean
+	private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
 
-    @BeforeEach
-    void setUp(WebApplicationContext webApplicationContext,
-        RestDocumentationContextProvider restDocumentation) {
-        member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        given(loginMemberMethodArgumentResolver.resolveArgument(any(), any(), any(),
-            any())).willReturn(member);
-        given(loginMemberMethodArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(memberService.createToken(any())).willReturn("brownToken");
+	@BeforeEach
+	void setUp(WebApplicationContext webApplicationContext,
+		RestDocumentationContextProvider restDocumentation) {
+		member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		given(bearerAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+		given(loginMemberMethodArgumentResolver.resolveArgument(any(), any(), any(),
+			any())).willReturn(member);
+		given(loginMemberMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+		given(memberService.createToken(any())).willReturn("brownToken");
 
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .addFilter(new ShallowEtagHeaderFilter())
-            .apply(documentationConfiguration(restDocumentation))
-            .build();
-    }
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+			.addFilter(new ShallowEtagHeaderFilter())
+			.apply(documentationConfiguration(restDocumentation))
+			.build();
+	}
 
-    @DisplayName("회원가입을 한다")
-    @Test
-    void createMember() throws Exception {
-        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        given(memberService.createMember(any())).willReturn(member);
+	@DisplayName("회원가입을 한다")
+	@Test
+	void createMember() throws Exception {
+		Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+		given(memberService.createMember(any())).willReturn(member);
 
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"name\":\"" + TEST_USER_NAME + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+			"\"name\":\"" + TEST_USER_NAME + "\"," +
+			"\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent())
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.createMember());
-    }
+		this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me")
+			.content(inputJson)
+			.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isCreated())
+			.andDo(print())
+			.andDo(LoginMemberDocumentation.createMember());
+	}
 
-    @DisplayName("로그인을 시도하여 토큰을 얻는다.")
-    @Test
-    void tokenLogin() throws Exception {
-        String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
-            "\"password\":\"" + TEST_USER_PASSWORD + "\"}";
+	@DisplayName("로그인을 시도하여 토큰을 얻는다.")
+	@Test
+	void tokenLogin() throws Exception {
+		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
+			"\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me/login")
-            .content(inputJson)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.login());
-    }
+		this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me/login")
+			.content(inputJson)
+			.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(LoginMemberDocumentation.login());
+	}
 
-    @DisplayName("회원 정보 조회")
-    @Test
-    void meBearer() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/me")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andDo(LoginMemberDocumentation.getMember());
-    }
+	@DisplayName("회원 정보 조회")
+	@Test
+	void meBearer() throws Exception {
+		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/me")
+			.header("Authorization", "bearer brownToken")
+			.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andDo(LoginMemberDocumentation.getMember());
+	}
 
-    @DisplayName("회원 정보 수정")
-    @Test
-    void edit() throws Exception {
-        String inputJson = "{\"name\":\"" + "CU" + "\"," +
-            "\"password\":\"" + "1234" + "\"}";
+	@DisplayName("회원 정보 수정")
+	@Test
+	void edit() throws Exception {
+		String inputJson = "{\"name\":\"" + "CU" + "\"," +
+			"\"password\":\"" + "1234" + "\"}";
 
-        this.mockMvc.perform(put("/me")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .content(inputJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isNoContent())
-            .andDo(LoginMemberDocumentation.editMember());
-    }
+		this.mockMvc.perform(put("/me")
+			.header("Authorization", "bearer brownToken")
+			.accept(MediaType.APPLICATION_JSON)
+			.content(inputJson)
+			.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andDo(LoginMemberDocumentation.editMember());
+	}
 
-    @DisplayName("회원 정보 삭제")
-    @Test
-    void deleteMember() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
-            .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isNoContent())
-            .andDo(LoginMemberDocumentation.deleteMember());
-    }
+	@DisplayName("회원 정보 삭제")
+	@Test
+	void deleteMember() throws Exception {
+		this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/me")
+			.header("Authorization", "bearer brownToken")
+			.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andDo(LoginMemberDocumentation.deleteMember());
+	}
 }

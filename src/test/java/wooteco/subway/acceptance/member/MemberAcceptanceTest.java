@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance.member;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
 import static wooteco.subway.web.ExceptionAdvice.*;
 
 import java.util.HashMap;
@@ -44,8 +45,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		 * Then 회원정보가 삭제된다.
 		 *
 		 */
-		final int statusCode = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		assertThat(statusCode).isEqualTo(204);
+		createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
 		TokenResponse tokenResponse = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 		assertThat(tokenResponse.getAccessToken()).isNotBlank();
@@ -53,7 +53,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		updateMemberWhenLoggedIn(tokenResponse.getAccessToken(), "NEW_NAME",
 			"NEW_PASSWORD");
 
-		MemberResponse memberResponseAfterEdit = getMember(TEST_USER_EMAIL, tokenResponse);
+		MemberResponse memberResponseAfterEdit = getMember(tokenResponse);
 		assertThat(memberResponseAfterEdit).isNotNull();
 		assertThat(memberResponseAfterEdit.getName()).isEqualTo("NEW_NAME");
 		assertThat(memberResponseAfterEdit.getId()).isNotNull();
@@ -73,7 +73,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		paramMap.put("email", TEST_USER_EMAIL);
 		paramMap.put("password", TEST_USER_PASSWORD);
 
-		String message = given()
+		given()
 			.body(paramMap)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
@@ -81,9 +81,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 			.post("/me/login")
 			.then()
 			.log().all()
-			.extract()
-			.asString();
-		assertThat(message).contains(BAD_REQUEST_MESSAGE);
+			.body(containsString(BAD_REQUEST_MESSAGE));
 	}
 
 	@DisplayName("회원 정보 관리 중 동일 이메일로 회원가입 요청 예외")
@@ -99,17 +97,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		params.put("name", "Allen");
 		params.put("password", "1234");
 
-		String message =
-			given().
-				body(params).
-				contentType(MediaType.APPLICATION_JSON_VALUE).
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				post("/me").
-				then().
-				log().all().
-				extract().asString();
-		assertThat(message).contains(BAD_REQUEST_MESSAGE);
+		given().
+			body(params).
+			contentType(MediaType.APPLICATION_JSON_VALUE).
+			accept(MediaType.APPLICATION_JSON_VALUE).
+			when().
+			post("/me").
+			then().
+			log().all()
+			.body(containsString(BAD_REQUEST_MESSAGE));
 	}
 
 	@DisplayName("회원 정보 관리 중 맞지 않는 비밀번호로 로그인 요청 예외")
@@ -125,17 +121,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		paramMap.put("email", TEST_USER_EMAIL);
 		paramMap.put("password", "CU");
 
-		String message =
-			given()
-				.body(paramMap)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.when()
-				.post("/me/login")
-				.then()
-				.log().all()
-				.extract().asString();
-		assertThat(message).contains(BAD_REQUEST_MESSAGE);
+		given()
+			.body(paramMap)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.post("/me/login")
+			.then()
+			.log().all()
+			.body(containsString(BAD_REQUEST_MESSAGE));
 	}
 
 	@DisplayName("회원 정보 관리 중 유효하지 않은 토큰으로 권한이 필요한 페이지 요청 예외")
@@ -148,7 +142,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		TokenResponse tokenResponse = new TokenResponse("BrownToken", "Bearer");
 
-		String message = given()
+		given()
 			.header("Authorization",
 				tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -157,9 +151,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 			.get("/me")
 			.then()
 			.log().all()
-			.extract()
-			.asString();
+			.body(containsString(BAD_REQUEST_MESSAGE));
 
-		assertThat(message).contains("잘못된 요청입니다.");
 	}
 }

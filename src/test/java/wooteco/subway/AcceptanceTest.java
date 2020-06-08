@@ -22,7 +22,7 @@ import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.web.util.HttpMethod;
+import wooteco.subway.util.HttpMethod;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
@@ -60,7 +60,7 @@ public class AcceptanceTest {
 		Map<String, String> params = new HashMap<>();
 		params.put("name", name);
 
-		return HttpMethod.POST.request("/stations", params, HttpStatus.CREATED, StationResponse.class);
+		return HttpMethod.POST.requestWithBody("/stations", StationResponse.class, params);
 	}
 
 	public List<StationResponse> getStations() {
@@ -75,10 +75,7 @@ public class AcceptanceTest {
 	}
 
 	public void deleteStation(Long id) {
-		given().when().
-			delete("/stations/" + id).
-			then().
-			log().all();
+		HttpMethod.DELETE.request("/stations/" + id);
 	}
 
 	public LineResponse createLine(String name) {
@@ -88,17 +85,11 @@ public class AcceptanceTest {
 		params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");
 
-		return HttpMethod.POST
-			.request("/lines", params, HttpStatus.CREATED, LineResponse.class);
+		return HttpMethod.POST.requestWithBody("/lines", LineResponse.class, params);
 	}
 
 	public LineDetailResponse getLine(Long id) {
-		return
-			given().when().
-				get("/lines/" + id).
-				then().
-				log().all().
-				extract().as(LineDetailResponse.class);
+		return HttpMethod.GET.requestWithBody("/lines/" + id, LineDetailResponse.class);
 	}
 
 	public void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
@@ -106,18 +97,12 @@ public class AcceptanceTest {
 		params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
 		params.put("intervalTime", "10");
-		given().
-			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			put("/lines/" + id).
-			then().
-			log().all().
-			statusCode(HttpStatus.OK.value());
+
+		HttpMethod.PUT.request("/lines/" + id, params);
 	}
 
 	public List<LineResponse> getLines() {
+		// todo
 		return
 			given().when().
 				get("/lines").
@@ -128,10 +113,7 @@ public class AcceptanceTest {
 	}
 
 	public void deleteLine(Long id) {
-		given().when().
-			delete("/lines/" + id).
-			then().
-			log().all();
+		HttpMethod.DELETE.request("/lines/" + id);
 	}
 
 	public void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -146,49 +128,22 @@ public class AcceptanceTest {
 		params.put("distance", distance.toString());
 		params.put("duration", duration.toString());
 
-		given().
-			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			post("/lines/" + lineId + "/stations").
-			then().
-			log().all().
-			statusCode(HttpStatus.OK.value());
+		HttpMethod.POST.request("/lines/" + lineId + "/stations", params);
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {
-		given().
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			delete("/lines/" + lineId + "/stations/" + stationId).
-			then().
-			log().all().
-			statusCode(HttpStatus.NO_CONTENT.value());
+		HttpMethod.DELETE.request("/lines/" + lineId + "/stations/" + stationId);
 	}
 
 	public WholeSubwayResponse retrieveWholeSubway() {
-		return
-			given().
-				when().
-				get("/lines/detail").
-				then().
-				log().all().
-				extract().as(WholeSubwayResponse.class);
+		return HttpMethod.GET.requestWithBody("/lines/detail", WholeSubwayResponse.class);
 	}
 
 	public PathResponse findPath(String source, String target, String type) {
-		return
-			given().
-				contentType(MediaType.APPLICATION_JSON_VALUE).
-				accept(MediaType.APPLICATION_JSON_VALUE).
-				when().
-				get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-				then().
-				log().all().
-				statusCode(HttpStatus.OK.value()).
-				extract().as(PathResponse.class);
+		String url = "/paths?source=" + source + "&target=" + target + "&type=" + type;
+
+		return HttpMethod.GET
+			.requestWithBody(url, PathResponse.class);
 	}
 
 	/**
@@ -239,26 +194,16 @@ public class AcceptanceTest {
 			40, 3);
 	}
 
-	public int createMember(String email, String name, String password) {
+	public void createMember(String email, String name, String password) {
 		Map<String, String> params = new HashMap<>();
 		params.put("email", email);
 		params.put("name", name);
 		params.put("password", password);
 
-		return given().
-			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			post("/me").
-			then().
-			log().all().
-			statusCode(HttpStatus.NO_CONTENT.value()).
-			extract().statusCode();
+		HttpMethod.POST.request("/me", params);
 	}
 
-	public MemberResponse getMember(String email, TokenResponse tokenResponse
-	) {
+	public MemberResponse getMember(TokenResponse tokenResponse) {
 		return
 			given().
 				header("Authorization",
@@ -273,22 +218,6 @@ public class AcceptanceTest {
 				.extract().as(MemberResponse.class);
 	}
 
-	public void updateMember(MemberResponse memberResponse) {
-		Map<String, String> params = new HashMap<>();
-		params.put("name", "NEW_" + TEST_USER_NAME);
-		params.put("password", "NEW_" + TEST_USER_PASSWORD);
-
-		given().
-			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
-			when().
-			put("/me").
-			then().
-			log().all().
-			statusCode(HttpStatus.OK.value());
-	}
-
 	public void deleteMember(TokenResponse tokenResponse) {
 		given().
 			header("Authorization",
@@ -297,7 +226,7 @@ public class AcceptanceTest {
 			.delete("/me")
 			.then()
 			.log().all()
-			.statusCode(HttpStatus.NO_CONTENT.value());
+			.statusCode(HttpStatus.OK.value());
 	}
 
 	public TokenResponse login(String email, String password) {
@@ -325,8 +254,6 @@ public class AcceptanceTest {
 		params.put("name", name);
 		params.put("password", password);
 
-		given().header("Authorization", "bearer " + accessToken);
-
 		given()
 			.header("Authorization", "bearer " + accessToken)
 			.body(params)
@@ -336,7 +263,7 @@ public class AcceptanceTest {
 			.put("/me")
 			.then()
 			.log().all()
-			.statusCode(HttpStatus.NO_CONTENT.value());
+			.statusCode(HttpStatus.OK.value());
 	}
 }
 

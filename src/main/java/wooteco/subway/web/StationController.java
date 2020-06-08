@@ -18,29 +18,29 @@ import wooteco.subway.service.station.dto.StationResponse;
 
 @RestController
 public class StationController {
-    private final StationService stationService;
+	private final StationService stationService;
 
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
-    }
+	public StationController(StationService stationService) {
+		this.stationService = stationService;
+	}
 
-    @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
-        Station persistStation = stationService.createStation(view.toStation());
+	@PostMapping("/stations")
+	public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
+		Station persistStation = stationService.createStation(view.toStation());
 
-        return ResponseEntity
-            .created(URI.create("/stations/" + persistStation.getId()))
-            .body(StationResponse.of(persistStation));
-    }
+		return ResponseEntity
+			.created(URI.create("/stations/" + persistStation.getId()))
+			.body(StationResponse.of(persistStation));
+	}
 
-    @GetMapping("/stations")
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(StationResponse.listOf(stationService.findStations()));
-    }
+	@GetMapping("/stations")
+	public ResponseEntity<List<StationResponse>> showStations() {
+		return ResponseEntity.ok().body(StationResponse.listOf(stationService.findStations()));
+	}
 
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/stations/{id}")
+	public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+		stationService.deleteStationById(id);
+		return ResponseEntity.ok().build();
+	}
 }

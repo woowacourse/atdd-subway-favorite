@@ -89,7 +89,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.delete("/me/favorites")
 			.then()
 			.log().all()
-			.statusCode(HttpStatus.NO_CONTENT.value());
+			.statusCode(HttpStatus.OK.value());
 	}
 
 	List<FavoriteResponse> getFavorite(TokenResponse token) {

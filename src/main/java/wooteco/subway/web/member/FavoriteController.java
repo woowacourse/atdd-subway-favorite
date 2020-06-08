@@ -48,6 +48,6 @@ public class FavoriteController {
 	public ResponseEntity<Void> deleteFavorite(@LoginMember Member member,
 		@RequestBody FavoriteRequest favoriteRequest) {
 		memberService.deleteFavorite(member, favoriteRequest);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().build();
 	}
 }

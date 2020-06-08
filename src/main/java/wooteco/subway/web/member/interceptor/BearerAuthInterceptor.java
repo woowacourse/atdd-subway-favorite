@@ -26,7 +26,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 		Object handler) {
-		if (isCreateMemberMethod(request) || isLoginMethod(request)) {
+		if (isCreateMemberMethod(request)) {
 			return true;
 		}
 		String token = authExtractor.extract(request, "bearer");
@@ -54,10 +54,6 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 		if (StringUtils.isEmpty(token)) {
 			throw new InvalidAuthenticationException("존재하지 않는 토큰");
 		}
-	}
-
-	private boolean isLoginMethod(final HttpServletRequest request) {
-		return request.getMethod().equals("POST") && request.getRequestURI().equals("/me/login");
 	}
 
 	private boolean isCreateMemberMethod(final HttpServletRequest request) {

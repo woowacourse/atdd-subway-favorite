@@ -97,7 +97,7 @@ public class FavoriteControllerTest {
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
-			.andExpect(status().isNoContent())
+			.andExpect(status().isOk())
 			.andDo(FavoriteDocumentation.deleteFavorite());
 	}
 
