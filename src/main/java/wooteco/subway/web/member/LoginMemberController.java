@@ -11,6 +11,7 @@ import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.LoginResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
+import wooteco.subway.web.member.exception.InvalidPasswordException;
 
 import javax.validation.Valid;
 
@@ -23,7 +24,7 @@ public class LoginMemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest param) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest param) throws InvalidPasswordException {
         String token = memberService.createToken(param);
         return ResponseEntity.ok().body(new LoginResponse(token, "bearer", param.getEmail()));
     }

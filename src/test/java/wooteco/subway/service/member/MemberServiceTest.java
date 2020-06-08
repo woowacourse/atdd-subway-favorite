@@ -48,7 +48,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    void createToken() {
+    void createToken() throws InvalidPasswordException {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_USER_PASSWORD);
@@ -66,6 +66,6 @@ public class MemberServiceTest {
         LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, "Invalid Password");
 
         Assertions.assertThatThrownBy(() -> memberService.createToken(loginRequest))
-            .isInstanceOf(InvalidPasswordException.class);
+                .isInstanceOf(InvalidPasswordException.class);
     }
 }

@@ -28,7 +28,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws InvalidAuthenticationException {
         String email = (String) webRequest.getAttribute("requestMemberEmail", SCOPE_REQUEST);
         try {
             return memberService.findMemberByEmail(email);

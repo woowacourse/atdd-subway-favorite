@@ -32,7 +32,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public String createToken(LoginRequest param) {
+    public String createToken(LoginRequest param) throws InvalidPasswordException {
         Member member = memberRepository.findByEmail(param.getEmail())
                 .orElseThrow(() -> new NotExistMemberDataException(("email = " + param.getEmail())));
 
