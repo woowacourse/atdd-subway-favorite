@@ -13,10 +13,81 @@ endif::[]
 [[resources]]
 = Resources
 
+[[resources-lines]]
+== Line
+
+[[resources-lines-create]]
+=== 노선 추가
+operation::lines/create[snippets='http-request,http-response,request-fields,request-body']
+
+[[resources-lines-getAll]]
+=== 노선 목록 조회
+operation::lines/getAll[snippets='http-request,http-response,response-body']
+
+[[resources-lines-get]]
+=== 노선 조회
+operation::lines/get[snippets='http-request,http-response,response-body']
+
+[[resources-lines-update]]
+=== 노선 수정
+operation::lines/update[snippets='http-request,http-response,request-fields,request-body']
+
+[[resources-lines-delete]]
+=== 노선 삭제
+operation::lines/delete[snippets='http-request,http-response']
+
+[[resources-stations]]
+== Station
+
+[[resources-stations-create]]
+=== 지하철 역 추가
+operation::stations/create[snippets='http-request,http-response,request-fields,request-body']
+
+[[resources-stations-getAll]]
+=== 지하철 역 조회
+operation::stations/getAll[snippets='http-request,http-response,response-body']
+
+[[resources-stations-delete]]
+=== 지하철 역 삭제
+operation::stations/delete[snippets='http-request,http-response']
+
+[[resource-paths]]
+== Path
+
+[[resource-paths-find]]
+=== 경로 조회
+operation::paths/find[snippets='http-request,http-response,response-fields,response-body']
+
 [[resources-members]]
 == Member
 
 [[resources-members-create]]
 === 회원 가입
+operation::members/create[snippets='http-request,http-response,request-fields,request-body']
 
-operation::members/create[snippets='http-request,http-response']
+[[resources-members-get]]
+=== 회원 조회
+operation::members/get[snippets='http-request,http-response,response-fields,response-body']
+
+[[resources-members-update]]
+=== 회원 정보 수정
+operation::members/update[snippets='http-request,http-response,request-fields,request-body']
+
+[[resources-members-delete]]
+=== 회원 삭제
+operation::members/delete[snippets='http-request,http-response']
+
+[[resources-favorites]]
+== Favorite
+
+[[resources-favorites-create]]
+=== 즐겨찾기 추가
+operation::favorites/create[snippets='http-request,http-response,request-fields,request-body']
+
+[[resources-favorites-get]]
+=== 즐겨찾기 조회
+operation::favorites/get[snippets='http-request,http-response,response-fields,response-body']
+
+[[resources-favorites-delete]]
+=== 즐겨찾기 삭제
+operation::favorites/delete[snippets='http-request,http-response']

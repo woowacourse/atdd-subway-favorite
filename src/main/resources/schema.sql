@@ -1,3 +1,9 @@
+drop table if exists station;
+drop table if exists line;
+drop table if exists line_station;
+drop table if exists member;
+drop table if exists favorite;
+
 create table if not exists STATION
 (
     id bigint auto_increment not null,
@@ -38,4 +44,16 @@ create table if not exists MEMBER
     primary key(id)
 );
 
--- // TODO 즐겨찾기 테이블 스키마 추가
+create table if not exists FAVORITE
+(
+    id bigint auto_increment not null,
+    member_id bigint not null,
+    source_station_id bigint not null,
+    target_station_id bigint not null,
+    primary key(id)
+);
+
+alter table station alter column id restart with 1;
+alter table line alter column id restart with 1;
+alter table member alter column id restart with 1;
+alter table favorite alter column id restart with 1;

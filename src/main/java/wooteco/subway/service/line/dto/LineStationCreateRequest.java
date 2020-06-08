@@ -1,12 +1,17 @@
 package wooteco.subway.service.line.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class LineStationCreateRequest {
     private Long preStationId;
+    @NotNull
     private Long stationId;
+    @NotNull
     private int distance;
+    @NotNull
     private int duration;
 
-    public LineStationCreateRequest() {
+    private LineStationCreateRequest() {
     }
 
     public LineStationCreateRequest(Long preStationId, Long stationId, int distance, int duration) {

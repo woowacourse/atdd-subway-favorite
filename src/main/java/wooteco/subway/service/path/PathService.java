@@ -1,87 +1,49 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.line.LineStations;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
+import wooteco.subway.service.line.LineService;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.StationService;
+import wooteco.subway.service.station.dto.StationResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class PathService {
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
-    private GraphService graphService;
+    private final StationService stationService;
+    private final LineService lineService;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, GraphService graphService) {
-        this.stationRepository = stationRepository;
-        this.lineRepository = lineRepository;
-        this.graphService = graphService;
+    public PathService(StationService stationService, LineService lineService) {
+        this.stationService = stationService;
+        this.lineService = lineService;
     }
 
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
-            throw new RuntimeException();
+            throw new DuplicatedStationException();
         }
 
-        List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+        Lines lines = lineService.findLines();
+        Station sourceStation = stationService.findByName(source);
+        Station targetStation = stationService.findByName(target);
 
-        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
-        List<Station> stations = stationRepository.findAllById(path);
+        List<Long> path = PathCalculator.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
 
-        List<LineStation> lineStations = lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
-                .collect(Collectors.toList());
+        LineStations paths = PathCalculator.extractPathLineStation(path, lines.findLineStations());
+        int duration = paths.getTotalDuration();
+        int distance = paths.getTotalDistance();
 
-        List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+        Stations pathStation = paths.findStations(path, stationService.findAllById(path));
 
-        List<Station> pathStation = path.stream()
-                .map(it -> extractStation(it, stations))
-                .collect(Collectors.toList());
-
-        return new PathResponse(StationResponse.listOf(pathStation), duration, distance);
-    }
-
-    private Station extractStation(Long stationId, List<Station> stations) {
-        return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-    }
-
-    private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
-        Long preStationId = null;
-        List<LineStation> paths = new ArrayList<>();
-
-        for (Long stationId : path) {
-            if (preStationId == null) {
-                preStationId = stationId;
-                continue;
-            }
-
-            Long finalPreStationId = preStationId;
-            LineStation lineStation = lineStations.stream()
-                    .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
-                    .findFirst()
-                    .orElseThrow(RuntimeException::new);
-
-            paths.add(lineStation);
-            preStationId = stationId;
-        }
-
-        return paths;
+        return new PathResponse(StationResponse.listFrom(pathStation), duration, distance);
     }
 }

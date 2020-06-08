@@ -7,39 +7,52 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
-import javax.servlet.http.HttpSession;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
+@RequestMapping("/me")
 public class LoginMemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public LoginMemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @PostMapping("/oauth/token")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest param) {
         String token = memberService.createToken(param);
-        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+        return ResponseEntity.ok().body(new TokenResponse(token, "Bearer"));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestParam Map<String, String> paramMap, HttpSession session) {
-        String email = paramMap.get("email");
-        String password = paramMap.get("password");
-        if (!memberService.loginWithForm(email, password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-        }
-
-        session.setAttribute("loginMemberEmail", email);
-
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/login");
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
+    @GetMapping
+    public ResponseEntity<MemberResponse> getMemberOfMineBasic(
+            @LoginMember Member member
+    ) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(
+            @LoginMember Member member,
+            @RequestBody UpdateMemberRequest request) {
+        memberService.updateMember(member.getId(), request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(
+            @LoginMember Member member
+    ) {
+        memberService.deleteMember(member.getId());
+        return ResponseEntity.noContent().build();
     }
 }

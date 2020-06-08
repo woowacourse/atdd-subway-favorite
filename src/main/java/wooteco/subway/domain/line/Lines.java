@@ -1,10 +1,15 @@
 package wooteco.subway.domain.line;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.path.PathType;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Lines {
-    private List<Line> lines;
+    private final List<Line> lines;
 
     public Lines(List<Line> lines) {
         this.lines = lines;
@@ -17,27 +22,27 @@ public class Lines {
     public List<Long> getStationIds() {
         return lines.stream()
                 .flatMap(it -> it.getStations().stream())
-                .map(it -> it.getStationId())
+                .map(LineStation::getStationId)
                 .collect(Collectors.toList());
     }
-//
-//    public LineStations extractLineStationByStationIds(List<Long> stationIds) {
-//        for (Long stationId : stationIds) {
-//            List<LineStation> lineStations = findLineStation(null, stationId);
-//        }
-//        Set<LineStation> lineStations = stationIds.stream()
-//                .map(it -> getLineStationByStationId(it))
-//                .collect(Collectors.toSet());
-//
-//        return new LineStations(lineStations);
-//    }
-//
-//    private LineStation getLineStationByStationId(Long stationId) {
-//        return lines.stream()
-//                .flatMap(it -> it.getStations().stream())
-////                .filter(it -> Objects.nonNull(it.getPreStationId()))
-//                .filter(it -> it.getStationId() == stationId)
-//                .findFirst()
-//                .orElseThrow(RuntimeException::new);
-//    }
+
+    public WeightedMultigraph<Long, DefaultWeightedEdge> addVertexAndEdges(final WeightedMultigraph<Long, DefaultWeightedEdge> graph, PathType type) {
+        lines.stream()
+                .flatMap(it -> it.getStationIds().stream())
+                .forEach(graph::addVertex);
+
+        lines.stream()
+                .flatMap(it -> it.getStations().stream())
+                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), type.findWeightOf(it)));
+
+        return graph;
+    }
+
+    public LineStations findLineStations() {
+        return new LineStations(lines.stream()
+                .flatMap(it -> it.getStations().stream())
+                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .collect(Collectors.toList()));
+    }
 }

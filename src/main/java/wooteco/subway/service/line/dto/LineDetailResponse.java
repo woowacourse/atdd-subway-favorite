@@ -18,7 +18,7 @@ public class LineDetailResponse {
     private LocalDateTime updatedAt;
     private List<StationResponse> stations;
 
-    public LineDetailResponse() {
+    private LineDetailResponse() {
     }
 
     public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
@@ -29,7 +29,7 @@ public class LineDetailResponse {
         this.intervalTime = intervalTime;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.stations = StationResponse.listOf(stations);
+        this.stations = StationResponse.listFrom(stations);
     }
 
     public static LineDetailResponse of(Line line, List<Station> stations) {

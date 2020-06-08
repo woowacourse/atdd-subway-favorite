@@ -2,9 +2,12 @@ package wooteco.subway.service.path;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 
@@ -22,8 +25,6 @@ public class GraphServiceTest {
     private static final String STATION_NAME5 = "양재시민의숲역";
     private static final String STATION_NAME6 = "서울역";
 
-    private GraphService graphService;
-
     private Station station1;
     private Station station2;
     private Station station3;
@@ -36,8 +37,6 @@ public class GraphServiceTest {
 
     @BeforeEach
     void setUp() {
-        graphService = new GraphService();
-
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
         station3 = new Station(3L, STATION_NAME3);
@@ -56,9 +55,10 @@ public class GraphServiceTest {
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
     }
 
+    @DisplayName("경로 찾기")
     @Test
     void findPath() {
-        List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(), station5.getId(), PathType.DISTANCE);
+        List<Long> stationIds = PathCalculator.findPath(new Lines(Lists.list(line1, line2)), station3.getId(), station5.getId(), PathType.DISTANCE);
 
         assertThat(stationIds).hasSize(5);
         assertThat(stationIds.get(0)).isEqualTo(3L);
@@ -68,10 +68,11 @@ public class GraphServiceTest {
         assertThat(stationIds.get(4)).isEqualTo(5L);
     }
 
+    @DisplayName("존재하지 않는 경로일 경우 예외 발생")
     @Test
     void findPathWithNoPath() {
-        assertThrows(IllegalArgumentException.class, () ->
-                graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
+        assertThrows(NotExistedPathException.class, () ->
+                PathCalculator.findPath(new Lines(Lists.list(line1, line2)), station3.getId(), station6.getId(), PathType.DISTANCE)
         );
 
     }
@@ -80,8 +81,8 @@ public class GraphServiceTest {
     void findPathWithDisconnected() {
         line2.removeLineStationById(station1.getId());
 
-        assertThrows(IllegalArgumentException.class, () ->
-                graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
+        assertThrows(NotExistedPathException.class, () ->
+                PathCalculator.findPath(new Lines(Lists.list(line1, line2)), station3.getId(), station6.getId(), PathType.DISTANCE)
         );
     }
 }

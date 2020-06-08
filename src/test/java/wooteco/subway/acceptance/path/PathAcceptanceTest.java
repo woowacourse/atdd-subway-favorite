@@ -3,7 +3,9 @@ package wooteco.subway.acceptance.path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.AcceptanceTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -24,12 +26,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void findPathByDistance() {
         PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE");
         List<StationResponse> path = pathResponse.getStations();
-        assertThat(path).hasSize(5);
+        assertThat(path).hasSize(4);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
-        assertThat(path.get(1).getName()).isEqualTo(STATION_NAME_YEOKSAM);
-        assertThat(path.get(2).getName()).isEqualTo(STATION_NAME_SEOLLEUNG);
-        assertThat(path.get(3).getName()).isEqualTo(STATION_NAME_HANTI);
-        assertThat(path.get(4).getName()).isEqualTo(STATION_NAME_DOGOK);
+        assertThat(path.get(1).getName()).isEqualTo(STATION_NAME_YANGJAE);
+        assertThat(path.get(2).getName()).isEqualTo(STATION_NAME_MAEBONG);
+        assertThat(path.get(3).getName()).isEqualTo(STATION_NAME_DOGOK);
     }
 
     @DisplayName("소요시간 기준으로 경로 조회")
@@ -42,5 +43,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.get(1).getName()).isEqualTo(STATION_NAME_YANGJAE);
         assertThat(path.get(2).getName()).isEqualTo(STATION_NAME_MAEBONG);
         assertThat(path.get(3).getName()).isEqualTo(STATION_NAME_DOGOK);
+    }
+
+    public PathResponse findPath(String source, String target, String type) {
+        // @formatter:off
+        return
+                given().
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                        get("/paths?source=" + source + "&target=" + target + "&type=" + type).
+                then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(PathResponse.class);
+        // @formatter:on
     }
 }

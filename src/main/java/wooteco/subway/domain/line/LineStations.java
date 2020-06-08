@@ -1,20 +1,27 @@
 package wooteco.subway.domain.line;
 
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LineStations {
     private Set<LineStation> stations;
+
+    private LineStations() {
+    }
 
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;
     }
 
-    public static LineStations empty() {
-        return new LineStations(new HashSet<>());
+    public LineStations(final List<LineStation> stations) {
+        this.stations = new HashSet<>(stations);
     }
 
-    public Set<LineStation> getStations() {
-        return stations;
+    public static LineStations empty() {
+        return new LineStations(new HashSet<>());
     }
 
     public void add(LineStation targetLineStation) {
@@ -22,14 +29,14 @@ public class LineStations {
         stations.add(targetLineStation);
     }
 
-    private void remove(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
-        stations.remove(targetLineStation);
-    }
-
     public void removeById(Long targetStationId) {
         extractByStationId(targetStationId)
                 .ifPresent(this::remove);
+    }
+
+    private void remove(LineStation targetLineStation) {
+        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
+        stations.remove(targetLineStation);
     }
 
     public List<Long> getStationIds() {
@@ -67,10 +74,34 @@ public class LineStations {
     }
 
     public int getTotalDistance() {
-        return stations.stream().mapToInt(it -> it.getDistance()).sum();
+        return stations.stream().mapToInt(LineStation::getDistance).sum();
     }
 
     public int getTotalDuration() {
-        return stations.stream().mapToInt(it -> it.getDuration()).sum();
+        return stations.stream().mapToInt(LineStation::getDuration).sum();
+    }
+
+    public LineStation findLineStation(final Long stationId, final Long finalPreStationId) {
+        return stations.stream()
+                .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public Stations findStations(final List<Long> path, final List<Station> stations) {
+        return new Stations(path.stream()
+                .map(it -> extractStation(it, stations))
+                .collect(Collectors.toList()));
+    }
+
+    private Station extractStation(Long stationId, List<Station> stations) {
+        return stations.stream()
+                .filter(it -> it.getId().equals(stationId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public Set<LineStation> getStations() {
+        return stations;
     }
 }

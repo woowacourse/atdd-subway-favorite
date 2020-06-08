@@ -8,11 +8,23 @@ public class LineStation {
     private int distance;
     private int duration;
 
+    protected LineStation() {
+    }
+
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;
         this.stationId = stationId;
         this.distance = distance;
         this.duration = duration;
+    }
+
+    public void updatePreLineStation(Long preStationId) {
+        this.preStationId = preStationId;
+    }
+
+    public boolean isLineStationOf(Long preStationId, Long stationId) {
+        return this.preStationId == preStationId && this.stationId == stationId
+                || this.preStationId == stationId && this.stationId == preStationId;
     }
 
     public Long getPreStationId() {
@@ -29,15 +41,6 @@ public class LineStation {
 
     public int getDuration() {
         return duration;
-    }
-
-    public void updatePreLineStation(Long preStationId) {
-        this.preStationId = preStationId;
-    }
-
-    public boolean isLineStationOf(Long preStationId, Long stationId) {
-        return this.preStationId == preStationId && this.stationId == stationId
-                || this.preStationId == stationId && this.stationId == preStationId;
     }
 
     @Override

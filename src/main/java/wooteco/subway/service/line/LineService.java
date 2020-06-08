@@ -1,20 +1,21 @@
 package wooteco.subway.service.line;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
-
-import java.util.List;
 
 @Service
+@Transactional
 public class LineService {
-    private LineStationService lineStationService;
-    private LineRepository lineRepository;
+    private final LineStationService lineStationService;
+    private final LineRepository lineRepository;
 
     public LineService(LineStationService lineStationService, LineRepository lineRepository) {
         this.lineStationService = lineStationService;
@@ -25,12 +26,8 @@ public class LineService {
         return lineRepository.save(line);
     }
 
-    public List<Line> findLines() {
-        return lineRepository.findAll();
-    }
-
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    public Lines findLines() {
+        return new Lines(lineRepository.findAll());
     }
 
     public void updateLine(Long id, LineRequest request) {
@@ -57,7 +54,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public LineDetailResponse retrieveLine(Long id) {
+    public LineDetailResponse getLine(Long id) {
         return lineStationService.findLineWithStationsById(id);
     }
 
