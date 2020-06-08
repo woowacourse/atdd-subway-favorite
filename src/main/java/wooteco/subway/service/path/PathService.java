@@ -1,14 +1,15 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.exception.WrongStationException;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +30,12 @@ public class PathService {
 
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
-            throw new RuntimeException();
+            throw new WrongStationException("SAME_STATION");
         }
 
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+        Station sourceStation = stationRepository.findByName(source).orElseThrow(WrongStationException::new);
+        Station targetStation = stationRepository.findByName(target).orElseThrow(WrongStationException::new);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);
@@ -59,7 +60,7 @@ public class PathService {
         return stations.stream()
                 .filter(it -> it.getId() == stationId)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(WrongStationException::new);
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
@@ -76,7 +77,7 @@ public class PathService {
             LineStation lineStation = lineStations.stream()
                     .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
                     .findFirst()
-                    .orElseThrow(RuntimeException::new);
+                    .orElseThrow(WrongStationException::new);
 
             paths.add(lineStation);
             preStationId = stationId;

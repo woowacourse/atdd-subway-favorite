@@ -3,6 +3,7 @@ package wooteco.subway.infra;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import wooteco.subway.web.member.InvalidAuthenticationException;
 
 import java.util.Base64;
 import java.util.Date;
@@ -33,7 +34,11 @@ public class JwtTokenProvider {
     }
 
     public String getSubject(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        try {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new InvalidAuthenticationException("ILLEGAL_ACCESS");
+        }
     }
 
     public boolean validateToken(String token) {
