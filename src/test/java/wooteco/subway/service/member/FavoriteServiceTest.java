@@ -6,7 +6,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,9 +47,9 @@ public class FavoriteServiceTest {
         // given
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         Station source = new Station(1L, "잠실역");
-        Station target = new Station(3L, "잠실역");
-        given(stationRepository.findById(source.getId())).willReturn(Optional.of(source));
-        given(stationRepository.findById(target.getId())).willReturn(Optional.of(target));
+        Station target = new Station(3L, "석촌역");
+        given(stationRepository.findAllById(Arrays.asList(1L, 3L)))
+                .willReturn(Arrays.asList(source, target));
         given(memberRepository.save(any())).willReturn(member);
 
         // when
@@ -70,16 +69,17 @@ public class FavoriteServiceTest {
         Station target = new Station(3L, "석촌역");
         Station target2 = new Station(4L, "선릉역");
 
-        given(stationRepository.findById(source.getId())).willReturn(Optional.of(source));
-        given(stationRepository.findById(source2.getId())).willReturn(Optional.of(source2));
-        given(stationRepository.findById(target.getId())).willReturn(Optional.of(target));
-        given(stationRepository.findById(target2.getId())).willReturn(Optional.of(target2));
+        given(stationRepository.findAllById(Arrays.asList(1L, 3L)))
+                .willReturn(Arrays.asList(source, target));
+        given(stationRepository.findAllById(Arrays.asList(2L, 4L)))
+                .willReturn(Arrays.asList(source2, target2));
         given(memberRepository.save(any())).willReturn(member);
-        given(stationRepository.findAllById(anyList())).willReturn(
-                Arrays.asList(source, target, source2, target2));
 
         favoriteService.addFavorite(member, new FavoriteRequest(source.getId(), target.getId()));
         favoriteService.addFavorite(member, new FavoriteRequest(source2.getId(), target2.getId()));
+
+        when(stationRepository.findAllById(anyList()))
+                .thenReturn(Arrays.asList(source, target, source2, target2));
 
         // when
         List<FavoriteResponse> favorites = favoriteService.getAllFavorites(member);
@@ -93,7 +93,7 @@ public class FavoriteServiceTest {
     void deleteFavorite() {
         // given
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        member.addFavorite(new Favorite(1L, 1L, 2L));
+        member.getFavorites().addFavorite(new Favorite(1L, 1L, 2L));
 
         // when
         favoriteService.removeFavoriteById(member, 1L);

@@ -1,5 +1,6 @@
 package wooteco.subway.service.member;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
@@ -26,11 +28,9 @@ public class FavoriteService {
     }
 
     public void addFavorite(final Member member, final FavoriteRequest request) {
-        Station source = stationRepository.findById(request.getSource())
-                .orElseThrow(NoSuchElementException::new);
-        Station target = stationRepository.findById(request.getTarget())
-                .orElseThrow(NoSuchElementException::new);
-        member.addFavorite(new Favorite(source.getId(), target.getId()));
+        List<Station> stations = stationRepository.findAllById(
+                Arrays.asList(request.getSource(), request.getTarget()));
+        member.addFavorite(new Stations(stations));
         memberRepository.save(member);
     }
 

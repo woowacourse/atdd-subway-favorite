@@ -1,7 +1,7 @@
 package wooteco.subway.domain.station;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Stations {
     private List<Station> stations;
@@ -14,10 +14,9 @@ public class Stations {
         return stations;
     }
 
-    public Station extractStationById(Long stationId) {
+    public List<Long> getStationIds() {
         return stations.stream()
-            .filter(it -> Objects.equals(it, stationId))
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
+                .map(Station::getId)
+                .collect(Collectors.toList());
     }
 }

@@ -1,11 +1,14 @@
 package wooteco.subway.domain.member;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
+
+import wooteco.subway.domain.station.Stations;
 
 public class Member {
     @Id
@@ -32,8 +35,9 @@ public class Member {
         this.password = password;
     }
 
-    public void addFavorite(final Favorite favorite) {
-        favorites.addFavorite(favorite);
+    public void addFavorite(Stations stations) {
+        List<Long> ids = stations.getStationIds();
+        favorites.addFavorite(new Favorite(ids.get(0), ids.get(1)));
     }
 
     public void removeFavorite(final Long id) {
@@ -51,15 +55,6 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
-    }
-
-    public boolean isAuthenticated(Long id) {
-        return Objects.equals(this.id, id);
-    }
-
-    public boolean isAuthenticated(final String email) {
-        return Objects.equals(this.email, email);
-
     }
 
     public Long getId() {
@@ -90,9 +85,9 @@ public class Member {
             return false;
         final Member member = (Member)o;
         return Objects.equals(id, member.id) &&
-            Objects.equals(email, member.email) &&
-            Objects.equals(name, member.name) &&
-            Objects.equals(password, member.password);
+                Objects.equals(email, member.email) &&
+                Objects.equals(name, member.name) &&
+                Objects.equals(password, member.password);
     }
 
     @Override
