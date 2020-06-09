@@ -35,6 +35,7 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.FavoriteService;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
@@ -44,8 +45,11 @@ import wooteco.subway.service.member.dto.FavoriteResponse;
 @Import({AuthorizationExtractor.class, JwtTokenProvider.class})
 public class FavoriteControllerTest {
     @MockBean
-    protected MemberService memberService;
+    protected FavoriteService favoriteService;
 
+    @MockBean
+    protected MemberService memberService;
+    
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
@@ -72,7 +76,6 @@ public class FavoriteControllerTest {
         given(authorizationExtractor.extract(any(), anyString())).willReturn(TEST_USER_TOKEN);
         given(jwtTokenProvider.validateToken(anyString())).willReturn(true);
         given(jwtTokenProvider.getSubject(anyString())).willReturn(TEST_USER_EMAIL);
-        given(memberService.findMemberByEmail(anyString())).willReturn(member);
     }
 
     @DisplayName("즐겨찾기 추가 테스트")
@@ -99,7 +102,7 @@ public class FavoriteControllerTest {
             new FavoriteResponse(favorite, station1, station2),
             new FavoriteResponse(favorite, station2, station1)
         );
-        given(memberService.getAllFavorites(any())).willReturn(favorites);
+        given(favoriteService.getAllFavorites(any())).willReturn(favorites);
 
         mockMvc.perform(get("/favorites")
             .header(AUTHORIZATION, TEST_USER_TOKEN)
