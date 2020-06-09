@@ -1,18 +1,11 @@
 package wooteco.subway.service.favorite;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
@@ -21,54 +14,58 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
-@ExtendWith(MockitoExtension.class)
 public class FavoriteServiceTest {
 
-    private static final long SAMSEOK = 1L;
-    private static final long DONGSAN = 2L;
-    private static final long JAMSIL = 3L;
-    private static final long SEOKCHONGOBUN = 4L;
+    private static final String SAMSEOK = "삼척";
+    private static final String DONGSAN = "동산";
+    private static final String JAMSIL = "잠실";
+    private static final String SEOKCHONGOBUN = "석촌고분";
+
     private FavoriteService favoriteService;
 
-    @Mock
-    private FavoriteRepository favoriteRepository;
-
-    @Mock
     private StationRepository stationRepository;
 
     @BeforeEach
     public void setUp() {
+        FavoriteRepository favoriteRepository = new InMemoryFavorite();
+        stationRepository = new InMemoryStation();
         favoriteService = new FavoriteService(stationRepository, favoriteRepository);
     }
 
     @Test
     public void createFavoriteTest() {
-        FavoriteRequest favoriteRequest = new FavoriteRequest("삼척", "동산");
-        Favorite favorite = Favorite.of(1L, SAMSEOK, DONGSAN);
+        Station samchuck = new Station(SAMSEOK);
+        Station dongsan = new Station(DONGSAN);
 
-        when(favoriteRepository.save(any())).thenReturn(favorite);
-        when(stationRepository.findByName("삼척")).thenReturn(Optional.of(new Station(1L, "삼척")));
-        when(stationRepository.findByName("동산")).thenReturn(Optional.of(new Station(2L, "동산")));
+        stationRepository.save(samchuck);
+        stationRepository.save(dongsan);
+
+        FavoriteRequest favoriteRequest = new FavoriteRequest(SAMSEOK, DONGSAN);
 
         Favorite persistFavorite = favoriteService.createFavorite(1L, favoriteRequest);
 
-        assertThat(persistFavorite).isEqualTo(favorite);
+        assertThat(persistFavorite).isInstanceOf(Favorite.class);
+        assertThat(persistFavorite.getId()).isEqualTo(1L);
+        assertThat(persistFavorite.getMemberId()).isEqualTo(1L);
+        assertThat(persistFavorite.getSourceId()).isEqualTo(1L);
+        assertThat(persistFavorite.getTargetId()).isEqualTo(2L);
     }
 
     @Test
     public void getFavoriteResponseTest() {
-        Favorite favorite = Favorite.of(1L, JAMSIL, SEOKCHONGOBUN);
-        Station sourceStation = new Station(1L, "잠실");
-        Station targetStation = new Station(2L, "석촌고분");
+        Station sourceStation = new Station(1L, JAMSIL);
+        Station targetStation = new Station(2L, SEOKCHONGOBUN);
 
-        when(favoriteRepository.findByMemberId(any())).thenReturn(Collections.singletonList(favorite));
-        when(stationRepository.findById(3L)).thenReturn(Optional.of(sourceStation));
-        when(stationRepository.findById(4L)).thenReturn(Optional.of(targetStation));
+        stationRepository.save(sourceStation);
+        stationRepository.save(targetStation);
+
+        FavoriteRequest favoriteRequest = new FavoriteRequest(JAMSIL, SEOKCHONGOBUN);
+        favoriteService.createFavorite(1L, favoriteRequest);
 
         List<FavoriteResponse> favorites = favoriteService.getFavoriteResponseByMemberId(1L);
 
         assertThat(favorites).hasSize(1);
-        assertThat(favorites.get(0).getSource()).isEqualTo("잠실");
-        assertThat(favorites.get(0).getTarget()).isEqualTo("석촌고분");
+        assertThat(favorites.get(0).getSource()).isEqualTo(JAMSIL);
+        assertThat(favorites.get(0).getTarget()).isEqualTo(SEOKCHONGOBUN);
     }
 }
