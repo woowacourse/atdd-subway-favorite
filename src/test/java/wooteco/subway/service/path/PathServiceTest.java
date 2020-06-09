@@ -49,7 +49,6 @@ public class PathServiceTest {
     private Station station3;
     private Station station4;
     private Station station5;
-    private Station station6;
 
     private Line line1;
     private Line line2;
@@ -63,7 +62,6 @@ public class PathServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
         station5 = new Station(5L, STATION_NAME5);
-        station6 = new Station(6L, STATION_NAME6);
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 10, 10));
