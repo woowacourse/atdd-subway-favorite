@@ -19,4 +19,8 @@ public class Stations {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
+
+    public String getNameByIndex(int index) {
+        return stations.get(index).getName();
+    }
 }

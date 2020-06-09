@@ -31,7 +31,7 @@ public class FavoriteController {
 
     @GetMapping()
     public ResponseEntity<FavoritesResponse> getFavorite(@LoginMember Member member) {
-        FavoritesResponse favoritesResponse = favoriteService.findAllByMemberId(member.getId());
+        FavoritesResponse favoritesResponse = favoriteService.findAllByMemberId(member);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(favoritesResponse);
     }

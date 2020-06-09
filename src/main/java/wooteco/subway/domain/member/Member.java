@@ -2,6 +2,10 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
+import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.Favorites;
+import wooteco.subway.domain.station.Station;
 
 public class Member {
     @Id
@@ -9,6 +13,8 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    @Embedded.Nullable
+    private Favorites favorites;
 
     public Member() {
     }
@@ -17,6 +23,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = new Favorites();
     }
 
     public Member(Long id, String email, String name, String password) {
@@ -24,6 +31,7 @@ public class Member {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = new Favorites();
     }
 
     public void update(String name, String password) {
@@ -39,8 +47,18 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public boolean isNotEqualEmail(String email) {
-        return this.email.equals(email) == false;
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
+
+    public void removeFavoriteById(Long id) {
+        Favorite favorite = favorites.findById(id);
+
+        favorites.remove(favorite);
+    }
+
+    public Favorite findFavoriteBySourceAndTarget(Station source, Station target) {
+        return favorites.findFavoriteBySourceAndTarget(source, target);
     }
 
     public Long getId() {
@@ -57,6 +75,10 @@ public class Member {
 
     public String getPassword() {
         return password;
+    }
+
+    public Favorites getFavorites() {
+        return favorites;
     }
 
     @Override

@@ -1,19 +1,18 @@
 package wooteco.subway.domain.member;
 
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.favorite.Favorite;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.DummyTestUserInfo.*;
 
 class MemberTest {
     @Test
-    void isNotEqualFailTest() {
-        Member member = new Member("ramen@gmail.com", "a", "a");
-        assertThat(member.isNotEqualEmail("ramen@gmail.com")).isFalse();
+    void addFavorite() {
+        Member member = new Member(EMAIL, NAME, PASSWORD);
+        member.addFavorite(new Favorite(1L, 2L));
+        assertThat(member.getFavorites().size()).isEqualTo(1);
     }
 
-    @Test
-    void isNotEqualSuccessTest() {
-        Member member = new Member("ramen@gmail.com", "a", "a");
-        assertThat(member.isNotEqualEmail("ra@gmail.com")).isTrue();
-    }
+
 }

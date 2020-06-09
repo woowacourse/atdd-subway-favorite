@@ -132,7 +132,6 @@ public class FavoriteControllerIntegrationTest {
         favoriteService.createFavorite(member, favorite1);
         favoriteService.createFavorite(member, favorite2);
 
-
         String token = jwtTokenProvider.createToken(member.getEmail());
         String uri = "/auth/favorites";
 
@@ -148,6 +147,7 @@ public class FavoriteControllerIntegrationTest {
         // then
         FavoritesResponse favoritesResponse =
                 OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), FavoritesResponse.class);
+
         assertThat(favoritesResponse.getFavoriteResponses()).hasSize(2);
     }
 

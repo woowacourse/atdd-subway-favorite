@@ -7,8 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.CreateFavoriteRequest;
@@ -23,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class FavoriteServiceTest {
     @Mock
-    FavoriteRepository favoriteRepository;
+    MemberRepository memberRepository;
 
     @Mock
     StationRepository stationRepository;
@@ -32,7 +32,7 @@ public class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(favoriteRepository, stationRepository);
+        favoriteService = new FavoriteService(memberRepository, stationRepository);
     }
 
     @DisplayName("즐겨 찾기 생성")
@@ -43,9 +43,9 @@ public class FavoriteServiceTest {
         Long sourceId = 1L;
         Long targetId = 2L;
         Long memberId = 1L;
-        given(favoriteRepository.save(any())).willReturn(new Favorite(memberId, sourceId, targetId));
-        Member member = new Member(1L, "slowbro@gmail.com", "slowbro", "1234");
-
+        Member member = new Member(memberId, "slowbro@gmail.com", "slowbro", "1234");
+        member.addFavorite(new Favorite(memberId, sourceId, targetId));
+        given(memberRepository.save(any())).willReturn(member);
         given(stationRepository.findByName(sourceName)).willReturn(Optional.of(new Station(1L, sourceName)));
         given(stationRepository.findByName(targetName)).willReturn(Optional.of(new Station(2L, targetName)));
 

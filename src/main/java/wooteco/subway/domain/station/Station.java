@@ -4,6 +4,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Station {
     @Id
@@ -24,6 +25,10 @@ public class Station {
         this.name = name;
     }
 
+    public boolean isSameId(Long targetId) {
+        return Objects.equals(id, targetId);
+    }
+
     public Long getId() {
         return id;
     }
@@ -34,5 +39,14 @@ public class Station {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
