@@ -14,9 +14,55 @@ endif::[]
 = Resources
 
 [[resources-members]]
-== Member
+== 회원 관리
 
 [[resources-members-create]]
-=== 회원 가입
+=== 회원 추가
+operation::members/create[snippets='request-fields,http-request,response-headers,http-response']
 
-operation::members/create[snippets='http-request,http-response']
+[[resources-members-get]]
+=== 회원 조회
+operation::members/get[snippets='path-parameters,http-request,http-response']
+
+[[resources-members-update]]
+=== 회원 수정
+operation::members/update[snippets='request-fields,http-request,http-response']
+
+[[resources-members-delete]]
+=== 회원 삭제
+operation::members/delete[snippets='path-parameters,http-request,http-response']
+
+[[resources-me]]
+== 본인의 정보 관리
+
+[[resources-me-login]]
+=== 로그인
+operation::me/login[snippets='request-fields,http-request,http-response']
+
+[[resources-me-get]]
+=== 본인의 정보 가져오기
+operation::me/get[snippets='request-headers,http-request,response-fields,http-response']
+
+[[resources-me-update]]
+=== 본인의 정보 수정
+operation::me/update[snippets='request-headers,request-fields,http-request,http-response']
+
+[[resources-me-delete]]
+=== 본인의 정보 삭제
+operation::me/delete[snippets='request-headers,http-request,http-response']
+
+[[resources-me-favorites]]
+== 본인의 즐겨찾기 관리
+
+[[resources-me-favorites-get]]
+=== 본인의 즐겨찾기 가져오기
+operation::me/favorites/get[snippets='request-headers,http-request,response-fields,http-response']
+
+[[resources-me-favorites-create]]
+=== 본인의 즐겨찾기 추가
+operation::me/favorites/create[snippets='request-headers,request-fields,http-request,http-response']
+
+[[resources-me-favorites-delete]]
+=== 본인의 즐겨찾기 삭제
+operation::me/favorites/delete[snippets='request-headers,path-parameters,http-request,http-response']
+

@@ -11,10 +11,10 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import java.net.URI;
 
 @RestController
-public class MemberController {
+public class AdminMemberController {
     private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public AdminMemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -32,15 +32,21 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
+    @GetMapping("/members/{id}")
+    public ResponseEntity<MemberResponse> getMemberById(@PathVariable Long id) {
+        Member member = memberService.findMemberById(id);
+        return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
+
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+        memberService.updateMemberById(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+        memberService.deleteMemberById(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -7,9 +7,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
-
-import javax.servlet.http.HttpSession;
-import java.util.Map;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @RestController
 public class LoginMemberController {
@@ -25,21 +23,20 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestParam Map<String, String> paramMap, HttpSession session) {
-        String email = paramMap.get("email");
-        String password = paramMap.get("password");
-        if (!memberService.loginWithForm(email, password)) {
-            throw new InvalidAuthenticationException("올바르지 않은 이메일과 비밀번호 입력");
-        }
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> getOwnMember(@LoginMember Member member) {
+        return ResponseEntity.ok().body(MemberResponse.of(member));
+    }
 
-        session.setAttribute("loginMemberEmail", email);
-
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateOwnMember(@LoginMember Member member, @RequestBody UpdateMemberRequest request) {
+        memberService.updateMember(member, request);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping({"/me/basic", "/me/session", "/me/bearer"})
-    public ResponseEntity<MemberResponse> getMemberOfMineBasic(@LoginMember Member member) {
-        return ResponseEntity.ok().body(MemberResponse.of(member));
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteOwnMember(@LoginMember Member member) {
+        memberService.deleteMember(member);
+        return ResponseEntity.noContent().build();
     }
 }

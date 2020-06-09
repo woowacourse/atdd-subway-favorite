@@ -8,13 +8,17 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
+import javax.print.attribute.standard.Media;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -40,6 +44,9 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+
+    public static final String TEST_TOKEN = "yJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJod2FuZ2hlMTU5QG5hdmVyLmNvbSIsImlhdCI6MTU5MDQ5NTE4NSwiZXhwIjoxNTkwNDk4Nzg1fQ.__z-VmNMNY-GfzZt0O381h-48ml355qqxkHY68d8cfI";
+
 
     @LocalServerPort
     public int port;
@@ -301,5 +308,120 @@ public class AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
-}
 
+    protected TokenResponse login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post("/oauth/token").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(TokenResponse.class);
+
+    }
+
+    public MemberResponse getOwnMember(TokenResponse tokenResponse) {
+        return
+                given().
+                        auth().oauth2(tokenResponse.getAccessToken()).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/me").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(MemberResponse.class);
+    }
+
+    public void updateOwnMember(TokenResponse tokenResponse, UpdateMemberRequest request) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", request.getName());
+        params.put("password", request.getPassword());
+
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public void deleteOwnMember(TokenResponse tokenResponse) {
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                delete("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public void verifyEmpty(TokenResponse tokenResponse) {
+        given().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public void addFavorite(TokenResponse token, String sourceStationName, String targetStationName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("sourceStationName", sourceStationName);
+        params.put("targetStationName", targetStationName);
+
+        given().
+                auth().oauth2(token.getAccessToken()).
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+        when().
+                post("/me/favorites").
+        then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public List<FavoriteResponse> getOwnFavorites(TokenResponse token) {
+        return
+                given().
+                        auth().oauth2(token.getAccessToken()).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        get("/me/favorites").
+                        then().
+                        log().all().
+                        extract().
+                        jsonPath().
+                        getList(".", FavoriteResponse.class);
+    }
+
+    public void deleteFavorite(TokenResponse token, long favoriteId) {
+        given().
+                auth().oauth2(token.getAccessToken()).
+                when().
+                delete("/me/favorites/" + favoriteId).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+}

@@ -2,10 +2,10 @@ package wooteco.subway.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.StationCreateRequest;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.domain.station.Station;
 
 import java.net.URI;
 import java.util.List;
@@ -30,6 +30,12 @@ public class StationController {
     @GetMapping("/stations")
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(StationResponse.listOf(stationService.findStations()));
+    }
+
+    @GetMapping("/stations/{id}")
+    public ResponseEntity<StationResponse> getStation(@PathVariable Long id) {
+        Station station = stationService.findStationById(id);
+        return ResponseEntity.ok().body(station.toStationResponse());
     }
 
     @DeleteMapping("/stations/{id}")
