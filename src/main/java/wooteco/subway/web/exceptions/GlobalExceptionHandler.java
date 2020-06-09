@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleDefaultException(Exception exception){
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception);
+        return ResponseEntity.status(errorResponse.getStatusCode()).body(errorResponse);
+    }
+
     @ExceptionHandler(InvalidAuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleInvalidAuthentication(InvalidAuthenticationException exception) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), exception);
