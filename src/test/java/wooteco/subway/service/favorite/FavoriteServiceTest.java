@@ -1,101 +1,71 @@
 package wooteco.subway.service.favorite;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Collections;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.jdbc.Sql;
 
-import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.domain.favorite.FavoriteRepository;
-import wooteco.subway.domain.member.Member;
-import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.exception.DuplicateFavoriteException;
+import wooteco.subway.service.line.LineStationService;
+import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.station.StationService;
 
-@ExtendWith(MockitoExtension.class)
+@DataJdbcTest
+@Import(value = {FavoriteService.class, MemberService.class, JwtTokenProvider.class, StationService.class, LineStationService.class})
+@Sql("/truncate.sql")
 class FavoriteServiceTest {
-    @Mock
-    private MemberRepository memberRepository;
 
-    @Mock
-    private StationRepository stationRepository;
-
-    @Mock
-    private FavoriteRepository favoriteRepository;
-
+    @Autowired
     private FavoriteService favoriteService;
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private StationService stationService;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    private FavoriteRequest favoriteRequest;
+    private Long memberId;
 
     @BeforeEach
-    private void setUp() {
-        favoriteService = new FavoriteService(memberRepository, stationRepository, favoriteRepository);
+    void setUp() {
+        stationService.createStation(new Station(null, "잠실"));
+        stationService.createStation(new Station(null, "강남"));
+        favoriteRequest = new FavoriteRequest("잠실", "강남");
+        MemberResponse member = memberService.createMember(new MemberRequest("test@test.com", "test", "test"));
+        memberId = member.getId();
     }
 
     @Test
     void createWhenValidInput() {
-        FavoriteRequest favoriteRequest = new FavoriteRequest("잠실", "강남");
-        Favorite favorite = new Favorite(1L, 1L, 1L,
-                2L);
+        favoriteService.create(memberId, favoriteRequest);
 
-        when(stationRepository.findByName(favoriteRequest.getDeparture()))
-                .thenReturn(Optional.of(new Station("잠실")));
-        when(stationRepository.findByName(favoriteRequest.getArrival()))
-                .thenReturn(Optional.of(new Station("강남")));
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member()));
-        when(favoriteRepository.findAllByMemberId(1L))
-                .thenReturn(Collections.emptyList());
-        when(favoriteRepository.save(any())).thenReturn(favorite);
-
-        favoriteService.create(1L, favoriteRequest);
-
-        verify(favoriteRepository).save(any());
+        assertThat(favoriteService.findAll(memberId)).isNotEmpty();
     }
 
     @Test
     void createWhenDuplicatedInput() {
-        Long duplicatedMemberId = 1L;
-        FavoriteRequest duplicatedFavoriteRequest = new FavoriteRequest("잠실", "강남");
+        favoriteService.create(memberId, favoriteRequest);
 
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member("a@a", "a", "a")));
-        when(stationRepository.findByName(duplicatedFavoriteRequest.getDeparture()))
-                .thenReturn(Optional.of(new Station(1L, duplicatedFavoriteRequest.getDeparture())));
-        when(stationRepository.findByName(duplicatedFavoriteRequest.getArrival()))
-                .thenReturn(Optional.of(new Station(2L, duplicatedFavoriteRequest.getArrival())));
-        when(favoriteRepository.findAllByMemberId(duplicatedMemberId))
-                .thenReturn(Collections.singletonList(new Favorite(duplicatedMemberId,
-                        1L, 2L)));
-
-        assertThatThrownBy(() -> favoriteService.create(duplicatedMemberId, duplicatedFavoriteRequest))
+        assertThatThrownBy(() -> favoriteService.create(memberId, favoriteRequest))
                 .isInstanceOf(DuplicateFavoriteException.class);
     }
 
     @Test
     void deleteTest() {
-        Long memberId = 1L;
-        String jamSil = "잠실";
-        String gangNam = "강남";
-        FavoriteRequest favoriteRequest = new FavoriteRequest(jamSil, gangNam);
-
-        when(stationRepository.findByName(jamSil)).thenReturn(Optional.of(new Station(1L, jamSil)));
-        when(stationRepository.findByName(gangNam)).thenReturn(Optional.of(new Station(2L, gangNam)));
-
-        when(favoriteRepository.findByMemberIdAndDepartureStationIdAndArrivalStationId(memberId,
-                1L, 2L))
-                .thenReturn(Optional.of(
-                        new Favorite(memberId, 1L, 2L)));
+        favoriteService.create(memberId, favoriteRequest);
 
         favoriteService.delete(memberId, favoriteRequest);
-
-        verify(favoriteRepository).delete(any());
+        assertThat(favoriteService.findAll(memberId)).isEmpty();
     }
 }
 
