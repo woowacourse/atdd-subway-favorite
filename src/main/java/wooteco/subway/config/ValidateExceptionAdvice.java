@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,19 +32,12 @@ public class ValidateExceptionAdvice {
 	@ExceptionHandler(InvalidAuthenticationException.class)
 	public ResponseEntity<String> handleInvalidAuthenticationException(InvalidAuthenticationException e) {
 		return ResponseEntity
-			.badRequest()
+			.status(HttpStatus.UNAUTHORIZED)
 			.body(e.getMessage());
 	}
 
-	@ExceptionHandler(InvalidMemberException.class)
-	public ResponseEntity<String> handleInvalidMemberException(InvalidMemberException e) {
-		return ResponseEntity
-			.badRequest()
-			.body(e.getMessage());
-	}
-
-	@ExceptionHandler(DbActionExecutionException.class)
-	public ResponseEntity<String> handleDbActionExecutionException(DbActionExecutionException e) {
+	@ExceptionHandler({InvalidMemberException.class, DbActionExecutionException.class})
+	public ResponseEntity<String> handleInvalidMemberOrDbActionExecutionException(RuntimeException e) {
 		return ResponseEntity
 			.badRequest()
 			.body(e.getMessage());
@@ -51,8 +45,10 @@ public class ValidateExceptionAdvice {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleUnexpectedException(Exception e) {
+		System.out.println(e.getMessage());
+
 		return ResponseEntity
-			.badRequest()
+			.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.body(e.getMessage());
 	}
 
