@@ -6,7 +6,6 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
-import wooteco.subway.service.favorite.dto.FavoriteResponses;
 import wooteco.subway.web.member.LoginMember;
 
 import java.util.List;
@@ -21,8 +20,8 @@ public class FavoriteController {
 
     @GetMapping("/me/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        FavoriteResponses favoriteResponses = favoriteService.findAllFavoriteResponses(member.getId());
-        return ResponseEntity.ok(favoriteResponses.getFavoriteResponses());
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoriteResponses(member.getId());
+        return ResponseEntity.ok(favoriteResponses);
     }
 
     @PostMapping("/me/favorites")

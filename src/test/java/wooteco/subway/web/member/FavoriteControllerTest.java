@@ -20,7 +20,6 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
-import wooteco.subway.service.favorite.dto.FavoriteResponses;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -64,7 +63,7 @@ public class FavoriteControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(TEST_USER_EMAIL);
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
-        given(favoriteService.findAllFavoriteResponses(any())).willReturn(new FavoriteResponses(Arrays.asList(response)));
+        given(favoriteService.findAllFavoriteResponses(any())).willReturn(Arrays.asList(response));
 
         this.mockMvc.perform(get("/me/favorites")
                 .header("Authorization", "Bearer " + TEST_TOKEN)

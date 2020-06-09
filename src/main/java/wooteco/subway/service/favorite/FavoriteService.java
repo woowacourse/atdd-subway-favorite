@@ -3,12 +3,12 @@ package wooteco.subway.service.favorite;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
-import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.favorite.Favorites;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
-import wooteco.subway.service.favorite.dto.FavoriteResponses;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,19 +21,12 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public FavoriteResponses findAllFavoriteResponses(Long memberId) {
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
-        List<Long> sourceStationIds = new ArrayList<>();
-        List<Long> targetStationIds = new ArrayList<>();
-        for (Favorite favorite : favorites) {
-            sourceStationIds.add(favorite.getSourceStationId());
-            targetStationIds.add(favorite.getTargetStationId());
-        }
+    public List<FavoriteResponse> findAllFavoriteResponses(Long memberId) {
+        Favorites favorites = new Favorites(favoriteRepository.findAllByMemberId(memberId));
+        List<Long> stationIds = favorites.getAllSourceTargetStationIds();
+        Stations stations = new Stations(stationRepository.findAllById(stationIds));
 
-        List<Station> sourceStations = stationRepository.findAllById(sourceStationIds);
-        List<Station> targetStations = stationRepository.findAllById(targetStationIds);
-
-        return FavoriteResponses.of(favorites, sourceStations, targetStations);
+        return favorites.toFavoriteResponses(stations.toNamesMap());
     }
 
     public void createFavorite(Long memberId, FavoriteCreateRequest request) {

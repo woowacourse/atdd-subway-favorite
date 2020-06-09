@@ -3,6 +3,7 @@ package wooteco.subway.domain.favorite;
 import org.springframework.data.annotation.Id;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Favorite {
@@ -40,6 +41,12 @@ public class Favorite {
 
     public Long getMemberId() {
         return memberId;
+    }
+
+    public FavoriteResponse toFavoriteResponse(Map<Long, String> stationNames) {
+        String sourceStationName = stationNames.get(sourceStationId);
+        String targetStationName = stationNames.get(targetStationId);
+        return new FavoriteResponse(id, sourceStationId, targetStationId, sourceStationName, targetStationName);
     }
 
     @Override

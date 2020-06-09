@@ -11,11 +11,13 @@ import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteCreateRequest;
-import wooteco.subway.service.favorite.dto.FavoriteResponses;
+import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -51,11 +53,12 @@ public class FavoriteServiceTest {
     @Test
     void findAllFavoriteResponsesTest() {
         given(favoriteRepository.findAllByMemberId(any())).willReturn(Arrays.asList(favorite1, favorite2));
-        given(stationRepository.findAllById(Arrays.asList(1L, 2L))).willReturn(Arrays.asList(station1, station2));
-        given(stationRepository.findAllById(Arrays.asList(2L, 3L))).willReturn(Arrays.asList(station2, station3));
+        given(stationRepository.findAllById(Arrays.asList(1L, 2L, 2L, 3L))).willReturn(Arrays.asList(station1, station2, station3));
 
-        FavoriteResponses favoriteResponses = favoriteService.findAllFavoriteResponses(1L);
-        assertThat(favoriteResponses).isNotNull();
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoriteResponses(1L);
+        assertThat(favoriteResponses).hasSize(2);
+        assertThat(favoriteResponses.get(0).getId()).isEqualTo(1L);
+        assertThat(favoriteResponses.get(1).getId()).isEqualTo(2L);
     }
 
     @DisplayName("본인의 즐겨찾기 목록에 새로운 즐겨찾기가 잘 추가되는지 테스트")

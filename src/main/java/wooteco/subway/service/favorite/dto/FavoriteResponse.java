@@ -1,7 +1,5 @@
 package wooteco.subway.service.favorite.dto;
 
-import wooteco.subway.domain.favorite.Favorite;
-
 public class FavoriteResponse {
     private Long id;
     private Long sourceStationId;
@@ -18,10 +16,6 @@ public class FavoriteResponse {
         this.targetStationId = targetStationId;
         this.sourceStationName = sourceStationName;
         this.targetStationName = targetStationName;
-    }
-
-    public static FavoriteResponse of(Favorite favorite, String sourceStationName, String targetStationName) {
-        return new FavoriteResponse(favorite.getId(), favorite.getSourceStationId(), favorite.getTargetStationId(), sourceStationName, targetStationName);
     }
 
     public Long getId() {
