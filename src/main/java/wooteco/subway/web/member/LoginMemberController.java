@@ -33,7 +33,7 @@ public class LoginMemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest view) {
         memberService.createMember(view.toMember());
         return ResponseEntity

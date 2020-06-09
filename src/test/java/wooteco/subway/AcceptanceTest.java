@@ -268,7 +268,7 @@ public class AcceptanceTest {
             contentType(MediaType.APPLICATION_JSON_VALUE).
             accept(MediaType.APPLICATION_JSON_VALUE).
             when().
-            post("/me").
+            post("/me/create").
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value()).
