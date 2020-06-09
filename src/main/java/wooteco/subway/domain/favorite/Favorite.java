@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
 
+import wooteco.subway.domain.favorite.exception.InvalidFavoriteException;
+
 public class Favorite {
     @Id
     private Long id;
@@ -15,6 +17,9 @@ public class Favorite {
 
     public Favorite(Long id, Long sourceId, Long targetId) {
         this.id = id;
+        if (Objects.isNull(sourceId) || Objects.isNull(targetId)) {
+            throw new InvalidFavoriteException("시작역 또는 도착역이 비어있습니다.");
+        }
         this.sourceId = sourceId;
         this.targetId = targetId;
     }
@@ -35,6 +40,10 @@ public class Favorite {
         return targetId;
     }
 
+    public boolean isSameId(Long id) {
+        return Objects.equals(this.id, id);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -49,9 +58,5 @@ public class Favorite {
     @Override
     public int hashCode() {
         return Objects.hash(sourceId, targetId);
-    }
-
-    public boolean isSameId(Long id) {
-        return Objects.equals(this.id, id);
     }
 }

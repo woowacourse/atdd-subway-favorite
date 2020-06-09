@@ -1,4 +1,4 @@
-package wooteco.subway.exception;
+package wooteco.subway.domain.favorite.exception;
 
 public class DuplicatedFavoriteException extends RuntimeException {
     public DuplicatedFavoriteException(String message) {

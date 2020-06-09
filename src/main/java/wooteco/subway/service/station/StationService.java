@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.NotFoundStationException;
 import wooteco.subway.service.line.LineStationService;
 
 @Service
@@ -29,15 +28,13 @@ public class StationService {
         return stationRepository.findAll();
     }
 
+    public List<Long> findIdsByNames(List<String> names) {
+        return stationRepository.findIdsByNames(names);
+    }
+
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
-    }
-
-    public Long findStationIdByName(String name) {
-        return stationRepository.findByName(name)
-            .map(Station::getId)
-            .orElseThrow(() -> new NotFoundStationException(name + "역을 찾을 수 없습니다."));
     }
 
     public List<Station> findAllById(Collection<Long> ids) {

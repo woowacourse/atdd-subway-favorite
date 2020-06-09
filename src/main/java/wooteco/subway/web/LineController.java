@@ -36,7 +36,7 @@ public class LineController {
 
         return ResponseEntity
             .created(URI.create("/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine));
+            .body(LineResponse.of(persistLine));
     }
 
     @GetMapping("")

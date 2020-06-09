@@ -31,8 +31,8 @@ public class StationController {
         Station persistStation = stationService.createStation(view.toStation());
 
         return ResponseEntity
-                .created(URI.create("/stations/" + persistStation.getId()))
-                .body(StationResponse.of(persistStation));
+            .created(URI.create("/stations/" + persistStation.getId()))
+            .body(StationResponse.of(persistStation));
     }
 
     @GetMapping

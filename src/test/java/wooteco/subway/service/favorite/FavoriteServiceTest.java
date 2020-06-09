@@ -5,14 +5,16 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static wooteco.subway.service.member.MemberServiceTest.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import wooteco.subway.domain.favorite.exception.DuplicatedFavoriteException;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.exception.DuplicatedFavoriteException;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.StationService;
@@ -42,9 +44,8 @@ public class FavoriteServiceTest {
     @Test
     void addToMember() {
         given(memberService.save(any())).willReturn(member);
-        given(stationService.findStationIdByName("잠실")).willReturn(1L);
-        given(stationService.findStationIdByName("잠실새내")).willReturn(2L);
-        given(stationService.findStationIdByName("삼전")).willReturn(4L);
+        given(stationService.findIdsByNames(request1.toList())).willReturn(Arrays.asList(1L, 2L));
+        given(stationService.findIdsByNames(request2.toList())).willReturn(Arrays.asList(1L, 3L));
 
         favoriteService.addToMember(member, request1);
         favoriteService.addToMember(member, request2);
@@ -54,20 +55,20 @@ public class FavoriteServiceTest {
     @Test
     void addDuplicatedFavoriteToMember() {
         given(memberService.save(any())).willReturn(member);
-        given(stationService.findStationIdByName("잠실")).willReturn(1L);
-        given(stationService.findStationIdByName("잠실새내")).willReturn(2L);
+        given(stationService.findIdsByNames(request1.toList())).willReturn(Arrays.asList(1L, 2L));
 
         favoriteService.addToMember(member, request1);
-        assertThatThrownBy(()-> favoriteService.addToMember(member, request1)).isInstanceOf(
+        assertThatThrownBy(() -> favoriteService.addToMember(member, request1)).isInstanceOf(
             DuplicatedFavoriteException.class);
     }
 
-
     @Test
     void deleteById() {
+        given(stationService.findIdsByNames(request1.toList())).willReturn(Arrays.asList(1L, 2L));
         given(memberService.save(any())).willReturn(member);
 
         favoriteService.addToMember(member, request1);
+        assertThat(member.getFavorites()).hasSize(1);
 
         favoriteService.deleteById(member, null);
         assertThat(member.getFavorites()).hasSize(0);

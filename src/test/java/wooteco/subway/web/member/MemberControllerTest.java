@@ -66,7 +66,7 @@ public class MemberControllerTest {
     @Test
     public void createMember() throws Exception {
         given(memberService.save(any())).willReturn(member);
-        given(memberService.isNotExistEmail(any())).willReturn(true);
+        given(memberService.isNotExistEmail(member.getEmail())).willReturn(true);
 
         String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
             "\"name\":\"" + TEST_USER_NAME + "\"," +

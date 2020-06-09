@@ -5,6 +5,7 @@ public class NotFoundMemberException extends RuntimeException {
     public static final String ERROR_MESSAGE = " 회원님을 찾을 수 없습니다.";
 
     public NotFoundMemberException() {
+        super(ERROR_MESSAGE);
     }
 
     public NotFoundMemberException(String email) {

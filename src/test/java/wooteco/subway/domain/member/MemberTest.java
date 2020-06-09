@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.exception.DuplicatedFavoriteException;
+import wooteco.subway.domain.favorite.exception.DuplicatedFavoriteException;
 
 class MemberTest {
     private Member member;
@@ -31,13 +31,6 @@ class MemberTest {
     }
 
     @Test
-    void addFavorite() {
-        Favorite favorite = new Favorite(1L, 1L, 2L);
-        member.addFavorite(favorite);
-        assertThat(member.getFavorites()).hasSize(1);
-    }
-
-    @Test
     void addDuplicatedFavorite() {
         Favorite favorite = new Favorite(1L, 1L, 2L);
         member.addFavorite(favorite);
@@ -47,11 +40,4 @@ class MemberTest {
             DuplicatedFavoriteException.class);
     }
 
-    @Test
-    void deleteFavorite() {
-        Favorite favorite = new Favorite(1L, 1L, 2L);
-        member.addFavorite(favorite);
-        member.deleteFavorite(favorite.getId());
-        assertThat(member.getFavorites()).hasSize(0);
-    }
 }

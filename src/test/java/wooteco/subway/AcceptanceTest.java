@@ -299,7 +299,6 @@ public class AcceptanceTest {
                 extract().as(MemberResponse.class);
     }
 
-
     public MemberDetailResponse getDetailMember(String email) {
         String token = jwtTokenProvider.createToken(email);
         return

@@ -5,9 +5,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
 
 import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.exception.DuplicatedFavoriteException;
+import wooteco.subway.domain.favorite.Favorites;
 
 public class Member {
     @Id
@@ -15,51 +16,26 @@ public class Member {
     private String email;
     private String name;
     private String password;
-    private Set<Favorite> favorites = new LinkedHashSet<>();
+    @Embedded.Nullable
+    private Favorites favorites;
 
     public Member() {
     }
 
     public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(null, email, name, password, new Favorites(new LinkedHashSet<>()));
     }
 
     public Member(Long id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(id, email, name, password, new Favorites(new LinkedHashSet<>()));
     }
 
-    public Member(Long id, String email, String name, String password,
-        Set<Favorite> favorites) {
+    public Member(Long id, String email, String name, String password, Favorites favorites) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
         this.favorites = favorites;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Set<Favorite> getFavorites() {
-        return favorites;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void update(String name, String password) {
@@ -76,16 +52,30 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
-        if (favorites.contains(favorite)) {
-            throw new DuplicatedFavoriteException("해당 경로는 이미 추가되어 있습니다.");
-        }
         favorites.add(favorite);
     }
 
     public void deleteFavorite(Long id) {
-        favorites.stream()
-            .filter(favorite -> favorite.isSameId(id))
-            .findFirst()
-            .ifPresent(favorites::remove);
+        favorites.delete(id);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<Favorite> getFavorites() {
+        return favorites.getFavorites();
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

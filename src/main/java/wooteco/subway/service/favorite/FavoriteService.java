@@ -18,6 +18,8 @@ import wooteco.subway.service.station.StationService;
 
 @Service
 public class FavoriteService {
+    private static final int SOURCE_ID_INDEX = 0;
+    private static final int TARGET_ID_INDEX = 1;
 
     private final MemberService memberService;
     private final StationService stationService;
@@ -40,10 +42,8 @@ public class FavoriteService {
     }
 
     private Favorite getFavorite(FavoriteRequest request) {
-        Long sourceId = stationService.findStationIdByName(request.getSourceName());
-        Long targetId = stationService.findStationIdByName(request.getTargetName());
-
-        return Favorite.of(sourceId, targetId);
+        List<Long> ids = stationService.findIdsByNames(request.toList());
+        return Favorite.of(ids.get(SOURCE_ID_INDEX), ids.get(TARGET_ID_INDEX));
     }
 
     public Set<FavoriteDetailResponse> getAll(Member member) {

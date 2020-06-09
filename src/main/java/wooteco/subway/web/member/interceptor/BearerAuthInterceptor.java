@@ -27,7 +27,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
+        HttpServletResponse response, Object handler) {
         IsAuth annotation = getAnnotation((HandlerMethod)handler, IsAuth.class);
         Auth auth = null;
         if (!ObjectUtils.isEmpty(annotation)) {
@@ -44,14 +44,15 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView) throws Exception {
+        HttpServletResponse response,
+        Object handler,
+        ModelAndView modelAndView) throws Exception {
 
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+        Exception ex) throws Exception {
 
     }
 

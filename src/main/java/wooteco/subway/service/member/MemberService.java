@@ -1,7 +1,5 @@
 package wooteco.subway.service.member;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.member.Member;
@@ -27,13 +25,17 @@ public class MemberService {
     }
 
     public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id)
-            .orElseThrow(() -> new NotFoundMemberException(param.getName()));
+        Member member = findById(id);
         if (!member.checkPassword(param.getOldPassword())) {
             throw new NotMatchPasswordException("잘못된 패스워드 입니다.");
         }
         member.update(param.getName(), param.getNewPassword());
-        memberRepository.save(member);
+        save(member);
+    }
+
+    private Member findById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(NotFoundMemberException::new);
     }
 
     public void deleteMember(Long id) {
@@ -55,7 +57,6 @@ public class MemberService {
     }
 
     public boolean isNotExistEmail(String email) {
-        Optional<Member> byEmail = memberRepository.findByEmail(email);
-        return !byEmail.isPresent();
+        return !memberRepository.findByEmail(email).isPresent();
     }
 }
