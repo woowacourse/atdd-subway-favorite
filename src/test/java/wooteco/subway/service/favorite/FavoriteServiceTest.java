@@ -38,8 +38,8 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        stationService.createStation(new Station(null, "잠실"));
-        stationService.createStation(new Station(null, "강남"));
+        stationService.createStation(new Station("잠실"));
+        stationService.createStation(new Station("강남"));
         favoriteRequest = new FavoriteRequest("잠실", "강남");
         MemberResponse member = memberService.createMember(new MemberRequest("test@test.com", "test", "test"));
         memberId = member.getId();
