@@ -11,7 +11,8 @@ import wooteco.subway.web.member.AuthorizationExtractor;
 
 @Component
 public class BearerAuthInterceptor implements HandlerInterceptor {
-    private static final String BEARER = "BEARER";
+    public static final String LOGIN_KEY = "loginMemberEmail";
+    public static final String BEARER = "BEARER";
 
     private final AuthorizationExtractor authExtractor;
     private final JwtTokenProvider jwtTokenProvider;
@@ -25,7 +26,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String authorizationHeaderValue = authExtractor.extract(request, BEARER);
         if (jwtTokenProvider.validateToken(authorizationHeaderValue)) {
-            request.setAttribute("loginMemberEmail", jwtTokenProvider.getSubject(authorizationHeaderValue));
+            request.setAttribute(LOGIN_KEY, jwtTokenProvider.getSubject(authorizationHeaderValue));
         }
         return true;
     }

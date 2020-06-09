@@ -1,6 +1,7 @@
 package wooteco.subway.web.member;
 
 import static org.springframework.web.context.request.RequestAttributes.*;
+import static wooteco.subway.web.member.interceptor.BearerAuthInterceptor.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -30,7 +31,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String email = (String)webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
+        String email = (String)webRequest.getAttribute(LOGIN_KEY, SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
             throw new InvalidAuthenticationException("비정상적인 로그인");
         }
