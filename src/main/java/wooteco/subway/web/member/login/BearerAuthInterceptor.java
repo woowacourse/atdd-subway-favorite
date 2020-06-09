@@ -4,8 +4,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.exception.InvalidAuthenticationException;
+import wooteco.subway.infra.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

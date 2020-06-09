@@ -2,7 +2,6 @@ package wooteco.subway.domain.favorite;
 
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

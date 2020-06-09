@@ -27,7 +27,7 @@ public class FavoritesTest {
     @Test
     void getAllSourceTargetStationIdsTest() {
         List<Long> stationIds = favorites.getAllSourceTargetStationIds();
-        assertThat(stationIds).hasSize(3);
+        assertThat(stationIds).hasSize(4);
         assertThat(stationIds).containsExactly(1L, 2L, 2L, 3L);
     }
 
