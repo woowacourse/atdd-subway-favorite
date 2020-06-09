@@ -14,6 +14,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import wooteco.subway.service.member.exception.DuplicateEmailException;
 import wooteco.subway.service.member.exception.InvalidMemberEmailException;
 import wooteco.subway.service.member.exception.InvalidMemberIdException;
+import wooteco.subway.service.member.exception.InvalidMemberPasswordException;
 
 @Service
 public class MemberService {
@@ -58,7 +59,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
             .orElseThrow(InvalidMemberEmailException::new);
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new InvalidMemberPasswordException();
         }
 
         return jwtTokenProvider.createToken(param.getEmail());

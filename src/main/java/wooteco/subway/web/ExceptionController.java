@@ -19,7 +19,7 @@ public class ExceptionController {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionController.class.getSimpleName());
 
     @ExceptionHandler(value = {DuplicateEmailException.class, InvalidMemberIdException.class,
-            InvalidMemberEmailException.class, DuplicateFavoriteException.class, MethodArgumentNotValidException.class})
+            InvalidMemberEmailException.class, DuplicateFavoriteException.class, MethodArgumentNotValidException.class, InvalidMemberEmailException.class})
     public ResponseEntity<ErrorResponse> getDefined(RuntimeException exception) {
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
