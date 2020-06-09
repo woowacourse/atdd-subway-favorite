@@ -23,5 +23,4 @@ public class OAuthAcceptanceTest extends AcceptanceTest {
 		assertThat(tokenResponse.getAccessToken()).isNotBlank();
 		assertThat(tokenResponse.getTokenType()).isEqualTo("Bearer");
 	}
-
 }

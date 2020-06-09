@@ -98,7 +98,6 @@ public class FavoriteControllerTest {
             .andDo(FavoriteDocumentation.createFavorite());
     }
 
-    // Todo: docs?
     @DisplayName("예외테스트: 추가하려는 즐겨찾기에 출발역, 도착역 정보가 비어있는 경우")
     @Test
     void createFavorite_withoutIds() throws Exception {

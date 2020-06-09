@@ -3,6 +3,7 @@ package wooteco.subway.service.favorite;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -132,9 +133,9 @@ public class FavoriteServiceTest {
     @DisplayName("즐겨찾기 목록 조회 기능 테스트")
     @Test
     void getFavorites() {
-        Station gangnam = new Station(1L, "강남역");
-        Station seolleung = new Station(2L, "선릉역");
-        Station yeoksam = new Station(3L, "역삼역");
+        Station gangnam = new Station(1L, "강남역", LocalDateTime.now());
+        Station seolleung = new Station(2L, "선릉역", LocalDateTime.now());
+        Station yeoksam = new Station(3L, "역삼역", LocalDateTime.now());
 
         Favorite favorite1 = new Favorite(gangnam.getId(), seolleung.getId());
         Favorite favorite2 = new Favorite(yeoksam.getId(), gangnam.getId());
@@ -150,11 +151,13 @@ public class FavoriteServiceTest {
 
         assertThat(favorites).hasSize(2)
             .extracting("preStation")
-            .containsOnly(gangnam, yeoksam);
+            .extracting("name")
+            .containsOnly(gangnam.getName(), yeoksam.getName());
 
         assertThat(favorites)
             .extracting("station")
-            .containsOnly(seolleung, gangnam);
+            .extracting("name")
+            .containsOnly(seolleung.getName(), gangnam.getName());
     }
 
     @DisplayName("즐겨찾기를 삭제하는 기능 테스트")

@@ -16,6 +16,7 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.auth.RequireAuth;
 import wooteco.subway.web.member.resolver.LoginMember;
 
 @RestController
@@ -34,11 +35,13 @@ public class MemberController {
 			.build();
 	}
 
+	@RequireAuth
 	@GetMapping("/members")
 	public ResponseEntity<MemberResponse> getMember(@LoginMember Member member) {
 		return ResponseEntity.ok().body(MemberResponse.of(member));
 	}
 
+	@RequireAuth
 	@PutMapping("/members")
 	public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member,
 		@Validated @RequestBody UpdateMemberRequest updateMemberRequest) {
@@ -46,6 +49,7 @@ public class MemberController {
 		return ResponseEntity.ok().body(MemberResponse.of(updatedMember));
 	}
 
+	@RequireAuth
 	@DeleteMapping("/members")
 	public ResponseEntity<Void> deleteMember(@LoginMember Member member) {
 		memberService.deleteMemberByUser(member);

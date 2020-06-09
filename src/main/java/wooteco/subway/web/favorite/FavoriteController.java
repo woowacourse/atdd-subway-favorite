@@ -18,6 +18,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
+import wooteco.subway.web.member.auth.RequireAuth;
 import wooteco.subway.web.member.resolver.LoginMember;
 
 @RestController
@@ -29,6 +30,7 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
+    @RequireAuth
     @PostMapping("/members/favorites")
     public ResponseEntity<Void> createFavorite(@LoginMember Member member,
         @Validated @RequestBody FavoriteRequest favoriteRequest) {
@@ -39,6 +41,7 @@ public class FavoriteController {
             .build();
     }
 
+    @RequireAuth
     @GetMapping("/members/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
         List<FavoriteResponse> favorites = favoriteService.getFavorites(member);
@@ -47,6 +50,7 @@ public class FavoriteController {
             .body(favorites);
     }
 
+    @RequireAuth
     @DeleteMapping("/members/favorites/{id}")
     public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long id) {
         favoriteService.deleteFavorite(member, id);

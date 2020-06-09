@@ -1,5 +1,15 @@
 package wooteco.subway.service.path;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,23 +17,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
+
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
@@ -57,12 +59,12 @@ public class PathServiceTest {
     void setUp() {
         pathService = new PathService(stationRepository, lineRepository, graphService);
 
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
-        station5 = new Station(5L, STATION_NAME5);
-        station6 = new Station(6L, STATION_NAME6);
+        station1 = new Station(1L, STATION_NAME1, LocalDateTime.now());
+        station2 = new Station(2L, STATION_NAME2, LocalDateTime.now());
+        station3 = new Station(3L, STATION_NAME3, LocalDateTime.now());
+        station4 = new Station(4L, STATION_NAME4, LocalDateTime.now());
+        station5 = new Station(5L, STATION_NAME5, LocalDateTime.now());
+        station6 = new Station(6L, STATION_NAME6, LocalDateTime.now());
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 10, 10));

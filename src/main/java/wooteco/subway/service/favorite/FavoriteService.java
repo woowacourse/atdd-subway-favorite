@@ -47,7 +47,7 @@ public class FavoriteService {
         List<Favorite> favorites = member.getFavorites();
 
         return favorites.stream()
-            .map(it -> FavoriteResponse.of(it.getId(),
+            .map(it -> new FavoriteResponse(it.getId(),
                 mapStationById(stations, it.getPreStationId()),
                 mapStationById(stations, it.getStationId())))
             .collect(Collectors.toList());

@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,24 +45,25 @@ public class LineControllerTest {
 
         String uri = "/admin/lines/detail";
 
-		MvcResult mvcResult = mockMvc.perform(get(uri))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(header().exists("ETag"))
-			.andReturn();
+        MvcResult mvcResult = mockMvc.perform(get(uri))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
 
-		String eTag = mvcResult.getResponse().getHeader("ETag");
+        String eTag = mvcResult.getResponse().getHeader("ETag");
 
-		mockMvc.perform(get(uri).header("If-None-Match", eTag))
-			.andDo(print())
-			.andExpect(status().isNotModified())
-			.andExpect(header().exists("ETag"))
-			.andReturn();
-	}
+        mockMvc.perform(get(uri).header("If-None-Match", eTag))
+            .andDo(print())
+            .andExpect(status().isNotModified())
+            .andExpect(header().exists("ETag"))
+            .andReturn();
+    }
 
-	private LineDetailResponse createMockResponse() {
-		List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
-		return LineDetailResponse.of(new Line(), stations);
-	}
+    private LineDetailResponse createMockResponse() {
+        List<Station> stations = Arrays.asList(new Station(1L, "강남", LocalDateTime.now()),
+            new Station(1L, "교대", LocalDateTime.now()), new Station(3L, "서초", LocalDateTime.now()));
+        return LineDetailResponse.of(new Line(), stations);
+    }
 }
 
