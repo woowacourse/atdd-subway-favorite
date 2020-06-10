@@ -87,7 +87,6 @@ public class MemberControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                //todo
                 .andExpect(status().isUnauthorized());
     }
 
