@@ -28,54 +28,17 @@ public class BearerAuthMemberInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        if (isPost(request)) {
-            return true;
-        }
-
-        String bearer = authExtractor.extract(request, "Bearer");
-        validateToken(bearer);
-        String email = jwtTokenProvider.getSubject(bearer);
+        String token = authExtractor.extract(request, "Bearer");
+        validateToken(token);
+        String email = jwtTokenProvider.getSubject(token);
         request.setAttribute("requestMemberEmail", email);
-
-        if (isGet(request)) {
-            validateEmailEquals(request, email);
-            return true;
-        }
-
-        if (isPut(request) || isDelete(request)) {
-            final Map<String, String> pathVariables = (Map<String, String>) request
-                    .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-
-            String id = pathVariables.get("id");
-            request.setAttribute("requestId", id);
-        }
         return true;
     }
 
-    private boolean isDelete(HttpServletRequest request) {
-        return DELETE.matches(request.getMethod());
-    }
-
-    private boolean isPut(HttpServletRequest request) {
-        return PUT.matches(request.getMethod());
-    }
-
-    private void validateEmailEquals(HttpServletRequest request, String email) {
-        if (request.getAttribute("requestMemberEmail").equals(email) == false) {
-            throw new NotMatchedEmailIExistInJwtException(email);
-        }
-    }
-
-    private boolean isGet(HttpServletRequest request) {
-        return GET.matches(request.getMethod());
-    }
-
-    private boolean isPost(HttpServletRequest request) {
-        return POST.matches(request.getMethod());
-    }
-
-    private void validateToken(String bearer) {
-        if (bearer.isEmpty() || !jwtTokenProvider.validateToken(bearer)) {
+    private void validateToken(String token) {
+        System.out.println(jwtTokenProvider.validateToken(token) + "이거야?" + token);
+        if (token.isEmpty() || !jwtTokenProvider.validateToken(token)) {
+            System.out.println("토큰 에러");
             throw new InvalidAuthenticationException();
         }
     }

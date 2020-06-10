@@ -34,7 +34,9 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         try {
             return memberService.findMemberByEmail(email);
         } catch (Exception e) {
-            throw new InvalidAuthenticationException("비정상적인 로그인");
+            System.out.println("리졸버 에러");
+            throw new InvalidAuthenticationException("해당 정보를 가진 유저가 존재하지 않습니다.");
         }
     }
+
 }

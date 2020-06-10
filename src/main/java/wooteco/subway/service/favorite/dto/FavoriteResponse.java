@@ -16,10 +16,6 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), favorite.getSource(), favorite.getTarget());
-    }
-
     public Long getId() {
         return id;
     }

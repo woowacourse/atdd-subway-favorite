@@ -5,44 +5,43 @@ import org.springframework.data.annotation.Id;
 public class Favorite {
     @Id
     private Long id;
-    private String memberEmail;
-    private String source;
-    private String target;
+    private Long memberId;
+    private Long sourceId;
+    private Long targetId;
 
     public Favorite() {
     }
 
-    public Favorite(Long id, String source, String target, String memberEmail) {
+    public Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
         this.id = id;
-        this.source = source;
-        this.target = target;
-        this.memberEmail = memberEmail;
+        this.memberId = memberId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
     }
 
-    public Favorite(String source, String target, String memberEmail) {
-        this.source = source;
-        this.target = target;
-        this.memberEmail = memberEmail;
+    public Favorite(Long memberId, Long sourceId, Long targetId) {
+        this.memberId = memberId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getMemberEmail() {
-        return memberEmail;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public String getSource() {
-        return source;
+    public Long getSourceId() {
+        return sourceId;
     }
 
-    public String getTarget() {
-        return target;
+    public Long getTargetId() {
+        return targetId;
     }
 
-    public boolean isNotEqualEmail(String email) {
-        return !this.memberEmail.equals(email);
+    public boolean isNotEqualToMemberId(Long memberId) {
+        return !this.memberId.equals(memberId);
     }
-
 }
