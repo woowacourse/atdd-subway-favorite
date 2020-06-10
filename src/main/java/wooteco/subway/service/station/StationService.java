@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.service.line.LineStationService;
 
 @Service
@@ -30,5 +31,11 @@ public class StationService {
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
+    }
+
+    public String findStationNameById(final Long stationId) {
+        return stationRepository.findById(stationId)
+            .orElseThrow(NoSuchStationException::new)
+            .getName();
     }
 }

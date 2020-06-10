@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,8 +32,10 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.config.ETagHeaderFilter;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.station.StationService;
 import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
 @Import(ETagHeaderFilter.class)
@@ -45,7 +48,11 @@ public class FavoriteControllerTest {
     protected MockMvc mockMvc;
     Member member;
     @MockBean
+    private FavoriteService favoriteService;
+    @MockBean
     private MemberService memberService;
+    @MockBean
+    private StationService stationService;
     @MockBean
     private BearerAuthInterceptor bearerAuthInterceptor;
     @MockBean
@@ -70,12 +77,14 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기에 경로를 추가한다")
     @Test
     void addFavorite() throws Exception {
+        given(stationService.findStationNameById(1L)).willReturn("일원역");
+        given(stationService.findStationNameById(2L)).willReturn("이대역");
         String inputJson = "{\"sourceStationId\":" + 1 + "," + "\"targetStationId\":" + 2 + "}";
 
         this.mockMvc.perform(post("/me/favorites")
             .header("Authorization", "bearer brownToken")
-            .accept(MediaType.APPLICATION_JSON)
             .content(inputJson)
+            .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isCreated())
@@ -98,7 +107,7 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기 목록을 조회한다")
     @Test
     void getFavorites() throws Exception {
-        given(memberService.findAllFavoritesByMember(any())).willReturn(
+        given(favoriteService.findAllFavoritesByMember(any())).willReturn(
             Arrays.asList(new FavoriteResponse(1L, STATION_NAME_YANGJAE, STATION_NAME_YEOKSAM),
                 new FavoriteResponse(2L, STATION_NAME_KANGNAM, STATION_NAME_HANTI)));
 

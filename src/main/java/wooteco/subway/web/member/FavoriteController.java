@@ -13,31 +13,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.station.StationService;
 
 @RestController
 @RequestMapping("/me/favorites")
 public class FavoriteController {
-    private final MemberService memberService;
+    private final StationService stationService;
+    private final FavoriteService favoriteService;
 
-    public FavoriteController(final MemberService memberService) {
-        this.memberService = memberService;
+    public FavoriteController(StationService stationService,
+        FavoriteService favoriteService) {
+        this.stationService = stationService;
+        this.favoriteService = favoriteService;
     }
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        return ResponseEntity.ok(memberService.findAllFavoritesByMember(member));
+        return ResponseEntity.ok(favoriteService.findAllFavoritesByMember(member));
     }
 
     @PostMapping
     public ResponseEntity<Void> addFavorite(@LoginMember Member member,
         @RequestBody FavoriteRequest favoriteRequest) {
-        memberService.saveFavorite(member.getId(), favoriteRequest);
-        String sourceStationName = memberService.findStationNameById(
+        favoriteService.saveFavorite(member.getId(), favoriteRequest);
+        String sourceStationName = stationService.findStationNameById(
             favoriteRequest.getSourceStationId());
-        String targetStationName = memberService.findStationNameById(
+        String targetStationName = stationService.findStationNameById(
             favoriteRequest.getTargetStationId());
         return
             ResponseEntity
@@ -51,7 +56,7 @@ public class FavoriteController {
     @DeleteMapping("/{favoriteId}")
     public ResponseEntity<Void> deleteFavorite(@LoginMember Member member,
         @PathVariable final Long favoriteId) {
-        memberService.deleteFavorite(member, favoriteId);
+        favoriteService.deleteFavorite(member, favoriteId);
         return ResponseEntity.noContent().build();
     }
 }

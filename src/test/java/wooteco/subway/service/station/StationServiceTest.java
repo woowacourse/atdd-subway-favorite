@@ -15,6 +15,7 @@ import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.NoSuchLineException;
 
 @SpringBootTest
 @Sql("/truncate.sql")
@@ -43,7 +44,7 @@ public class StationServiceTest {
         Optional<Station> resultStation = stationRepository.findById(station1.getId());
         assertThat(resultStation).isEmpty();
 
-        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
+        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(NoSuchLineException::new);
         assertThat(resultLine.getStations()).hasSize(1);
     }
 }

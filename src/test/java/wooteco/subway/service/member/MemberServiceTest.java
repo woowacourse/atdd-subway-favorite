@@ -21,6 +21,7 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -33,6 +34,7 @@ public class MemberServiceTest {
     public static final String TEST_USER_PASSWORD = "brown";
 
     private MemberService memberService;
+    private FavoriteService favoriteService;
     private Member member;
 
     @Mock
@@ -44,8 +46,8 @@ public class MemberServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, stationRepository,
-            jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.favoriteService = new FavoriteService(memberRepository, stationRepository);
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
@@ -87,7 +89,7 @@ public class MemberServiceTest {
         given(memberRepository.save(any())).willReturn(member);
 
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        Member savedMember = memberService.saveFavorite(member.getId(), favoriteRequest);
+        Member savedMember = favoriteService.saveFavorite(member.getId(), favoriteRequest);
         assertThat(savedMember.getFavorites().size()).isEqualTo(1);
     }
 
@@ -96,7 +98,7 @@ public class MemberServiceTest {
     void deleteFavorite() {
         Favorite favorite = new Favorite(1L, 1L, 2L, 1L);
         member.addFavorite(favorite);
-        memberService.deleteFavorite(member, favorite.getId());
+        favoriteService.deleteFavorite(member, favorite.getId());
         verify(memberRepository).deleteFavoriteById(favorite.getId());
     }
 
@@ -110,7 +112,7 @@ public class MemberServiceTest {
         given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
             new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
 
-        List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMember(
+        List<FavoriteResponse> allFavoritesByMemberId = favoriteService.findAllFavoritesByMember(
             member);
 
         assertThat(allFavoritesByMemberId).isNotNull();

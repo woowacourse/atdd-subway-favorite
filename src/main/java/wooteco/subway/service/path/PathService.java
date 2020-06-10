@@ -13,6 +13,8 @@ import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.NoSuchLineStationException;
+import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -36,9 +38,9 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationRepository.findByName(source)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NoSuchStationException::new);
         Station targetStation = stationRepository.findByName(target)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NoSuchStationException::new);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(),
             type);
@@ -64,7 +66,7 @@ public class PathService {
         return stations.stream()
             .filter(it -> it.getId().equals(stationId))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NoSuchStationException::new);
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path,
@@ -81,7 +83,7 @@ public class PathService {
             LineStation lineStation = lineStations.stream()
                 .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NoSuchLineStationException::new);
 
             paths.add(lineStation);
             preStationId = stationId;
