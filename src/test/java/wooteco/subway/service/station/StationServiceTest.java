@@ -1,5 +1,6 @@
 package wooteco.subway.service.station;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +10,7 @@ import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.NoLineExistException;
 
 import java.time.LocalTime;
 import java.util.Optional;
@@ -26,6 +28,7 @@ public class StationServiceTest {
     @Autowired
     private LineRepository lineRepository;
 
+    @DisplayName("역 제거")
     @Test
     public void removeStation() {
         Station station1 = stationRepository.save(new Station("강남역"));
@@ -41,7 +44,7 @@ public class StationServiceTest {
         Optional<Station> resultStation = stationRepository.findById(station1.getId());
         assertThat(resultStation).isEmpty();
 
-        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
+        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(NoLineExistException::new);
         assertThat(resultLine.getStations()).hasSize(1);
     }
 }

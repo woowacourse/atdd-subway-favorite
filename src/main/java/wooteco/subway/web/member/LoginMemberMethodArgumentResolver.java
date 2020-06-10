@@ -8,7 +8,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.exception.InvalidAuthenticationException;
 import wooteco.subway.service.member.MemberService;
+
+import java.util.Objects;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
@@ -28,14 +31,21 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
-        if (StringUtils.isBlank(email)) {
-            return new Member();
+        String emailJwt = (String) webRequest.getAttribute("loginMemberEmailJwt", SCOPE_REQUEST);
+        String emailSession = (String) webRequest.getAttribute("loginMemberEmailSession", SCOPE_REQUEST);
+
+        if (!Objects.equals(emailJwt, emailSession)) {
+            throw new InvalidAuthenticationException("토큰정보와 세션정보가 일치하지 않습니다");
         }
-        try {
-            return memberService.findMemberByEmail(email);
-        } catch (Exception e) {
-            throw new InvalidAuthenticationException("비정상적인 로그인");
+
+        Member member = new Member();
+
+        if (StringUtils.isBlank(emailJwt)) {
+            return member;
         }
+
+        member = memberService.findMemberByEmail(emailJwt);
+
+        return member;
     }
 }

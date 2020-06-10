@@ -2,6 +2,13 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
+import wooteco.subway.domain.station.Stations;
+import wooteco.subway.exception.DuplicatedFavoriteException;
+import wooteco.subway.exception.InvalidAuthenticationException;
+
+import java.util.List;
+import java.util.Set;
 
 public class Member {
     @Id
@@ -9,21 +16,75 @@ public class Member {
     private String email;
     private String name;
     private String password;
+    @Embedded.Empty
+    private Favorites favorites = Favorites.empty();
 
     public Member() {
     }
 
     public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(null, email, name, password, Favorites.empty());
+
     }
 
     public Member(Long id, String email, String name, String password) {
+        this(id, email, name, password, Favorites.empty());
+    }
+
+    public Member(Long id, String email, String name, String password, Favorites favorites) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = favorites;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
+
+    public Favorite addFavorite(long sourceId, long targetId) {
+        validateDuplicatedFavorite(sourceId, targetId);
+        Favorite favorite = Favorite.of(sourceId, targetId);
+        favorites.add(favorite);
+        return favorite;
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
+    }
+
+    public void update(String name, String password) {
+        if (StringUtils.isNotBlank(name)) {
+            this.name = name;
+        }
+        if (StringUtils.isNotBlank(password)) {
+            this.password = password;
+        }
+    }
+
+    public boolean isInvalidPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public void validateId(Long id) {
+        if (!this.id.equals(id)) {
+            throw new InvalidAuthenticationException("잘못된 로그인이에요.");
+        }
+    }
+
+    public void validateDuplicatedFavorite(long sourceId, long targetId) {
+        if (favorites.hasFavoriteOf(sourceId, targetId)) {
+            throw new DuplicatedFavoriteException();
+        }
+    }
+
+    public Set<Long> getFavoriteStationIds() {
+        return favorites.extractStationIds();
+    }
+
+    public List<FavoriteDetail> getFavoriteDetails(Stations stations, long memberId) {
+        return favorites.toFavoriteDetails(stations, memberId);
     }
 
     public Long getId() {
@@ -42,16 +103,7 @@ public class Member {
         return password;
     }
 
-    public void update(String name, String password) {
-        if (StringUtils.isNotBlank(name)) {
-            this.name = name;
-        }
-        if (StringUtils.isNotBlank(password)) {
-            this.password = password;
-        }
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public Favorites getFavorites() {
+        return favorites;
     }
 }

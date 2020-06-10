@@ -27,15 +27,15 @@ public class Line {
     public Line() {
     }
 
+    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this(null, name, startTime, endTime, intervalTime);
+    }
+
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.intervalTime = intervalTime;
-    }
-
-    public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        this(null, name, startTime, endTime, intervalTime);
     }
 
     public Long getId() {

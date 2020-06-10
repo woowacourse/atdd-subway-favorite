@@ -7,14 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.NoPathExistsException;
+import wooteco.subway.exception.SourceEqualsTargetException;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,8 +40,6 @@ public class PathServiceTest {
     private StationRepository stationRepository;
     @Mock
     private LineRepository lineRepository;
-    @Mock
-    private GraphService graphService;
 
     private PathService pathService;
 
@@ -52,10 +52,11 @@ public class PathServiceTest {
 
     private Line line1;
     private Line line2;
+    private Line line3;
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationRepository, lineRepository, graphService);
+		pathService = new PathService(stationRepository, lineRepository);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -73,6 +74,9 @@ public class PathServiceTest {
         line2.addLineStation(new LineStation(null, 1L, 10, 10));
         line2.addLineStation(new LineStation(1L, 4L, 10, 10));
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+
+        line3 = new Line(3L, "왕따라인", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line3.addLineStation(new LineStation(null, 6L, 10, 10));
     }
 
     @DisplayName("일반적인 상황의 경로 찾기")
@@ -82,7 +86,6 @@ public class PathServiceTest {
         when(stationRepository.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
         when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
         when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
-        when(graphService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
 
         PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
 
@@ -97,15 +100,18 @@ public class PathServiceTest {
         assertThat(pathResponse.getDuration()).isEqualTo(40);
     }
 
-    @DisplayName("출발역과 도착역이 같은 경우")
+    @DisplayName("출발역과 도착역이 같은 경우 예외처리")
     @Test
     void findPathWithSameSourceAndTarget() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
+        assertThrows(SourceEqualsTargetException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME3, PathType.DISTANCE));
     }
 
-    @DisplayName("출발역과 도착역이 연결이 되지 않은 경우")
+    @DisplayName("출발역과 도착역이 연결이 되지 않은 경우 예외처리")
     @Test
     void findPathWithNoPath() {
-        assertThrows(RuntimeException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
+        when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2, line3));
+        when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
+        when(stationRepository.findByName(STATION_NAME6)).thenReturn(Optional.of(station6));
+        assertThrows(NoPathExistsException.class, () -> pathService.findPath(STATION_NAME3, STATION_NAME6, PathType.DISTANCE));
     }
 }

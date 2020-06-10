@@ -3,7 +3,7 @@ package wooteco.subway.acceptance.path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.AcceptanceTest;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -42,5 +42,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.get(1).getName()).isEqualTo(STATION_NAME_YANGJAE);
         assertThat(path.get(2).getName()).isEqualTo(STATION_NAME_MAEBONG);
         assertThat(path.get(3).getName()).isEqualTo(STATION_NAME_DOGOK);
+    }
+
+    private PathResponse findPath(String source, String target, String type) {
+        return get("/paths?source=" + source + "&target=" + target + "&type=" + type, PathResponse.class);
     }
 }

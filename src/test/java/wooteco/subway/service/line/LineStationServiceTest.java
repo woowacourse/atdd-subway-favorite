@@ -2,16 +2,17 @@ package wooteco.subway.service.line;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.dto.LineDetailResponse;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -58,6 +59,7 @@ public class LineStationServiceTest {
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
     }
 
+    @DisplayName("역 id로 구간 조회")
     @Test
     void findLineWithStationsById() {
         List<Station> stations = Lists.newArrayList(station1, station2, station3);
@@ -69,6 +71,7 @@ public class LineStationServiceTest {
         assertThat(lineDetailResponse.getStations()).hasSize(3);
     }
 
+    @DisplayName("전체 노선 조회")
     @Test
     void wholeLines() {
         Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);

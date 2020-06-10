@@ -1,6 +1,7 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,9 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
-import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
-import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalTime;
@@ -53,39 +53,96 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    public StationResponse createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
+    private <T> T post(String path, Map<String, String> params, Class<T> responseType) {
         return
                 given().
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/stations").
+                        post(path).
                         then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
+                        extract().as(responseType);
     }
 
-    public List<StationResponse> getStations() {
+    private String postWithLocation(String path, Map<String, String> params) {
         return
-                given().when().
-                        get("/stations").
+                given().
+                        body(params).
+                        contentType(MediaType.APPLICATION_JSON_VALUE).
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        post(path).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().header("Location");
+    }
+
+    protected <T> T get(String path, Class<T> responseType) {
+        return
+                given().
+                        when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().as(responseType);
+    }
+
+    protected <T> List<T> getListOf(String path, Class<T> responseType) {
+        return
+                given().
+                        when().
+                        get(path).
                         then().
                         log().all().
                         extract().
-                        jsonPath().getList(".", StationResponse.class);
+                        jsonPath().
+                        getList(".", responseType);
     }
 
-    public void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
-                then().
-                log().all();
+    protected <T> T getWithAuth(String path, Class<T> responseType, String sessionId, String token) {
+        return
+                given().
+                        cookie("JSESSIONID", sessionId).
+                        header("Authorization", token).
+                        when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().as(responseType);
     }
+
+    protected void put(Map<String, String> params, String path) {
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    protected void delete(String path) {
+        given().
+                when().
+                delete(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public StationResponse createStation(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+
+        return post("stations", params, StationResponse.class);
+    }
+
 
     public LineResponse createLine(String name) {
         Map<String, String> params = new HashMap<>();
@@ -94,60 +151,11 @@ public class AcceptanceTest {
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/lines").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(LineResponse.class);
+        return post("/lines", params, LineResponse.class);
     }
 
     public LineDetailResponse getLine(Long id) {
-        return
-                given().when().
-                        get("/lines/" + id).
-                        then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
-    }
-
-    public void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
-        Map<String, String> params = new HashMap<>();
-        params.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("intervalTime", "10");
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                put("/lines/" + id).
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-    }
-
-    public List<LineResponse> getLines() {
-        return
-                given().when().
-                        get("/lines").
-                        then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
-    }
-
-    public void deleteLine(Long id) {
-        given().when().
-                delete("/lines/" + id).
-                then().
-                log().all();
+        return get("lines/" + id, LineDetailResponse.class);
     }
 
     public void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -172,39 +180,6 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
-        given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    public WholeSubwayResponse retrieveWholeSubway() {
-        return
-                given().
-                        when().
-                        get("/lines/detail").
-                        then().
-                        log().all().
-                        extract().as(WholeSubwayResponse.class);
-    }
-
-    public PathResponse findPath(String source, String target, String type) {
-        return
-                given().
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(PathResponse.class);
-    }
 
     /**
      * 강남 - 역삼 - 선릉
@@ -253,53 +228,34 @@ public class AcceptanceTest {
         params.put("name", name);
         params.put("password", password);
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/members").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().header("Location");
+        return postWithLocation("/members", params);
     }
 
-    public MemberResponse getMember(String email) {
-        return
-                given().
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        get("/members?email=" + email).
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(MemberResponse.class);
+    public MemberResponse getMember(String email, String sessionId, TokenResponse tokenResponse) {
+        return getWithAuth("/members?email=" + email, MemberResponse.class, sessionId,
+                tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken());
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public Response login(String email, String password) {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        params.put("email", email);
+        params.put("password", password);
 
-        given().
+        return given().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+                post("/members/login");
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-                delete("/members/" + memberResponse.getId()).
+    public <T> T getResponse(Class<T> responseType, Response response) {
+        return response.
                 then().
                 log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+                statusCode(HttpStatus.OK.value()).
+                and().
+                extract().as(responseType);
     }
 }
 

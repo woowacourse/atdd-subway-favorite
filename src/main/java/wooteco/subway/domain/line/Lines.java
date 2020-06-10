@@ -1,13 +1,45 @@
 package wooteco.subway.domain.line;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.path.PathType;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Lines {
-    private List<Line> lines;
+    private final List<Line> lines;
 
-    public Lines(List<Line> lines) {
+    private Lines(List<Line> lines) {
         this.lines = lines;
+    }
+
+    public static Lines of(List<Line> lines) {
+        return new Lines(lines);
+    }
+
+    public void addVertex(WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+        lines.stream()
+                .flatMap(line -> line.getStationIds().stream())
+                .forEach(graph::addVertex);
+    }
+
+    public void setEdge(WeightedMultigraph<Long, DefaultWeightedEdge> graph, PathType type) {
+        lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+                .forEach(lineStation -> graph.setEdgeWeight(
+                        graph.addEdge(lineStation.getPreStationId(), lineStation.getStationId()),
+                        type.findWeightOf(lineStation)
+                ));
+    }
+
+    public LineStations toLineStations() {
+        return LineStations.of(lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+                .collect(Collectors.toList()));
     }
 
     public List<Line> getLines() {
@@ -16,28 +48,8 @@ public class Lines {
 
     public List<Long> getStationIds() {
         return lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .map(it -> it.getStationId())
+                .flatMap(line -> line.getStations().stream())
+                .map(LineStation::getStationId)
                 .collect(Collectors.toList());
     }
-//
-//    public LineStations extractLineStationByStationIds(List<Long> stationIds) {
-//        for (Long stationId : stationIds) {
-//            List<LineStation> lineStations = findLineStation(null, stationId);
-//        }
-//        Set<LineStation> lineStations = stationIds.stream()
-//                .map(it -> getLineStationByStationId(it))
-//                .collect(Collectors.toSet());
-//
-//        return new LineStations(lineStations);
-//    }
-//
-//    private LineStation getLineStationByStationId(Long stationId) {
-//        return lines.stream()
-//                .flatMap(it -> it.getStations().stream())
-////                .filter(it -> Objects.nonNull(it.getPreStationId()))
-//                .filter(it -> it.getStationId() == stationId)
-//                .findFirst()
-//                .orElseThrow(RuntimeException::new);
-//    }
 }

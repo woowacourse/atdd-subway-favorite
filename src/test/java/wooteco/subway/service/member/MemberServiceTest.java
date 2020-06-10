@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,6 +36,7 @@ public class MemberServiceTest {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
     }
 
+    @DisplayName("멤버 생성")
     @Test
     void createMember() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
@@ -44,6 +46,7 @@ public class MemberServiceTest {
         verify(memberRepository).save(any());
     }
 
+    @DisplayName("토큰 생성")
     @Test
     void createToken() {
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);

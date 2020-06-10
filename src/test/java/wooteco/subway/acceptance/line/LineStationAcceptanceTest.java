@@ -2,34 +2,43 @@ package wooteco.subway.acceptance.line;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.AcceptanceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
+    @DisplayName("지하철 노선에서 지하철역 추가 / 제거")
     @Test
     void manageLineStation() {
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
+        // given : 역이 존재한다.
+        StationResponse kangNamYeok = createStation(STATION_NAME_KANGNAM);
+        StationResponse yeokSamYeok = createStation(STATION_NAME_YEOKSAM);
+        StationResponse seolLenungYeok = createStation(STATION_NAME_SEOLLEUNG);
+        // and : 노선이 존재한다.
+        LineResponse secondLine = createLine("2호선");
 
-        LineResponse lineResponse = createLine("2호선");
+        // when : 구간을 추가한다.
+        addLineStation(secondLine.getId(), null, kangNamYeok.getId());
+        addLineStation(secondLine.getId(), kangNamYeok.getId(), yeokSamYeok.getId());
+        addLineStation(secondLine.getId(), yeokSamYeok.getId(), seolLenungYeok.getId());
 
-        addLineStation(lineResponse.getId(), null, stationResponse1.getId());
-        addLineStation(lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId());
-        addLineStation(lineResponse.getId(), stationResponse2.getId(), stationResponse3.getId());
-
-        LineDetailResponse lineDetailResponse = getLine(lineResponse.getId());
+        // then : 구간이 추가되었다.
+        LineDetailResponse lineDetailResponse = getLine(secondLine.getId());
         assertThat(lineDetailResponse.getStations()).hasSize(3);
 
-        removeLineStation(lineResponse.getId(), stationResponse2.getId());
+        // when : 구간을 제거한다.
+        removeLineStation(secondLine.getId(), yeokSamYeok.getId());
 
-        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
+        // then : 구간이 제거되었다.
+        LineDetailResponse lineResponseAfterRemoveLineStation = getLine(secondLine.getId());
         assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
+    }
+
+    private void removeLineStation(Long lineId, Long stationId) {
+        delete("/lines/" + lineId + "/stations/" + stationId);
     }
 }

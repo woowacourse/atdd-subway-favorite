@@ -17,12 +17,10 @@
             <label class="block text-gray-600 text-sm font-bold mb-2" for="email">
               email
             </label>
-            <input
-              class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="text"
-              placeholder="email"
-            />
+            <p
+                    class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="email"
+            ></p>
           </div>
           <div class="mb-4">
             <label class="block text-gray-600 text-sm font-bold mb-2" for="name">
@@ -58,18 +56,23 @@
             />
           </div>
           <a
-            href="/index.html"
-            class="w-full text-sm text-center bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
-            type="button"
+                  href="/index.html"
+                  class="w-full text-sm text-center bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
+                  id="edit-button"
+                  type="button"
           >
             저장
           </a>
-          <button class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+          <button class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  id="resign-button"
+                  type="button">
             탈퇴
           </button>
         </form>
       </div>
     </div>
     <script type="module" src="/service/js/App.js"></script>
+    <script src="/service/js/views/ValidateLogin.js" type="module"></script>
+    <script src="/service/js/views/MyPageEdit.js" type="module"></script>
   </body>
 </html>

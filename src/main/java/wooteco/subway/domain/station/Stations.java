@@ -1,22 +1,28 @@
 package wooteco.subway.domain.station;
 
+import wooteco.subway.exception.NoStationExistsException;
+
 import java.util.List;
 
 public class Stations {
-    private List<Station> stations;
+	private final List<Station> stations;
 
-    public Stations(List<Station> stations) {
-        this.stations = stations;
-    }
+	private Stations(List<Station> stations) {
+		this.stations = stations;
+	}
 
-    public List<Station> getStations() {
-        return stations;
-    }
+	public static Stations of(List<Station> stations) {
+		return new Stations(stations);
+	}
 
-    public Station extractStationById(Long stationId) {
-        return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+	public List<Station> getStations() {
+		return stations;
+	}
+
+	public Station extractStationById(Long stationId) {
+		return stations.stream()
+				.filter(station -> station.getId().equals(stationId))
+				.findFirst()
+				.orElseThrow(NoStationExistsException::new);
     }
 }
