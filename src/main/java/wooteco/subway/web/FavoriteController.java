@@ -32,6 +32,7 @@ public class FavoriteController {
     @GetMapping()
     public ResponseEntity<FavoritesResponse> getFavorite(@LoginMember Member member) {
         FavoritesResponse favoritesResponse = favoriteService.findAllByMemberId(member);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(favoritesResponse);
     }
@@ -40,8 +41,7 @@ public class FavoriteController {
     public ResponseEntity<Void> deleteFavorite(@LoginMember Member member, @PathVariable Long id)
             throws AccessDeniedException {
         favoriteService.deleteFavorite(member, id);
-        return ResponseEntity
-                .noContent()
-                .build();
+
+        return ResponseEntity.noContent().build();
     }
 }

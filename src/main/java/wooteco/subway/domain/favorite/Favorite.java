@@ -8,7 +8,6 @@ import java.util.Objects;
 public class Favorite {
     @Id
     private Long id;
-    // todo : Favorite과 Station이 독립적인 엔티티 참조로 두면 안될까 ? https://techcourse.woowahan.com/s/RnQEhZ2v/ls/RjFgM97e
     private Long sourceId;
     private Long targetId;
 

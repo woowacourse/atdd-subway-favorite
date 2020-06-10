@@ -14,15 +14,16 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
+    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
+
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
                 .header("Location", "/members/" + member.getId())

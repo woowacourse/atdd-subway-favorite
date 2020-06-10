@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import wooteco.subway.doc.FavoriteDocumentation;
-import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
@@ -52,9 +51,6 @@ public class FavoriteControllerIntegrationTest {
     private FavoriteService favoriteService;
 
     @Autowired
-    private FavoriteRepository favoriteRepository;
-
-    @Autowired
     private MemberService memberService;
 
     @Autowired
@@ -71,7 +67,6 @@ public class FavoriteControllerIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
-        favoriteRepository.deleteAll();
         memberRepository.deleteAll();
         stationRepository.save(new Station("강남역"));
         stationRepository.save(new Station("양재역"));
