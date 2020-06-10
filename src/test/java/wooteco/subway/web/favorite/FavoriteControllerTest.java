@@ -29,6 +29,7 @@ import wooteco.subway.service.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.member.MemberService;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,14 +73,14 @@ public class FavoriteControllerTest {
         String targetStation = "한티역";
 
         Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
-        CreateFavoriteRequest favoriteRequest = new CreateFavoriteRequest(sourceStation, targetStation, member.getEmail());
+        CreateFavoriteRequest favoriteRequest = new CreateFavoriteRequest(sourceStation, targetStation);
 
-        given(favoriteService.save(any(), anyString())).willReturn(new Favorite(1L, sourceStation, targetStation, DummyTestUserInfo.EMAIL));
+        given(favoriteService.createFavorite(any(), any())).willReturn(new FavoriteResponse(1L, sourceStation, targetStation));
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(DummyTestUserInfo.EMAIL);
         given(memberService.findMemberByEmail(any())).willReturn(member);
 
-        String uri = "/favorites";
+        String uri = "/auth/favorites";
         String content = gson.toJson(favoriteRequest);
 
         mockMvc.perform(post(uri)
@@ -95,14 +96,16 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기 조회한다")
     @Test
     void selectFavoriteTest() throws Exception {
-        Favorite favorite1 = new Favorite("강남역", "역삼역", "email@gmail.com");
+        FavoriteResponse favoriteResponse1 = new FavoriteResponse(1L,"강남역", "역삼역");
+        FavoriteResponse favoriteResponse2 = new FavoriteResponse(2L,"잠실역", "잠실새내역");
+        List<FavoriteResponse> favoritesResponses = Arrays.asList(favoriteResponse1, favoriteResponse2);
         Member member = new Member("email@gmail.com", null, null);
 
-        given(favoriteService.findAllByEmail(any())).willReturn(Arrays.asList(FavoriteResponse.of(favorite1), FavoriteResponse.of(favorite1)));
+        given(favoriteService.findAllByMemberId(any())).willReturn(new FavoritesResponse(favoritesResponses));
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
-        String uri = "/favorites";
+        String uri = "/auth/favorites";
 
         MvcResult mvcResult = mockMvc.perform(get(uri)
                 .header("Authorization", "Bearer " + "이메일 Token")
@@ -118,17 +121,17 @@ public class FavoriteControllerTest {
     @DisplayName("즐겨찾기를 삭제 한다.")
     @Test
     void deleteFavoriteTest() throws Exception {
-        Favorite favorite1 = new Favorite("강남역", "역삼역", DummyTestUserInfo.EMAIL);
-        Favorite favorite2 = new Favorite("복정역", "역삼역", DummyTestUserInfo.EMAIL);
+        FavoriteResponse favorite1 = new FavoriteResponse(1L,"강남역", "역삼역");
+        FavoriteResponse favorite2 = new FavoriteResponse(2L,"복정역", "역삼역");
+        List<FavoriteResponse> favoriteResponses = Arrays.asList(favorite1, favorite2);
         Member member = new Member(DummyTestUserInfo.EMAIL, null, null);
 
-        given(favoriteService.findAllByEmail(any())).willReturn(Arrays.asList(FavoriteResponse.of(favorite1), FavoriteResponse.of(favorite2)));
+        given(favoriteService.findAllByMemberId(any())).willReturn(new FavoritesResponse(favoriteResponses));
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(DummyTestUserInfo.EMAIL);
-        given(favoriteService.findFavoriteBySourceAndTarget(any(), any())).willReturn(new Favorite("강남역", "역삼역", DummyTestUserInfo.EMAIL));
 
-        String uri = "/favorites";
+        String uri = "/auth/favorites";
 
         mockMvc.perform(delete(uri)
                 .header("Authorization", "Bearer " + "이메일 Token")

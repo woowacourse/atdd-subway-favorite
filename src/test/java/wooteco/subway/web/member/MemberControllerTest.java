@@ -65,11 +65,15 @@ public class MemberControllerTest {
         MemberRequest memberRequest = new MemberRequest("ramen6315@gmail.com", "ramen", "6315)");
 
         given(memberService.createMember(any())).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(DummyTestUserInfo.EMAIL);
 
         String content = gson.toJson(memberRequest);
-        String uri = "/members";
+        String uri = "/auth/members";
 
         mockMvc.perform(post(uri)
+                .header("Location", "auth/members/"+member.getId())
+                .header("Authorization", "Bearer " + "이메일 Token")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -87,7 +91,7 @@ public class MemberControllerTest {
         given(memberService.createMember(any())).willReturn(member);
 
         String content = gson.toJson(memberRequest);
-        String uri = "/members";
+        String uri = "/auth/members";
 
         mockMvc.perform(post(uri)
                 .content(content)
@@ -164,7 +168,9 @@ public class MemberControllerTest {
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(email);
 
-        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/members")
+        String uri = "/auth/members";
+
+        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get(uri)
                 .param("email", email)
                 .header("authorization", "Bearer 토큰값")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -189,7 +195,7 @@ public class MemberControllerTest {
         given(memberService.findMemberByEmail(email)).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
 
-        String uri = "/members?email=ramen@gmail.com";
+        String uri = "/auth/members?email=ramen@gmail.com";
 
         mockMvc.perform(get(uri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +212,7 @@ public class MemberControllerTest {
         given(memberService.updateMember(any(), any())).willReturn(1L);
 
         String updateData = gson.toJson(updateMemberRequest);
-        String uri = "/members/1";
+        String uri = "/auth/members";
 
         mockMvc.perform(put(uri)
                 .content(updateData)
@@ -230,7 +236,9 @@ public class MemberControllerTest {
         UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
         String updateData = gson.toJson(updateMemberRequest);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.put("/members/{id}", updateId)
+        String uri = "/auth/members";
+
+        mockMvc.perform(RestDocumentationRequestBuilders.put(uri, updateId)
                 .header("Authorization", "Bearer 아무토큰값")
                 .content(updateData)
                 .contentType(MediaType.APPLICATION_JSON)

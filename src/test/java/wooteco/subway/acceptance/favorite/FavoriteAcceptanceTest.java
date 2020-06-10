@@ -13,6 +13,7 @@ import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.favorite.dto.FavoritesResponse;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //When
         // 검색한 경로를 즐겨찾기에 추가하는 요청을 보낸다.
-        createMember(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+        createMember(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD,token);
         createFavorite("강남역", "한티역", token);
         createFavorite("매봉역", "도곡역", token);
 
@@ -62,7 +63,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //assertThat(favoritesResponse.getSize()).isEqualTo(2);
         //When
         // 즐겨 찾기 목록중 하나를 삭제 한다.
-        FavoriteResponse favoriteResponse = favoriteResponses.get(0);
+        FavoriteResponse favoriteResponse = favoriteResponses.get(1);
         deleteFavorite(favoriteResponse, token);
         //Then
         // 즐겨 찾기 목록이 하나 줄어든다.
@@ -71,10 +72,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void deleteFavorite(FavoriteResponse favoriteResponse, String token) {
+        System.out.println(favoriteResponse.getId());
         given().
-                header("Authorization", "Bearer " + token).
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 when().
-                delete("/favorites/" + favoriteResponse.getId()).
+                delete("/auth/favorites/" + favoriteResponse.getId()).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
@@ -86,7 +88,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/favorites").
+                get("/auth/favorites").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
@@ -105,7 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                post("/favorites").
+                post("/auth/favorites").
                 then().
                 log().all().
                 statusCode(HttpStatus.CREATED.value()).

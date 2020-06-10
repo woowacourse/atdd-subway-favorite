@@ -57,7 +57,7 @@ public class MemberControllerIntegrationTest {
 
         String token = jwtTokenProvider.createToken(anotherEmail);
 
-        String uri = "/members?email=ramen@gmail.com";
+        String uri = "/auth/members?email=ramen@gmail.com";
 
         mockMvc.perform(get(uri)
                 .header("authorization", "Bearer" + token)
@@ -78,7 +78,7 @@ public class MemberControllerIntegrationTest {
         String token = jwtTokenProvider.createToken(anotherEmail);
         String updateData = gson.toJson(updateMemberRequest);
 
-        String uri = "/members/1";
+        String uri = "/auth/members";
 
         mockMvc.perform(put(uri)
                 .header("Authorization", "Bearer" + token)
@@ -86,7 +86,7 @@ public class MemberControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @DisplayName("유저 정보 삭제가 성공한다")
@@ -94,10 +94,9 @@ public class MemberControllerIntegrationTest {
     void deleteMemberDateSuccessTest() throws Exception {
         Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
 
-        Long deleteId = member.getId();
         String token = jwtTokenProvider.createToken(member.getEmail());
 
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/{id}", deleteId)
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/auth/members")
                 .header("Authorization", "Bearer" + token))
                 .andDo(print())
                 .andDo(MemberDocumentation.deleteMember())
@@ -112,14 +111,14 @@ public class MemberControllerIntegrationTest {
 
         memberService.deleteMember(deleteId);
 
-        String uri = "/members/" + deleteId;
+        String uri = "/auth/members/" + deleteId;
 
         mockMvc.perform(delete(uri))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
 
-    @DisplayName("삭제 하려는 id 가 일치 하지 않을경우 익셉션이 발생한다")
+    @DisplayName("삭제 하려는 토큰값이 일치 하지 않을경우 익셉션이 발생한다")
     @Test
     void deleteMemberDateFailTest2() throws Exception {
         Member member = memberService.createMember(new Member("email@gmail.com", "ramen", "6315"));
@@ -127,7 +126,7 @@ public class MemberControllerIntegrationTest {
         Long wrongDeleteId = member.getId() + 10L;
         String memberEmailToken = jwtTokenProvider.createToken(String.valueOf(wrongDeleteId));
 
-        String uri = "/members/" + member.getId();
+        String uri = "/auth/members/";
 
         mockMvc.perform(delete(uri)
                 .header("Authorization", "Bearer " + memberEmailToken))
