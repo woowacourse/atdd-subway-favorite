@@ -1,11 +1,21 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
@@ -16,16 +26,6 @@ import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.MemberRequest;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -102,9 +102,9 @@ public class MemberServiceTest {
         when(stationRepository.findByName(DOGOK_STATION_NAME)).thenReturn(Optional.of(dogukStation));
 
         Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(kangNamStation));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(jamSilStation));
-        when(stationRepository.findById(3L)).thenReturn(Optional.of(dogukStation));
+
+        List<Station> stations = Arrays.asList(kangNamStation, jamSilStation, dogukStation);
+        when(stationRepository.findAll()).thenReturn(stations);
 
         FavoriteRequest favoriteRequest1 = new FavoriteRequest(KANG_NAM_STATION_NAME, JAM_SIL_STATION_NAME);
         FavoriteRequest favoriteRequest2 = new FavoriteRequest(KANG_NAM_STATION_NAME, DOGOK_STATION_NAME);

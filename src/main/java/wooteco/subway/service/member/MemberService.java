@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +40,16 @@ public class MemberService {
     @Transactional
     public Member createMember(MemberRequest memberRequest) {
         if (memberRepository.existsByEmail(memberRequest.getEmail())) {
-            throw new DuplicateKeyException("존재하는 이메일입니다.");
+            throw new DuplicateKeyException("존재하는 이메일입니다. " + memberRequest.getEmail());
         }
-        return memberRepository.save(memberRequest.toMember());
+        try {
+            return memberRepository.save(memberRequest.toMember());
+        } catch (DbActionExecutionException e) {
+            if (e.getCause() instanceof DuplicateKeyException) {
+                throw new DuplicateKeyException("존재하는 이메일 입니다. : " + memberRequest.getEmail());
+            }
+            throw e;
+        }
     }
 
     @Transactional

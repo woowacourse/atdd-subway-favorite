@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -24,7 +23,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -35,7 +33,6 @@ import wooteco.subway.service.station.StationService;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Sql("/truncate.sql")
-@Import({JwtTokenProvider.class})
 public class MemberControllerTest {
     private String token;
 
@@ -79,7 +76,6 @@ public class MemberControllerTest {
 
     @Test
     void getMember() throws Exception {
-
         this.mockMvc.perform(get("/members")
             .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isOk())
