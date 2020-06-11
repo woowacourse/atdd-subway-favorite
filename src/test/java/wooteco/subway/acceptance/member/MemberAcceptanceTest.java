@@ -14,8 +14,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 관리 기능")
     @Test
     void manageMember() {
-        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        assertThat(location).isNotBlank();
+        createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+
         MemberResponse memberResponse = getMember(TEST_USER_EMAIL);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(TEST_USER_EMAIL);
