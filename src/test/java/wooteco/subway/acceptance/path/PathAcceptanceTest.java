@@ -1,27 +1,27 @@
 package wooteco.subway.acceptance.path;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.AcceptanceTest;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import wooteco.subway.acceptance.AcceptanceTest;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
-    @Override
+
     @BeforeEach
-    public void setUp() {
-        super.setUp();
+    public void setUp() throws Exception {
         initStation();
     }
 
     @DisplayName("거리 기준으로 경로 조회")
     @Test
-    public void findPathByDistance() {
+    public void findPathByDistance() throws Exception {
         PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(5);
@@ -34,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("소요시간 기준으로 경로 조회")
     @Test
-    public void findPathByDuration() {
+    public void findPathByDuration() throws Exception {
         PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DURATION");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(4);

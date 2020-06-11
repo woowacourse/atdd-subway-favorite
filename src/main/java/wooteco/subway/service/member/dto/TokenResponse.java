@@ -19,4 +19,9 @@ public class TokenResponse {
     public String getTokenType() {
         return tokenType;
     }
+
+    @Override
+    public String toString() {
+        return tokenType + " " + accessToken;
+    }
 }
