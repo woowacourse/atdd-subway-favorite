@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import wooteco.subway.web.auth.Auth;
 import wooteco.subway.web.auth.RequiredAuth;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.AuthorizationExtractor;
@@ -29,7 +28,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
         RequiredAuth annotation = getAnnotation((HandlerMethod)handler, RequiredAuth.class);
-        if(Objects.isNull(annotation) || annotation.isAuth() == Auth.NONE) {
+        if(Objects.isNull(annotation)) {
             return true;
         }
         String token = authExtractor.extract(request, "bearer");

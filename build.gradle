@@ -27,7 +27,6 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	runtimeOnly 'com.h2database:h2'
-	compile 'javax.xml.bind:jaxb-api'
 }
 
 ext {
