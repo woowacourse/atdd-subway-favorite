@@ -13,10 +13,44 @@ endif::[]
 [[resources]]
 = Resources
 
+[[resources-oauth]]
+== Oauth
+
+[[resources-oauth-token]]
+=== 인증 토큰 생성
+operation::oauth/token[snippets='http-request,http-response,request-fields,response-fields']
+
 [[resources-members]]
 == Member
 
 [[resources-members-create]]
 === 회원 가입
+operation::members/create[snippets='http-request,http-response,request-fields,response-headers']
 
-operation::members/create[snippets='http-request,http-response']
+[[resources-members-read]]
+=== 회원정보 조회
+operation::members/read[snippets='http-request,http-response,request-headers, response-fields']
+
+[[resources-members-update]]
+=== 회원정보 수정
+operation::members/update[snippets='http-request,http-response,request-fields,request-headers,response-fields']
+
+[[resources-members-delete]]
+=== 회원정보 삭제
+operation::members/delete[snippets='http-request,http-response,request-headers']
+
+
+[[resources-favorite]]
+== Favorite
+
+[[resources-favorite-create]]
+=== 즐겨찾기 생성
+operation::favorites/create[snippets='http-request,http-response,request-headers,request-fields']
+
+[[resources-favorite-read]]
+=== 즐겨찾기 조회
+operation::favorites/read[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-favorite-delete]]
+=== 즐겨찾기 삭제
+operation::favorites/delete[snippets='http-request,http-response,request-headers,path-parameters,request-headers']
