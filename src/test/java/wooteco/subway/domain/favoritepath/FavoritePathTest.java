@@ -1,8 +1,6 @@
 package wooteco.subway.domain.favoritepath;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.station.Station;
@@ -11,10 +9,9 @@ class FavoritePathTest {
 
     @Test
     void match() {
-        Station start = mock(Station.class);
-        Station end = mock(Station.class);
-        when(start.getId()).thenReturn(1L);
-        when(end.getId()).thenReturn(2L);
+        Station start = new Station(1L, "신정역");
+        Station end = new Station(2L, "잠실역");
+
         FavoritePath favoritePath = new FavoritePath(start, end);
 
         assertThat(favoritePath.match(start, end)).isTrue();
@@ -22,14 +19,12 @@ class FavoritePathTest {
 
     @Test
     void notMatch() {
-        Station start = mock(Station.class);
-        Station end = mock(Station.class);
-        Station weird = mock(Station.class);
-        when(start.getId()).thenReturn(1L);
-        when(end.getId()).thenReturn(2L);
-        when(weird.getId()).thenReturn(3L);
-        FavoritePath favoritePath = new FavoritePath(start, weird);
+        Station start = new Station(1L, "신정역");
+        Station end = new Station(2L, "잠실역");
+        Station weird = new Station(3L, "구미역");
 
-        assertThat(favoritePath.match(start, end)).isFalse();
+        FavoritePath favoritePath = new FavoritePath(start, end);
+
+        assertThat(favoritePath.match(start, weird)).isFalse();
     }
 }
