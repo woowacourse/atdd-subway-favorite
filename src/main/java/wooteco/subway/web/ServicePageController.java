@@ -8,35 +8,10 @@ import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.station.StationService;
 
 @Controller
-public class PageController {
-    private LineService lineService;
-    private StationService stationService;
-
-    public PageController(LineService lineService, StationService stationService) {
-        this.lineService = lineService;
-        this.stationService = stationService;
-    }
-
+public class ServicePageController {
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public String index() {
-        return "admin/index";
-    }
-
-    @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
-    public String stationPage(Model model) {
-        model.addAttribute("stations", stationService.findStations());
-        return "admin/admin-station";
-    }
-
-    @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
-    public String linePage(Model model) {
-        model.addAttribute("lines", lineService.findLines());
-        return "admin/admin-line";
-    }
-
-    @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String edgePage() {
-        return "admin/admin-edge";
+    public String indexPage() {
+        return "service/index";
     }
 
     @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
@@ -62,5 +37,15 @@ public class PageController {
     @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
     public String favoritesPage() {
         return "service/favorite";
+    }
+
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPage() {
+        return "service/mypage";
+    }
+
+    @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String editMyPage() {
+        return "service/mypage-edit";
     }
 }

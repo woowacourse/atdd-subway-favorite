@@ -9,8 +9,8 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String secretKey;
-    private long validityInMilliseconds;
+    private final String secretKey;
+    private final long validityInMilliseconds;
 
     public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey, @Value("${security.jwt.token.expire-length}") long validityInMilliseconds) {
         this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -36,17 +36,13 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public boolean nonValidToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-
-            return true;
+            return claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            return true;
         }
     }
 }

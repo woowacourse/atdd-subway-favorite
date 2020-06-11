@@ -2,6 +2,7 @@ package wooteco.subway.service.line;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -52,12 +53,13 @@ public class LineStationServiceTest {
         station3 = new Station(3L, STATION_NAME3);
         station4 = new Station(4L, STATION_NAME4);
 
-        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-yellow-500");
         line.addLineStation(new LineStation(null, 1L, 10, 10));
         line.addLineStation(new LineStation(1L, 2L, 10, 10));
         line.addLineStation(new LineStation(2L, 3L, 10, 10));
     }
 
+    @DisplayName("라인에 있는 모든 역에 대한 id를 찾는 테스트")
     @Test
     void findLineWithStationsById() {
         List<Station> stations = Lists.newArrayList(station1, station2, station3);
@@ -69,9 +71,10 @@ public class LineStationServiceTest {
         assertThat(lineDetailResponse.getStations()).hasSize(3);
     }
 
+    @DisplayName("전체노선을 반환하는 테스트")
     @Test
     void wholeLines() {
-        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-yellow-500");
         newLine.addLineStation(new LineStation(null, 4L, 10, 10));
         newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));

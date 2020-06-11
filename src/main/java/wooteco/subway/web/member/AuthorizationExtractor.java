@@ -1,10 +1,13 @@
 package wooteco.subway.web.member;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+import io.jsonwebtoken.JwtException;
 
 @Component
 public class AuthorizationExtractor {
@@ -22,10 +25,17 @@ public class AuthorizationExtractor {
                 if (commaIndex > 0) {
                     authHeaderValue = authHeaderValue.substring(0, commaIndex);
                 }
-                return authHeaderValue;
+                return validation(authHeaderValue);
             }
         }
 
         return Strings.EMPTY;
+    }
+
+    private String validation(String authHeaderValue) {
+        if (authHeaderValue.equals("null")) {
+            throw new JwtException("로그인을 해주세요.");
+        }
+        return authHeaderValue;
     }
 }

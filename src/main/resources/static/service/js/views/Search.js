@@ -65,6 +65,20 @@ function Search() {
       classList.add('mdi-star')
       classList.add('text-yellow-500')
     }
+    const favoriteInput = {
+      source: $departureStationName.value,
+      target: $arrivalStationName.value,
+    }
+
+    api.favorite.add(favoriteInput)
+      .then(res => {
+        if (!res.ok){
+          throw res
+        }
+        alert("추가 되었습니다.");
+      }).catch(error => {
+        error.json().then(error => alert(error.message))
+    })
   }
 
   const initEventListener = () => {
