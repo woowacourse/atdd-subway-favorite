@@ -1,58 +1,83 @@
 package wooteco.subway.domain.line;
 
 import java.util.Objects;
+import org.springframework.data.annotation.Id;
 
 public class LineStation {
-    private Long preStationId;
-    private Long stationId;
-    private int distance;
-    private int duration;
 
-    public LineStation(Long preStationId, Long stationId, int distance, int duration) {
-        this.preStationId = preStationId;
-        this.stationId = stationId;
-        this.distance = distance;
-        this.duration = duration;
-    }
+	@Id
+	private final Long id;
+	private final Long preStationId;
+	private final Long stationId;
+	private final int distance;
+	private final int duration;
 
-    public Long getPreStationId() {
-        return preStationId;
-    }
+	private LineStation(Long id, Long preStationId, Long stationId, int distance, int duration) {
+		this.id = id;
+		this.preStationId = preStationId;
+		this.stationId = stationId;
+		this.distance = distance;
+		this.duration = duration;
+	}
 
-    public Long getStationId() {
-        return stationId;
-    }
+	public static LineStation of(Long preStationId, Long stationId, int distance, int duration) {
+		return new LineStation(null, preStationId, stationId, distance, duration);
+	}
 
-    public int getDistance() {
-        return distance;
-    }
+	public LineStation withId(Long Id) {
+		return new LineStation(Id, this.preStationId, this.stationId, this.distance, this.duration);
+	}
 
-    public int getDuration() {
-        return duration;
-    }
+	public LineStation makeLineStationUpdateBy(Long preStationId) {
+		return new LineStation(this.id, preStationId, this.stationId, this.distance, this.duration);
+	}
 
-    public void updatePreLineStation(Long preStationId) {
-        this.preStationId = preStationId;
-    }
+	public boolean isLineStationOf(Long preStationId, Long stationId) {
+		return this.preStationId.equals(preStationId) && this.stationId.equals(stationId)
+			|| this.preStationId.equals(stationId) && this.stationId.equals(preStationId);
+	}
 
-    public boolean isLineStationOf(Long preStationId, Long stationId) {
-        return this.preStationId == preStationId && this.stationId == stationId
-                || this.preStationId == stationId && this.stationId == preStationId;
-    }
+	public Long getPreStationId() {
+		return preStationId;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LineStation that = (LineStation) o;
-        return distance == that.distance &&
-                duration == that.duration &&
-                Objects.equals(preStationId, that.preStationId) &&
-                Objects.equals(stationId, that.stationId);
-    }
+	public Long getStationId() {
+		return stationId;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(preStationId, stationId, distance, duration);
-    }
+	public int getDistance() {
+		return distance;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		LineStation that = (LineStation) o;
+		return Objects.equals(id, that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "LineStation{" +
+			"id=" + id +
+			", preStationId=" + preStationId +
+			", stationId=" + stationId +
+			", distance=" + distance +
+			", duration=" + duration +
+			'}';
+	}
 }

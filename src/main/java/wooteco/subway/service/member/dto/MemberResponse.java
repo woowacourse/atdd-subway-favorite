@@ -1,31 +1,55 @@
 package wooteco.subway.service.member.dto;
 
+import java.util.Objects;
 import wooteco.subway.domain.member.Member;
 
 public class MemberResponse {
-    private Long id;
-    private String email;
-    private String name;
 
-    public MemberResponse(Long id, String email, String name) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-    }
+	private Long id;
+	private String email;
+	private String name;
 
-    public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getName());
-    }
+	private MemberResponse() {
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public MemberResponse(Long id, String email, String name) {
+		this.id = id;
+		this.email = email;
+		this.name = name;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public static MemberResponse of(Member member) {
+		return new MemberResponse(member.getId(), member.getEmail(), member.getName());
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		MemberResponse that = (MemberResponse) o;
+		return Objects.equals(id, that.id) &&
+			Objects.equals(email, that.email) &&
+			Objects.equals(name, that.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, email, name);
+	}
 }

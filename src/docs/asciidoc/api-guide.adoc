@@ -19,4 +19,42 @@ endif::[]
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='curl-request,http-request,http-response,request-fields']
+
+
+'''
+
+[[resources-members-createException]]
+
+=== 중복된 이메일로 회원 가입
+
+operation::members/createException[snippets='curl-request,http-request,http-response,request-fields']
+
+
+'''
+
+[[resources-members-view]]
+=== 회원 조회
+
+operation::members/view[snippets='curl-request,http-request,http-response,request-parameters,response-fields']
+
+'''
+
+[[resources-members-viewException]]
+=== 회원 조회 - 에러
+
+operation::members/viewException[snippets='curl-request,http-request,http-response,request-parameters,response-fields']
+
+'''
+
+[[resources-members-update]]
+=== 회원 정보 수정
+
+operation::members/update[snippets='curl-request,http-request,http-response,path-parameters,request-fields']
+
+'''
+
+[[resources-members-delete]]
+=== 회원 정보 삭제
+
+operation::members/delete[snippets='curl-request,http-request,http-response,path-parameters']

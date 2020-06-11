@@ -1,40 +1,47 @@
 package wooteco.subway.web;
 
+import java.net.URI;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.StationCreateRequest;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.domain.station.Station;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 public class StationController {
-    private final StationService stationService;
 
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
-    }
+	private final StationService stationService;
 
-    @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
-        Station persistStation = stationService.createStation(view.toStation());
+	public StationController(StationService stationService) {
+		this.stationService = stationService;
+	}
 
-        return ResponseEntity
-                .created(URI.create("/stations/" + persistStation.getId()))
-                .body(StationResponse.of(persistStation));
-    }
+	@PostMapping("/stations")
+	public ResponseEntity<StationResponse> createStation(
+		@RequestBody @Validated StationCreateRequest view) {
+		Station persistStation = stationService.createStation(view.toStation());
 
-    @GetMapping("/stations")
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(StationResponse.listOf(stationService.findStations()));
-    }
+		return ResponseEntity
+			.created(URI.create("/stations/" + persistStation.getId()))
+			.body(StationResponse.of(persistStation));
+	}
 
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
-        return ResponseEntity.noContent().build();
-    }
+	@GetMapping("/stations")
+	public ResponseEntity<List<StationResponse>> showStations() {
+		return ResponseEntity.ok().body(StationResponse.listOf(stationService.findStations()));
+	}
+
+	@DeleteMapping("/stations/{id}")
+	public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+		stationService.deleteStationById(id);
+		return ResponseEntity.noContent().build();
+	}
 }

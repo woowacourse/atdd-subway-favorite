@@ -1,32 +1,35 @@
 package wooteco.subway.service.station;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.line.LineStationService;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.LineStationService;
 
-import java.util.List;
-
+@Transactional
 @Service
 public class StationService {
-    private LineStationService lineStationService;
-    private StationRepository stationRepository;
 
-    public StationService(LineStationService lineStationService, StationRepository stationRepository) {
-        this.lineStationService = lineStationService;
-        this.stationRepository = stationRepository;
-    }
+	private LineStationService lineStationService;
+	private StationRepository stationRepository;
 
-    public Station createStation(Station station) {
-        return stationRepository.save(station);
-    }
+	public StationService(LineStationService lineStationService,
+		StationRepository stationRepository) {
+		this.lineStationService = lineStationService;
+		this.stationRepository = stationRepository;
+	}
 
-    public List<Station> findStations() {
-        return stationRepository.findAll();
-    }
+	public Station createStation(Station station) {
+		return stationRepository.save(station);
+	}
 
-    public void deleteStationById(Long id) {
-        lineStationService.deleteLineStationByStationId(id);
-        stationRepository.deleteById(id);
-    }
+	public List<Station> findStations() {
+		return stationRepository.findAll();
+	}
+
+	public void deleteStationById(Long id) {
+		lineStationService.deleteLineStationByStationId(id);
+		stationRepository.deleteById(id);
+	}
 }

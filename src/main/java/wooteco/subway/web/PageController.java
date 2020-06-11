@@ -9,58 +9,74 @@ import wooteco.subway.service.station.StationService;
 
 @Controller
 public class PageController {
-    private LineService lineService;
-    private StationService stationService;
 
-    public PageController(LineService lineService, StationService stationService) {
-        this.lineService = lineService;
-        this.stationService = stationService;
-    }
+	private final LineService lineService;
+	private final StationService stationService;
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public String index() {
-        return "admin/index";
-    }
+	public PageController(LineService lineService, StationService stationService) {
+		this.lineService = lineService;
+		this.stationService = stationService;
+	}
 
-    @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
-    public String stationPage(Model model) {
-        model.addAttribute("stations", stationService.findStations());
-        return "admin/admin-station";
-    }
+	@GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
+	public String adminIndexPage() {
+		return "admin/index";
+	}
 
-    @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
-    public String linePage(Model model) {
-        model.addAttribute("lines", lineService.findLines());
-        return "admin/admin-line";
-    }
+	@GetMapping(value = "/admin/stations", produces = MediaType.TEXT_HTML_VALUE)
+	public String stationPage(Model model) {
+		model.addAttribute("stations", stationService.findStations());
+		return "admin/admin-station";
+	}
 
-    @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String edgePage() {
-        return "admin/admin-edge";
-    }
+	@GetMapping(value = "/admin/lines", produces = MediaType.TEXT_HTML_VALUE)
+	public String linePage(Model model) {
+		model.addAttribute("lines", lineService.findLines());
+		return "admin/admin-line";
+	}
 
-    @GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
-    public String mapPage() {
-        return "service/map";
-    }
+	@GetMapping(value = "/admin/edges", produces = MediaType.TEXT_HTML_VALUE)
+	public String edgePage() {
+		return "admin/admin-edge";
+	}
 
-    @GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
-    public String searchPage() {
-        return "service/search";
-    }
+	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
+	public String indexPage() {
+		return "service/index";
+	}
 
-    @GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
-    public String joinPage() {
-        return "service/join";
-    }
+	@GetMapping(value = "/map", produces = MediaType.TEXT_HTML_VALUE)
+	public String mapPage() {
+		return "service/map";
+	}
 
-    @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
-    public String loginPage() {
-        return "service/login";
-    }
+	@GetMapping(value = "/search", produces = MediaType.TEXT_HTML_VALUE)
+	public String searchPage() {
+		return "service/search";
+	}
 
-    @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
-    public String favoritesPage() {
-        return "service/favorite";
-    }
+	@GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
+	public String joinPage() {
+		return "service/join";
+	}
+
+	@GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
+	public String loginPage() {
+		return "service/login";
+	}
+
+	@GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
+	public String favoritesPage() {
+		return "service/favorite";
+	}
+
+	@GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+	public String myInfoPage() {
+		return "service/mypage";
+	}
+
+	@GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+	public String myInfoEditPage() {
+		return "service/mypage-edit";
+	}
 }
