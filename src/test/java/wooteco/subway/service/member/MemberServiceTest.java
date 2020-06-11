@@ -69,7 +69,7 @@ public class MemberServiceTest {
         Station jamSilStation = new Station(JAM_SIL_STATION_NAME);
         when(stationRepository.findByName(KANG_NAM_STATION_NAME)).thenReturn(Optional.of(kangNamStation));
         when(stationRepository.findByName(JAM_SIL_STATION_NAME)).thenReturn(Optional.of(jamSilStation));
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         FavoriteRequest favoriteRequest = new FavoriteRequest(KANG_NAM_STATION_NAME, JAM_SIL_STATION_NAME);
 
         memberService.addFavorite(member, favoriteRequest);
@@ -101,7 +101,7 @@ public class MemberServiceTest {
         when(stationRepository.findByName(JAM_SIL_STATION_NAME)).thenReturn(Optional.of(jamSilStation));
         when(stationRepository.findByName(DOGOK_STATION_NAME)).thenReturn(Optional.of(dogukStation));
 
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 
         List<Station> stations = Arrays.asList(kangNamStation, jamSilStation, dogukStation);
         when(stationRepository.findAll()).thenReturn(stations);
@@ -111,7 +111,7 @@ public class MemberServiceTest {
         memberService.addFavorite(member, favoriteRequest1);
         memberService.addFavorite(member, favoriteRequest2);
 
-        Set<FavoriteResponse> favorites = memberService.findFavorites(member);
+        Set<FavoriteResponse> favorites = memberService.findFavorites(1L, member);
 
         assertThat(favorites.size()).isEqualTo(2);
     }
@@ -119,10 +119,10 @@ public class MemberServiceTest {
     @DisplayName("즐겨찾기 삭제")
     @Test
     void deleteFavorite() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         member.addFavorite(new Favorite(1L, 1L, 2L));
         member.addFavorite(new Favorite(2L, 1L, 3L));
-        memberService.deleteFavorites(1L, member);
+        memberService.deleteFavorites(1L, 1L, member);
 
         assertThat(member.getFavorites().size()).isEqualTo(1);
 

@@ -75,16 +75,17 @@ public class MemberController {
     }
 
     @IsAuth(isAuth = Auth.AUTH)
-    @GetMapping("/favorites")
-    public ResponseEntity<Set<FavoriteResponse>> getFavorites(@LoginMember Member member) {
-        Set<FavoriteResponse> favorites = memberService.findFavorites(member);
+    @GetMapping("{memberId}/favorites")
+    public ResponseEntity<Set<FavoriteResponse>> getFavorites(@LoginMember Member member, @PathVariable Long memberId) {
+        Set<FavoriteResponse> favorites = memberService.findFavorites(memberId, member);
         return ResponseEntity.ok().body(favorites);
     }
 
     @IsAuth(isAuth = Auth.AUTH)
-    @DeleteMapping("/favorites/{id}")
-    public ResponseEntity<Void> deleteFavorites(@LoginMember Member member, @PathVariable Long id) {
-        memberService.deleteFavorites(id, member);
+    @DeleteMapping("{memberId}/favorites/{favoriteId}")
+    public ResponseEntity<Void> deleteFavorites(@LoginMember Member member, @PathVariable Long memberId,
+        @PathVariable Long favoriteId) {
+        memberService.deleteFavorites(memberId, favoriteId, member);
         return ResponseEntity.noContent().build();
     }
 }

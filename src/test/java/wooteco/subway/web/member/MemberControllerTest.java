@@ -131,7 +131,7 @@ public class MemberControllerTest {
         memberService.addFavorite(memberService.findMemberByEmail(TEST_USER_EMAIL),
             new FavoriteRequest("잠실", "강남"));
 
-        this.mockMvc.perform(get("/members/favorites")
+        this.mockMvc.perform(get("/members/1/favorites")
             .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isOk())
             .andDo(print())
@@ -145,7 +145,7 @@ public class MemberControllerTest {
         memberService.addFavorite(memberService.findMemberByEmail(TEST_USER_EMAIL),
             new FavoriteRequest("잠실", "강남"));
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/favorites/{id}", 1)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/members/1/favorites/{id}", 1, 1)
             .header(AuthorizationExtractor.AUTHORIZATION, token))
             .andExpect(status().isNoContent())
             .andDo(print())

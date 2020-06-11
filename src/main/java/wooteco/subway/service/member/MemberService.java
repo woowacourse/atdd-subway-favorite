@@ -90,7 +90,8 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public Set<FavoriteResponse> findFavorites(Member member) {
+    public Set<FavoriteResponse> findFavorites(Long memberId, Member member) {
+        isSameMember(memberId, member);
         Set<Favorite> favorites = member.getFavorites();
         Set<FavoriteResponse> favoriteResponses = new LinkedHashSet<>();
         List<Station> stations = stationRepository.findAll();
@@ -105,9 +106,16 @@ public class MemberService {
         return favoriteResponses;
     }
 
-    public void deleteFavorites(Long favoriteId, Member member) {
+    public void deleteFavorites(Long memberId, Long favoriteId, Member member) {
+        isSameMember(memberId, member);
         member.deleteFavoriteBy(favoriteId);
         memberRepository.save(member);
+    }
+
+    private void isSameMember(Long memberId, Member member){
+        if (!memberId.equals(member.getId())) {
+            throw new IllegalArgumentException("접근 불가능한 정보입니다.");
+        }
     }
 
     private Station findStationById(List<Station> stations, Long id) {

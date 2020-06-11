@@ -72,7 +72,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         given()
             .header(AuthorizationExtractor.AUTHORIZATION, token)
         .when()
-            .delete("/members/favorites/" + favoriteId)
+            .delete("/members/1/favorites/" + favoriteId)
         .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
@@ -83,7 +83,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return given()
                     .header(AuthorizationExtractor.AUTHORIZATION, token)
                 .when()
-                    .get("/members/favorites")
+                    .get("/members/1/favorites")
                 .then()
                     .log().all()
                     .statusCode(HttpStatus.OK.value())
