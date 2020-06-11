@@ -28,12 +28,12 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
-    private static final String STATION_NAME4 = "양재역";
-    private static final String STATION_NAME5 = "양재시민의숲역";
-    private static final String STATION_NAME6 = "서울역";
+    private static final String STATION_NAME_KANGNAM = "강남역";
+    private static final String STATION_NAME_YEOKSAM = "역삼역";
+    private static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    private static final String STATION_NAME_YANGJAE = "양재역";
+    private static final String STATION_NAME_YANGJAE_CITIZENS_FOREST = "양재시민의숲역";
+    private static final String STATION_NAME_SEOUL = "서울역";
 
     @Mock
     private StationRepository stationRepository;
@@ -58,12 +58,12 @@ public class PathServiceTest {
     void setUp() {
         pathService = new PathService(stationRepository, lineRepository, graphService);
 
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
-        station5 = new Station(5L, STATION_NAME5);
-        station6 = new Station(6L, STATION_NAME6);
+        station1 = new Station(1L, STATION_NAME_KANGNAM);
+        station2 = new Station(2L, STATION_NAME_YEOKSAM);
+        station3 = new Station(3L, STATION_NAME_SEOLLEUNG);
+        station4 = new Station(4L, STATION_NAME_YANGJAE);
+        station5 = new Station(5L, STATION_NAME_YANGJAE_CITIZENS_FOREST);
+        station6 = new Station(6L, STATION_NAME_SEOUL);
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 10, 10));
@@ -81,20 +81,20 @@ public class PathServiceTest {
     void findPath() {
         when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2));
         when(stationRepository.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
-        when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
-        when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
+        when(stationRepository.findByName(STATION_NAME_SEOLLEUNG)).thenReturn(Optional.of(station3));
+        when(stationRepository.findByName(STATION_NAME_YANGJAE_CITIZENS_FOREST)).thenReturn(Optional.of(station5));
         when(graphService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
 
-        PathRequest pathRequest = PathRequest.of(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
+        PathRequest pathRequest = PathRequest.of(STATION_NAME_SEOLLEUNG, STATION_NAME_YANGJAE_CITIZENS_FOREST, PathType.DISTANCE);
         PathResponse pathResponse = pathService.findPath(pathRequest);
 
         List<StationResponse> paths = pathResponse.getStations();
         assertThat(paths).hasSize(5);
-        assertThat(paths.get(0).getName()).isEqualTo(STATION_NAME3);
-        assertThat(paths.get(1).getName()).isEqualTo(STATION_NAME2);
-        assertThat(paths.get(2).getName()).isEqualTo(STATION_NAME1);
-        assertThat(paths.get(3).getName()).isEqualTo(STATION_NAME4);
-        assertThat(paths.get(4).getName()).isEqualTo(STATION_NAME5);
+        assertThat(paths.get(0).getName()).isEqualTo(STATION_NAME_SEOLLEUNG);
+        assertThat(paths.get(1).getName()).isEqualTo(STATION_NAME_YEOKSAM);
+        assertThat(paths.get(2).getName()).isEqualTo(STATION_NAME_KANGNAM);
+        assertThat(paths.get(3).getName()).isEqualTo(STATION_NAME_YANGJAE);
+        assertThat(paths.get(4).getName()).isEqualTo(STATION_NAME_YANGJAE_CITIZENS_FOREST);
         assertThat(pathResponse.getDistance()).isEqualTo(40);
         assertThat(pathResponse.getDuration()).isEqualTo(40);
     }
@@ -103,7 +103,7 @@ public class PathServiceTest {
     @Test
     void findPathWithSameSourceAndTarget() {
         assertThrows(RuntimeException.class, () -> {
-            PathRequest pathRequest = PathRequest.of(STATION_NAME3, STATION_NAME3, PathType.DISTANCE);
+            PathRequest pathRequest = PathRequest.of(STATION_NAME_SEOLLEUNG, STATION_NAME_SEOLLEUNG, PathType.DISTANCE);
             pathService.findPath(pathRequest);
         });
     }
@@ -112,7 +112,7 @@ public class PathServiceTest {
     @Test
     void findPathWithNoPath() {
         assertThrows(RuntimeException.class, () -> {
-            PathRequest pathRequest = PathRequest.of(STATION_NAME3, STATION_NAME6, PathType.DISTANCE);
+            PathRequest pathRequest = PathRequest.of(STATION_NAME_SEOLLEUNG, STATION_NAME_SEOUL, PathType.DISTANCE);
             pathService.findPath(pathRequest);
         });
     }

@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GraphServiceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
-    private static final String STATION_NAME4 = "양재역";
-    private static final String STATION_NAME5 = "양재시민의숲역";
-    private static final String STATION_NAME6 = "서울역";
+    private static final String STATION_NAME_KANGNAM = "강남역";
+    private static final String STATION_NAME_YEOKSAM = "역삼역";
+    private static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    private static final String STATION_NAME_YANGJAE = "양재역";
+    private static final String STATION_NAME_YANGJAE_CITIZENS_FOREST = "양재시민의숲역";
+    private static final String STATION_NAME_SEOUL = "서울역";
 
     private GraphService graphService;
 
@@ -38,12 +38,12 @@ public class GraphServiceTest {
     void setUp() {
         graphService = new GraphService();
 
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
-        station5 = new Station(5L, STATION_NAME5);
-        station6 = new Station(6L, STATION_NAME6);
+        station1 = new Station(1L, STATION_NAME_KANGNAM);
+        station2 = new Station(2L, STATION_NAME_YEOKSAM);
+        station3 = new Station(3L, STATION_NAME_SEOLLEUNG);
+        station4 = new Station(4L, STATION_NAME_YANGJAE);
+        station5 = new Station(5L, STATION_NAME_YANGJAE_CITIZENS_FOREST);
+        station6 = new Station(6L, STATION_NAME_SEOUL);
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line1.addLineStation(new LineStation(null, 1L, 10, 10));

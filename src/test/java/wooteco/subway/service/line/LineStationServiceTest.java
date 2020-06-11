@@ -25,10 +25,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LineStationServiceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
-    private static final String STATION_NAME4 = "삼성역";
+    private static final String STATION_NAME_KANGNAM = "강남역";
+    private static final String STATION_NAME_YEOKSAM = "역삼역";
+    private static final String STATION_NAME_SEOLLEUNG = "선릉역";
+    private static final String STATION_NAME_SAMSEONG = "삼성역";
 
     @Mock
     private LineRepository lineRepository;
@@ -47,10 +47,10 @@ public class LineStationServiceTest {
     void setUp() {
         lineStationService = new LineStationService(lineRepository, stationRepository);
 
-        station1 = new Station(1L, STATION_NAME1);
-        station2 = new Station(2L, STATION_NAME2);
-        station3 = new Station(3L, STATION_NAME3);
-        station4 = new Station(4L, STATION_NAME4);
+        station1 = new Station(1L, STATION_NAME_KANGNAM);
+        station2 = new Station(2L, STATION_NAME_YEOKSAM);
+        station3 = new Station(3L, STATION_NAME_SEOLLEUNG);
+        station4 = new Station(4L, STATION_NAME_SAMSEONG);
 
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
         line.addLineStation(new LineStation(null, 1L, 10, 10));
