@@ -1,9 +1,11 @@
 package wooteco.subway.service.member;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
@@ -93,15 +95,28 @@ public class MemberService {
         isSameMember(memberId, member);
         Set<Favorite> favorites = member.getFavorites();
         Set<FavoriteResponse> favoriteResponses = new LinkedHashSet<>();
+        List<Station> stations = stationRepository.findAllById(getStationIds(favorites));
 
         for (Favorite favorite : favorites) {
             FavoriteResponse favoriteResponse = new FavoriteResponse(
                 favorite.getId(),
-                findStationById(favorite.getSourceStationId()).getName(),
-                findStationById(favorite.getTargetStationId()).getName());
+                findStationById(stations, favorite.getSourceStationId()).getName(),
+                findStationById(stations, favorite.getTargetStationId()).getName());
             favoriteResponses.add(favoriteResponse);
         }
+
         return favoriteResponses;
+    }
+
+    private List<Long> getStationIds(Set<Favorite> favorites) {
+        List<Long> stationIds = favorites.stream()
+            .map(Favorite::getSourceStationId)
+            .collect(Collectors.toList());
+
+        stationIds.addAll(favorites.stream()
+            .map(Favorite::getTargetStationId)
+            .collect(Collectors.toList()));
+        return stationIds;
     }
 
     public void deleteFavorites(Long memberId, Long favoriteId, Member member) {
@@ -116,8 +131,9 @@ public class MemberService {
         }
     }
 
-    private Station findStationById(Long id) {
-        return stationRepository.findById(id)
+    private Station findStationById(List<Station> stations, Long id) {
+        return stations.stream().filter(station -> id.equals(station.getId()))
+            .findFirst()
             .orElseThrow(() -> new NoSuchElementException("해당 역을 찾을 수 없습니다."));
     }
 }
