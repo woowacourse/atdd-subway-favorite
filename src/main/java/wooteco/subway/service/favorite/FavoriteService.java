@@ -38,16 +38,6 @@ public class FavoriteService {
         return new FavoriteResponse(savedFavorite.getId(), sourceStation.getName(), targetStation.getName());
     }
 
-    public Favorite findFavoriteBySourceAndTarget(String source, String target) {
-        return favoriteRepository.findBySourceAndTarget(source, target)
-                .orElseThrow(() -> new NotExistFavoriteDataException(source + "," + target));
-    }
-
-    public Favorite findFavoriteById(Long id) {
-        return favoriteRepository.findById(id)
-                .orElseThrow(() -> new NotExistFavoriteDataException("id : " + id));
-    }
-
     public FavoritesResponse findAllByMemberId(Long memberId) {
         Favorites favorites = new Favorites(favoriteRepository.findAllByMemberId(memberId));
 
