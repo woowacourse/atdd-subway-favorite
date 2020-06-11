@@ -33,7 +33,7 @@ public class MemberServiceIntegrationTest {
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
-        memberRepository.save(new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD));
+
     }
 
     @DisplayName("로그인 email 정보가 없을 경우 익셉션이 발생한다")
@@ -48,9 +48,10 @@ public class MemberServiceIntegrationTest {
     @DisplayName("이미 저장된 member일경우 Exception이 발생한다 ")
     @Test
     void createMemberFailTest() {
-
+        memberRepository.save(new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD));
         Assertions.assertThatThrownBy(() -> memberService.createMember(memberRepository.save(new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD))))
         .isInstanceOf(DuplicateException.class);
+        memberRepository.deleteAll();
     }
 
 }

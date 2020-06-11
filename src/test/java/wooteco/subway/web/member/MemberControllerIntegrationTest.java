@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.MemberDocumentation;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -40,6 +41,9 @@ public class MemberControllerIntegrationTest {
     JwtTokenProvider jwtTokenProvider;
 
     @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -48,6 +52,7 @@ public class MemberControllerIntegrationTest {
                 .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
+        memberRepository.deleteAll();
     }
 
     @DisplayName("내 정보 확인에서 이메일이 맞지 않을경우 익셉션이 발생한다")
