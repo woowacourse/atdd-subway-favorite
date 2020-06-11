@@ -4,7 +4,6 @@ import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import wooteco.subway.domain.station.Station;
 
-//@Table
 public class FavoritePath {
     @Id
     private Long id;

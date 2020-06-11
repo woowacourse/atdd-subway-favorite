@@ -1,8 +1,6 @@
 package wooteco.subway.domain.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +24,18 @@ class MemberTest {
 
     @Test
     void update() {
+        final String newName = "newName";
+        final String newPassword = "newPassword";
+        member.update(newName, newPassword);
 
+        assertThat(member.getName()).isEqualTo(newName);
+        assertThat(member.checkPassword(newPassword)).isTrue();
     }
 
     @Test
     void checkPassword() {
+        assertThat(member.checkPassword(TEST_PASSWORD)).isTrue();
+        assertThat(member.checkPassword("weird password")).isFalse();
     }
 
     @DisplayName("즐겨찾기 경로 추가")
@@ -52,8 +57,7 @@ class MemberTest {
         // given : member 객체에 favorite path A 가 저장되어있다.
         Station start = new Station(1L, "신정역");
         Station end = new Station(2L, "목동역");
-        FavoritePath favoritePath = mock(FavoritePath.class);
-        when(favoritePath.match(start, end)).thenReturn(true);
+        FavoritePath favoritePath = new FavoritePath(start, end);
         member.addFavoritePath(favoritePath);
         final int givenSize = member.getFavoritePaths().size();
 
@@ -63,6 +67,5 @@ class MemberTest {
         // then : member 객체에서 favorite path A 가 삭제된다.
         assertThat(member.getFavoritePaths()).hasSize(givenSize - 1);
     }
-
 
 }
