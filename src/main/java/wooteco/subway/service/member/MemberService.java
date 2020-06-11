@@ -3,7 +3,6 @@ package wooteco.subway.service.member;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -94,13 +93,12 @@ public class MemberService {
         isSameMember(memberId, member);
         Set<Favorite> favorites = member.getFavorites();
         Set<FavoriteResponse> favoriteResponses = new LinkedHashSet<>();
-        List<Station> stations = stationRepository.findAll();
 
         for (Favorite favorite : favorites) {
             FavoriteResponse favoriteResponse = new FavoriteResponse(
                 favorite.getId(),
-                findStationById(stations, favorite.getSourceStationId()).getName(),
-                findStationById(stations, favorite.getTargetStationId()).getName());
+                findStationById(favorite.getSourceStationId()).getName(),
+                findStationById(favorite.getTargetStationId()).getName());
             favoriteResponses.add(favoriteResponse);
         }
         return favoriteResponses;
@@ -112,16 +110,14 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    private void isSameMember(Long memberId, Member member){
+    private void isSameMember(Long memberId, Member member) {
         if (!memberId.equals(member.getId())) {
             throw new IllegalArgumentException("접근 불가능한 정보입니다.");
         }
     }
 
-    private Station findStationById(List<Station> stations, Long id) {
-        return stations.stream()
-            .filter(station -> Objects.equals(id, station.getId()))
-            .findFirst()
+    private Station findStationById(Long id) {
+        return stationRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("해당 역을 찾을 수 없습니다."));
     }
 }
