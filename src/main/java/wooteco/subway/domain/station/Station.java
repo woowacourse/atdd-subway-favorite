@@ -1,9 +1,10 @@
 package wooteco.subway.domain.station;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-
-import java.time.LocalDateTime;
 
 public class Station {
     @Id
@@ -24,6 +25,10 @@ public class Station {
         this.name = name;
     }
 
+    public boolean isMatchName(String name) {
+        return Objects.equals(this.name, name);
+    }
+
     public Long getId() {
         return id;
     }
@@ -35,4 +40,5 @@ public class Station {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
 }

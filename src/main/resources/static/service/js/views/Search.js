@@ -1,7 +1,7 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import { ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js'
 import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import { getCookie } from '../../utils/loginUtils.js';
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -49,7 +49,32 @@ function Search() {
 
   const onToggleFavorite = event => {
     event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
+
+    if (!getCookie()) {
+      alert("로그인 먼저 해주세요.");
+      window.location="/login";
+      return;
+    }
+
+    const data = {
+      sourceName: $departureStationName.value,
+      targetName: $arrivalStationName.value
+    }
+
+    api.favorite.create(data)
+    .then(response => {
+      if (!response.ok) {
+        throw response;
+      }
+      alert("등록되었습니다.");
+    }).catch(response => response.json())
+    .then(error => {
+      if (error) {
+        alert(error.message);
+        return;
+      }
+    });
+    const isFavorite = $favoriteButton.classList.contains('mdi-star');
     const classList = $favoriteButton.classList
 
     if (isFavorite) {
