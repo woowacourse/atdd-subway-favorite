@@ -6,13 +6,14 @@ import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.exception.DuplicateException;
 import wooteco.subway.web.member.exception.InvalidPasswordException;
 import wooteco.subway.web.member.exception.NotExistMemberDataException;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -20,6 +21,9 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
+        if(memberRepository.existsById(member.getId())) {
+            throw new DuplicateException(member.getEmail());
+        }
         return memberRepository.save(member);
     }
 
