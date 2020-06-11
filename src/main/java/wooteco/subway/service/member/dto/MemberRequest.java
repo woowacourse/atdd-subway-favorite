@@ -7,6 +7,9 @@ public class MemberRequest {
     private String name;
     private String password;
 
+    private MemberRequest() {
+    }
+
     public String getEmail() {
         return email;
     }
@@ -20,6 +23,6 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, name, password);
+        return Member.of(email, name, password);
     }
 }

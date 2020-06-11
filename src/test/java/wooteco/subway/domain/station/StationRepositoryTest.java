@@ -17,6 +17,7 @@ public class StationRepositoryTest {
         String stationName = "강남역";
         stationRepository.save(new Station(stationName));
 
-        assertThrows(DbActionExecutionException.class, () -> stationRepository.save(new Station(stationName)));
+        assertThrows(DbActionExecutionException.class,
+                () -> stationRepository.save(new Station(stationName)));
     }
 }
