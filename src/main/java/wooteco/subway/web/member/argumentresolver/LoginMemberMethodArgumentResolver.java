@@ -1,13 +1,11 @@
 package wooteco.subway.web.member.argumentresolver;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
 import wooteco.subway.web.member.exception.InvalidAuthenticationException;
@@ -34,7 +32,6 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         try {
             return memberService.findMemberByEmail(email);
         } catch (Exception e) {
-            System.out.println("리졸버 에러");
             throw new InvalidAuthenticationException("해당 정보를 가진 유저가 존재하지 않습니다.");
         }
     }

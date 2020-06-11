@@ -72,7 +72,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void deleteFavorite(FavoriteResponse favoriteResponse, String token) {
-        System.out.println(favoriteResponse.getId());
         given().
                 header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 when().

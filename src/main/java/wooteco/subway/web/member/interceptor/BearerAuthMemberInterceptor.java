@@ -2,18 +2,13 @@ package wooteco.subway.web.member.interceptor;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.member.exception.InvalidAuthenticationException;
-import wooteco.subway.web.member.exception.NotMatchedEmailIExistInJwtException;
 import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-
-import static org.springframework.http.HttpMethod.*;
 
 @Component
 public class BearerAuthMemberInterceptor implements HandlerInterceptor {
@@ -36,9 +31,7 @@ public class BearerAuthMemberInterceptor implements HandlerInterceptor {
     }
 
     private void validateToken(String token) {
-        System.out.println(jwtTokenProvider.validateToken(token) + "이거야?" + token);
         if (token.isEmpty() || !jwtTokenProvider.validateToken(token)) {
-            System.out.println("토큰 에러");
             throw new InvalidAuthenticationException();
         }
     }
