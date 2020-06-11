@@ -21,7 +21,7 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        if(memberRepository.existsById(member.getId())) {
+        if(memberRepository.existsByEmail(member.getEmail())) {
             throw new DuplicateException(member.getEmail());
         }
         return memberRepository.save(member);
