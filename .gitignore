@@ -30,3 +30,5 @@ out/
 
 ### VS Code ###
 .vscode/
+logs
+log.config.path_IS_UNDEFINED

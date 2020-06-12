@@ -1,7 +1,10 @@
+import { ERROR_MESSAGE } from '../utils/constants.js'
+import { request, requestWithJsonData } from './request.js';
+
 const METHOD = {
   PUT() {
     return {
-      method: 'PUT'
+      method: 'PUT',
     }
   },
   DELETE() {
@@ -23,9 +26,6 @@ const METHOD = {
 }
 
 const api = (() => {
-  const request = (uri, config) => fetch(uri, config)
-  const requestWithJsonData = (uri, config) => fetch(uri, config).then(data => data.json())
-
   const line = {
     getAll() {
       return request(`/lines/detail`)
@@ -41,9 +41,23 @@ const api = (() => {
     }
   }
 
+  const member = {
+    join(data) {
+      return request('/members', METHOD.POST(data)).catch(() => {
+        throw new Error(ERROR_MESSAGE.JOIN_FAIL)
+      })
+    },
+    login(data) {
+      return requestWithJsonData('/oauth/token', METHOD.POST(data)).catch(() => {
+        throw new Error(ERROR_MESSAGE.LOGIN_FAIL)
+      })
+    }
+  }
+
   return {
     line,
-    path
+    path,
+    member
   }
 })()
 

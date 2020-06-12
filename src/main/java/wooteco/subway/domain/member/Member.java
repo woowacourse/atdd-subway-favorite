@@ -14,9 +14,7 @@ public class Member {
     }
 
     public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(null, email, name, password);
     }
 
     public Member(Long id, String email, String name, String password) {
