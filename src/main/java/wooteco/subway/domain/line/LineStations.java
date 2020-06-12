@@ -5,7 +5,7 @@ import wooteco.subway.service.exception.WrongStationException;
 import java.util.*;
 
 public class LineStations {
-    private Set<LineStation> stations;
+    private final Set<LineStation> stations;
 
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;
@@ -77,25 +77,21 @@ public class LineStations {
     }
 
     public LineStations extractPathLineStation(List<Long> path) {
-        Long preStationId = null;
+        Long preStationId = path.remove(0);
         Set<LineStation> paths = new LinkedHashSet<>();
 
         for (Long stationId : path) {
-            if (preStationId == null) {
-                preStationId = stationId;
-                continue;
-            }
-
-            Long finalPreStationId = preStationId;
-            LineStation lineStation = stations.stream()
-                    .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
-                    .findFirst()
-                    .orElseThrow(WrongStationException::new);
-
-            paths.add(lineStation);
+            paths.add(findLineStationById(preStationId, stationId));
             preStationId = stationId;
         }
 
         return new LineStations(paths);
+    }
+
+    private LineStation findLineStationById(Long preStationId, Long stationId) {
+        return stations.stream()
+                .filter(it -> it.isLineStationOf(preStationId, stationId))
+                .findFirst()
+                .orElseThrow(WrongStationException::new);
     }
 }
