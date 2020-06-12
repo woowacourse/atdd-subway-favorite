@@ -77,10 +77,11 @@ public class LineStations {
     }
 
     public LineStations extractPathLineStation(List<Long> path) {
-        Long preStationId = path.remove(0);
+        Long preStationId = path.get(0);
         Set<LineStation> paths = new LinkedHashSet<>();
 
-        for (Long stationId : path) {
+        for (int index = 1; index < path.size(); index++) {
+            Long stationId = path.get(index);
             paths.add(findLineStationById(preStationId, stationId));
             preStationId = stationId;
         }
