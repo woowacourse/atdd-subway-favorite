@@ -1,6 +1,7 @@
 package wooteco.subway.domain.line;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Lines {
@@ -19,6 +20,14 @@ public class Lines {
                 .flatMap(it -> it.getStations().stream())
                 .map(it -> it.getStationId())
                 .collect(Collectors.toList());
+    }
+
+    public LineStations getLineStations() {
+        return lines
+                .stream()
+                .flatMap(it -> it.getStations().stream())
+                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .collect(Collectors.collectingAndThen(Collectors.toSet(), LineStations::new));
     }
 //
 //    public LineStations extractLineStationByStationIds(List<Long> stationIds) {

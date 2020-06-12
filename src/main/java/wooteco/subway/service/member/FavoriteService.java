@@ -6,12 +6,14 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Favorites;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.service.exception.SameStationException;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.station.StationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -41,10 +43,10 @@ public class FavoriteService {
         memberRepository.save(member);
     }
 
-    public List<FavoriteResponse> showAllFavorites(Member member) {
-        Favorites favorites = member.getFavorites();
-
-        return FavoriteResponse.toFavoriteResponses(stationService.findStations(), favorites);
+    private static List<FavoriteResponse> toFavoriteResponses(Stations stations, Favorites favorites) {
+        return favorites.getFavorites().stream()
+                .map(favorite -> toFavoriteResponse(stations, favorite))
+                .collect(Collectors.toList());
     }
 
     public boolean hasFavorite(FavoriteRequest favoriteRequest, Member member) {
@@ -58,5 +60,17 @@ public class FavoriteService {
         if (favoriteRequest.getSourceName().equals(favoriteRequest.getDestinationName())) {
             throw new SameStationException();
         }
+    }
+
+    private static FavoriteResponse toFavoriteResponse(Stations stations, Favorite favorite) {
+        String sourceName = stations.extractStationById(favorite.getSourceId()).getName();
+        String destinationName = stations.extractStationById(favorite.getDestinationId()).getName();
+        return new FavoriteResponse(sourceName, destinationName);
+    }
+
+    public List<FavoriteResponse> showAllFavorites(Member member) {
+        Favorites favorites = member.getFavorites();
+
+        return toFavoriteResponses(stationService.findStations(), favorites);
     }
 }

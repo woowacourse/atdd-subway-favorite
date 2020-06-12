@@ -1,9 +1,9 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStations;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.Stations;
@@ -33,18 +33,18 @@ public class PathService {
             throw new WrongStationException("SAME_STATION");
         }
 
-        List<Line> lines = lineRepository.findAll();
+        Lines lines = new Lines(lineRepository.findAll());
         Station sourceStation = stationService.findStationByName(source);
         Station targetStation = stationService.findStationByName(target);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         Stations stations = stationService.findStationsById(path);
 
-        LineStations lineStations = lines.stream()
-                .flatMap(it -> it.getStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
-                .collect(Collectors.collectingAndThen(Collectors.toSet(), LineStations::new));
+        return toPathResponse(lines, path, stations);
+    }
 
+    private PathResponse toPathResponse(Lines lines, List<Long> path, Stations stations) {
+        LineStations lineStations = lines.getLineStations();
         LineStations paths = lineStations.extractPathLineStation(path);
         int duration = paths.getTotalDuration();
         int distance = paths.getTotalDistance();
