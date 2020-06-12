@@ -2,6 +2,8 @@ package wooteco.subway.domain.station;
 
 import java.util.List;
 
+import wooteco.subway.exception.NoSuchStationException;
+
 public class Stations {
     private List<Station> stations;
 
@@ -9,14 +11,14 @@ public class Stations {
         this.stations = stations;
     }
 
-    public List<Station> getStations() {
-        return stations;
-    }
-
     public Station extractStationById(Long stationId) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> it.getId().equals(stationId))
+            .findFirst()
+            .orElseThrow(NoSuchStationException::new);
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 }
