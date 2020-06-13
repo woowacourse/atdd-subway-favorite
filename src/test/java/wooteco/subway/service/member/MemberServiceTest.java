@@ -1,21 +1,24 @@
 package wooteco.subway.service.member;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.favorite.FavoriteService;
 import wooteco.subway.service.member.dto.LoginRequest;
-
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.exception.DuplicateEmailException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -29,19 +32,34 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private FavoriteService favoriteService;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository, jwtTokenProvider);
+        this.memberService = new MemberService(memberRepository, favoriteService, jwtTokenProvider);
     }
 
     @Test
     void createMember() {
-        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.save(any())).thenReturn(member);
 
-        memberService.createMember(member);
+        memberService.createMember(memberRequest);
 
         verify(memberRepository).save(any());
+    }
+
+    @Test
+    void createMemberWithDuplicateEmail() {
+        MemberRequest memberRequest = new MemberRequest(TEST_USER_EMAIL, "pobi", "123");
+        doThrow(DuplicateEmailException.class)
+            .when(memberRepository)
+            .save(any());
+
+        assertThatThrownBy(() -> memberService.createMember(memberRequest))
+            .isInstanceOf(DuplicateEmailException.class);
     }
 
     @Test
