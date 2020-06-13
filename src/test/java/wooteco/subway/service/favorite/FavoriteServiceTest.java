@@ -52,7 +52,6 @@ public class FavoriteServiceTest {
         CreateFavoriteRequest createFavoriteRequest = new CreateFavoriteRequest(sourceName, targetName);
         FavoriteResponse favoriteResponse = favoriteService.createFavorite(member, createFavoriteRequest);
 
-
         assertThat(favoriteResponse.getSource()).isEqualTo(sourceName);
         assertThat(favoriteResponse.getTarget()).isEqualTo(targetName);
     }
