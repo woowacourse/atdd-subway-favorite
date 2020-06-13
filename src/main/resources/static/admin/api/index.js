@@ -76,7 +76,7 @@ const api = (() => {
       return request(`/lines/${id}`, METHOD.DELETE())
     }
   }
-
+  
   return {
     station,
     line

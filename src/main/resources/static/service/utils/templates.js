@@ -3,6 +3,14 @@ export const listItemTemplate = data =>
     ${data.name}
   </div>`
 
+export const favoriteItemTemplate = favoriteItem =>
+  `<li class="list-item border border-gray-200 py-2 px-4 text-gray-800" data-id="${favoriteItem.id}">
+    ${favoriteItem.source} <span class="mdi mdi-arrow-right-bold text-gray-500"></span> ${favoriteItem.target}
+    <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+       <span class="mdi mdi-delete"></span>
+    </button>
+  </li>`
+
 export const navTemplate = `<nav class="flex items-center justify-between flex-wrap bg-yellow-500 p-4 relative">
   <div class="flex items-center flex-shrink-0 text-gray-800 w-full">
       <a href="/" class="mr-2">
@@ -37,7 +45,8 @@ export const subwayLinesItemTemplate = line => {
 export const searchResultTemplate = result => {
   const lastIndex = result.stations.length - 1
   const pathResultTemplate = result.stations.map((station, index) => pathStationTemplate(station.name, index, lastIndex)).join('')
-  return `<div class="px-2 py-4 border-b">
+  return `
+<div class="px-2 py-4 border-b">
       <div class="w-full flex mb-3">
         <div class="inline-block w-1/2 border-r text-center">
           <div class="text-gray-600 text-sm">소요시간</div>
