@@ -88,6 +88,7 @@ public class Member {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
+                ", favorites=" + favorites +
                 '}';
     }
 }

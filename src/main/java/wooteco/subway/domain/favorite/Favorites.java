@@ -61,4 +61,8 @@ public class Favorites {
     public Long getIdByIndex(int index) {
         return favorites.get(index).getId();
     }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
 }
