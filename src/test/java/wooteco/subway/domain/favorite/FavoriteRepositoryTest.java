@@ -29,7 +29,6 @@ class FavoriteRepositoryTest {
 
     @BeforeEach
     void deleteAll() {
-        System.out.println("왜 이거 안돌아가 매번 돌아가야되는데 ?!");
         stationRepository.deleteAll();
         memberRepository.deleteAll();
     }
