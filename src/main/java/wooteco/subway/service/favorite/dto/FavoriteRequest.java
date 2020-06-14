@@ -13,6 +13,14 @@ public class FavoriteRequest {
     @NotNull(message = "즐겨찾기에 target를 입력해주세요!")
     private Long target;
 
+    public FavoriteRequest() {
+    }
+
+    public FavoriteRequest(long source, long target) {
+        this.source = source;
+        this.target = target;
+    }
+
     public Long getSource() {
         return source;
     }
