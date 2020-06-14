@@ -38,7 +38,7 @@ public class FavoritePathService {
         memberService.addFavoritePath(member, favoritePath);
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public void delete(String startStationName, String endStationName, Member member) {
         Station startStation = stationService.findByName(startStationName);
         Station endStation = stationService.findByName(endStationName);

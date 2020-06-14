@@ -1,6 +1,7 @@
 package wooteco.subway.service.line;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -23,7 +24,7 @@ public class LineStationService {
         this.stationRepository = stationRepository;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void deleteLineStationByStationId(Long stationId) {
         List<Line> lines = lineRepository.findAll();
         lines.stream().forEach(it -> it.removeLineStationById(stationId));
