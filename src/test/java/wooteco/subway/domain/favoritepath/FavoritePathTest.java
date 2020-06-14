@@ -1,11 +1,11 @@
 package wooteco.subway.domain.favoritepath;
 
+import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.station.Station;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.station.Station;
 
 class FavoritePathTest {
 

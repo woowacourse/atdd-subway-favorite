@@ -1,12 +1,5 @@
 package wooteco.subway.service.favorite;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.member.Member;
@@ -14,6 +7,12 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.FavoritePathResponse;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 class FavoritePathServiceTest {
 

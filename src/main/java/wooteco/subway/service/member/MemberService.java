@@ -34,7 +34,7 @@ public class MemberService {
             if (Objects.isNull(cause)) {
                 throw e;
             }
-            throw new CreateMemberException(cause.getMessage());
+            throw new CreateMemberException(cause);
         }
     }
 
