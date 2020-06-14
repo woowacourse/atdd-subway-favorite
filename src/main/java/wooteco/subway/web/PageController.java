@@ -9,8 +9,8 @@ import wooteco.subway.service.station.StationService;
 
 @Controller
 public class PageController {
-    private LineService lineService;
-    private StationService stationService;
+    private final LineService lineService;
+    private final StationService stationService;
 
     public PageController(LineService lineService, StationService stationService) {
         this.lineService = lineService;
@@ -59,7 +59,17 @@ public class PageController {
         return "service/login";
     }
 
-    @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPage() {
+        return "service/mypage";
+    }
+
+    @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPageEdit() {
+        return "service/mypage-edit";
+    }
+
+    @GetMapping(value = "/favorites-page", produces = MediaType.TEXT_HTML_VALUE)
     public String favoritesPage() {
         return "service/favorite";
     }

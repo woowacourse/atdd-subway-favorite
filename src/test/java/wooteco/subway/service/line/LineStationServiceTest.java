@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.dto.LineDetailResponse;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -64,24 +64,29 @@ public class LineStationServiceTest {
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
-        LineDetailResponse lineDetailResponse = lineStationService.findLineWithStationsById(1L);
+        LineDetailResponse lineDetailResponse = lineStationService.findLineWithStationsById(
+                1L);
 
         assertThat(lineDetailResponse.getStations()).hasSize(3);
     }
 
     @Test
     void wholeLines() {
-        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30),
+                5);
         newLine.addLineStation(new LineStation(null, 4L, 10, 10));
         newLine.addLineStation(new LineStation(4L, 5L, 10, 10));
         newLine.addLineStation(new LineStation(5L, 6L, 10, 10));
 
-        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"), new Station(3L, "삼성역"), new Station(4L, "양재역"), new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
+        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"),
+                new Station(2L, "역삼역"), new Station(3L, "삼성역"), new Station(4L, "양재역"),
+                new Station(5L, "양재시민의숲역"), new Station(6L, "청계산입구역"));
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
         when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
-        List<LineDetailResponse> lineDetails = lineStationService.findLinesWithStations().getLineDetailResponse();
+        List<LineDetailResponse> lineDetails = lineStationService.findLinesWithStations()
+                .getLineDetailResponse();
 
         assertThat(lineDetails).isNotNull();
         assertThat(lineDetails.get(0).getStations().size()).isEqualTo(3);

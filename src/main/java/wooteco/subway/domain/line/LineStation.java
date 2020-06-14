@@ -42,8 +42,10 @@ public class LineStation {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LineStation that = (LineStation) o;
         return distance == that.distance &&
                 duration == that.duration &&

@@ -22,7 +22,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("거리 기준으로 경로 조회")
     @Test
     public void findPathByDistance() {
-        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DISTANCE");
+        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK,
+                "DISTANCE");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(5);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);
@@ -35,7 +36,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("소요시간 기준으로 경로 조회")
     @Test
     public void findPathByDuration() {
-        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK, "DURATION");
+        PathResponse pathResponse = findPath(STATION_NAME_KANGNAM, STATION_NAME_DOGOK,
+                "DURATION");
         List<StationResponse> path = pathResponse.getStations();
         assertThat(path).hasSize(4);
         assertThat(path.get(0).getName()).isEqualTo(STATION_NAME_KANGNAM);

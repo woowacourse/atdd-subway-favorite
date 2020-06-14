@@ -26,7 +26,8 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+    public Member resolveArgument(MethodParameter parameter,
+                                  ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String email = (String) webRequest.getAttribute("loginMemberEmail", SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
@@ -35,7 +36,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         try {
             return memberService.findMemberByEmail(email);
         } catch (Exception e) {
-            throw new InvalidAuthenticationException("비정상적인 로그인");
+            throw new InvalidAuthenticationException("비정상적인 로그인입니다.");
         }
     }
 }

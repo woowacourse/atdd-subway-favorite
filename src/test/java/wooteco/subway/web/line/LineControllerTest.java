@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import wooteco.subway.config.ETagHeaderFilter;
-import wooteco.subway.web.LineController;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import wooteco.subway.web.LineController;
+import wooteco.subway.web.member.LoginMemberMethodArgumentResolver;
+import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,16 +30,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = LineController.class)
 @Import(ETagHeaderFilter.class)
 public class LineControllerTest {
-    @MockBean
-    private LineService lineService;
-
     @Autowired
     protected MockMvc mockMvc;
+    @MockBean
+    private LineService lineService;
+    @MockBean
+    private BearerAuthInterceptor bearerAuthInterceptor;
+    @MockBean
+    private LoginMemberMethodArgumentResolver loginMemberMethodArgumentResolver;
 
     @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
     @Test
     void ETag() throws Exception {
-        WholeSubwayResponse response = WholeSubwayResponse.of(Arrays.asList(createMockResponse(), createMockResponse()));
+        WholeSubwayResponse response = WholeSubwayResponse.of(
+                Arrays.asList(createMockResponse(), createMockResponse()));
         given(lineService.findLinesWithStations()).willReturn(response);
 
         String uri = "/lines/detail";
@@ -58,7 +64,8 @@ public class LineControllerTest {
     }
 
     private LineDetailResponse createMockResponse() {
-        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
+        List<Station> stations = Arrays.asList(new Station(), new Station(),
+                new Station());
         return LineDetailResponse.of(new Line(), stations);
     }
 }

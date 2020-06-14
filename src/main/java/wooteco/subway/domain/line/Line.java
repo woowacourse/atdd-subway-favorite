@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Line {
+    @Embedded.Empty
+    private LineStations stations = LineStations.empty();
     @Id
     private Long id;
     private String name;
@@ -21,13 +23,12 @@ public class Line {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
-    @Embedded.Empty
-    private LineStations stations = LineStations.empty();
 
     public Line() {
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime,
+                int intervalTime) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;

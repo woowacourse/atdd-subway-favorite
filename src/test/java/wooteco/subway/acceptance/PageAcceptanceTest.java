@@ -21,13 +21,13 @@ public class PageAcceptanceTest {
     @LocalServerPort
     int port;
 
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     @Test
@@ -46,8 +46,10 @@ public class PageAcceptanceTest {
     private void createLine(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
-        params.put("startTime", LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
-        params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("startTime",
+                LocalTime.of(5, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
+        params.put("endTime",
+                LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
         given().

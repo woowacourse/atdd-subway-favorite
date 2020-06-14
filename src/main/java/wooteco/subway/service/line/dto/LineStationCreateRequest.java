@@ -9,7 +9,8 @@ public class LineStationCreateRequest {
     public LineStationCreateRequest() {
     }
 
-    public LineStationCreateRequest(Long preStationId, Long stationId, int distance, int duration) {
+    public LineStationCreateRequest(Long preStationId, Long stationId, int distance,
+                                    int duration) {
         this.preStationId = preStationId;
         this.stationId = stationId;
         this.distance = distance;
