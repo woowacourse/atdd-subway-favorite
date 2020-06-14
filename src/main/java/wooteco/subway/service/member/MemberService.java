@@ -46,7 +46,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(param.getEmail())
                 .orElseThrow(()-> new NotExistException("Not exist member email = " + param.getEmail()));
         if (!member.checkPassword(param.getPassword())) {
-            throw new InvalidPasswordException("잘못된 패스워드");
+            throw new InvalidPasswordException("Invalid password");
         }
 
         return jwtTokenProvider.createToken(member.getId() + ":" + param.getEmail());
