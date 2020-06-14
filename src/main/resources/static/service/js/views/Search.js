@@ -1,7 +1,7 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
+import cookieApi from "../../utils/cookieApi.js";
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -49,16 +49,31 @@ function Search() {
 
   const onToggleFavorite = event => {
     event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+    const isFavorite = $favoriteButton.classList.contains('mdi-star');
+    const classList = $favoriteButton.classList;
+    const token = cookieApi.getCookie("token");
+    const $startStationName = document.querySelector("#start-station");
+    const $endStationName = document.querySelector("#end-station");
 
+    const registerInput = {
+      startStationName: $startStationName.innerText,
+      endStationName: $endStationName.innerText
+    };
     if (isFavorite) {
       classList.add('mdi-star-outline')
       classList.add('text-gray-600')
       classList.add('bg-yellow-500')
       classList.remove('mdi-star')
       classList.remove('text-yellow-500')
+      api.favorite.unregister(token, registerInput)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
     } else {
+      api.favorite
+        .register(token, registerInput)
+        .then(response => console.log(response))
+        .catch(error => console.log(error));
+
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')
@@ -75,7 +90,8 @@ function Search() {
   }
 
   this.init = () => {
-    initEventListener()
+    initEventListener();
+    // Todo: 즐겨찾기 등록/삭제버튼 셋팅
   }
 }
 

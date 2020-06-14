@@ -1,47 +1,50 @@
 package wooteco.subway.service.station;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.LineStationService;
 
-import java.time.LocalTime;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest
-@Sql("/truncate.sql")
 public class StationServiceTest {
-    @Autowired
-    private StationService stationService;
 
-    @Autowired
-    private StationRepository stationRepository;
-    @Autowired
-    private LineRepository lineRepository;
+    private StationRepository stationRepository = mock(StationRepository.class);
+    private LineStationService lineStationService = mock(LineStationService.class);
+    private StationService stationService = new StationService(lineStationService, stationRepository);
 
     @Test
     public void removeStation() {
-        Station station1 = stationRepository.save(new Station("강남역"));
-        Station station2 = stationRepository.save(new Station("역삼역"));
-        Line line = lineRepository.save(new Line("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
+        final Long id = 1L;
+        stationService.deleteStationById(id);
 
-        line.addLineStation(new LineStation(null, station1.getId(), 10, 10));
-        line.addLineStation(new LineStation(station1.getId(), station2.getId(), 10, 10));
-        lineRepository.save(line);
+        verify(lineStationService).deleteLineStationByStationId(id);
+        verify(stationRepository).deleteById(id);
+    }
 
-        stationService.deleteStationById(station1.getId());
+    @Test
+    void findByName() {
+        String stationName = "강남역";
+        Station expected = new Station(stationName);
+        when(stationRepository.findByName(stationName)).thenReturn(Optional.of(expected));
+        Station station = stationService.findByName(stationName);
+        assertThat(station).isEqualTo(expected);
+    }
 
-        Optional<Station> resultStation = stationRepository.findById(station1.getId());
-        assertThat(resultStation).isEmpty();
+    @Test
+    void findNameById() {
+        Long id = 1L;
+        String name = "잠실역";
+        Station mockStation = mock(Station.class);
+        when(mockStation.getId()).thenReturn(id);
+        when(mockStation.getName()).thenReturn(name);
 
-        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
-        assertThat(resultLine.getStations()).hasSize(1);
+        when(stationRepository.findById(id)).thenReturn(Optional.of(mockStation));
+
+        assertThat(stationService.findNameById(id)).isEqualTo(name);
     }
 }

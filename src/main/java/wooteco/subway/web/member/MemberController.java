@@ -1,29 +1,35 @@
 package wooteco.subway.web.member;
 
+import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
-import java.net.URI;
-
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+    @PostMapping("/join")
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
-                .created(URI.create("/members/" + member.getId()))
-                .build();
+            .created(URI.create("/members/" + member.getId()))
+            .build();
     }
 
     @GetMapping("/members")
@@ -32,15 +38,18 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    @PutMapping("/members")
+    public ResponseEntity<MemberResponse> updateMember(@RequestBody UpdateMemberRequest param, @LoginMember @Valid Member member) {
+        if (member.isNotMe(param.getEmail())) {
+            throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
+        }
+        memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    @DeleteMapping("/members")
+    public ResponseEntity<Void> deleteMember(@LoginMember @Valid Member member) {
+        memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 }

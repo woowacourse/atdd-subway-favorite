@@ -1,21 +1,26 @@
 package wooteco.subway.web;
 
+import java.net.URI;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.service.line.LineService;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
-import wooteco.subway.domain.line.Line;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 public class LineController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -25,9 +30,11 @@ public class LineController {
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
         Line persistLine = lineService.save(view.toLine());
 
+        LineResponse lineResponse = LineResponse.of(persistLine);
+
         return ResponseEntity
                 .created(URI.create("/lines/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine));
+                .body(lineResponse);
     }
 
     @GetMapping("/lines")
@@ -67,6 +74,10 @@ public class LineController {
     @GetMapping("/lines/detail")
     public ResponseEntity wholeLines() {
         WholeSubwayResponse result = lineService.findLinesWithStations();
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok()
+            .eTag(
+                result.toString()
+            )
+            .body(result);
     }
 }

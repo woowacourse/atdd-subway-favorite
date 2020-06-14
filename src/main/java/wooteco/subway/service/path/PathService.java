@@ -1,25 +1,24 @@
 package wooteco.subway.service.path;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 @Service
 public class PathService {
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
-    private GraphService graphService;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final GraphService graphService;
 
     public PathService(StationRepository stationRepository, LineRepository lineRepository, GraphService graphService) {
         this.stationRepository = stationRepository;

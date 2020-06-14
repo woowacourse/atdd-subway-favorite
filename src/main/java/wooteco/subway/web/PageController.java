@@ -9,17 +9,22 @@ import wooteco.subway.service.station.StationService;
 
 @Controller
 public class PageController {
-    private LineService lineService;
-    private StationService stationService;
+    private final LineService lineService;
+    private final StationService stationService;
 
     public PageController(LineService lineService, StationService stationService) {
         this.lineService = lineService;
         this.stationService = stationService;
     }
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public String index() {
+    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
+    public String adminIndex() {
         return "admin/index";
+    }
+
+    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
+    public String serviceIndex() {
+        return "service/index";
     }
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
@@ -62,5 +67,15 @@ public class PageController {
     @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
     public String favoritesPage() {
         return "service/favorite";
+    }
+
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPage() {
+        return "service/mypage";
+    }
+
+    @GetMapping(value = "/mypage-edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String myInfoEditPage() {
+        return "service/mypage-edit";
     }
 }
