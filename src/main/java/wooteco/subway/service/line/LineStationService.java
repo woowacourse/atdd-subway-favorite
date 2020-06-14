@@ -1,6 +1,7 @@
 package wooteco.subway.service.line;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.Lines;
@@ -22,12 +23,14 @@ public class LineStationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public void deleteLineStationByStationId(Long stationId) {
         List<Line> lines = lineRepository.findAll();
         lines.stream().forEach(it -> it.removeLineStationById(stationId));
         lineRepository.saveAll(lines);
     }
 
+    @Transactional
     LineDetailResponse findLineWithStationsById(Long lineId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
         List<Long> lineStationIds = line.getStationIds();
@@ -36,6 +39,7 @@ public class LineStationService {
         return LineDetailResponse.of(line, mapStations(lineStationIds, stations));
     }
 
+    @Transactional
     WholeSubwayResponse findLinesWithStations() {
         Lines lines = new Lines(lineRepository.findAll());
         List<Station> stations = stationRepository.findAllById(lines.getStationIds());

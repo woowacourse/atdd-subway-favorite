@@ -1,6 +1,9 @@
 package wooteco.subway.service.favorite;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.favoritepath.RegisterFavoritePathException;
 import wooteco.subway.domain.member.Member;
@@ -23,6 +26,7 @@ public class FavoritePathService {
         this.stationService = stationService;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public void register(String startStationName, String endStationName, Member member) {
         Station startStation = stationService.findByName(startStationName);
         Station endStation = stationService.findByName(endStationName);
@@ -34,6 +38,7 @@ public class FavoritePathService {
         memberService.addFavoritePath(member, favoritePath);
     }
 
+    @Transactional
     public void delete(String startStationName, String endStationName, Member member) {
         Station startStation = stationService.findByName(startStationName);
         Station endStation = stationService.findByName(endStationName);
@@ -41,6 +46,7 @@ public class FavoritePathService {
         memberService.removeFavoritePath(startStation, endStation, member);
     }
 
+    @Transactional
     public List<FavoritePathResponse> findAllOf(Member member) {
         List<FavoritePathResponse> favoritePathResponses = new ArrayList<>();
         List<FavoritePath> favoritePaths = memberService.findFavoritePathsOf(member);

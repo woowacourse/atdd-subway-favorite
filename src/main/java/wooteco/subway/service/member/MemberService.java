@@ -2,6 +2,7 @@ package wooteco.subway.service.member;
 
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.favoritepath.FavoritePath;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberNotfoundException;
@@ -26,6 +27,7 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         try {
             return memberRepository.save(member);
@@ -38,6 +40,7 @@ public class MemberService {
         }
     }
 
+    @Transactional
     public void updateMember(Member member, UpdateMemberRequest param) {
         member = findMemberByEmail(member.getEmail());
         if (member.isNotMe(param.getEmail(), param.getPassword())) {
@@ -70,6 +73,7 @@ public class MemberService {
         return member.checkPassword(password);
     }
 
+    @Transactional
     public void removeFavoritePath(Station startStation, Station endStation, Member member) {
         member = findMemberByEmail(member.getEmail());
         member.removeFavoritePath(startStation, endStation);
@@ -81,6 +85,7 @@ public class MemberService {
         return Collections.unmodifiableList(favoritePaths);
     }
 
+    @Transactional
     public void addFavoritePath(Member member, FavoritePath favoritePath) {
         member = findMemberByEmail(member.getEmail());
         member.addFavoritePath(favoritePath);

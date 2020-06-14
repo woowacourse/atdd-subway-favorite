@@ -1,6 +1,7 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
@@ -27,6 +28,7 @@ public class PathService {
         this.graphService = graphService;
     }
 
+    @Transactional
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
             throw new RuntimeException();
