@@ -1,7 +1,18 @@
 const METHOD = {
-  PUT() {
+  GET() {
     return {
-      method: 'PUT'
+      method: 'GET'
+    }
+  },
+  PUT(data) {
+    return {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
     }
   },
   DELETE() {
@@ -19,7 +30,35 @@ const METHOD = {
         ...data
       })
     }
-  }
+  },
+  GET_WITH_TOKEN(token) {
+    return {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    }
+  },
+  POST_WITH_TOKEN(token, data) {
+    return {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data
+      })
+    }
+  },
+  DELETE_WITH_TOKEN(token) {
+    return {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  },
 }
 
 const api = (() => {
@@ -41,9 +80,46 @@ const api = (() => {
     }
   }
 
+  const member = {
+    create(data) {
+      request(`/members`, METHOD.POST(data))
+    },
+    update(id, data) {
+      request(`/members/${id}`, METHOD.PUT(data))
+    },
+    delete(id) {
+      request(`/members/${id}`, METHOD.DELETE())
+    }
+  }
+
+  const login = {
+    login(data) {
+      return requestWithJsonData(`/oauth/token`, METHOD.POST(data))
+    },
+    getUserInfo(token) {
+      return requestWithJsonData(`/me/bearer`, METHOD.GET_WITH_TOKEN(token))
+    }
+  }
+
+  const favorite = {
+    create(token,data) {
+      return request(`/members/favorite`, METHOD.POST_WITH_TOKEN(token,data))
+    },
+    getFavoriteByMember(token) {
+      return requestWithJsonData(`/members/favorite`, METHOD.GET_WITH_TOKEN(token))
+    },
+    delete(token, favoriteId) {
+      return request(`/members/favorite/${favoriteId}`, METHOD.DELETE_WITH_TOKEN(token))
+    }
+  }
+
+
   return {
     line,
-    path
+    path,
+    member,
+    login,
+    favorite
   }
 })()
 

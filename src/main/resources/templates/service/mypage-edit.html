@@ -12,7 +12,7 @@
     <div class="flex justify-center items-center app-container py-10">
       <div class="max-w-md width-350px rounded bg-white shadow-lg p-6">
         <div class="font-bold text-xl mb-4 text-center">나의 정보 수정</div>
-        <form class="bg-white rounded">
+        <form id="edit-form" class="bg-white rounded" data-member-id="">
           <div class="mb-4">
             <label class="block text-gray-600 text-sm font-bold mb-2" for="email">
               email
@@ -22,6 +22,7 @@
               id="email"
               type="text"
               placeholder="email"
+              readonly
             />
           </div>
           <div class="mb-4">
@@ -57,19 +58,20 @@
               placeholder="password 확인"
             />
           </div>
-          <a
-            href="/index.html"
+          <button
+            id="edit-button"
             class="w-full text-sm text-center bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3"
             type="button"
           >
             저장
-          </a>
-          <button class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+          </button>
+          <button id="delete-button" class="w-full text-sm hover:bg-gray-100 font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
             탈퇴
           </button>
         </form>
       </div>
     </div>
     <script type="module" src="/service/js/App.js"></script>
+    <script type="module" src="/service/js/views/MyPageEdit.js"></script>
   </body>
 </html>
