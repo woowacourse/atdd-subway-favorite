@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -9,6 +10,7 @@ import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.InvalidPasswordException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.FavoriteCreateRequest;
 import wooteco.subway.service.member.dto.LoginRequest;
@@ -18,6 +20,7 @@ import wooteco.subway.service.member.dto.UpdateMemberRequest;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +30,7 @@ public class MemberServiceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+    public static final String TEST_INVALID_USER_PASSWORD = "invalidPassword";
 
     private MemberService memberService;
 
@@ -60,6 +64,18 @@ public class MemberServiceTest {
         memberService.createToken(loginRequest);
 
         verify(jwtTokenProvider).createToken(anyString());
+    }
+
+    @DisplayName("create token test with invalid password")
+    @Test
+    void createToken_InvalidPassword() {
+        Member member = new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
+        LoginRequest loginRequest = new LoginRequest(TEST_USER_EMAIL, TEST_INVALID_USER_PASSWORD);
+
+        assertThatThrownBy(() ->
+                memberService.createToken(loginRequest))
+                .isInstanceOf(InvalidPasswordException.class);
     }
 
     @Test
