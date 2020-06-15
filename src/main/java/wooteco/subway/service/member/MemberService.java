@@ -1,6 +1,7 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -19,19 +20,23 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public void updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
+    @Transactional
     public String createToken(LoginRequest param) throws InvalidPasswordException {
         Member member = memberRepository.findByEmail(param.getEmail())
                 .orElseThrow(() -> new NotExistMemberDataException(("email = " + param.getEmail())));
@@ -43,6 +48,7 @@ public class MemberService {
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotExistMemberDataException("email = " + email));

@@ -1,6 +1,7 @@
 package wooteco.subway.service.favorite;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.Favorites;
 import wooteco.subway.domain.member.Member;
@@ -27,6 +28,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(Member member, CreateFavoriteRequest createFavoriteRequest) {
         Station sourceStation = stationRepository.findByName(createFavoriteRequest.getSource())
                 .orElseThrow(() -> new NotExistStationDataException("source station name = " + createFavoriteRequest.getSource()));
@@ -42,6 +44,7 @@ public class FavoriteService {
         return new FavoriteResponse(savedFavorite.getId(), sourceStation.getName(), targetStation.getName());
     }
 
+    @Transactional(readOnly = true)
     public FavoritesResponse findAllByMemberId(Member member) {
         Favorites favorites = member.getFavorites();
 
@@ -54,6 +57,7 @@ public class FavoriteService {
         return FavoritesResponse.of(favorites, sourceStations, targetStations);
     }
 
+    @Transactional
     public void deleteFavorite(Member member, Long id) throws AccessDeniedException {
         try {
             member.removeFavoriteById(id);

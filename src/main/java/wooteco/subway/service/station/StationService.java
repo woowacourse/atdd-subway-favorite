@@ -1,6 +1,7 @@
 package wooteco.subway.service.station;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.station.Station;
@@ -22,14 +23,17 @@ public class StationService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @Transactional
     public Station createStation(Station station) {
         return stationRepository.save(station);
     }
 
+    @Transactional(readOnly = true)
     public List<Station> findStations() {
         return stationRepository.findAll();
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         deleteFavoriteIfRelatedToStationId(id);
@@ -37,6 +41,7 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
+    @Transactional
     private void deleteFavoriteIfRelatedToStationId(Long id) {
         Optional<Favorite> favoriteBySourceId = favoriteRepository.findBySourceId(id);
         favoriteBySourceId.ifPresent(favorite ->
