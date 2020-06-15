@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavorite() {
         //when
-        createStation(STATION_NAME_YEOKSAM);
-        createStation(STATION_NAME_SEOLLEUNG);
-        createStation(STATION_NAME_YANGJAE);
+        createByName("/stations", STATION_NAME_YEOKSAM, StationResponse.class);
+        createByName("/stations", STATION_NAME_SEOLLEUNG, StationResponse.class);
+        createByName("/stations", STATION_NAME_YANGJAE, StationResponse.class);
         createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
         createFavorite(STATION_NAME_YEOKSAM, STATION_NAME_SEOLLEUNG);
         createFavorite(STATION_NAME_SEOLLEUNG, STATION_NAME_YANGJAE);

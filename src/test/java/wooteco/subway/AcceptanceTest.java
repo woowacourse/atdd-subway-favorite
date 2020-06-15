@@ -64,21 +64,24 @@ public class AcceptanceTest {
         return RestAssured.given().log().all();
     }
 
-    public StationResponse createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
+    public <T> T post(String path, Map<String, String> params, Class<T> responseType) {
         return
                 given().
                         body(params).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/stations").
+                        post(path).
                         then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
-                        extract().as(StationResponse.class);
+                        extract().as(responseType);
+    }
+
+    public <T> T createByName(String path, String name, Class<T> responseType) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        return post(path, params, responseType);
     }
 
     public List<StationResponse> getStations() {
@@ -105,17 +108,7 @@ public class AcceptanceTest {
         params.put("endTime", LocalTime.of(23, 30).format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        return
-                given().
-                        body(params).
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        post("/lines").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.CREATED.value()).
-                        extract().as(LineResponse.class);
+        return post("/lines", params, LineResponse.class);
     }
 
     public LineDetailResponse getLine(Long id) {
@@ -226,13 +219,13 @@ public class AcceptanceTest {
      */
     public void initStation() {
         // 역 등록
-        StationResponse stationResponse1 = createStation(STATION_NAME_KANGNAM);
-        StationResponse stationResponse2 = createStation(STATION_NAME_YEOKSAM);
-        StationResponse stationResponse3 = createStation(STATION_NAME_SEOLLEUNG);
-        StationResponse stationResponse4 = createStation(STATION_NAME_HANTI);
-        StationResponse stationResponse5 = createStation(STATION_NAME_DOGOK);
-        StationResponse stationResponse6 = createStation(STATION_NAME_MAEBONG);
-        StationResponse stationResponse7 = createStation(STATION_NAME_YANGJAE);
+        StationResponse stationResponse1 = createByName("/stations", STATION_NAME_KANGNAM, StationResponse.class);
+        StationResponse stationResponse2 = createByName("/stations", STATION_NAME_YEOKSAM, StationResponse.class);
+        StationResponse stationResponse3 = createByName("/stations", STATION_NAME_SEOLLEUNG, StationResponse.class);
+        StationResponse stationResponse4 = createByName("/stations", STATION_NAME_HANTI, StationResponse.class);
+        StationResponse stationResponse5 = createByName("/stations", STATION_NAME_DOGOK, StationResponse.class);
+        StationResponse stationResponse6 = createByName("/stations", STATION_NAME_MAEBONG, StationResponse.class);
+        StationResponse stationResponse7 = createByName("/stations", STATION_NAME_YANGJAE, StationResponse.class);
 
         // 2호선
         LineResponse lineResponse1 = createLine("2호선");
