@@ -2,6 +2,9 @@ package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
+
+import java.util.Set;
 
 public class Member {
     @Id
@@ -9,6 +12,9 @@ public class Member {
     private String email;
     private String name;
     private String password;
+
+    @Embedded.Empty
+    private Favorites favorites = Favorites.empty();
 
     public Member() {
     }
@@ -42,6 +48,18 @@ public class Member {
         return password;
     }
 
+    public Favorites getFavorites() {
+        return favorites;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
+
+    public void removeFavorite(Long favoriteId) {
+        favorites.remove(favoriteId);
+    }
+
     public void update(String name, String password) {
         if (StringUtils.isNotBlank(name)) {
             this.name = name;
@@ -49,6 +67,10 @@ public class Member {
         if (StringUtils.isNotBlank(password)) {
             this.password = password;
         }
+    }
+
+    public Set<Long> getFavoriteStationIds() {
+        return favorites.getFavoriteStationIds();
     }
 
     public boolean checkPassword(String password) {

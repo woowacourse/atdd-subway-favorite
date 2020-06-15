@@ -21,7 +21,7 @@ public class StationResponse {
                 .collect(Collectors.toList());
     }
 
-    public StationResponse() {
+    private StationResponse() {
     }
 
     public StationResponse(Long id, String name, LocalDateTime createdAt) {

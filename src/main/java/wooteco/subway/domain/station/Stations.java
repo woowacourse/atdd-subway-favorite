@@ -9,6 +9,10 @@ public class Stations {
         this.stations = stations;
     }
 
+    public static Stations of(List<Station> stations) {
+        return new Stations(stations);
+    }
+
     public List<Station> getStations() {
         return stations;
     }
