@@ -1,13 +1,14 @@
 package wooteco.subway.service.line;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.line.dto.LineDetailResponse;
-import wooteco.subway.service.line.dto.WholeSubwayResponse;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.line.dto.LineDetailResponse;
+import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class LineStationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public LineDetailResponse findLineWithStationsById(Long lineId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
         List<Long> lineStationIds = line.getStationIds();
@@ -30,6 +32,7 @@ public class LineStationService {
         return LineDetailResponse.of(line, mapStations(lineStationIds, stations));
     }
 
+    @Transactional(readOnly = true)
     public WholeSubwayResponse findLinesWithStations() {
         Lines lines = new Lines(lineRepository.findAll());
         List<Station> stations = stationRepository.findAllById(lines.getStationIds());
@@ -47,6 +50,7 @@ public class LineStationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteLineStationByStationId(Long stationId) {
         List<Line> lines = lineRepository.findAll();
         lines.stream().forEach(it -> it.removeLineStationById(stationId));

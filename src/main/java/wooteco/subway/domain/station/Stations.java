@@ -13,10 +13,7 @@ public class Stations {
         return stations;
     }
 
-    public Station extractStationById(Long stationId) {
-        return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+    public String getNameByIndex(int index) {
+        return stations.get(index).getName();
     }
 }

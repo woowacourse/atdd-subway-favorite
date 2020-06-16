@@ -1,11 +1,14 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.exception.InvalidPasswordException;
+import wooteco.subway.web.member.exception.NotExistMemberDataException;
 
 @Service
 public class MemberService {
@@ -17,35 +20,37 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public Member createMember(Member member) {
         return memberRepository.save(member);
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    @Transactional
+    public void updateMember(Member member, UpdateMemberRequest param) {
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
-    public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
+    @Transactional
+    public String createToken(LoginRequest param) throws InvalidPasswordException {
+        Member member = memberRepository.findByEmail(param.getEmail())
+                .orElseThrow(() -> new NotExistMemberDataException(("email = " + param.getEmail())));
+
         if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+            throw new InvalidPasswordException();
         }
 
         return jwtTokenProvider.createToken(param.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotExistMemberDataException("email = " + email));
     }
 }

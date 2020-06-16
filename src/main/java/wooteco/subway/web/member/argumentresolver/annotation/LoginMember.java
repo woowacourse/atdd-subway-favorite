@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.argumentresolver.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

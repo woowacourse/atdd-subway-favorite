@@ -3,17 +3,20 @@ package wooteco.subway;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +43,9 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+
+    @Autowired
+    public JwtTokenProvider jwtTokenProvider;
 
     @LocalServerPort
     public int port;
@@ -267,11 +273,14 @@ public class AcceptanceTest {
     }
 
     public MemberResponse getMember(String email) {
+        String token = jwtTokenProvider.createToken(email);
+
         return
                 given().
+                        header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/members?email=" + email).
+                        get("/auth/members").
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
@@ -282,21 +291,27 @@ public class AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
+        String token = jwtTokenProvider.createToken(memberResponse.getEmail());
 
         given().
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                put("/auth/members").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value());
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-                delete("/members/" + memberResponse.getId()).
+        String token = jwtTokenProvider.createToken(memberResponse.getEmail());
+
+        given().
+                header(AuthorizationExtractor.AUTHORIZATION, "Bearer " + token).
+                when().
+                delete("/auth/members/").
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());

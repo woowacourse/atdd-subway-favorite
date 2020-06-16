@@ -1,5 +1,237 @@
 package wooteco.subway.web.member;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import wooteco.subway.DummyTestUserInfo;
+import wooteco.subway.doc.MemberDocumentation;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.infra.JwtTokenProvider;
+import wooteco.subway.service.member.MemberService;
+import wooteco.subway.service.member.dto.MemberRequest;
+import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.util.AuthorizationExtractor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(RestDocumentationExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class MemberControllerTest {
-    // TODO: 회원가입 API 테스트
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    @MockBean
+    MemberService memberService;
+
+    @MockBean
+    JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    protected MockMvc mockMvc;
+
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .addFilter(new ShallowEtagHeaderFilter())
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
+    }
+
+    @DisplayName("올바른 값이 입력되면 회원가입이 된다")
+    @Test
+    void createMemberTest() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
+        MemberRequest memberRequest = new MemberRequest("ramen6315@gmail.com", "ramen", "6315)");
+
+        given(memberService.createMember(any())).willReturn(member);
+
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
+        String uri = "/members";
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MemberDocumentation.createMember())
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - email 형식 X")
+    @Test
+    void createMemberTestFail1() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
+        MemberRequest memberRequest = new MemberRequest("이메일형식X", "ramen", "6315)");
+
+        given(memberService.createMember(any())).willReturn(member);
+
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
+        String uri = "/members";
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - 이름 빈값")
+    @Test
+    void createMemberTestFail2() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "6315)");
+        MemberRequest memberRequest = new MemberRequest("이메일형식X", "", "6315)");
+
+        given(memberService.createMember(any())).willReturn(member);
+
+        String uri = "/members";
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - 비밀번호 3자 이하")
+    @Test
+    void createMemberTestFail3() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "631");
+        MemberRequest memberRequest = new MemberRequest("이메일형식X", "ramen", "631");
+
+        given(memberService.createMember(any())).willReturn(member);
+
+        String uri = "/members";
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("올바르지 않은 값이 입력되면 회원가입이 안된다 - null")
+    @Test
+    void createMemberTestFail4() throws Exception {
+        Member member = new Member(1L, "ramen6315@gmail.com", "ramen", "631");
+        MemberRequest memberRequest = new MemberRequest(null, null, null);
+
+        given(memberService.createMember(any())).willReturn(member);
+
+        String uri = "/members";
+        String content = OBJECT_MAPPER.writeValueAsString(memberRequest);
+
+        mockMvc.perform(post(uri)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("정보조회 테스트")
+    @Test
+    void getMemberTest() throws Exception {
+        String email = "ramen@gmail.com";
+        Member member = new Member(DummyTestUserInfo.EMAIL, DummyTestUserInfo.NAME, DummyTestUserInfo.PASSWORD);
+
+        given(memberService.findMemberByEmail(email)).willReturn(member);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(any())).willReturn(email);
+
+        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/auth/members")
+                .param("email", email)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer 토큰값")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(MemberDocumentation.selectMember())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MemberResponse memberResponse
+                = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), MemberResponse.class);
+
+        assertThat(memberResponse.getName()).isEqualTo("ramen");
+        assertThat(memberResponse.getEmail()).isEqualTo("ramen@gmail.com");
+    }
+
+    @DisplayName("정보 조회 실패 테스트 (JWT Token이 없을 경우)")
+    @Test
+    void getMemberByEmailFailTest() throws Exception {
+        String uri = "/auth/members";
+
+        mockMvc.perform(get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("인증 정보 없는 수정하기 시 예외가 발생한다.")
+    @Test
+    void updateInfoTestFail() throws Exception {
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
+
+        doNothing().when(memberService).updateMember(any(), any());
+
+        String updateData = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
+        String uri = "/auth/members";
+
+        mockMvc.perform(put(uri)
+                .content(updateData)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("수정하기 성공")
+    @Test
+    void updateInfoTestSuccess() throws Exception {
+        doNothing().when(memberService).updateMember(any(), any());
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(jwtTokenProvider.getSubject(anyString())).willReturn("ramen6315@gmail.com");
+
+        UpdateMemberRequest updateMemberRequest = new UpdateMemberRequest("coyle", "6315");
+        String updateData = OBJECT_MAPPER.writeValueAsString(updateMemberRequest);
+
+        String uri = "/auth/members";
+        mockMvc.perform(RestDocumentationRequestBuilders.put(uri)
+                .header(AuthorizationExtractor.AUTHORIZATION, "Bearer 아무토큰값")
+                .content(updateData)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MemberDocumentation.updateMember())
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
 }
