@@ -1,38 +1,30 @@
 package wooteco.subway.domain.station;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
-import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import wooteco.subway.domain.common.BaseEntity;
 
-public class Station {
-    @Id
-    private Long id;
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@AttributeOverride(name = "id", column = @Column(name = "STATION_ID"))
+public class Station extends BaseEntity {
+
+    @Column(name = "STATION_NAME")
     private String name;
-    @CreatedDate
-    private LocalDateTime createdAt;
 
-    public Station() {
+    public static Station of(String name) {
+        return new Station(name);
     }
 
-    public Station(String name) {
-        this.name = name;
-    }
-
-    public Station(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public boolean isSameId(Long stationId) {
+        return this.getId().equals(stationId);
     }
 }

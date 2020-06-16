@@ -44,15 +44,17 @@ public class LoginMemberController {
 
     @IsAuth
     @GetMapping("/me/detail")
-    public ResponseEntity<MemberDetailResponse> getMemberDetailOfMineBasic(@LoginMember Member member) {
+    public ResponseEntity<MemberDetailResponse> getMemberDetailOfMineBasic(
+        @LoginMember Member member) {
         Set<FavoriteDetailResponse> responses = favoriteService.getAll(member);
         return ResponseEntity.ok().body(MemberDetailResponse.of(member, responses));
     }
 
     @IsAuth
     @GetMapping("/me/favorites")
-    public ResponseEntity<Set<FavoriteDetailResponse>> getMemberFavorites(@LoginMember Member member) {
-        Set<FavoriteDetailResponse> responses =  favoriteService.getAll(member);
+    public ResponseEntity<Set<FavoriteDetailResponse>> getMemberFavorites(
+        @LoginMember Member member) {
+        Set<FavoriteDetailResponse> responses = favoriteService.getAll(member);
         return ResponseEntity.ok().body(responses);
     }
 }

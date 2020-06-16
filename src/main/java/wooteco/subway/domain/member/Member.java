@@ -1,45 +1,43 @@
 package wooteco.subway.domain.member;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Member {
-    @Id
-    private Long id;
-    private String email;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import wooteco.subway.domain.common.BaseEntity;
+import wooteco.subway.domain.favorite.Favorite;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Entity
+@AttributeOverride(name = "id", column = @Column(name = "MEMBER_ID"))
+public class Member extends BaseEntity {
+
+    @Column(name = "MEMBER_NAME")
     private String name;
+    private String email;
     private String password;
 
-    public Member() {
+    @OneToMany(mappedBy = "member")
+    private List<Favorite> favorites;
+
+    public static Member of(String email, String name, String password) {
+        return new Member(email, name, password, new ArrayList<>());
     }
 
-    public Member(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-    }
-
-    public Member(Long id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
+    public static Member of() {
+        return new Member();
     }
 
     public void update(String name, String password) {
@@ -55,7 +53,12 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public boolean isSameId(Long id) {
-        return this.id.equals(id);
+    public boolean isSameId(Member member) {
+        return this.getId().equals(member.getId());
+    }
+
+    public void addFavorites(Favorite favorite) {
+        favorites.add(favorite);
+        favorite.applyFavorite(this);
     }
 }

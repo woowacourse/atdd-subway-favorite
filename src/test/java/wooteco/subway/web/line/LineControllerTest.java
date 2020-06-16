@@ -26,11 +26,10 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LineControllerTest {
-    @MockBean
-    private LineService lineService;
-
     @Autowired
     protected MockMvc mockMvc;
+    @MockBean
+    private LineService lineService;
 
     @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
     @Test

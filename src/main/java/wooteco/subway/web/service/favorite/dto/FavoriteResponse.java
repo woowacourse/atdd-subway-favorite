@@ -22,9 +22,9 @@ public class FavoriteResponse {
     }
 
     public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), favorite.getMemberId(),
-            favorite.getSourceId(),
-            favorite.getTargetId());
+        return new FavoriteResponse(favorite.getId(), favorite.getMember().getId(),
+            favorite.getSourceStation().getId(),
+            favorite.getTargetStation().getId());
     }
 
     public static Set<FavoriteResponse> setOf(Set<Favorite> favorites) {

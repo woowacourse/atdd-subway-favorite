@@ -7,12 +7,12 @@ function MyPage() {
     const $email = document.querySelector("#email");
     const $name = document.querySelector("#name");
 
-    if(getCookie()) {
+    if (getCookie()) {
       api.member.myPage().then(response => {
         $email.innerText = response.email;
         $name.innerText = response.name;
       });
-    } else{
+    } else {
       alert("로그인을 해주세요");
       window.location = "/login";
     }

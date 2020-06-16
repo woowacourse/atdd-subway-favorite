@@ -11,26 +11,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.station.StationService;
 import wooteco.subway.service.station.dto.StationCreateRequest;
 import wooteco.subway.service.station.dto.StationResponse;
 
 @RestController
+@AllArgsConstructor
 public class StationController {
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
-    }
-
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest view) {
-        Station persistStation = stationService.createStation(view.toStation());
+    public ResponseEntity<StationResponse> createStation(
+        @RequestBody StationCreateRequest request) {
+        Station persistStation = stationService.createStation(request);
 
         return ResponseEntity
-                .created(URI.create("/stations/" + persistStation.getId()))
-                .body(StationResponse.of(persistStation));
+            .created(URI.create("/stations/" + persistStation.getId()))
+            .body(StationResponse.of(persistStation));
     }
 
     @GetMapping("/stations")
@@ -39,7 +38,7 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

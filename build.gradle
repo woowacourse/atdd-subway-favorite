@@ -15,11 +15,12 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
     implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

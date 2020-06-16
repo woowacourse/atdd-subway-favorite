@@ -55,13 +55,13 @@ public class AcceptanceTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
+    }
+
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-    }
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
     }
 
     public StationResponse createStation(String name) {
@@ -286,7 +286,8 @@ public class AcceptanceTest {
                 extract().header("Location");
     }
 
-    public ErrorResponse createMemberWithNotMatchPasswordCheck(String email, String name, String password, String passwordCheck) {
+    public ErrorResponse createMemberWithNotMatchPasswordCheck(String email, String name,
+        String password, String passwordCheck) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
@@ -306,7 +307,8 @@ public class AcceptanceTest {
                 extract().as(ErrorResponse.class);
     }
 
-    public ErrorResponse createMemberWithDuplicatedEmail(String email, String name, String password, String passwordCheck) {
+    public ErrorResponse createMemberWithDuplicatedEmail(String email, String name, String password,
+        String passwordCheck) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
@@ -339,7 +341,6 @@ public class AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 extract().as(MemberResponse.class);
     }
-
 
     public MemberDetailResponse getDetailMember(String email) {
         String token = jwtTokenProvider.createToken(email);
@@ -467,7 +468,8 @@ public class AcceptanceTest {
             extract().as(ErrorResponse.class);
     }
 
-    public ErrorResponse updateMemberWithNotMatchPassword(MemberResponse memberResponse, TokenResponse tokenResponse) {
+    public ErrorResponse updateMemberWithNotMatchPassword(MemberResponse memberResponse,
+        TokenResponse tokenResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("oldPassword", TEST_OTHER_USER_PASSWORD);

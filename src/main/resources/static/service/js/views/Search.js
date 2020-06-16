@@ -42,9 +42,9 @@ function Search() {
       type: pathType
     }
     api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+    .find(searchInput)
+    .then(data => showSearchResult(data))
+    .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onToggleFavorite = event => {
@@ -52,7 +52,7 @@ function Search() {
 
     if (!getCookie()) {
       alert("로그인 먼저 해주세요.");
-      window.location="/login";
+      window.location = "/login";
       return;
     }
 

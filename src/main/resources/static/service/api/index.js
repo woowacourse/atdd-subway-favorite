@@ -54,14 +54,14 @@ const api = (() => {
     login(loginForm) {
       return request(`/login`, METHOD.POST(loginForm));
     },
-    myPage(){
+    myPage() {
       return requestWithJsonData(`/me`);
     },
-    update(id, updateForm){
-      return request(`/members/`+id, METHOD.PUT(updateForm));
+    update(id, updateForm) {
+      return request(`/members/` + id, METHOD.PUT(updateForm));
     },
-    delete(id){
-      return request(`/members/`+id, METHOD.DELETE());
+    delete(id) {
+      return request(`/members/` + id, METHOD.DELETE());
     }
   }
 
