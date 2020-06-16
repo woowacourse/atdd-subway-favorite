@@ -27,12 +27,14 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        IsAuth annotation = getAnnotation((HandlerMethod)handler, IsAuth.class);
-        if (!ObjectUtils.isEmpty(annotation)) {
-            String bearer = authExtractor.extract(request);
-            jwtTokenProvider.validateToken(bearer);
-            String email = jwtTokenProvider.getSubject(bearer);
-            request.setAttribute("loginMemberEmail", email);
+        if (handler instanceof HandlerMethod) {
+            IsAuth annotation = getAnnotation((HandlerMethod)handler, IsAuth.class);
+            if (!ObjectUtils.isEmpty(annotation)) {
+                String bearer = authExtractor.extract(request);
+                jwtTokenProvider.validateToken(bearer);
+                String email = jwtTokenProvider.getSubject(bearer);
+                request.setAttribute("loginMemberEmail", email);
+            }
         }
         return true;
     }
