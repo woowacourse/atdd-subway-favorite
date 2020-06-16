@@ -4,6 +4,7 @@ spring:
     url: jdbc:h2:tcp://localhost/~/jpa-subway
     username: sa
     password:
+    data: classpath:data.sql
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
