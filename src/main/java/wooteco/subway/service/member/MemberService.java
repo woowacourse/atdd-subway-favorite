@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.LoginFailedException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
@@ -36,9 +37,9 @@ public class MemberService {
     @Transactional(readOnly = true)
     public String createToken(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new LoginFailedException(loginRequest.getEmail()));
         if (!member.checkPassword(loginRequest.getPassword())) {
-            throw new IllegalArgumentException("잘못된 패스워드");
+            throw new LoginFailedException(loginRequest.getEmail());
         }
 
         return jwtTokenProvider.createToken(loginRequest.getEmail());
@@ -47,6 +48,6 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new LoginFailedException(email));
     }
 }

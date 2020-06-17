@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import wooteco.subway.exception.EntityNotFoundException;
+import wooteco.subway.exception.LoginFailedException;
 import wooteco.subway.exception.SameSourceTargetException;
 import wooteco.subway.service.member.dto.ErrorResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;
@@ -43,6 +44,13 @@ public class ExceptionController {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST.value())
                 .body(new ErrorResponse("SAME_SOURCE_TARGET_STATION"));
+    }
+
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<ErrorResponse> handleLoginFailed() {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .body(new ErrorResponse("LOGIN_FAILED"));
     }
 
     @ExceptionHandler(Exception.class)
