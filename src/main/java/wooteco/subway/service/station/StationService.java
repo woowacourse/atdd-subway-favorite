@@ -30,7 +30,7 @@ public class StationService {
         return stationRepository.findAll();
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);

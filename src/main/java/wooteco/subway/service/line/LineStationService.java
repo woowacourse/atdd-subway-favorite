@@ -24,7 +24,7 @@ public class LineStationService {
         this.stationRepository = stationRepository;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteLineStationByStationId(Long stationId) {
         List<Line> lines = lineRepository.findAll();
         lines.stream().forEach(it -> it.removeLineStationById(stationId));

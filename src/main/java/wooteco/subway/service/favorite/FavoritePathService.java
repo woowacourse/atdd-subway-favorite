@@ -26,7 +26,7 @@ public class FavoritePathService {
         this.stationService = stationService;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public void register(String startStationName, String endStationName, Member member) {
         Station startStation = stationService.findByName(startStationName);
         Station endStation = stationService.findByName(endStationName);
@@ -38,7 +38,7 @@ public class FavoritePathService {
         memberService.addFavoritePath(member, favoritePath);
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public void delete(String startStationName, String endStationName, Member member) {
         Station startStation = stationService.findByName(startStationName);
         Station endStation = stationService.findByName(endStationName);

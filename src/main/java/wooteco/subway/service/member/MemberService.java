@@ -29,7 +29,7 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Member createMember(Member member) {
         try {
             return memberRepository.save(member);
@@ -42,7 +42,7 @@ public class MemberService {
         }
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public void updateMember(Member member, UpdateMemberRequest param) {
         member = findMemberByEmail(member.getEmail());
         if (member.isNotMe(param.getEmail(), param.getPassword())) {
@@ -88,7 +88,7 @@ public class MemberService {
         return Collections.unmodifiableList(favoritePaths);
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public void addFavoritePath(Member member, FavoritePath favoritePath) {
         member = findMemberByEmail(member.getEmail());
         member.addFavoritePath(favoritePath);
