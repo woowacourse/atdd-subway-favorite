@@ -1,21 +1,18 @@
 package wooteco.subway.domain.line;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import wooteco.subway.domain.common.BaseEntity;
+import wooteco.subway.domain.linestation.LineStations;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,11 +27,11 @@ public class Line extends BaseEntity {
     private LocalTime endTime;
     private int intervalTime;
 
-    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LineStation> stations = new ArrayList<>();
+    @Embedded
+    private LineStations stations;
 
     public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
-        return new Line(name, startTime, endTime, intervalTime, new ArrayList<>());
+        return new Line(name, startTime, endTime, intervalTime, LineStations.empty());
     }
 
     public void update(Line line) {
@@ -52,12 +49,7 @@ public class Line extends BaseEntity {
         }
     }
 
-    public void addLineStation(LineStation lineStation) {
-        stations.add(lineStation);
-    }
-
     public void removeLineStationById(Long stationId) {
-        stations = stations.stream().filter(station -> !station.isSameId(stationId))
-            .collect(Collectors.toList());
+        stations.removeById(stationId);
     }
 }

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.linestation.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
+import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
@@ -22,30 +23,29 @@ public class LineService {
     private LineStationService lineStationService;
     private LineRepository lineRepository;
 
-    public Line save(Line line) {
-        return lineRepository.save(line);
+    public LineResponse save(Line line) {
+        return LineResponse.of(lineRepository.save(line));
     }
 
-    public List<Line> findLines() {
-        return lineRepository.findAll();
+    public List<LineResponse> findLines() {
+        return LineResponse.listOf(lineRepository.findAll());
+    }
+
+    public void addLineStation(Long id, LineStationCreateRequest request) {
+        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        List<Station> stations = lineStationService.findAllByStation(
+            Arrays.asList(request.getPreStationId(), request.getStationId()));
+        LineStation lineStation = new LineStation(stations.get(0), stations.get(1),
+            request.getDistance(), request.getDuration());
+        lineStation.applyLine(line);
+
+        lineRepository.save(line);
     }
 
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(request.toLine());
         lineRepository.save(persistLine);
-    }
-
-    public void addLineStation(Long id, LineStationCreateRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<Station> stations = lineStationService.findAllByStation(
-            Arrays.asList(request.getPreStationId(),
-                request.getStationId()));
-        LineStation lineStation = new LineStation(stations.get(0), stations.get(1),
-            request.getDistance(), request.getDuration(), line);
-        line.addLineStation(lineStation);
-
-        lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -62,13 +62,15 @@ public class LineService {
     }
 
     public WholeSubwayResponse findAllLines() {
-        List<LineDetailResponse> responses = lineRepository.findAll().stream().map(line -> {
-            List<Station> stations = line.getStations()
-                .stream()
-                .map(LineStation::getNextStation)
-                .collect(Collectors.toList());
-            return LineDetailResponse.of(line, stations);
-        }).collect(Collectors.toList());
+        List<LineDetailResponse> responses = lineRepository.findAll().stream()
+            .map(line -> {
+                List<Station> stations = line.getStations()
+                    .getStations()
+                    .stream()
+                    .map(LineStation::getNextStation)
+                    .collect(Collectors.toList());
+                return LineDetailResponse.of(line, stations);
+            }).collect(Collectors.toList());
 
         return WholeSubwayResponse.of(responses);
     }

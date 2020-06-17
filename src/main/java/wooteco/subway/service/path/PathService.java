@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.linestation.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
@@ -40,8 +40,8 @@ public class PathService {
         List<Station> stations = stationRepository.findAllById(path);
 
         List<LineStation> lineStations = lines.stream()
-            .flatMap(it -> it.getStations().stream())
-            .filter(it -> Objects.nonNull(it.getPreStation().getId()))
+            .flatMap(it -> it.getStations().getStations().stream())
+            .filter(it -> Objects.nonNull(it.getPreStation()))
             .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);

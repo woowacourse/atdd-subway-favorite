@@ -8,8 +8,8 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.domain.common.BaseEntity;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.linestation.LineStation;
 import wooteco.subway.domain.path.PathType;
 
 @Service
@@ -19,13 +19,13 @@ public class GraphService {
             = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         lines.stream()
-            .flatMap(it -> it.getStations().stream())
-            .map(BaseEntity::getId)
+            .flatMap(it -> it.getStations().getStations().stream())
+            .map(LineStation::getId)
             .forEach(graph::addVertex);
 
         lines.stream()
-            .flatMap(it -> it.getStations().stream())
-            .filter(it -> Objects.nonNull(it.getPreStation().getId()))
+            .flatMap(it -> it.getStations().getStations().stream())
+            .filter(it -> Objects.nonNull(it.getPreStation()))
             .forEach(
                 it -> graph.setEdgeWeight(
                     graph.addEdge(it.getPreStation().getId(), it.getNextStation().getId()),
