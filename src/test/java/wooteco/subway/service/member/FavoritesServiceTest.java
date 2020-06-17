@@ -1,10 +1,9 @@
 package wooteco.subway.service.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
+import static wooteco.subway.AcceptanceTest.TEST_USER_NAME;
+import static wooteco.subway.AcceptanceTest.TEST_USER_PASSWORD;
 import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_EMAIL;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_NAME;
-import static wooteco.subway.service.member.MemberServiceTest.TEST_USER_PASSWORD;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,10 +11,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
@@ -26,44 +26,47 @@ import wooteco.subway.service.member.dto.FavoriteCreateRequest;
 import wooteco.subway.service.member.dto.FavoriteDeleteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
-@ExtendWith(MockitoExtension.class)
+@Sql("/truncate.sql")
+@TestPropertySource(locations = "classpath:application-test.properties")
+@Import(FavoritesService.class)
+@DataJdbcTest
 public class FavoritesServiceTest {
     private Member MEMBER_BROWN;
 
-    private FavoritesService favoritesService;
+    @Autowired
+    private StationRepository stationRepository;
 
-    @Mock
+    @Autowired
     private MemberRepository memberRepository;
 
-    @Mock
-    private StationRepository stationRepository;
+    @Autowired
+    private FavoritesService favoritesService;
 
     @BeforeEach
     void setUp() {
-        favoritesService = new FavoritesService(memberRepository, stationRepository);
-        MEMBER_BROWN = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        MEMBER_BROWN = memberRepository.save(new Member(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD));
+        stationRepository.saveAll(Arrays.asList(
+                new Station("서울"),
+                new Station("강남"),
+                new Station("잠실")
+        ));
+        MEMBER_BROWN.addFavorite(new Favorite(1L, 2L));
+        MEMBER_BROWN.addFavorite(new Favorite(2L, 3L));
     }
 
     @DisplayName("즐겨찾기 추가")
     @Test
     void addFavorite() {
-        BDDMockito.given(stationRepository.findAllById(anyList()))
-                .willReturn(Arrays.asList(new Station(1L, "서울"), new Station(2L, "강남"), new Station(3L, "잠실")));
-
-        favoritesService.addFavorite(MEMBER_BROWN, new FavoriteCreateRequest(1L, 2L));
+        favoritesService.addFavorite(MEMBER_BROWN, new FavoriteCreateRequest(3L, 4L));
 
         List<FavoriteResponse> favorites = favoritesService.getFavoritesBy(MEMBER_BROWN);
-        assertThat(favorites.size()).isEqualTo(1);
+
+        assertThat(favorites).hasSize(3);
     }
 
     @DisplayName("즐겨찾기 조회")
     @Test
     void getFavorites() {
-        BDDMockito.given(stationRepository.findAllById(anyList()))
-                .willReturn(Arrays.asList(new Station(1L, "서울"), new Station(2L, "강남"), new Station(3L, "잠실")));
-        MEMBER_BROWN.addFavorite(new Favorite(1L, 2L));
-        MEMBER_BROWN.addFavorite(new Favorite(2L, 3L));
-
         List<FavoriteResponse> favorites = favoritesService.getFavoritesBy(MEMBER_BROWN);
 
         assertThat(favorites.size()).isEqualTo(2);
@@ -72,9 +75,6 @@ public class FavoritesServiceTest {
     @DisplayName("즐겨찾기 제거")
     @Test
     void deleteFavorite() {
-        MEMBER_BROWN.addFavorite(new Favorite(1L, 2L));
-        MEMBER_BROWN.addFavorite(new Favorite(2L, 3L));
-
         favoritesService.deleteFavorite(MEMBER_BROWN, new FavoriteDeleteRequest(1L, 2L));
 
         List<FavoriteResponse> favorites = favoritesService.getFavoritesBy(MEMBER_BROWN);
