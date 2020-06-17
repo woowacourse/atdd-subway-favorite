@@ -19,7 +19,6 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    @Transactional
     public Station createStation(Station station) {
         return stationRepository.save(station);
     }

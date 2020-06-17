@@ -19,7 +19,6 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Transactional
     public Member createMember(Member member) {
         return memberRepository.save(member);
     }
@@ -30,7 +29,6 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    @Transactional
     public void deleteMember(Member member) {
         memberRepository.delete(member);
     }

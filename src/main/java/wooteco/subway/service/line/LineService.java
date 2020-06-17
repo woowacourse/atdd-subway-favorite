@@ -24,7 +24,6 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    @Transactional
     public Line save(Line line) {
         return lineRepository.save(line);
     }
@@ -42,7 +41,6 @@ public class LineService {
         lineRepository.save(persistLine);
     }
 
-    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
