@@ -52,7 +52,7 @@ public class FavoritesServiceTest {
 
         favoritesService.addFavorite(MEMBER_BROWN, new FavoriteCreateRequest(1L, 2L));
 
-        List<FavoriteResponse> favorites = favoritesService.getFavorites(MEMBER_BROWN);
+        List<FavoriteResponse> favorites = favoritesService.getFavoritesBy(MEMBER_BROWN);
         assertThat(favorites.size()).isEqualTo(1);
     }
 
@@ -64,7 +64,7 @@ public class FavoritesServiceTest {
         MEMBER_BROWN.addFavorite(new Favorite(1L, 2L));
         MEMBER_BROWN.addFavorite(new Favorite(2L, 3L));
 
-        List<FavoriteResponse> favorites = favoritesService.getFavorites(MEMBER_BROWN);
+        List<FavoriteResponse> favorites = favoritesService.getFavoritesBy(MEMBER_BROWN);
 
         assertThat(favorites.size()).isEqualTo(2);
     }
@@ -77,7 +77,7 @@ public class FavoritesServiceTest {
 
         favoritesService.deleteFavorite(MEMBER_BROWN, new FavoriteDeleteRequest(1L, 2L));
 
-        List<FavoriteResponse> favorites = favoritesService.getFavorites(MEMBER_BROWN);
+        List<FavoriteResponse> favorites = favoritesService.getFavoritesBy(MEMBER_BROWN);
 
         assertThat(favorites.size()).isEqualTo(1);
     }

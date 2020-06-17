@@ -30,7 +30,7 @@ public class FavoritesService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> getFavorites(Member member) {
+    public List<FavoriteResponse> getFavoritesBy(Member member) {
         List<Long> favoriteStationIds = member.getFavoriteStationIds();
         Stations stations = new Stations(stationRepository.findAllById(favoriteStationIds));
 

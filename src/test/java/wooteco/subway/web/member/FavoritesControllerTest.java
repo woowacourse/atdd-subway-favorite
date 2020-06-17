@@ -85,7 +85,7 @@ public class FavoritesControllerTest {
     @DisplayName("즐겨찾기 조회")
     @Test
     void getFavorites() throws Exception {
-        given(favoritesService.getFavorites(MEMBER_BROWN)).willReturn(
+        given(favoritesService.getFavoritesBy(MEMBER_BROWN)).willReturn(
                 Arrays.asList(
                         new FavoriteResponse(1L, "강남", 2L, "잠실"),
                         new FavoriteResponse(2L, "잠실", 3L, "잠실나루")));

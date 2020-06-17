@@ -37,7 +37,7 @@ public class FavoritesController {
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMember Member member) {
         return ResponseEntity.ok()
-                .body(favoritesService.getFavorites(member));
+                .body(favoritesService.getFavoritesBy(member));
     }
 
     @DeleteMapping
