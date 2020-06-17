@@ -32,8 +32,13 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Favorite> favorites;
 
-    public static Member of(String email, String name, String password) {
-        return new Member(email, name, password, new ArrayList<>());
+    public Member(Long id, String name, String email, String password) {
+        this(email, name, password, new ArrayList<>());
+        super.id = id;
+    }
+
+    public static Member of(String name, String email, String password) {
+        return new Member(name, email, password, new ArrayList<>());
     }
 
     public static Member of() {

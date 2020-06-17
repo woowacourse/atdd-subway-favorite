@@ -1,6 +1,7 @@
 package wooteco.subway.domain.line;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import wooteco.subway.domain.common.BaseEntity;
+import wooteco.subway.domain.linestation.LineStation;
 import wooteco.subway.domain.linestation.LineStations;
 
 @Entity
@@ -28,7 +30,15 @@ public class Line extends BaseEntity {
     private int intervalTime;
 
     @Embedded
-    private LineStations stations;
+    private LineStations stations = LineStations.empty();
+
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        super.id = id;
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.intervalTime = intervalTime;
+    }
 
     public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
         return new Line(name, startTime, endTime, intervalTime, LineStations.empty());
@@ -51,5 +61,13 @@ public class Line extends BaseEntity {
 
     public void removeLineStationById(Long stationId) {
         stations.removeById(stationId);
+    }
+
+    public List<LineStation> getStations() {
+        return stations.getStations();
+    }
+
+    public List<Long> getStationIds() {
+        return stations.getStationIds();
     }
 }

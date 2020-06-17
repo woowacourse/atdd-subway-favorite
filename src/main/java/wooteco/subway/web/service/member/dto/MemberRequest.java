@@ -38,7 +38,7 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return Member.of(email, name, password);
+        return Member.of(name, email, password);
     }
 
     public String getEmail() {

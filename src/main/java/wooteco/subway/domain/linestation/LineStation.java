@@ -53,10 +53,10 @@ public class LineStation extends BaseEntity {
 
     public void applyLine(Line line) {
         if (Objects.nonNull(this.line)) {
-            this.line.getStations().getStations().remove(this);
+            this.line.getStations().remove(this);
         }
         this.line = line;
-        line.getStations().getStations().add(this);
+        line.getStations().add(this);
     }
 
     public void updatePreLineStation(Station newPreStation) {

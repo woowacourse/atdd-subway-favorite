@@ -2,6 +2,7 @@ package wooteco.subway.service.line;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -35,10 +36,18 @@ public class LineService {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         List<Station> stations = lineStationService.findAllByStation(
             Arrays.asList(request.getPreStationId(), request.getStationId()));
-        LineStation lineStation = new LineStation(stations.get(0), stations.get(1),
-            request.getDistance(), request.getDuration());
+        Station preStation = stations.stream()
+            .filter(
+                station -> Objects.nonNull(station) && station.isSameId(request.getPreStationId()))
+            .findAny()
+            .orElse(null);
+        Station nextStation = stations.stream()
+            .filter(station -> Objects.nonNull(station) && station.isSameId(request.getStationId()))
+            .findAny()
+            .orElseThrow(RuntimeException::new);
+        LineStation lineStation = new LineStation(preStation, nextStation, request.getDistance(),
+            request.getDuration());
         lineStation.applyLine(line);
-
         lineRepository.save(line);
     }
 
@@ -51,6 +60,7 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
         line.removeLineStationById(stationId);
+        lineRepository.save(line);
     }
 
     public void deleteLine(Long id) {
@@ -65,7 +75,6 @@ public class LineService {
         List<LineDetailResponse> responses = lineRepository.findAll().stream()
             .map(line -> {
                 List<Station> stations = line.getStations()
-                    .getStations()
                     .stream()
                     .map(LineStation::getNextStation)
                     .collect(Collectors.toList());

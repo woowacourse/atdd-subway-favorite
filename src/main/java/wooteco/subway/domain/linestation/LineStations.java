@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -20,7 +21,7 @@ import wooteco.subway.domain.station.Station;
 public class LineStations {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LineStation> stations;
+    private List<LineStation> stations = new ArrayList<>();
 
     public LineStations(List<LineStation> stations) {
         this.stations = stations;
@@ -47,14 +48,16 @@ public class LineStations {
     }
 
     public void removeById(Long targetStationId) {
-        extractByStationId(targetStationId)
-            .ifPresent(this::remove);
+        LineStation lineStation = stations.stream()
+            .filter(lineStation1 -> lineStation1.getNextStation().isSameId(targetStationId))
+            .findAny()
+            .orElseThrow(RuntimeException::new);
+        remove(lineStation);
     }
 
     public List<Long> getStationIds() {
-        List<Long> result = new ArrayList<>();
-        extractNext(null, result);
-        return result;
+        return stations.stream().map(lineStation -> lineStation.getNextStation().getId()).collect(
+            Collectors.toList());
     }
 
     private void extractNext(Long preStationId, List<Long> ids) {
@@ -81,7 +84,8 @@ public class LineStations {
 
     private Optional<LineStation> extractByPreStationId(Long preStationId) {
         return stations.stream()
-            .filter(it -> Objects.equals(it.getPreStation().getId(), preStationId))
+            .filter(it -> Objects.nonNull(it.getPreStation()) && Objects.equals(
+                it.getPreStation().getId(), preStationId))
             .findFirst();
     }
 }

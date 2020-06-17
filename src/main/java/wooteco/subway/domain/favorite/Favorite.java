@@ -34,6 +34,11 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "TARGET_STATION_ID")
     private Station targetStation;
 
+    public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
+        this(member, sourceStation, targetStation);
+        super.id = id;
+    }
+
     public static Favorite of(Member member, Station sourceStation, Station targetStation) {
         return new Favorite(member, sourceStation, targetStation);
     }

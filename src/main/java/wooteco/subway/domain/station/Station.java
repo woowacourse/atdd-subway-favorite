@@ -20,6 +20,11 @@ public class Station extends BaseEntity {
     @Column(name = "STATION_NAME")
     private String name;
 
+    public Station(long id, String name) {
+        super.id = id;
+        this.name = name;
+    }
+
     public static Station of(String name) {
         return new Station(name);
     }

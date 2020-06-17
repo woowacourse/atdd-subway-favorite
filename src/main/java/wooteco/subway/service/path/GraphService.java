@@ -19,12 +19,12 @@ public class GraphService {
             = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         lines.stream()
-            .flatMap(it -> it.getStations().getStations().stream())
+            .flatMap(it -> it.getStations().stream())
             .map(LineStation::getId)
             .forEach(graph::addVertex);
 
         lines.stream()
-            .flatMap(it -> it.getStations().getStations().stream())
+            .flatMap(it -> it.getStations().stream())
             .filter(it -> Objects.nonNull(it.getPreStation()))
             .forEach(
                 it -> graph.setEdgeWeight(
