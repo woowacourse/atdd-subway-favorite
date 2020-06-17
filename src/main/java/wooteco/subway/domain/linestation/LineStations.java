@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
@@ -20,7 +19,7 @@ import wooteco.subway.domain.station.Station;
 @Getter
 public class LineStations {
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LineStation> stations = new ArrayList<>();
 
     public LineStations(List<LineStation> stations) {

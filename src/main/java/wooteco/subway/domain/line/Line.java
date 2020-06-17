@@ -33,11 +33,8 @@ public class Line extends BaseEntity {
     private LineStations stations = LineStations.empty();
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this(name, startTime, endTime, intervalTime, LineStations.empty());
         super.id = id;
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.intervalTime = intervalTime;
     }
 
     public static Line of(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {

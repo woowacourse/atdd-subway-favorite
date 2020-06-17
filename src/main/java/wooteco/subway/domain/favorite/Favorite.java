@@ -16,9 +16,9 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.web.exception.AuthenticationException;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
 @AttributeOverride(name = "id", column = @Column(name = "FAVORITE_ID"))
 public class Favorite extends BaseEntity {
 
@@ -34,8 +34,8 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "TARGET_STATION_ID")
     private Station targetStation;
 
-    public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
-        this(member, sourceStation, targetStation);
+    public Favorite(Long id, Member member, Station source, Station target) {
+        this(member, source, target);
         super.id = id;
     }
 
@@ -51,5 +51,6 @@ public class Favorite extends BaseEntity {
 
     public void applyFavorite(Member member) {
         this.member = member;
+        member.getFavorites().add(this);
     }
 }

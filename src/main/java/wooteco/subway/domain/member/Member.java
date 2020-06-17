@@ -29,7 +29,7 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", orphanRemoval = true)
     private List<Favorite> favorites;
 
     public Member(Long id, String name, String email, String password) {
@@ -60,10 +60,5 @@ public class Member extends BaseEntity {
 
     public boolean isSameId(Member member) {
         return this.getId().equals(member.getId());
-    }
-
-    public void addFavorites(Favorite favorite) {
-        favorites.add(favorite);
-        favorite.applyFavorite(this);
     }
 }

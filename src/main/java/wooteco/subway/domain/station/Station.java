@@ -17,7 +17,7 @@ import wooteco.subway.domain.common.BaseEntity;
 @AttributeOverride(name = "id", column = @Column(name = "STATION_ID"))
 public class Station extends BaseEntity {
 
-    @Column(name = "STATION_NAME")
+    @Column(name = "STATION_NAME", unique = true)
     private String name;
 
     public Station(long id, String name) {
