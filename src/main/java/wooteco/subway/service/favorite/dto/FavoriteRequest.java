@@ -6,10 +6,10 @@ public class FavoriteRequest {
 	private Long sourceStationId;
 	private Long targetStationId;
 
-	public FavoriteRequest() {
+	private FavoriteRequest() {
 	}
 
-	public FavoriteRequest(final Long sourceStationId, final Long targetStationId) {
+	public FavoriteRequest(Long sourceStationId, Long targetStationId) {
 		this.sourceStationId = sourceStationId;
 		this.targetStationId = targetStationId;
 	}
@@ -18,15 +18,15 @@ public class FavoriteRequest {
 		return new FavoriteRequest(favorite.getSourceStationId(), favorite.getTargetStationId());
 	}
 
-	static public Favorite toFavorite(FavoriteRequest favoriteRequest) {
-		return new Favorite(favoriteRequest.getSourceStationId(), favoriteRequest.getTargetStationId());
-	}
-
 	public Long getSourceStationId() {
 		return sourceStationId;
 	}
 
 	public Long getTargetStationId() {
 		return targetStationId;
+	}
+
+	public Favorite toEntity(Long id) {
+		return new Favorite(id, sourceStationId, targetStationId);
 	}
 }

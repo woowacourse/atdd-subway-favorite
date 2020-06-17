@@ -9,9 +9,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 
-import wooteco.subway.AcceptanceTest;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.TokenResponse;
 
@@ -73,10 +72,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		paramMap.put("email", TEST_USER_EMAIL);
 		paramMap.put("password", TEST_USER_PASSWORD);
 
-		given()
+		getDefaultGiven()
 			.body(paramMap)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.post("/me/login")
 			.then()
@@ -97,10 +94,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		params.put("name", "Allen");
 		params.put("password", "1234");
 
-		given().
+		getDefaultGiven().
 			body(params).
-			contentType(MediaType.APPLICATION_JSON_VALUE).
-			accept(MediaType.APPLICATION_JSON_VALUE).
 			when().
 			post("/me").
 			then().
@@ -121,10 +116,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		paramMap.put("email", TEST_USER_EMAIL);
 		paramMap.put("password", "CU");
 
-		given()
+		getDefaultGiven()
 			.body(paramMap)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.post("/me/login")
 			.then()
@@ -142,11 +135,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		TokenResponse tokenResponse = new TokenResponse("BrownToken", "Bearer");
 
-		given()
-			.header("Authorization",
-				tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
+		getDefaultGiven(tokenResponse.getAccessToken())
 			.when()
 			.get("/me")
 			.then()

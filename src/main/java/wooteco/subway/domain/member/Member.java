@@ -1,17 +1,15 @@
 package wooteco.subway.domain.member;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
+import wooteco.subway.domain.BaseEntity;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteNotFoundException;
 
-public class Member {
-	Set<Favorite> favorites = new HashSet<>();
+public class Member extends BaseEntity {
 	@Id
 	private Long id;
 	private String email;
@@ -75,10 +73,6 @@ public class Member {
 
 	public String getPassword() {
 		return password;
-	}
-
-	public Set<Favorite> getFavorites() {
-		return favorites;
 	}
 
 	@Override

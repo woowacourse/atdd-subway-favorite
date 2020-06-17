@@ -72,7 +72,7 @@ public class LoginMemberControllerTest {
 			"\"name\":\"" + TEST_USER_NAME + "\"," +
 			"\"password\":\"" + TEST_USER_PASSWORD + "\"}";
 
-		this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me")
+		this.mockMvc.perform(RestDocumentationRequestBuilders.post("/me/sign_up")
 			.content(inputJson)
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON))

@@ -1,17 +1,15 @@
 package wooteco.subway.domain.station;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
-public class Station {
+import wooteco.subway.domain.BaseEntity;
+
+public class Station extends BaseEntity {
 	@Id
 	private Long id;
 	private String name;
-	@CreatedDate
-	private LocalDateTime createdAt;
 
 	public Station() {
 	}
@@ -31,10 +29,6 @@ public class Station {
 
 	public String getName() {
 		return name;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
 	}
 
 	@Override

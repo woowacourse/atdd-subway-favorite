@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -198,17 +199,13 @@ public class AcceptanceTest {
 		params.put("name", name);
 		params.put("password", password);
 
-		HttpMethod.POST.request("/me", params);
+		HttpMethod.POST.request("/me/sign_up", params);
 	}
 
 	public MemberResponse getMember(TokenResponse tokenResponse) {
 		return
-			given().
-				header("AuthorizationAuthorization",
-					tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+			getDefaultGiven(tokenResponse.getAccessToken())
 				.when()
-				// .sessionId("loginMemberEmail", email)
 				.get("/me")
 				.then()
 				.log().all()
@@ -217,9 +214,7 @@ public class AcceptanceTest {
 	}
 
 	public void deleteMember(TokenResponse tokenResponse) {
-		given().
-			header("Authorization",
-				tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken())
+		getDefaultGiven(tokenResponse.getAccessToken())
 			.when()
 			.delete("/me")
 			.then()
@@ -232,17 +227,14 @@ public class AcceptanceTest {
 		paramMap.put("email", email);
 		paramMap.put("password", password);
 
-		return
-			given()
-				.body(paramMap)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.when()
-				.post("/me/login")
-				.then()
-				.log().all()
-				.statusCode(HttpStatus.OK.value())
-				.extract().as(TokenResponse.class);
+		return getDefaultGiven()
+			.body(paramMap)
+			.when()
+			.post("/me/login")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.OK.value())
+			.extract().as(TokenResponse.class);
 	}
 
 	public void updateMemberWhenLoggedIn(String accessToken,
@@ -252,16 +244,34 @@ public class AcceptanceTest {
 		params.put("name", name);
 		params.put("password", password);
 
-		given()
-			.header("Authorization", "bearer " + accessToken)
+		getDefaultGiven(accessToken)
 			.body(params)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.put("/me")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value());
+	}
+
+	public MemberResponse myInfoWithBearerAuth(TokenResponse tokenResponse) {
+		return
+			getDefaultGiven(tokenResponse.getAccessToken()).
+				when().
+				get("/me").
+				then().
+				log().all().
+				extract().as(MemberResponse.class);
+	}
+
+	protected RequestSpecification getDefaultGiven(String accessToken) {
+		return given()
+			.header("Authorization", "bearer " + accessToken)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	protected RequestSpecification getDefaultGiven() {
+		return getDefaultGiven(Strings.EMPTY);
 	}
 }
 

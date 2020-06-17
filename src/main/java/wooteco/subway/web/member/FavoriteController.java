@@ -17,7 +17,7 @@ import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.MemberService;
 
 @RestController
-@RequestMapping("/me/favorites")
+@RequestMapping("/favorites")
 public class FavoriteController {
 	private final MemberService memberService;
 
