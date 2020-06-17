@@ -38,4 +38,11 @@ create table if not exists MEMBER
     primary key(id)
 );
 
--- // TODO 즐겨찾기 테이블 스키마 추가
+create table if not exists FAVORITE
+(
+    id bigint auto_increment not null,
+    member_id bigint not null,
+    source bigint not null,
+    target bigint not null,
+    primary key(id)
+)

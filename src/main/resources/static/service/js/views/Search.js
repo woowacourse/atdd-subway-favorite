@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import { EVENT_TYPE, PATH_TYPE } from '../../utils/constants.js'
 import api from '../../api/index.js'
 import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -42,29 +41,96 @@ function Search() {
       type: pathType
     }
     api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+    .find(searchInput)
+    .then(response => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).then(data => {
+      showSearchResult(data);
+      const sourceStation = data.stations[0];
+      const targetStation = data.stations[data.stations.length - 1];
+      hasFavorite(sourceStation.id, targetStation.id);
+    }).catch(error => alert(error));
   }
 
-  const onToggleFavorite = event => {
-    event.preventDefault()
-    const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
+  const hasFavorite = (source, target) => {
+    api.favorite.get(source, target)
+    .then(response => {
+      if (response.status === 200) {
+        toggle(true);
+        return response.json();
+      }
+      toggle(false);
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).catch(error => alert(error));
+  }
 
-    if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
-    } else {
+  const addFavorite = () => {
+    const $sourceStation = document.querySelector("#source-station");
+    const $targetStation = document.querySelector("#target-station");
+    const addFavoriteRequest = {
+      source: $sourceStation.dataset.stationId,
+      target: $targetStation.dataset.stationId,
+    }
+    api.favorite.add(addFavoriteRequest)
+    .then(response => {
+      if (response.status === 201) {
+        toggle(true);
+      }
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).catch(error => alert(error.message));
+  }
+
+  const removeFavorite = () => {
+    const $sourceStation = document.querySelector("#source-station");
+    const $targetStation = document.querySelector("#target-station");
+    const removeFavoriteRequest = {
+      source: $sourceStation.dataset.stationId,
+      target: $targetStation.dataset.stationId,
+    }
+    api.favorite.remove(removeFavoriteRequest)
+    .then(response => {
+      if (response.status === 204) {
+        toggle(false);
+      }
+      return response.json().then(error => {
+        throw new Error(error.message);
+      });
+    }).catch(error => alert(error.message));
+  }
+
+  const toggle = (has) => {
+    const classList = $favoriteButton.classList;
+
+    if (has) {
       classList.remove('mdi-star-outline')
       classList.remove('text-gray-600')
       classList.remove('bg-yellow-500')
       classList.add('mdi-star')
       classList.add('text-yellow-500')
+    } else {
+      classList.add('mdi-star-outline')
+      classList.add('text-gray-600')
+      classList.add('bg-yellow-500')
+      classList.remove('mdi-star')
+      classList.remove('text-yellow-500')
     }
+  }
+
+  const onToggleFavorite = event => {
+    if (event) {
+      event.preventDefault()
+    }
+    const isFavorite = $favoriteButton.classList.contains('mdi-star');
+    isFavorite ? removeFavorite() : addFavorite()
   }
 
   const initEventListener = () => {
