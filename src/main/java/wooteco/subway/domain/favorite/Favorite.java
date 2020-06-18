@@ -1,6 +1,5 @@
 package wooteco.subway.domain.favorite;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,18 +14,24 @@ public class Favorite {
     private Long id;
     private Long sourceStationId;
     private Long targetStationId;
-    // @Column(name="member")
-    private Long memberId;
+    // @ManyToOne
+    // private Member member;
 
     public Favorite() {
     }
 
-    public Favorite(final Long id, final Long sourceStationId, final Long targetStationId,
-        final Long memberId) {
+    // public Favorite(final Long id, final Long sourceStationId, final Long targetStationId,
+    //     final Member member) {
+    //     this.id = id;
+    //     this.sourceStationId = sourceStationId;
+    //     this.targetStationId = targetStationId;
+    //     this.member = member;
+    // }
+
+    public Favorite(final Long id, final Long sourceStationId, final Long targetStationId) {
         this.id = id;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
-        this.memberId = memberId;
     }
 
     public Favorite(Long sourceStationId, Long targetStationId) {
@@ -51,7 +56,7 @@ public class Favorite {
         return targetStationId;
     }
 
-    public Long getMemberId() {
-        return memberId;
-    }
+    // public Member getMember() {
+    //     return member;
+    // }
 }

@@ -1,7 +1,6 @@
 package wooteco.subway.service.path;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -23,10 +22,10 @@ public class GraphService {
             .forEach(graph::addVertex);
 
         lines.stream()
-            .flatMap(line -> line.getStations().stream())
+            .flatMap(line -> line.getLineStations().stream())
             .filter(LineStation::isNotFirstLineStation)
             .forEach(
-                it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()),
+                it -> graph.setEdgeWeight(graph.addEdge(it.getPreStation(), it.getStation()),
                     type.findWeightOf(it)));
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);

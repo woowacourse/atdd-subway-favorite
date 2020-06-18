@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,7 @@ public class Member {
     private String name;
     private String password;
     @OneToMany
+    @JoinColumn(name = "member_id")
     Set<Favorite> favorites = new HashSet<>();
 
     public Member() {

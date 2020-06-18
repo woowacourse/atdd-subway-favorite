@@ -47,8 +47,8 @@ public class PathService {
         List<Station> stations = stationRepository.findAllById(path);
 
         List<LineStation> lineStations = lines.stream()
-            .flatMap(it -> it.getStations().stream())
-            .filter(it -> Objects.nonNull(it.getPreStationId()))
+            .flatMap(it -> it.getLineStations().stream())
+            .filter(it -> Objects.nonNull(it.getPreStation()))
             .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);

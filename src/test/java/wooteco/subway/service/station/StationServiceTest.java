@@ -46,6 +46,6 @@ public class StationServiceTest {
 
         Line resultLine = lineRepository.findById(line.getId())
             .orElseThrow(NoSuchLineException::new);
-        assertThat(resultLine.getStations()).hasSize(1);
+        assertThat(resultLine.getLineStations()).hasSize(1);
     }
 }

@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class LineStations {
     @OneToMany
+    @JoinColumn(name="line_id")
     private Set<LineStation> stations;
 
     protected LineStations() {
@@ -28,14 +29,13 @@ public class LineStations {
     }
 
     public void add(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getPreStationId(),
-            targetLineStation.getStationId());
+        updatePreStationOfNextLineStation(targetLineStation.getPreStation(), targetLineStation.getStation());
         stations.add(targetLineStation);
     }
 
     private void remove(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getStationId(),
-            targetLineStation.getPreStationId());
+        updatePreStationOfNextLineStation(targetLineStation.getStation(),
+            targetLineStation.getPreStation());
         stations.remove(targetLineStation);
     }
 
@@ -54,10 +54,10 @@ public class LineStations {
         for (int i = 0; i < stations.size(); i++) {
             final Long finalPreStationId = preStationId;
             stations.stream()
-                .filter(station -> Objects.equals(station.getPreStationId(), finalPreStationId))
+                .filter(station -> Objects.equals(station.getPreStation(), finalPreStationId))
                 .findFirst()
                 .ifPresent(station -> {
-                    ids.add(station.getStationId());
+                    ids.add(station.getStation());
                 });
             preStationId = ids.get(ids.size() - 1);
         }
@@ -70,13 +70,13 @@ public class LineStations {
 
     private Optional<LineStation> extractByStationId(Long stationId) {
         return stations.stream()
-            .filter(it -> Objects.equals(it.getStationId(), stationId))
+            .filter(it -> Objects.equals(it.getStation(), stationId))
             .findFirst();
     }
 
     private Optional<LineStation> extractByPreStationId(Long preStationId) {
         return stations.stream()
-            .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
+            .filter(it -> Objects.equals(it.getPreStation(), preStationId))
             .findFirst();
     }
 
