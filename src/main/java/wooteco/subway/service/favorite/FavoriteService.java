@@ -2,6 +2,7 @@ package wooteco.subway.service.favorite;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -27,6 +28,12 @@ public class FavoriteService {
 	}
 
 	public Long add(Member member, FavoriteRequest favoriteRequest) {
+		Optional<Favorite> duplicateFavorite = findDuplicateFavorite(member, favoriteRequest);
+
+		if (duplicateFavorite.isPresent()) {
+			return duplicateFavorite.get().getId();
+		}
+
 		Favorite favorite = favoriteRequest.toEntity(member.getId());
 		Favorite persistenceFavorite = favoriteRepository.save(favorite);
 
@@ -36,9 +43,11 @@ public class FavoriteService {
 	public void delete(Member member, Long favoriteId) {
 		Favorite persistenceFavorite = favoriteRepository.findById(favoriteId)
 			.orElseThrow(FavoriteNotFoundException::new);
+
 		if (persistenceFavorite.isNotSameMember(member)) {
 			throw new IllegalArgumentException("잘못된 삭제 요청입니다." + member + "FavoriteId:" + favoriteId);
 		}
+
 		favoriteRepository.delete(persistenceFavorite);
 	}
 
@@ -52,5 +61,13 @@ public class FavoriteService {
 				stationsById.get(favorite.getSourceStationId()).getName(),
 				stationsById.get(favorite.getTargetStationId()).getName()
 			)).collect(Collectors.toList());
+	}
+
+	private Optional<Favorite> findDuplicateFavorite(Member member, FavoriteRequest favoriteRequest) {
+		List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+
+		return favorites.stream()
+			.filter(favoriteIter -> favoriteIter.isSameValue(favoriteRequest))
+			.findAny();
 	}
 }

@@ -38,7 +38,6 @@ public class MemberServiceTest {
 	void setUp() {
 		this.memberService = new MemberService(memberRepository, jwtTokenProvider);
 		member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-		// member.addFavorite(new Favorite(1L, 2L));
 	}
 
 	@Test
@@ -71,66 +70,4 @@ public class MemberServiceTest {
 		memberService.deleteMember(1L);
 		verify(memberRepository).deleteById(any());
 	}
-
-	// @DisplayName("즐겨찾기에 경로 추가")
-	// @Test
-	// void saveFavorite() {
-	// 	FavoriteRequest favorite = new FavoriteRequest(1L, 2L);
-	//
-	// 	Station 일원역 = new Station(1L, "일원역");
-	// 	Station 잠실역 = new Station(2L, "잠실역");
-	//
-	// 	given(memberRepository.save(any())).willReturn(any());
-	// 	given(stationRepository.findById(1L)).willReturn(Optional.of(일원역));
-	// 	given(stationRepository.findById(2L)).willReturn(Optional.of(잠실역));
-	//
-	// 	FavoriteResponse favoriteResponse = memberService.saveFavorite(member, favorite);
-	//
-	// 	assertThat(favoriteResponse.getSourceStation()).isEqualTo(일원역.getName());
-	// 	assertThat(favoriteResponse.getTargetStation()).isEqualTo(잠실역.getName());
-	// }@DisplayName("즐겨찾기에 경로 추가")
-	// @Test
-	// void saveFavorite() {
-	// 	FavoriteRequest favorite = new FavoriteRequest(1L, 2L);
-	//
-	// 	Station 일원역 = new Station(1L, "일원역");
-	// 	Station 잠실역 = new Station(2L, "잠실역");
-	//
-	// 	given(memberRepository.save(any())).willReturn(any());
-	// 	given(stationRepository.findById(1L)).willReturn(Optional.of(일원역));
-	// 	given(stationRepository.findById(2L)).willReturn(Optional.of(잠실역));
-	//
-	// 	FavoriteResponse favoriteResponse = memberService.saveFavorite(member, favorite);
-	//
-	// 	assertThat(favoriteResponse.getSourceStation()).isEqualTo(일원역.getName());
-	// 	assertThat(favoriteResponse.getTargetStation()).isEqualTo(잠실역.getName());
-	// }
-
-	// @DisplayName("즐겨찾기에 있는 경로 삭제")
-	// @Test
-	// void deleteFavorite() {
-	// 	given(memberRepository.save(any())).willReturn(any());
-	//
-	// 	Favorite favorite = new Favorite(1L, 2L);
-	// 	memberService.deleteFavorite(member, FavoriteRequest.of(favorite));
-	//
-	// 	verify(memberRepository).save(any());
-	// }
-	//
-	// @DisplayName("즐겨찾기에 있는 경로 조회")
-	// @Test
-	// void findAll() {
-	// 	member.addFavorite(new Favorite(1L, 2L));
-	// 	member.addFavorite(new Favorite(2L, 3L));
-	// 	member.addFavorite(new Favorite(3L, 4L));
-	//
-	// 	given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
-	// 		new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
-	//
-	// 	List<FavoriteResponse> allFavoritesByMemberId = memberService.findAllFavoritesByMember(
-	// 		member);
-	//
-	// 	assertThat(allFavoritesByMemberId).isNotNull();
-	// 	assertThat(allFavoritesByMemberId).hasSize(3);
-	// }
 }
