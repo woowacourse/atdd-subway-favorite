@@ -59,7 +59,7 @@ function Search() {
     try {
       const path = {
         sourceStationId: searchTargetStations[0].id,
-        targetStationId: searchTargetStations[searchTargetStations.length-1].id,
+        targetStationId: searchTargetStations[searchTargetStations.length - 1].id,
       };
       await api.favorite.create(path).then().catch(err => console.log(err));
       showSnackbar(SUCCESS_MESSAGE.FAVORITE);

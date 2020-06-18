@@ -42,7 +42,7 @@ public class LineStations {
     }
 
     private void extractNext(Long preStationId, List<Long> ids) {
-        for (int i=0; i<stations.size(); i++) {
+        for (int i = 0; i < stations.size(); i++) {
             final Long finalPreStationId = preStationId;
             stations.stream()
                 .filter(station -> Objects.equals(station.getPreStationId(), finalPreStationId))
@@ -50,7 +50,7 @@ public class LineStations {
                 .ifPresent(station -> {
                     ids.add(station.getStationId());
                 });
-            preStationId = ids.get(ids.size()-1);
+            preStationId = ids.get(ids.size() - 1);
         }
     }
 

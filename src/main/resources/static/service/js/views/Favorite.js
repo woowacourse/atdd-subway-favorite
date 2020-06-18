@@ -13,13 +13,14 @@ function Favorite() {
   const initFavoriteList = async () => {
     try {
       const template = await api.favorite
-        .getAll()
-        .then(favorites =>{
+      .getAll()
+      .then(favorites => {
           return favorites.map(edge => edgeItemTemplate(edge)).join("")
-          }
-        );
+        }
+      );
       $favoriteList.innerHTML = template;
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
@@ -35,7 +36,8 @@ function Favorite() {
       await api.favorite.delete('/' + edgeId);
       await initFavoriteList();
       showSnackbar(SUCCESS_MESSAGE.COMMON);
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };

@@ -22,7 +22,8 @@ function Join() {
       };
       await api.loginMember.create(newMember);
       location.href = "/login";
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };

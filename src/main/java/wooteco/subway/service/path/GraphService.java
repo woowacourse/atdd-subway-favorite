@@ -15,7 +15,8 @@ import wooteco.subway.domain.path.PathType;
 @Service
 public class GraphService {
     public List<Long> findPath(List<Line> lines, Long source, Long target, PathType type) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(
+            DefaultWeightedEdge.class);
 
         lines.stream()
             .flatMap(it -> it.getStationIds().stream())

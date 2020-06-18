@@ -25,14 +25,14 @@ function AdminLine() {
       intervalTime: $subwayIntervalTime.value
     }
     api.line
-      .create(newSubwayLine)
-      .then(response => {
-        $subwayLineList.insertAdjacentHTML('beforeend', subwayLinesTemplate(response))
-        subwayLineModal.toggle()
-      })
-      .catch(error => {
-        alert('에러가 발생했습니다.')
-      })
+    .create(newSubwayLine)
+    .then(response => {
+      $subwayLineList.insertAdjacentHTML('beforeend', subwayLinesTemplate(response))
+      subwayLineModal.toggle()
+    })
+    .catch(error => {
+      alert('에러가 발생했습니다.')
+    })
   }
 
   const onDeleteSubwayLineHandler = event => {
@@ -44,13 +44,13 @@ function AdminLine() {
     }
     const lineId = $subwayLineItem.dataset.id
     api.line
-      .delete(lineId)
-      .then(() => {
-        $subwayLineItem.remove()
-      })
-      .catch(error => {
-        alert(error)
-      })
+    .delete(lineId)
+    .then(() => {
+      $subwayLineItem.remove()
+    })
+    .catch(error => {
+      alert(error)
+    })
   }
 
   const onShowUpdateSubwayLineModal = event => {
@@ -63,18 +63,18 @@ function AdminLine() {
     $activeSubwayLineItem = $subwayLineItem
     const lineId = $subwayLineItem.dataset.id
     api.line
-      .get(lineId)
-      .then(line => {
-        $subwayLineNameInput.value = line.name
-        $subwayLineStartTime.value = line.startTime
-        $subwayLineEndTime.value = line.endTime
-        $subwayIntervalTime.value = line.intervalTime
-        subwayLineModal.toggle()
-        $submitButton.classList.add('update-submit-button')
-      })
-      .catch(() => {
-        alert(ERROR_MESSAGE.COMMON)
-      })
+    .get(lineId)
+    .then(line => {
+      $subwayLineNameInput.value = line.name
+      $subwayLineStartTime.value = line.startTime
+      $subwayLineEndTime.value = line.endTime
+      $subwayIntervalTime.value = line.intervalTime
+      subwayLineModal.toggle()
+      $submitButton.classList.add('update-submit-button')
+    })
+    .catch(() => {
+      alert(ERROR_MESSAGE.COMMON)
+    })
   }
 
   const updateSubwayLine = () => {
@@ -85,12 +85,12 @@ function AdminLine() {
       intervalTime: $subwayIntervalTime.value
     }
     api.line
-      .update($activeSubwayLineItem.dataset.id, updatedSubwayLine)
-      .then(() => {
-        subwayLineModal.toggle()
-        $activeSubwayLineItem.querySelector('.line-name').innerText = updatedSubwayLine.name
-      })
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+    .update($activeSubwayLineItem.dataset.id, updatedSubwayLine)
+    .then(() => {
+      subwayLineModal.toggle()
+      $activeSubwayLineItem.querySelector('.line-name').innerText = updatedSubwayLine.name
+    })
+    .catch(error => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onSubmitHandler = event => {
@@ -118,7 +118,9 @@ function AdminLine() {
 
   const initCreateSubwayLineForm = () => {
     const $colorSelectContainer = document.querySelector('#subway-line-color-select-container')
-    $colorSelectContainer.innerHTML = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(option, index)).join('')
+    $colorSelectContainer.innerHTML = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(
+      option,
+      index)).join('')
     $colorSelectContainer.addEventListener(EVENT_TYPE.CLICK, onSelectColorHandler)
   }
 
