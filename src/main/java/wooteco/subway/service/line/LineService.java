@@ -3,6 +3,7 @@ package wooteco.subway.service.line;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -14,8 +15,8 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
 @Service
 public class LineService {
-    private LineStationService lineStationService;
-    private LineRepository lineRepository;
+    private final LineStationService lineStationService;
+    private final LineRepository lineRepository;
 
     public LineService(LineStationService lineStationService, LineRepository lineRepository) {
         this.lineStationService = lineStationService;
@@ -40,17 +41,20 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
+        LineStation lineStation = lineStationService.createLineStation(
+            request.getPreStationId(), request.getStationId(),
             request.getDistance(), request.getDuration());
-        line.addLineStation(lineStation);
-
-        lineRepository.save(line);
+        LineStation persistedLineStation = lineStationService.save(lineStation);
+        persistedLineStation.setLine(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        lineStationService.deleteLineStationByStationId(stationId);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }

@@ -2,25 +2,33 @@ package wooteco.subway.domain.member;
 
 import java.util.Objects;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.relational.core.mapping.Embedded;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import wooteco.subway.domain.member.favorite.Favorite;
 import wooteco.subway.domain.member.favorite.Favorites;
 
+@Entity
 public class Member {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String name;
     private String password;
 
-    @Embedded.Empty
+    @Embedded
     private Favorites favorites = Favorites.empty();
+
+    protected Member() {
+    }
 
     public Member(String email, String name, String password) {
         this.email = email;
@@ -35,7 +43,6 @@ public class Member {
         this.password = password;
     }
 
-    @PersistenceConstructor
     public Member(final Long id, final String email, final String name, final String password,
         final Favorites favorites) {
         this.id = id;

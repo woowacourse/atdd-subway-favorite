@@ -8,7 +8,7 @@ public enum PathType {
     DISTANCE(LineStation::getDistance),
     DURATION(LineStation::getDuration);
 
-    private Function<LineStation, Integer> expression;
+    private final Function<LineStation, Integer> expression;
 
     PathType(Function<LineStation, Integer> expression) {
         this.expression = expression;

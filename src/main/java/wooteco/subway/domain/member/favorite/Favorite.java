@@ -4,49 +4,86 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
 
+@Entity
 public class Favorite {
-    private Long sourceStationId;
-    private Long targetStationId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne
+    private Member member;
+    @ManyToOne
+    private Station sourceStation;
+    @ManyToOne
+    private Station targetStation;
 
-    private Favorite() {
+    protected Favorite() {
     }
 
-    public Favorite(final Long sourceStationId, final Long targetStationId) {
-        this.sourceStationId = sourceStationId;
-        this.targetStationId = targetStationId;
+    public Favorite(final Station sourceStation, final Station targetStation) {
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
     }
 
-    public static Favorite of(final Station source, final Station target) {
-        return new Favorite(source.getId(), target.getId());
+    public Favorite(final Member member, final Station sourceStation, final Station targetStation) {
+        this.member = member;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
+    }
+
+    public Favorite(final Long id, final Member member, final Station sourceStation,
+        final Station targetStation) {
+        this.id = id;
+        this.member = member;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
     }
 
     public List<Long> getStationIds() {
-        return Arrays.asList(sourceStationId, targetStationId);
+        return Arrays.asList(sourceStation.getId(), targetStation.getId());
     }
 
-    public Long getSourceStationId() {
-        return sourceStationId;
+    public Station getSourceStation() {
+        return sourceStation;
     }
 
-    public Long getTargetStationId() {
-        return targetStationId;
+    public Station getTargetStation() {
+        return targetStation;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setMember(Member member) {
+        member.addFavorite(this);
+        this.member = member;
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        final Favorite favorite = (Favorite)o;
-        return Objects.equals(sourceStationId, favorite.sourceStationId) &&
-            Objects.equals(targetStationId, favorite.targetStationId);
+        Favorite favorite = (Favorite)o;
+        return Objects.equals(id, favorite.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sourceStationId, targetStationId);
+        return Objects.hash(id);
     }
 }

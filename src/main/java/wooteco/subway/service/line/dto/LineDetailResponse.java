@@ -34,10 +34,10 @@ public class LineDetailResponse {
         this.stations = StationResponse.listOf(stations);
     }
 
-    public static LineDetailResponse of(Line line, List<Station> stations) {
+    public static LineDetailResponse of(Line line) {
         return new LineDetailResponse(line.getId(), line.getName(), line.getStartTime(),
             line.getEndTime(), line.getIntervalTime(), line.getCreatedAt(), line.getUpdatedAt(),
-            stations);
+            line.getLineStations().getSortedStations());
     }
 
     public Long getId() {

@@ -18,9 +18,9 @@ import wooteco.subway.service.station.dto.StationResponse;
 
 @Service
 public class PathService {
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
-    private GraphService graphService;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final GraphService graphService;
 
     public PathService(StationRepository stationRepository, LineRepository lineRepository,
         GraphService graphService) {
@@ -45,13 +45,13 @@ public class PathService {
         List<Station> stations = stationRepository.findAllById(path);
 
         List<LineStation> lineStations = lines.stream()
-            .flatMap(it -> it.getStations().stream())
-            .filter(it -> Objects.nonNull(it.getPreStationId()))
+            .flatMap(it -> it.getLineStations().getValues().stream())
+            .filter(it -> Objects.nonNull(it.getPreStation()))
             .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+        int duration = paths.stream().mapToInt(LineStation::getDuration).sum();
+        int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
 
         List<Station> pathStation = path.stream()
             .map(it -> extractStation(it, stations))
@@ -62,7 +62,7 @@ public class PathService {
 
     private Station extractStation(Long stationId, List<Station> stations) {
         return stations.stream()
-            .filter(it -> it.getId() == stationId)
+            .filter(it -> it.getId().equals(stationId))
             .findFirst()
             .orElseThrow(RuntimeException::new);
     }

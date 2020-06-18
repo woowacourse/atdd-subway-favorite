@@ -1,7 +1,5 @@
 package wooteco.subway.service.member.dto;
 
-import java.util.Map;
-
 import wooteco.subway.domain.member.favorite.Favorite;
 
 public class FavoriteResponse {
@@ -21,9 +19,9 @@ public class FavoriteResponse {
         this.targetStationName = targetStationName;
     }
 
-    public FavoriteResponse(final Favorite favorite, final Map<Long, String> stations) {
-        this(favorite.getSourceStationId(), stations.get(favorite.getSourceStationId()),
-            favorite.getTargetStationId(), stations.get(favorite.getTargetStationId()));
+    public FavoriteResponse(final Favorite favorite) {
+        this(favorite.getSourceStation().getId(), favorite.getSourceStation().getName(),
+            favorite.getTargetStation().getId(), favorite.getTargetStation().getName());
     }
 
     public Long getSourceStationId() {

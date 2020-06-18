@@ -18,6 +18,7 @@ import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.member.favorite.Favorite;
+import wooteco.subway.domain.member.favorite.FavoriteRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -42,11 +43,13 @@ public class MemberServiceTest {
     private StationRepository stationRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private FavoriteRepository favoriteRepository;
 
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, stationRepository,
-            jwtTokenProvider);
+            jwtTokenProvider, favoriteRepository);
     }
 
     @DisplayName("회원 가입 기능")
@@ -118,12 +121,14 @@ public class MemberServiceTest {
             .thenReturn(Optional.of(member));
         when(stationRepository.findAllById(Arrays.asList(1L, 2L)))
             .thenReturn(Arrays.asList(new Station(1L, "123"), new Station(2L, "456")));
+        when(favoriteRepository.save(any())).thenReturn(
+            new Favorite(1L, member, new Station(1L, "123"), new Station(2L, "456")));
 
         //when
         memberService.addFavorite(favoriteRequest, loginEmail);
 
         //then
-        verify(memberRepository).save(member);
+        assertThat(member.getFavorites().getValues().get(0).getId()).isEqualTo(1L);
     }
 
     @DisplayName("즐겨찾기 삭제")
@@ -133,16 +138,19 @@ public class MemberServiceTest {
         FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(1L, 2L);
         LoginEmail loginEmail = new LoginEmail(TEST_USER_EMAIL);
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        member.addFavorite(new Favorite(1L, 2L));
+        Favorite favorite = new Favorite(1L, member, new Station(1L, "잠실역"),
+            new Station(2L, "역삼역"));
+        member.addFavorite(favorite);
 
-        when(memberRepository.findByEmail(TEST_USER_EMAIL))
-            .thenReturn(Optional.of(member));
+        when(memberRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.of(member));
+        when(favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(any(), any(),
+            any())).thenReturn(Optional.of(favorite));
 
         //when
         memberService.deleteFavorite(favoriteDeleteRequest, loginEmail);
 
         //then
-        verify(memberRepository).save(member);
+        verify(favoriteRepository).deleteById(1L);
     }
 
     @DisplayName("즐겨찾기 조회")
@@ -152,8 +160,10 @@ public class MemberServiceTest {
         LoginEmail loginEmail = new LoginEmail(TEST_USER_EMAIL);
 
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        member.addFavorite(new Favorite(1L, 2L));
-        member.addFavorite(new Favorite(2L, 3L));
+        member.addFavorite(
+            new Favorite(1L, member, new Station(1L, "잠실역"), new Station(2L, "역삼역")));
+        member.addFavorite(
+            new Favorite(2L, member, new Station(2L, "역삼역"), new Station(3L, "강변역")));
 
         when(memberRepository.findByEmail(TEST_USER_EMAIL))
             .thenReturn(Optional.of(member));

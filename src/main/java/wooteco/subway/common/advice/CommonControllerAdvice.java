@@ -18,7 +18,7 @@ import wooteco.subway.web.dto.ErrorCode;
 @RestControllerAdvice
 @Order(2)
 public class CommonControllerAdvice {
-    private static Logger logger = LoggerFactory.getLogger(CommonControllerAdvice.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonControllerAdvice.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<DefaultResponse<Void>> handleMethodArgumentNotValidException(

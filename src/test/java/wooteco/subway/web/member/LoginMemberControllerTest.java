@@ -27,6 +27,7 @@ import wooteco.subway.doc.LoginMemberDocumentation;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.member.favorite.Favorite;
+import wooteco.subway.domain.member.favorite.FavoriteRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.infra.JwtTokenProvider;
@@ -53,6 +54,9 @@ class LoginMemberControllerTest {
     private StationRepository stationRepository;
 
     @Autowired
+    private FavoriteRepository favoriteRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     private MockMvc mockMvc;
@@ -65,10 +69,14 @@ class LoginMemberControllerTest {
             .addFilter(new ShallowEtagHeaderFilter())
             .apply(documentationConfiguration(restDocumentation))
             .build();
+        favoriteRepository.deleteAll();
+        memberRepository.deleteAll();
+        stationRepository.deleteAll();
     }
 
     @AfterEach
     void tearDown() {
+        favoriteRepository.deleteAll();
         memberRepository.deleteAll();
         stationRepository.deleteAll();
     }
@@ -184,7 +192,7 @@ class LoginMemberControllerTest {
 
     @DisplayName("회원의 즐겨찾는 경로를 추가한다.")
     @Test
-    void getMemberFavorite() throws Exception {
+    void addMemberFavorite() throws Exception {
         //given
         Member member = memberRepository.save(new Member(EMAIL, NAME, PASSWORD));
         Station source = stationRepository.save(new Station("잠실"));
@@ -212,8 +220,8 @@ class LoginMemberControllerTest {
         Station source = stationRepository.save(new Station("잠실"));
         Station target = stationRepository.save(new Station("역삼"));
         Member member = new Member(EMAIL, NAME, PASSWORD);
-        member.addFavorite(new Favorite(source.getId(), target.getId()));
         memberRepository.save(member);
+        favoriteRepository.save(new Favorite(member, source, target));
 
         String token = jwtTokenProvider.createToken(member.getEmail());
 
@@ -239,8 +247,8 @@ class LoginMemberControllerTest {
         Station station1 = stationRepository.save(new Station("잠실"));
         Station station2 = stationRepository.save(new Station("역삼"));
         Member member = new Member(EMAIL, NAME, PASSWORD);
-        member.addFavorite(new Favorite(station1.getId(), station2.getId()));
         memberRepository.save(member);
+        favoriteRepository.save(new Favorite(member, station1, station2));
 
         String token = jwtTokenProvider.createToken(member.getEmail());
         //when

@@ -6,14 +6,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.data.relational.core.mapping.MappedCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 
 import wooteco.subway.web.dto.ErrorCode;
 import wooteco.subway.web.member.exception.MemberException;
 
+@Embeddable
 public class Favorites {
-    @MappedCollection(idColumn = "member", keyColumn = "member_key")
-    private List<Favorite> favorites;
+    @OneToMany(mappedBy = "member")
+    private List<Favorite> favorites = new ArrayList<>();
+
+    protected Favorites() {
+    }
 
     public Favorites(final List<Favorite> favorites) {
         this.favorites = favorites;
@@ -25,8 +30,8 @@ public class Favorites {
 
     public void add(Favorite favorite) {
         if (favorites.contains(favorite)) {
-            throw new MemberException(String.format("source: %d, target: %d, 이미 존재하는 즐겨찾기입니다.",
-                favorite.getSourceStationId(), favorite.getTargetStationId()),
+            throw new MemberException(String.format("source: %s, target: %s, 이미 존재하는 즐겨찾기입니다.",
+                favorite.getSourceStation().getName(), favorite.getTargetStation().getName()),
                 ErrorCode.FAVORITE_DUPLICATED);
         }
         favorites.add(favorite);
@@ -34,8 +39,8 @@ public class Favorites {
 
     public void remove(Favorite favorite) {
         if (!favorites.contains(favorite)) {
-            throw new MemberException(String.format("source: %d, target: %d, 존재하지 않는 즐겨찾기입니다.",
-                favorite.getSourceStationId(), favorite.getTargetStationId()),
+            throw new MemberException(String.format("source: %s, target: %s, 존재하지 않는 즐겨찾기입니다.",
+                favorite.getSourceStation().getName(), favorite.getTargetStation().getName()),
                 ErrorCode.FAVORITE_NOT_FOUND);
         }
         favorites.remove(favorite);
@@ -49,7 +54,7 @@ public class Favorites {
 
     }
 
-    public List<Favorite> getFavorites() {
+    public List<Favorite> getValues() {
         return new ArrayList<>(favorites);
     }
 }
