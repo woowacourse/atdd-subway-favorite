@@ -5,13 +5,19 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Embedded;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+@Entity
 public class Line {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private LocalTime startTime;
@@ -21,7 +27,8 @@ public class Line {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
-    @Embedded.Empty
+    // @Embedded.Empty
+    @Embedded
     private LineStations stations = LineStations.empty();
 
     public Line() {

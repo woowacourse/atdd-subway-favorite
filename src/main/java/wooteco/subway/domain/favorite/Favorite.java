@@ -1,16 +1,21 @@
 package wooteco.subway.domain.favorite;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 
+@Entity
 public class Favorite {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long sourceStationId;
     private Long targetStationId;
-    @Column("member")
+    // @Column(name="member")
     private Long memberId;
 
     public Favorite() {

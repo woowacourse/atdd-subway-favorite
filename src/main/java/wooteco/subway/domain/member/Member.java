@@ -3,19 +3,26 @@ package wooteco.subway.domain.member;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Embedded;
 
 import wooteco.subway.domain.favorite.Favorite;
 
+@Entity
 public class Member {
-    Set<Favorite> favorites = new HashSet<>();
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String name;
     private String password;
+    @OneToMany
+    Set<Favorite> favorites = new HashSet<>();
 
     public Member() {
     }

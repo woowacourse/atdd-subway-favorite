@@ -7,8 +7,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+
+@Embeddable
 public class LineStations {
+    @OneToMany
     private Set<LineStation> stations;
+
+    protected LineStations() {
+    }
 
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;

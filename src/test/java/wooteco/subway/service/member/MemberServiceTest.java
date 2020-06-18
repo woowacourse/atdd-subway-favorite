@@ -99,7 +99,7 @@ public class MemberServiceTest {
         Favorite favorite = new Favorite(1L, 1L, 2L, 1L);
         member.addFavorite(favorite);
         favoriteService.deleteFavorite(member, favorite.getId());
-        verify(memberRepository).deleteFavoriteById(favorite.getId());
+        verify(memberRepository).deleteById(favorite.getId());
     }
 
     @DisplayName("즐겨찾기에 있는 경로 조회")

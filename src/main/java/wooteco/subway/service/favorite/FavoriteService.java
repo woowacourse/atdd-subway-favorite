@@ -48,6 +48,6 @@ public class FavoriteService {
         if (member.doesNotHaveFavoriteWithId(favoriteId)) {
             throw new IllegalArgumentException("잘못된 즐겨찾기 삭제 요청입니다.");
         }
-        memberRepository.deleteFavoriteById(favoriteId);
+        memberRepository.deleteById(favoriteId);
     }
 }
