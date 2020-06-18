@@ -26,7 +26,7 @@ public class FavoriteRequest {
 		return targetStationId;
 	}
 
-	public Favorite toEntity(Long id) {
-		return new Favorite(id, sourceStationId, targetStationId);
+	public Favorite toEntity(Long memberId) {
+		return new Favorite(memberId, sourceStationId, targetStationId);
 	}
 }

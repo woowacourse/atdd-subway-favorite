@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.favorite.FavoriteNotFoundException;
 import wooteco.subway.domain.favorite.FavoriteRepository;
@@ -13,6 +15,7 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.favorite.dto.FavoriteRequest;
 import wooteco.subway.service.favorite.dto.FavoriteResponse;
 
+@Service
 public class FavoriteService {
 	private final FavoriteRepository favoriteRepository;
 	private final StationRepository stationRepository;
@@ -23,9 +26,11 @@ public class FavoriteService {
 		this.stationRepository = stationRepository;
 	}
 
-	public void add(Member member, FavoriteRequest favoriteRequest) {
+	public Long add(Member member, FavoriteRequest favoriteRequest) {
 		Favorite favorite = favoriteRequest.toEntity(member.getId());
-		favoriteRepository.save(favorite);
+		Favorite persistenceFavorite = favoriteRepository.save(favorite);
+
+		return persistenceFavorite.getId();
 	}
 
 	public void delete(Member member, Long favoriteId) {

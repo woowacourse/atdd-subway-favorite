@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,46 +48,48 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		FavoriteRequest favoriteRequest = new FavoriteRequest(stationOne.getId(),
 			stationTwo.getId());
-		addFavorite(tokenResponse, favoriteRequest);
+		Long favoriteId = addFavorite(tokenResponse, favoriteRequest);
 
 		final List<FavoriteResponse> favorite = getFavorite(tokenResponse);
 		assertThat(favorite.get(0)).isNotNull();
 		assertThat(favorite.get(0).getSourceStation()).isEqualTo("일원역");
 		assertThat(favorite.get(0).getTargetStation()).isEqualTo("이대역");
 
-		deleteFavorite(tokenResponse, favoriteRequest);
+		deleteFavorite(tokenResponse, favoriteId);
 		assertThat(getFavorite(tokenResponse).size()).isEqualTo(0);
 	}
 
-	void addFavorite(TokenResponse token, FavoriteRequest favoriteRequest) {
+	Long addFavorite(TokenResponse token, FavoriteRequest favoriteRequest) {
 		Map<String, String> params = new HashMap<>();
 		params.put("sourceStationId", String.valueOf(favoriteRequest.getSourceStationId()));
 		params.put("targetStationId", String.valueOf(favoriteRequest.getTargetStationId()));
 
-		given()
+		String location = given()
 			.header("Authorization", token.getTokenType() + " " + token.getAccessToken())
 			.body(params)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.post("/me/favorites")
+			.post("/favorites")
 			.then()
 			.log().all()
-			.statusCode(HttpStatus.CREATED.value());
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().header("location");
+
+		String lastText = Arrays.stream(location.split("/"))
+			.reduce((first, second) -> second)
+			.orElse("");
+
+		return Long.valueOf(lastText);
 	}
 
-	void deleteFavorite(TokenResponse token, FavoriteRequest favoriteRequest) {
-		Map<String, String> params = new HashMap<>();
-		params.put("sourceStationId", String.valueOf(favoriteRequest.getSourceStationId()));
-		params.put("targetStationId", String.valueOf(favoriteRequest.getTargetStationId()));
-
+	void deleteFavorite(TokenResponse token, Long favoriteId) {
 		given()
 			.header("Authorization", token.getTokenType() + " " + token.getAccessToken())
-			.body(params)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.delete("/me/favorites")
+			.delete("/favorites/" + favoriteId)
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value());
@@ -98,7 +101,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/me/favorites")
+			.get("/favorites")
 			.then()
 			.log().all()
 			.extract().jsonPath().getList(".", FavoriteResponse.class);

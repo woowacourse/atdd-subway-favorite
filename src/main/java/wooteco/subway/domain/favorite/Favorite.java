@@ -6,7 +6,6 @@ import org.springframework.data.annotation.Id;
 
 import wooteco.subway.domain.BaseEntity;
 import wooteco.subway.domain.member.Member;
-import wooteco.subway.service.favorite.dto.FavoriteRequest;
 
 public class Favorite extends BaseEntity {
 	@Id
@@ -24,13 +23,8 @@ public class Favorite extends BaseEntity {
 		this.targetStationId = targetStationId;
 	}
 
-	public static Favorite of(FavoriteRequest favoriteRequest) {
-		return new Favorite(favoriteRequest.getSourceStationId(),
-			favoriteRequest.getTargetStationId());
-	}
-
 	public boolean isNotSameMember(Member member) {
-		return Objects.equals(member.getId(), memberId);
+		return !Objects.equals(member.getId(), memberId);
 	}
 
 	public Long getId() {

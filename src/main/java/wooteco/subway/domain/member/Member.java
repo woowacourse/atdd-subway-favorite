@@ -6,8 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
 import wooteco.subway.domain.BaseEntity;
-import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.domain.favorite.FavoriteNotFoundException;
 
 public class Member extends BaseEntity {
 	@Id
@@ -41,22 +39,8 @@ public class Member extends BaseEntity {
 		}
 	}
 
-	public void addFavorite(Favorite favorite) {
-		favorites.add(favorite);
-	}
-
 	public boolean checkPassword(String password) {
 		return this.password.equals(password);
-	}
-
-	public void deleteFavorite(Long sourceStationId, Long targetStationId) {
-		int preSize = favorites.size();
-		Favorite favorite = new Favorite(sourceStationId, targetStationId);
-		favorites.remove(favorite);
-
-		if (preSize == favorites.size()) {
-			throw new FavoriteNotFoundException();
-		}
 	}
 
 	public Long getId() {

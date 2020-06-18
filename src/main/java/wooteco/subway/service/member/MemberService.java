@@ -1,37 +1,24 @@
 package wooteco.subway.service.member;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.NoSuchAccountException;
-import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.exception.WrongPasswordException;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
 	private final MemberRepository memberRepository;
-	private final StationRepository stationRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 
-	public MemberService(MemberRepository memberRepository,
-		StationRepository stationRepository, JwtTokenProvider jwtTokenProvider) {
+	public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
 		this.memberRepository = memberRepository;
-		this.stationRepository = stationRepository;
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
@@ -64,37 +51,5 @@ public class MemberService {
 
 	public Member findMemberByEmail(String email) {
 		return memberRepository.findByEmail(email).orElseThrow(NoSuchAccountException::new);
-	}
-
-	public List<FavoriteResponse> findAllFavoritesByMember(Member member) {
-		Map<Long, String> stationNameById = stationRepository.findAll().stream()
-			.collect(Collectors.toMap(Station::getId, Station::getName));
-
-		return member.getFavorites().stream()
-			.map(favorite ->
-				new FavoriteResponse(stationNameById.get(favorite.getSourceStationId()),
-					stationNameById.get(favorite.getTargetStationId()))
-			).collect(Collectors.toList());
-	}
-
-	public FavoriteResponse saveFavorite(Member member, FavoriteRequest favoriteRequest) {
-		member.addFavorite(Favorite.of(favoriteRequest));
-
-		memberRepository.save(member);
-
-		String sourceName = findStationNameById(favoriteRequest.getSourceStationId());
-		String targetName = findStationNameById(favoriteRequest.getTargetStationId());
-		return new FavoriteResponse(sourceName, targetName);
-	}
-
-	public void deleteFavorite(Member member, FavoriteRequest favorite) {
-		member.deleteFavorite(favorite.getSourceStationId(), favorite.getTargetStationId());
-		memberRepository.save(member);
-	}
-
-	private String findStationNameById(Long stationId) {
-		return stationRepository.findById(stationId)
-			.orElseThrow(NoSuchStationException::new)
-			.getName();
 	}
 }
