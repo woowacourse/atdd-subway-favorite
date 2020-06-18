@@ -54,8 +54,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 List<FavoriteResponse> favorites = favoriteResponses.getFavoriteResponses();
 
                 assertThat(favorites).hasSize(1);
-                assertThat(favorites.get(0).getSourceStationId()).isEqualTo(6L);
-                assertThat(favorites.get(0).getTargetStationId()).isEqualTo(7L);
+                assertThat(favorites.get(0).getSourceStationId()).isEqualTo(1L);
+                assertThat(favorites.get(0).getTargetStationId()).isEqualTo(2L);
             }),
             dynamicTest("deleteFavorite", () -> {
                 TokenResponse tokenResponse = loginMember(TEST_USER_EMAIL, TEST_USER_PASSWORD);

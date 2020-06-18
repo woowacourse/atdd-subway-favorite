@@ -52,10 +52,6 @@ public class LineStationService {
     @Transactional
     public void deleteLineStationByStationId(Long stationId) {
         lineStationRepository.deleteAllByStationId(stationId);
-        // lineStationRepository.deleteAllByPreStationId(stationId);
-        // List<Line> lines = lineRepository.findAll();
-        // lines.stream().forEach(it -> it.removeLineStationById(stationId));
-        // lineRepository.saveAll(lines);
     }
 
     public LineStation createLineStation(Long preStationId, Long stationId, int distance,
