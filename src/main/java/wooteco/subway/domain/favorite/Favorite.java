@@ -1,5 +1,7 @@
 package wooteco.subway.domain.favorite;
 
+import static javax.persistence.FetchType.*;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,15 +24,15 @@ import wooteco.subway.web.exception.AuthenticationException;
 @AttributeOverride(name = "id", column = @Column(name = "FAVORITE_ID"))
 public class Favorite extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "SOURCE_STATION_ID")
     private Station sourceStation;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "TARGET_STATION_ID")
     private Station targetStation;
 
@@ -44,13 +46,8 @@ public class Favorite extends BaseEntity {
     }
 
     public void validateMember(Member member) {
-        if (!this.member.isSameId(member)) {
+        if (!this.member.equals(member)) {
             throw new AuthenticationException();
         }
-    }
-
-    public void applyFavorite(Member member) {
-        this.member = member;
-        member.getFavorites().add(this);
     }
 }

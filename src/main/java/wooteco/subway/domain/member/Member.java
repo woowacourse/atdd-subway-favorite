@@ -58,7 +58,13 @@ public class Member extends BaseEntity {
         return this.password.equals(password);
     }
 
-    public boolean isSameId(Member member) {
-        return this.getId().equals(member.getId());
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
