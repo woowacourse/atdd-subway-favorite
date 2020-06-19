@@ -1,51 +1,53 @@
 package wooteco.subway.domain.favorite;
 
-import java.util.Objects;
+import static javax.persistence.FetchType.*;
 
-import org.springframework.data.annotation.Id;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-public class Favorite {
-    @Id
-    private Long id;
-    private Long memberId;
-    private Long sourceId;
-    private Long targetId;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import wooteco.subway.domain.common.BaseEntity;
+import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.web.exception.AuthenticationException;
 
-    protected Favorite() {
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AttributeOverride(name = "id", column = @Column(name = "FAVORITE_ID"))
+public class Favorite extends BaseEntity {
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "SOURCE_STATION_ID")
+    private Station sourceStation;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "TARGET_STATION_ID")
+    private Station targetStation;
+
+    public Favorite(Long id, Member member, Station source, Station target) {
+        this(member, source, target);
+        super.id = id;
     }
 
-    public Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
-        this.id = id;
-        this.memberId = memberId;
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+    public static Favorite of(Member member, Station sourceStation, Station targetStation) {
+        return new Favorite(member, sourceStation, targetStation);
     }
 
-    public static Favorite of(Long id, Long memberId, Long sourceId, Long targetId) {
-        return new Favorite(id, memberId, sourceId, targetId);
-    }
-
-    public static Favorite of(Long memberId, Long sourceId, Long targetId) {
-        return new Favorite(null, memberId, sourceId, targetId);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public Long getTargetId() {
-        return targetId;
-    }
-
-    public boolean isSameId(Long id) {
-        return Objects.equals(this.id, id);
+    public void validateMember(Member member) {
+        if (!this.member.equals(member)) {
+            throw new AuthenticationException();
+        }
     }
 }

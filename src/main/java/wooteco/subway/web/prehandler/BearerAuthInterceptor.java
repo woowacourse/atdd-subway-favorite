@@ -19,38 +19,43 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
     private AuthorizationExtractor authExtractor;
     private JwtTokenProvider jwtTokenProvider;
 
-    public BearerAuthInterceptor(AuthorizationExtractor authExtractor, JwtTokenProvider jwtTokenProvider) {
+    public BearerAuthInterceptor(AuthorizationExtractor authExtractor,
+        JwtTokenProvider jwtTokenProvider) {
         this.authExtractor = authExtractor;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
-        IsAuth annotation = getAnnotation((HandlerMethod)handler, IsAuth.class);
-        if (!ObjectUtils.isEmpty(annotation)) {
-            String bearer = authExtractor.extract(request);
-            jwtTokenProvider.validateToken(bearer);
-            String email = jwtTokenProvider.getSubject(bearer);
-            request.setAttribute("loginMemberEmail", email);
+        HttpServletResponse response, Object handler) {
+        if (handler instanceof HandlerMethod) {
+            IsAuth annotation = getAnnotation((HandlerMethod)handler, IsAuth.class);
+            if (!ObjectUtils.isEmpty(annotation)) {
+                String bearer = authExtractor.extract(request);
+                jwtTokenProvider.validateToken(bearer);
+                String email = jwtTokenProvider.getSubject(bearer);
+                request.setAttribute("loginMemberEmail", email);
+            }
         }
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView) throws Exception {
+        HttpServletResponse response,
+        Object handler,
+        ModelAndView modelAndView) throws Exception {
 
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+        Object handler, Exception ex) throws Exception {
 
     }
 
-    private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
+    private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod,
+        Class<A> annotationType) {
         return Optional.ofNullable(handlerMethod.getMethodAnnotation(annotationType))
             .orElse(handlerMethod.getBeanType().getAnnotation(annotationType));
     }

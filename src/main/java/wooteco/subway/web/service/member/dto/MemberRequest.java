@@ -13,7 +13,9 @@ import wooteco.subway.web.prehandler.validator.PasswordMatch;
 )
 public class MemberRequest {
 
-    @Email @DuplicateCheck @NotBlank(message = "이메일은 필수 입력 사항입니다.")
+    @Email
+    @DuplicateCheck
+    @NotBlank(message = "이메일은 필수 입력 사항입니다.")
     private String email;
 
     @NotBlank(message = "이름은 필수 입력 사항입니다.")
@@ -36,7 +38,7 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, name, password);
+        return Member.of(name, email, password);
     }
 
     public String getEmail() {

@@ -1,6 +1,6 @@
 package wooteco.subway.web.service.member;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,9 +44,8 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail())
-            .orElseThrow(() -> new NotFoundMemberException(param.getEmail()));
-        if (!member.checkPassword(param.getPassword())) {
+        Member member = memberRepository.findByEmail(param.getEmail());
+        if (Objects.isNull(member) || !member.checkPassword(param.getPassword())) {
             throw new NotMatchPasswordException();
         }
 
@@ -55,13 +54,11 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-            .orElseThrow(() -> new NotFoundMemberException(email));
+        return memberRepository.findByEmail(email);
     }
 
     @Transactional(readOnly = true)
     public boolean isExistEmail(String email) {
-        Optional<Member> byEmail = memberRepository.findByEmail(email);
-        return byEmail.isPresent();
+        return Objects.nonNull(memberRepository.findByEmail(email));
     }
 }

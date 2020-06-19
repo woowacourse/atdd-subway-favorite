@@ -1,31 +1,32 @@
 package wooteco.subway.service.line;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.line.dto.LineStationCreateRequest;
+
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
-import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.linestation.LineStation;
 import wooteco.subway.domain.station.Station;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import wooteco.subway.service.line.dto.LineStationCreateRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
-    private static final String STATION_NAME1 = "강남역";
-    private static final String STATION_NAME2 = "역삼역";
-    private static final String STATION_NAME3 = "선릉역";
-    private static final String STATION_NAME4 = "삼성역";
+    public static final String STATION_NAME1 = "강남역";
+    public static final String STATION_NAME2 = "역삼역";
+    public static final String STATION_NAME3 = "선릉역";
+    public static final String STATION_NAME4 = "삼성역";
 
     @Mock
     private LineRepository lineRepository;
@@ -39,6 +40,9 @@ public class LineServiceTest {
     private Station station2;
     private Station station3;
     private Station station4;
+    private LineStation lineStation1;
+    private LineStation lineStation2;
+    private LineStation lineStation3;
 
     @BeforeEach
     void setUp() {
@@ -50,57 +54,60 @@ public class LineServiceTest {
         station4 = new Station(4L, STATION_NAME4);
 
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        lineStation1 = new LineStation(null, station1, 10, 10);
+        lineStation2 = new LineStation(station1, station2, 10, 10);
+        lineStation3 = new LineStation(station2, station3, 10, 10);
+
+        lineStation1.applyLine(line);
+        lineStation2.applyLine(line);
+        lineStation3.applyLine(line);
     }
 
     @Test
     void addLineStationAtTheFirstOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
-
-        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10, 10);
+        when(lineStationService.findAllByStation(anyList())).thenReturn(
+            Arrays.asList(null, station4));
+        LineStationCreateRequest request = new LineStationCreateRequest(null, station4.getId(), 10,
+            10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
 
         List<Long> stationIds = line.getStationIds();
-        assertThat(stationIds.get(0)).isEqualTo(4L);
-        assertThat(stationIds.get(1)).isEqualTo(1L);
-        assertThat(stationIds.get(2)).isEqualTo(2L);
-        assertThat(stationIds.get(3)).isEqualTo(3L);
+        assertThat(stationIds).containsExactlyInAnyOrder(1L, 2L, 3L, 4L);
     }
 
     @Test
     void addLineStationBetweenTwo() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+        when(lineStationService.findAllByStation(anyList())).thenReturn(
+            Arrays.asList(station1, station4));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(), station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(station1.getId(),
+            station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
 
         List<Long> stationIds = line.getStationIds();
-        assertThat(stationIds.get(0)).isEqualTo(1L);
-        assertThat(stationIds.get(1)).isEqualTo(4L);
-        assertThat(stationIds.get(2)).isEqualTo(2L);
-        assertThat(stationIds.get(3)).isEqualTo(3L);
+        assertThat(stationIds).containsExactlyInAnyOrder(1L, 2L, 3L, 4L);
     }
 
     @Test
     void addLineStationAtTheEndOfLine() {
         when(lineRepository.findById(line.getId())).thenReturn(Optional.of(line));
+        when(lineStationService.findAllByStation(anyList())).thenReturn(
+            Arrays.asList(station3, station4));
 
-        LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(), station4.getId(), 10, 10);
+        LineStationCreateRequest request = new LineStationCreateRequest(station3.getId(),
+            station4.getId(), 10, 10);
         lineService.addLineStation(line.getId(), request);
 
         assertThat(line.getStations()).hasSize(4);
 
         List<Long> stationIds = line.getStationIds();
-        assertThat(stationIds.get(0)).isEqualTo(1L);
-        assertThat(stationIds.get(1)).isEqualTo(2L);
-        assertThat(stationIds.get(2)).isEqualTo(3L);
-        assertThat(stationIds.get(3)).isEqualTo(4L);
+        assertThat(stationIds).containsExactlyInAnyOrder(1L, 2L, 3L, 4L);
     }
 
     @Test

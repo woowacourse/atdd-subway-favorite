@@ -1,12 +1,12 @@
 package wooteco.subway.web.favorite;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static wooteco.subway.acceptance.AcceptanceTest.*;
+import static wooteco.subway.service.member.MemberServiceTest.*;
 
 import javax.servlet.http.Cookie;
 
@@ -28,6 +28,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.web.exception.DuplicatedFavoriteException;
 import wooteco.subway.web.service.favorite.FavoriteService;
@@ -54,6 +55,8 @@ public class FavoriteControllerTest {
     private Member member;
     private Favorite favorite;
     private Cookie cookie;
+    private Station sourceStation;
+    private Station targetStation;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
@@ -64,7 +67,9 @@ public class FavoriteControllerTest {
             .build();
 
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        favorite = Favorite.of(1L, 1L, 1L, 2L);
+        sourceStation = new Station(1L, "잠실역");
+        targetStation = new Station(2L, "강남역");
+        favorite = new Favorite(1L, member, sourceStation, targetStation);
         cookie = new Cookie("token", "dundung");
     }
 

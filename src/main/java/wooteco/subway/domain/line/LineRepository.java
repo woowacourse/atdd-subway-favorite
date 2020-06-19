@@ -1,10 +1,6 @@
 package wooteco.subway.domain.line;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
-public interface LineRepository extends CrudRepository<Line, Long> {
-    @Override
-    List<Line> findAll();
+public interface LineRepository extends JpaRepository<Line, Long> {
 }

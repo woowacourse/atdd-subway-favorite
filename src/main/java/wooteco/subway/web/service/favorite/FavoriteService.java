@@ -1,5 +1,6 @@
 package wooteco.subway.web.service.favorite;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,39 +37,41 @@ public class FavoriteService {
     }
 
     public FavoriteResponse create(Member member, FavoriteRequest request) {
-        Favorite favorite = getFavorite(member, request);
+        Favorite favorite = makeFavorite(member, request);
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
     public void delete(Member member, Long id) {
-        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
+        Favorite favorite = favoriteRepository.findById(id)
             .orElseThrow(() -> new NotFoundFavoriteException(id));
+        favorite.validateMember(member);
         favoriteRepository.delete(favorite);
-    }
-
-    private Favorite getFavorite(Member member, FavoriteRequest request) {
-        Long sourceId = stationService.findStationIdByName(request.getSourceName());
-        Long targetId = stationService.findStationIdByName(request.getTargetName());
-
-        return Favorite.of(member.getId(), sourceId, targetId);
     }
 
     public Set<FavoriteDetailResponse> getAll(Member member) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         Set<Long> ids = new HashSet<>();
         for (Favorite favorite : favorites) {
-            ids.add(favorite.getSourceId());
-            ids.add(favorite.getTargetId());
+            ids.add(favorite.getSourceStation().getId());
+            ids.add(favorite.getTargetStation().getId());
         }
         List<Station> stations = stationService.findAllById(ids);
         Map<Long, String> idToName = stations.stream()
             .collect(Collectors.toMap(Station::getId, Station::getName));
 
         return favorites.stream()
-            .map(favorite -> new FavoriteDetailResponse(favorite.getId(), favorite.getMemberId(),
-                favorite.getSourceId(), favorite.getTargetId(),
-                idToName.get(favorite.getSourceId()),
-                idToName.get(favorite.getTargetId())))
+            .map(favorite -> new FavoriteDetailResponse(favorite.getId(),
+                favorite.getMember().getId(),
+                favorite.getSourceStation().getId(), favorite.getTargetStation().getId(),
+                idToName.get(favorite.getSourceStation().getId()),
+                idToName.get(favorite.getTargetStation().getId())))
             .collect(Collectors.toSet());
+    }
+
+    private Favorite makeFavorite(Member member, FavoriteRequest request) {
+        List<Station> stations = stationService
+            .findAllByStationName(Arrays.asList(request.getSourceName(), request.getTargetName()));
+
+        return Favorite.of(member, stations.get(0), stations.get(1));
     }
 }

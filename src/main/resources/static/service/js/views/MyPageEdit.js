@@ -49,7 +49,7 @@ function MyPageEdit() {
     }
     api.member.delete($id.dataset.id, $oldPassword.value)
     .then(response => {
-      if(!response.ok){
+      if (!response.ok) {
         throw response;
       }
       alert("실망이야..😢");
@@ -69,14 +69,14 @@ function MyPageEdit() {
   }
 
   this.init = () => {
-    if(getCookie()) {
+    if (getCookie()) {
       api.member.myPage().then(response => {
         $id.dataset.id = response.id;
         $email.value = response.email;
         $name.value = response.name;
       }).catch(alert);
       initEventListener();
-    } else{
+    } else {
       alert("로그인을 해주세요");
       window.location = '/login';
     }

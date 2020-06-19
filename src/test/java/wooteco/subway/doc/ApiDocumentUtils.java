@@ -1,6 +1,5 @@
 package wooteco.subway.doc;
 
-
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;

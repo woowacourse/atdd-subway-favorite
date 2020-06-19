@@ -3,17 +3,13 @@ package wooteco.subway.domain.station;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface StationRepository extends CrudRepository<Station, Long> {
-    @Override
-    List<Station> findAllById(Iterable ids);
+public interface StationRepository extends JpaRepository<Station, Long> {
+    Optional<Station> findByName(String name);
 
-    @Override
-    List<Station> findAll();
-
-    @Query("select * from station where name = :stationName")
-    Optional<Station> findByName(@Param("stationName") String stationName);
+    @Query("select s from Station s where s.name in (:stations)")
+    List<Station> findAllByStationName(@Param("stations") List<String> stations);
 }

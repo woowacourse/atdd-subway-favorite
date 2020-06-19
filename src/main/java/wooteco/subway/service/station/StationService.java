@@ -5,24 +5,18 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import lombok.AllArgsConstructor;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.service.line.LineStationService;
-import wooteco.subway.web.exception.NotFoundStationException;
+import wooteco.subway.service.station.dto.StationCreateRequest;
 
 @Service
+@AllArgsConstructor
 public class StationService {
-    private LineStationService lineStationService;
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
-    public StationService(LineStationService lineStationService,
-        StationRepository stationRepository) {
-        this.lineStationService = lineStationService;
-        this.stationRepository = stationRepository;
-    }
-
-    public Station createStation(Station station) {
-        return stationRepository.save(station);
+    public Station createStation(StationCreateRequest request) {
+        return stationRepository.save(request.toStation());
     }
 
     public List<Station> findStations() {
@@ -30,17 +24,22 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
     }
 
-    public Long findStationIdByName(String name) {
-        return stationRepository.findByName(name)
-            .map(Station::getId)
-            .orElseThrow(() -> new NotFoundStationException(name + "역을 찾을 수 없습니다."));
-    }
+    // public Long findStationIdByName(String name) {
+    //     return stationRepository.findByName(name)
+    //         .stream()
+    //         .map(Station::getId)
+    //         .findAny()
+    //         .orElseThrow(() -> new NotFoundStationException(name + "역을 찾을 수 없습니다."));
+    // }
 
     public List<Station> findAllById(Collection<Long> ids) {
         return stationRepository.findAllById(ids);
+    }
+
+    public List<Station> findAllByStationName(List<String> stations) {
+        return stationRepository.findAllByStationName(stations);
     }
 }

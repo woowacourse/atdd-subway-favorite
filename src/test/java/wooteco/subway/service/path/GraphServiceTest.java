@@ -1,18 +1,19 @@
 package wooteco.subway.service.path;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.domain.path.PathType;
-import wooteco.subway.domain.station.Station;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.linestation.LineStation;
+import wooteco.subway.domain.path.PathType;
+import wooteco.subway.domain.station.Station;
 
 public class GraphServiceTest {
     private static final String STATION_NAME1 = "강남역";
@@ -34,6 +35,14 @@ public class GraphServiceTest {
     private Line line1;
     private Line line2;
 
+    private LineStation lineStation1;
+    private LineStation lineStation2;
+    private LineStation lineStation3;
+    private LineStation lineStation4;
+    private LineStation lineStation5;
+    private LineStation lineStation6;
+    private LineStation lineStation7;
+
     @BeforeEach
     void setUp() {
         graphService = new GraphService();
@@ -45,20 +54,28 @@ public class GraphServiceTest {
         station5 = new Station(5L, STATION_NAME5);
         station6 = new Station(6L, STATION_NAME6);
 
+        lineStation1 = new LineStation(null, station1, 10, 10);
+        lineStation2 = new LineStation(station1, station2, 10, 10);
+        lineStation3 = new LineStation(station2, station3, 10, 10);
+        lineStation4 = new LineStation(null, station1, 10, 10);
+        lineStation5 = new LineStation(station1, station4, 10, 10);
+        LineStation lineStation6 = new LineStation(station4, station5, 10, 10);
+
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line1.addLineStation(new LineStation(null, 1L, 10, 10));
-        line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+        lineStation1.applyLine(line1);
+        lineStation2.applyLine(line1);
+        lineStation3.applyLine(line1);
 
         line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line2.addLineStation(new LineStation(null, 1L, 10, 10));
-        line2.addLineStation(new LineStation(1L, 4L, 10, 10));
-        line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+        lineStation4.applyLine(line2);
+        lineStation5.applyLine(line2);
+        lineStation6.applyLine(line2);
     }
 
     @Test
     void findPath() {
-        List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(), station5.getId(), PathType.DISTANCE);
+        List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(),
+            station5.getId(), PathType.DISTANCE);
 
         assertThat(stationIds).hasSize(5);
         assertThat(stationIds.get(0)).isEqualTo(3L);
@@ -71,7 +88,8 @@ public class GraphServiceTest {
     @Test
     void findPathWithNoPath() {
         assertThrows(IllegalArgumentException.class, () ->
-                graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
+            graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(),
+                PathType.DISTANCE)
         );
 
     }
@@ -81,7 +99,8 @@ public class GraphServiceTest {
         line2.removeLineStationById(station1.getId());
 
         assertThrows(IllegalArgumentException.class, () ->
-                graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(), PathType.DISTANCE)
+            graphService.findPath(Lists.list(line1, line2), station3.getId(), station6.getId(),
+                PathType.DISTANCE)
         );
     }
 }
