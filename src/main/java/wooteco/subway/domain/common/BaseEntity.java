@@ -8,20 +8,16 @@ import java.util.Objects;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import org.hibernate.Hibernate;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import wooteco.subway.domain.member.Member;
 
 @MappedSuperclass
 @Getter
@@ -38,14 +34,6 @@ public abstract class BaseEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @CreatedBy
-    @ManyToOne
-    private Member createdBy;
-
-    @LastModifiedBy
-    @ManyToOne
-    private Member updatedBy;
 
     @Override
     public boolean equals(Object o) {
