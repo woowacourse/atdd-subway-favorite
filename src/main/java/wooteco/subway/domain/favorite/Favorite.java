@@ -4,59 +4,43 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
-import wooteco.subway.service.favorite.dto.FavoriteRequest;
+import wooteco.subway.domain.station.Station;
 
 @Entity
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long sourceStationId;
-    private Long targetStationId;
-    // @ManyToOne
-    // private Member member;
+    @ManyToOne
+    private Station sourceStation;
+    @ManyToOne
+    private Station targetStation;
 
-    public Favorite() {
+    protected Favorite() {
     }
 
-    // public Favorite(final Long id, final Long sourceStationId, final Long targetStationId,
-    //     final Member member) {
-    //     this.id = id;
-    //     this.sourceStationId = sourceStationId;
-    //     this.targetStationId = targetStationId;
-    //     this.member = member;
-    // }
-
-    public Favorite(final Long id, final Long sourceStationId, final Long targetStationId) {
+    public Favorite(final Long id, final Station sourceStation, final Station targetStation) {
         this.id = id;
-        this.sourceStationId = sourceStationId;
-        this.targetStationId = targetStationId;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
     }
 
-    public Favorite(Long sourceStationId, Long targetStationId) {
-        this.sourceStationId = sourceStationId;
-        this.targetStationId = targetStationId;
-    }
-
-    public static Favorite of(FavoriteRequest favoriteRequest) {
-        return new Favorite(favoriteRequest.getSourceStationId(),
-            favoriteRequest.getTargetStationId());
+    public Favorite(final Station sourceStation, final Station targetStation) {
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getSourceStationId() {
-        return sourceStationId;
+    public Station getSourceStation() {
+        return sourceStation;
     }
 
-    public Long getTargetStationId() {
-        return targetStationId;
+    public Station getTargetStation() {
+        return targetStation;
     }
-
-    // public Member getMember() {
-    //     return member;
-    // }
 }

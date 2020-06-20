@@ -37,13 +37,10 @@ public class PathService {
         }
 
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source)
-            .orElseThrow(NoSuchStationException::new);
-        Station targetStation = stationRepository.findByName(target)
-            .orElseThrow(NoSuchStationException::new);
+        Station sourceStation = stationRepository.findByName(source).orElseThrow(NoSuchStationException::new);
+        Station targetStation = stationRepository.findByName(target).orElseThrow(NoSuchStationException::new);
 
-        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(),
-            type);
+        List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
         List<Station> stations = stationRepository.findAllById(path);
 
         List<LineStation> lineStations = lines.stream()

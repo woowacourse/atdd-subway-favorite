@@ -6,15 +6,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import wooteco.subway.domain.favorite.FavoriteRepository;
+import wooteco.subway.domain.line.LineRepository;
+import wooteco.subway.domain.line.LineStationRepository;
+import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -24,7 +32,6 @@ import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/truncate.sql")
 public class AcceptanceTest {
     public static final String STATION_NAME_KANGNAM = "강남역";
     public static final String STATION_NAME_YEOKSAM = "역삼역";
@@ -46,6 +53,21 @@ public class AcceptanceTest {
     @LocalServerPort
     public int port;
 
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private LineRepository lineRepository;
+
+    @Autowired
+    private LineStationRepository lineStationRepository;
+
+    @Autowired
+    private StationRepository stationRepository;
+
     public static RequestSpecification given() {
         return RestAssured.given().log().all();
     }
@@ -53,6 +75,15 @@ public class AcceptanceTest {
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+    }
+
+    @AfterEach
+    void tearDown() {
+        favoriteRepository.deleteAll();
+        memberRepository.deleteAll();
+        lineRepository.deleteAll();
+        lineStationRepository.deleteAll();
+        stationRepository.deleteAll();
     }
 
     public StationResponse createStation(String name) {

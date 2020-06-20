@@ -3,6 +3,8 @@ package wooteco.subway.domain.line;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import wooteco.subway.domain.station.Station;
+
 public class Lines {
     private List<Line> lines;
 
@@ -14,6 +16,7 @@ public class Lines {
         return lines.stream()
             .flatMap(it -> it.getLineStations().stream())
             .map(LineStation::getStation)
+            .map(Station::getId)
             .collect(Collectors.toList());
     }
 

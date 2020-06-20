@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,10 +17,10 @@ public class LineStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "station_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "pre_station_id")
     private Station preStation;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "station_id")
     private Station station;
     private int distance;
@@ -41,8 +42,10 @@ public class LineStation {
     }
 
     public boolean isLineStationOf(Long preStationId, Long stationId) {
-        return this.preStation.equals(preStationId) && this.station.equals(stationId)
-            || this.preStation.equals(stationId) && this.station.equals(preStationId);
+        return
+            this.preStation.getId().equals(preStationId) && this.station.getId().equals(stationId)
+                || this.preStation.getId().equals(stationId) && this.station.getId()
+                .equals(preStationId);
     }
 
     public boolean isNotFirstLineStation() {
@@ -81,5 +84,14 @@ public class LineStation {
     @Override
     public int hashCode() {
         return Objects.hash(preStation, station, distance, duration);
+    }
+
+    @Override
+    public String toString() {
+        return "LineStation{" +
+            "id=" + id +
+            ", preStation=" + preStation +
+            ", station=" + station +
+            '}';
     }
 }

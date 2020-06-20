@@ -25,7 +25,7 @@ public class GraphService {
             .flatMap(line -> line.getLineStations().stream())
             .filter(LineStation::isNotFirstLineStation)
             .forEach(
-                it -> graph.setEdgeWeight(graph.addEdge(it.getPreStation(), it.getStation()),
+                it -> graph.setEdgeWeight(graph.addEdge(it.getPreStation().getId(), it.getStation().getId()),
                     type.findWeightOf(it)));
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);

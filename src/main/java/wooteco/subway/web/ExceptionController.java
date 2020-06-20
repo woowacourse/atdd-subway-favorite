@@ -12,10 +12,10 @@ import wooteco.subway.exception.WrongPasswordException;
 
 @RestControllerAdvice
 public class ExceptionController {
-    // @ExceptionHandler(Exception.class)
-    // public ResponseEntity<String> handleGeneralException(Exception e) {
-    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-    // }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneralException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
 
     @ExceptionHandler({DuplicateEmailException.class, WrongPasswordException.class})
     public ResponseEntity<String> handleBadRequest(Exception e) {

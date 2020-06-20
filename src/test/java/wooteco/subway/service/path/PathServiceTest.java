@@ -66,29 +66,27 @@ public class PathServiceTest {
         station6 = new Station(6L, STATION_NAME6);
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line1.addLineStation(new LineStation(null, 1L, 10, 10));
-        line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line1.addLineStation(new LineStation(null, station1, 10, 10));
+        line1.addLineStation(new LineStation(station1, station2, 10, 10));
+        line1.addLineStation(new LineStation(station2, station3, 10, 10));
 
         line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line2.addLineStation(new LineStation(null, 1L, 10, 10));
-        line2.addLineStation(new LineStation(1L, 4L, 10, 10));
-        line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+        line2.addLineStation(new LineStation(null, station1, 10, 10));
+        line2.addLineStation(new LineStation(station1, station4, 10, 10));
+        line2.addLineStation(new LineStation(station4, station5, 10, 10));
     }
 
     @DisplayName("일반적인 상황의 경로 찾기")
     @Test
     void findPath() {
         when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2));
-        when(stationRepository.findAllById(anyList())).thenReturn(
-            Lists.list(station3, station2, station1, station4, station5));
+        when(stationRepository.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
         when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
         when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
         when(graphService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(
             Lists.list(3L, 2L, 1L, 4L, 5L));
 
-        PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5,
-            PathType.DISTANCE);
+        PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
 
         List<StationResponse> paths = pathResponse.getStations();
         assertThat(paths).hasSize(5);

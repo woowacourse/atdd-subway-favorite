@@ -10,20 +10,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import wooteco.subway.domain.station.Station;
+
 public class LineTest {
     private Line line;
+    public static Station station1 = new Station(1L, "일원역");
+    public static Station station2 = new Station(2L, "이대역");
+    public static Station station3 = new Station(3L, "삼성역");
+    public static Station station4 = new Station(4L, "사당역");
 
     @BeforeEach
     void setUp() {
         line = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line.addLineStation(new LineStation(null, 1L, 10, 10));
-        line.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line.addLineStation(new LineStation(null, station1, 10, 10));
+        line.addLineStation(new LineStation(station1, station2, 10, 10));
+        line.addLineStation(new LineStation(station2, station3, 10, 10));
     }
 
     @Test
     void addLineStation() {
-        line.addLineStation(new LineStation(null, 4L, 10, 10));
+        line.addLineStation(new LineStation(null, station4, 10, 10));
         assertThat(line.getLineStations()).hasSize(4);
     }
 
@@ -35,12 +41,5 @@ public class LineTest {
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
         assertThat(stationIds.get(2)).isEqualTo(3L);
-    }
-
-    @ParameterizedTest
-    @ValueSource(longs = {1L, 2L, 3L})
-    void removeLineStation(Long stationId) {
-        line.removeLineStationById(stationId);
-        assertThat(line.getLineStations()).hasSize(2);
     }
 }

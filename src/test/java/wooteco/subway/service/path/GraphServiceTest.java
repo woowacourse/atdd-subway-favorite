@@ -47,14 +47,14 @@ public class GraphServiceTest {
         station6 = new Station(6L, STATION_NAME6);
 
         line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line1.addLineStation(new LineStation(null, 1L, 10, 10));
-        line1.addLineStation(new LineStation(1L, 2L, 10, 10));
-        line1.addLineStation(new LineStation(2L, 3L, 10, 10));
+        line1.addLineStation(new LineStation(null, station1, 10, 10));
+        line1.addLineStation(new LineStation(station1, station2, 10, 10));
+        line1.addLineStation(new LineStation(station2, station3, 10, 10));
 
         line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        line2.addLineStation(new LineStation(null, 1L, 10, 10));
-        line2.addLineStation(new LineStation(1L, 4L, 10, 10));
-        line2.addLineStation(new LineStation(4L, 5L, 10, 10));
+        line2.addLineStation(new LineStation(null, station1, 10, 10));
+        line2.addLineStation(new LineStation(station1, station4, 10, 10));
+        line2.addLineStation(new LineStation(station4, station5, 10, 10));
     }
 
     @Test

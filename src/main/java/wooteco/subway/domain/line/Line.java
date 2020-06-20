@@ -67,6 +67,10 @@ public class Line {
         lineStations.removeById(stationId);
     }
 
+    public void remove(LineStation lineStation) {
+        lineStations.remove(lineStation);
+    }
+
     public List<Long> getStationIds() {
         return lineStations.getStationIds();
     }

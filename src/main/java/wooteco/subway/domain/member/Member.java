@@ -3,6 +3,8 @@ package wooteco.subway.domain.member;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,12 +21,13 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String email;
     private String name;
     private String password;
-    @OneToMany
-    @JoinColumn(name = "member_id")
-    Set<Favorite> favorites = new HashSet<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name="member_id")
+    private Set<Favorite> favorites = new HashSet<>();
 
     public Member() {
     }
@@ -82,5 +85,9 @@ public class Member {
 
     public Set<Favorite> getFavorites() {
         return favorites;
+    }
+
+    public void removeFavorite(final Favorite favorite) {
+        favorites.remove(favorite);
     }
 }

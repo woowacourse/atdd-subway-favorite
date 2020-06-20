@@ -3,6 +3,7 @@ package wooteco.subway.domain.station;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,7 @@ public class Station {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     @CreatedDate
     private LocalDateTime createdAt;
@@ -58,5 +60,13 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, createdAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
     }
 }
