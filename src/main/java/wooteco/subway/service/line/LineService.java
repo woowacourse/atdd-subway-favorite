@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.domain.line.LineStationRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.line.dto.LineDetailResponse;
@@ -22,13 +21,11 @@ public class LineService {
 	private final LineStationService lineStationService;
 	private final LineRepository lineRepository;
 	private final StationRepository stationRepository;
-	private final LineStationRepository lineStationRepository;
 
-	public LineService(LineStationService lineStationService, LineRepository lineRepository, StationRepository stationRepository, LineStationRepository lineStationRepository) {
+	public LineService(LineStationService lineStationService, LineRepository lineRepository, StationRepository stationRepository) {
 		this.lineStationService = lineStationService;
 		this.lineRepository = lineRepository;
 		this.stationRepository = stationRepository;
-		this.lineStationRepository = lineStationRepository;
 	}
 
 	public Line save(Line line) {
@@ -67,8 +64,7 @@ public class LineService {
 		Line line = findLineById(id);
 		LineStation lineStation = LineStation.of(findPreStationById(request.getPreStationId()), findStationById(request.getStationId()),
 				request.getDistance(), request.getDuration());
-		LineStation persist = lineStationRepository.save(lineStation);
-		line.addLineStation(persist);
+		line.addLineStation(lineStation);
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {

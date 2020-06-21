@@ -1,20 +1,19 @@
 package wooteco.subway.acceptance.member;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.TokenResponse;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
- *    class description
+ * class description
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 	/*

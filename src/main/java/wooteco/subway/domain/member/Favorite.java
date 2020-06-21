@@ -2,14 +2,12 @@ package wooteco.subway.domain.member;
 
 import wooteco.subway.domain.station.Station;
 
-import java.util.Objects;
-
 import javax.persistence.*;
 
 /**
- *    즐겨찾기 class입니다.
+ * 즐겨찾기 class입니다.
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 @Entity
 public class Favorite {

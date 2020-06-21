@@ -1,22 +1,20 @@
 package wooteco.subway.web.member;
 
-import java.net.URI;
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.service.member.FavoriteService;
 import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
+
 /**
- *    즐겨찾기 컨트롤러 클래스입니다.
+ * 즐겨찾기 컨트롤러 클래스입니다.
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 
 @RestController

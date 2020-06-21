@@ -55,11 +55,18 @@ public class Member {
 	}
 
 	public void addFavorite(Favorite favorite) {
-		if (favorites.contains(favorite)) {
+		if (isDuplicate(favorite)) {
 			throw new DuplicateFavoriteException("이미 존재하는 즐겨찾기 입니다.");
 		}
 		favorites.add(favorite);
 		favorite.setMember(this);
+	}
+
+	private boolean isDuplicate(Favorite favorite) {
+		return favorites.stream()
+				.anyMatch(it -> Objects.equals(favorite.getSourceStation(), it.getSourceStation())
+						&& Objects.equals(favorite.getTargetStation(), it.getTargetStation()));
+
 	}
 
 	public void deleteFavoriteById(Long id) {

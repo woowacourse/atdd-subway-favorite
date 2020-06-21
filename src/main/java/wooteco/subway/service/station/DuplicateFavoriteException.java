@@ -1,9 +1,9 @@
 package wooteco.subway.service.station;
 
 /**
- *    class description
+ * class description
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 public class DuplicateFavoriteException extends StationException {
 	public DuplicateFavoriteException(final String message) {

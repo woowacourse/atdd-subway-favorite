@@ -2,12 +2,10 @@ package wooteco.subway.service.member.dto;
 
 import javax.validation.constraints.NotNull;
 
-import wooteco.subway.domain.member.Favorite;
-
 /**
- *    즐겨찾기 요청 DTO 클래스입니다.
+ * 즐겨찾기 요청 DTO 클래스입니다.
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 public class FavoriteRequest {
 	@NotNull

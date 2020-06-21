@@ -1,20 +1,12 @@
 package wooteco.subway.service.member;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import wooteco.subway.domain.member.Favorite;
-import wooteco.subway.domain.member.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
@@ -22,10 +14,16 @@ import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.station.DuplicateFavoriteException;
 import wooteco.subway.service.station.NotFoundStationException;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
 /**
- *    class description
+ * class description
  *
- *    @author HyungJu An, Minwoo Yim
+ * @author HyungJu An, Minwoo Yim
  */
 @ExtendWith(MockitoExtension.class)
 public class FavoriteServiceTest {
@@ -36,13 +34,11 @@ public class FavoriteServiceTest {
 	private FavoriteService favoriteService;
 
 	@Mock
-	private FavoriteRepository favoriteRepository;
-	@Mock
 	private StationRepository stationRepository;
 
 	@BeforeEach
 	void setUp() {
-		this.favoriteService = new FavoriteService(stationRepository, favoriteRepository);
+		this.favoriteService = new FavoriteService(stationRepository);
 	}
 
 	@Test
@@ -54,7 +50,6 @@ public class FavoriteServiceTest {
 		Station station2 = Station.of(2L, "강남역");
 		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
-		when(favoriteRepository.save(any())).thenReturn(Favorite.of(1L, station1, station2));
 
 		favoriteService.createFavorite(member, favoriteRequest);
 
@@ -70,8 +65,8 @@ public class FavoriteServiceTest {
 		when(stationRepository.findById(1L)).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest))
-			.isInstanceOf(NotFoundStationException.class)
-			.hasMessageContaining("출발역");
+				.isInstanceOf(NotFoundStationException.class)
+				.hasMessageContaining("출발역");
 	}
 
 	@DisplayName("도착역이 없는 경우 예외처리한다.")
@@ -84,8 +79,8 @@ public class FavoriteServiceTest {
 		when(stationRepository.findById(2L)).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest))
-			.isInstanceOf(NotFoundStationException.class)
-			.hasMessageContaining("도착역");
+				.isInstanceOf(NotFoundStationException.class)
+				.hasMessageContaining("도착역");
 	}
 
 	@DisplayName("이미 있는 즐겨찾기인 경우 예외처리한다.")
@@ -99,13 +94,12 @@ public class FavoriteServiceTest {
 
 		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
-		when(favoriteRepository.save(any())).thenReturn(favorite);
 
 		member.addFavorite(favorite);
 
 		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest))
-			.isInstanceOf(DuplicateFavoriteException.class)
-			.hasMessageContaining("존재하는");
+				.isInstanceOf(DuplicateFavoriteException.class)
+				.hasMessageContaining("존재하는");
 	}
 
 	@Test

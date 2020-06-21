@@ -1,15 +1,5 @@
 package wooteco.subway.web.member;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,17 +8,26 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-
 import wooteco.subway.doc.MemberLoginDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
- *    class description
+ * class description
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 public class FavoriteControllerTest extends MemberDocumentationTest {
 	private String email;
@@ -40,13 +39,13 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 	@BeforeEach
 	void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-			.addFilter(new ShallowEtagHeaderFilter())
-			.addFilter((req, res, chain) -> {
-				res.setCharacterEncoding("UTF-8");
-				chain.doFilter(req, res);
-			}, "/*")
-			.apply(documentationConfiguration(restDocumentation))
-			.build();
+				.addFilter(new ShallowEtagHeaderFilter())
+				.addFilter((req, res, chain) -> {
+					res.setCharacterEncoding("UTF-8");
+					chain.doFilter(req, res);
+				}, "/*")
+				.apply(documentationConfiguration(restDocumentation))
+				.build();
 
 		email = "a@email.com";
 		password = "1234";
@@ -62,16 +61,16 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 
 		String inputJson = "{\"sourceId\":\"" + sourceId + "\"," +
-			"\"targetId\":\"" + targetId + "\"}";
+				"\"targetId\":\"" + targetId + "\"}";
 
 		this.mockMvc.perform(post("/favorites")
-			.header("authorization", "Bearer " + token)
-			.content(inputJson)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.contentType(MediaType.APPLICATION_JSON_VALUE))
-			.andExpect(status().isCreated())
-			.andDo(print())
-			.andDo(MemberLoginDocumentation.addFavorite());
+				.header("authorization", "Bearer " + token)
+				.content(inputJson)
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isCreated())
+				.andDo(print())
+				.andDo(MemberLoginDocumentation.addFavorite());
 	}
 
 	@DisplayName("출발역이나 도착역 id가 null이면 예외처리한다.")
@@ -82,30 +81,30 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 
 		String inputJson = "{\"sourceId\":\"" + sourceId + "\"," +
-			"\"targetId\":\"" + targetId + "\"}";
+				"\"targetId\":\"" + targetId + "\"}";
 
 		this.mockMvc.perform(post("/favorites")
-			.header("authorization", "Bearer " + token)
-			.content(inputJson)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.contentType(MediaType.APPLICATION_JSON_VALUE))
-			.andExpect(status().isBadRequest())
-			.andDo(print());
+				.header("authorization", "Bearer " + token)
+				.content(inputJson)
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isBadRequest())
+				.andDo(print());
 	}
 
 	@Test
 	void getFavorites() throws Exception {
 		final List<Favorite> favorites = Arrays.asList(
-			Favorite.of(1L, Station.of(1L, "강남역"), Station.of(2L, "잠실역")),
-			Favorite.of(2L, Station.of(3L, "청계산입구역"), Station.of(4L, "대모산입구역")));
+				Favorite.of(1L, Station.of(1L, "강남역"), Station.of(2L, "잠실역")),
+				Favorite.of(2L, Station.of(3L, "청계산입구역"), Station.of(4L, "대모산입구역")));
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 		given(favoriteService.getFavorites(any())).willReturn(FavoriteResponse.listOf(favorites));
 
 		this.mockMvc.perform(get("/favorites")
-			.header("authorization", "Bearer " + token))
-			.andExpect(status().isOk())
-			.andDo(print())
-			.andDo(MemberLoginDocumentation.getFavorites());
+				.header("authorization", "Bearer " + token))
+				.andExpect(status().isOk())
+				.andDo(print())
+				.andDo(MemberLoginDocumentation.getFavorites());
 	}
 
 	@Test
@@ -122,9 +121,9 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 		Long id = favorite1.getId();
 
 		this.mockMvc.perform(delete("/favorites/{id}", id)
-			.header("authorization", "Bearer " + token))
-			.andExpect(status().isNoContent())
-			.andDo(print())
-			.andDo(MemberLoginDocumentation.deleteFavorite());
+				.header("authorization", "Bearer " + token))
+				.andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(MemberLoginDocumentation.deleteFavorite());
 	}
 }

@@ -35,7 +35,7 @@ public class LineStations {
 
 	public void removeById(Long targetStationId) {
 		extractByStationId(targetStationId)
-			.ifPresent(this::remove);
+				.ifPresent(this::remove);
 	}
 
 	public List<Station> getSortedStations() {
@@ -46,18 +46,18 @@ public class LineStations {
 
 	private void extractNext(Station preStation, List<Station> tempStations) {
 		stations.stream()
-			.filter(it -> Objects.equals(it.getPreStation(), preStation))
-			.findFirst()
-			.ifPresent(it -> {
-				Station station = it.getStation();
-				tempStations.add(station);
-				extractNext(station, tempStations);
-			});
+				.filter(it -> Objects.equals(it.getPreStation(), preStation))
+				.findFirst()
+				.ifPresent(it -> {
+					Station station = it.getStation();
+					tempStations.add(station);
+					extractNext(station, tempStations);
+				});
 	}
 
 	private void updatePreStationOfNextLineStation(Station targetStation, Station newPreStation) {
 		extractByPreStation(targetStation)
-			.ifPresent(it -> it.updatePreLineStation(newPreStation));
+				.ifPresent(it -> it.updatePreLineStation(newPreStation));
 	}
 
 	private Optional<LineStation> extractByStationId(Long stationId) {
@@ -68,8 +68,8 @@ public class LineStations {
 
 	private Optional<LineStation> extractByPreStation(Station preStation) {
 		return stations.stream()
-			.filter(it -> Objects.equals(it.getPreStation(), preStation))
-			.findFirst();
+				.filter(it -> Objects.equals(it.getPreStation(), preStation))
+				.findFirst();
 	}
 
 	public Set<LineStation> getStations() {
