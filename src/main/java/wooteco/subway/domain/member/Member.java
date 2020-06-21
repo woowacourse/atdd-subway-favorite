@@ -29,7 +29,7 @@ public class Member {
     @JoinColumn(name="member_id")
     private Set<Favorite> favorites = new HashSet<>();
 
-    protected Member() {
+    public Member() {
     }
 
     public Member(String email, String name, String password) {
