@@ -81,11 +81,12 @@ public class MemberLoginDocumentation {
 				headerWithName("Authorization").description("The token for login which is Bearer Type.")
 			),
 			responseFields(
+				fieldWithPath("[].id").type(JsonFieldType.NUMBER)
+					.description("The id for favorite"),
 				subsectionWithPath("[].sourceStation").type(JsonFieldType.OBJECT)
 					.description("The departure station of Favorite."),
 				subsectionWithPath("[].targetStation").type(JsonFieldType.OBJECT)
 					.description("The arrival station of Favorite.")
-
 			));
 	}
 
@@ -94,9 +95,8 @@ public class MemberLoginDocumentation {
 			requestHeaders(
 				headerWithName("Authorization").description("The token for login which is Bearer Type.")
 			),
-			requestParameters(
-				parameterWithName("sourceId").description("The departure station ID of Favorite."),
-				parameterWithName("targetId").description("The arrival station ID of Favorite.")
+			pathParameters(
+				parameterWithName("id").description("The id for favorite")
 			),
 			responseHeaders());
 	}

@@ -2,8 +2,8 @@ package wooteco.subway.web.member;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -96,8 +96,8 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 	@Test
 	void getFavorites() throws Exception {
 		final List<Favorite> favorites = Arrays.asList(
-			Favorite.of(Station.of(1L, "강남역"), Station.of(2L, "잠실역")),
-			Favorite.of(Station.of(3L, "청계산입구역"), Station.of(4L, "대모산입구역")));
+			Favorite.of(1L, Station.of(1L, "강남역"), Station.of(2L, "잠실역")),
+			Favorite.of(2L, Station.of(3L, "청계산입구역"), Station.of(4L, "대모산입구역")));
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 		given(favoriteService.getFavorites(any())).willReturn(FavoriteResponse.listOf(favorites));
 
@@ -119,8 +119,9 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 		Favorite favorite2 = Favorite.of(2L, station3, station4);
 		member.addFavorite(favorite1);
 		member.addFavorite(favorite2);
+		Long id = favorite1.getId();
 
-		this.mockMvc.perform(delete("/favorites?sourceId=" + favorite1.getId() + "&targetId=" + favorite2.getId())
+		this.mockMvc.perform(delete("/favorites/{id}", id)
 			.header("authorization", "Bearer " + token))
 			.andExpect(status().isNoContent())
 			.andDo(print())
