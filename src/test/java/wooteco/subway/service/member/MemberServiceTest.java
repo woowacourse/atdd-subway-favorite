@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import wooteco.subway.domain.favorite.Favorite;
+import wooteco.subway.domain.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
@@ -42,12 +43,15 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
+    private FavoriteRepository favoriteRepository;
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
         this.memberService = new MemberService(memberRepository, jwtTokenProvider);
-        this.favoriteService = new FavoriteService(memberRepository, stationRepository);
+        this.favoriteService = new FavoriteService(memberRepository, stationRepository,
+            favoriteRepository);
         member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
     }
 
@@ -87,6 +91,7 @@ public class MemberServiceTest {
     void saveFavorite() {
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(memberRepository.save(any())).willReturn(member);
+        given(stationRepository.findById(any())).willReturn(Optional.of(new Station("사당역")));
 
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
         Member savedMember = favoriteService.saveFavorite(member.getId(), favoriteRequest);
@@ -96,21 +101,21 @@ public class MemberServiceTest {
     @DisplayName("즐겨찾기에 있는 경로 삭제")
     @Test
     void deleteFavorite() {
-        Favorite favorite = new Favorite(1L, 1L, 2L, 1L);
+        Favorite favorite = new Favorite(1L, new Station(1L, ""), new Station(2L, ""));
+        given(favoriteRepository.findById(favorite.getId())).willReturn(Optional.of(favorite));
         member.addFavorite(favorite);
         favoriteService.deleteFavorite(member, favorite.getId());
-        verify(memberRepository).deleteFavoriteById(favorite.getId());
     }
 
     @DisplayName("즐겨찾기에 있는 경로 조회")
     @Test
     void findAll() {
-        member.addFavorite(new Favorite(1L, 2L));
-        member.addFavorite(new Favorite(2L, 3L));
-        member.addFavorite(new Favorite(3L, 4L));
+        member.addFavorite(new Favorite(new Station(1L, ""), new Station(2L, "")));
+        member.addFavorite(new Favorite(new Station(2L, ""), new Station(3L, "")));
+        member.addFavorite(new Favorite(new Station(3L, ""), new Station(4L, "")));
 
-        given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
-            new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
+        // given(stationRepository.findAll()).willReturn(Arrays.asList(new Station(1L, "일원역"),
+        //     new Station(2L, "이대역"), new Station(3L, "삼성역"), new Station(4L, "사당역")));
 
         List<FavoriteResponse> allFavoritesByMemberId = favoriteService.findAllFavoritesByMember(
             member);

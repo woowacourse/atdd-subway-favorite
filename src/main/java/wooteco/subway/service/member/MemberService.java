@@ -1,24 +1,13 @@
 package wooteco.subway.service.member;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.domain.favorite.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
-import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.NoSuchAccountException;
-import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.exception.WrongPasswordException;
 import wooteco.subway.infra.JwtTokenProvider;
-import wooteco.subway.service.favorite.dto.FavoriteRequest;
-import wooteco.subway.service.favorite.dto.FavoriteResponse;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
@@ -36,7 +25,7 @@ public class MemberService {
     public Member createMember(Member member) {
         try {
             return memberRepository.save(member);
-        } catch (DbActionExecutionException e) {
+        } catch (Exception e) {
             throw new DuplicateEmailException();
         }
     }

@@ -5,13 +5,22 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Embedded;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Line {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private LocalTime startTime;
@@ -21,8 +30,8 @@ public class Line {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
-    @Embedded.Empty
-    private LineStations stations = LineStations.empty();
+    @Embedded
+    private LineStations lineStations = LineStations.empty();
 
     public Line() {
     }
@@ -54,15 +63,19 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
-        stations.add(lineStation);
+        lineStations.add(lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
-        stations.removeById(stationId);
+        lineStations.removeById(stationId);
+    }
+
+    public void remove(LineStation lineStation) {
+        lineStations.remove(lineStation);
     }
 
     public List<Long> getStationIds() {
-        return stations.getStationIds();
+        return lineStations.getStationIds();
     }
 
     public Long getId() {
@@ -93,7 +106,7 @@ public class Line {
         return updatedAt;
     }
 
-    public Set<LineStation> getStations() {
-        return stations.getStations();
+    public Set<LineStation> getLineStations() {
+        return lineStations.getStations();
     }
 }

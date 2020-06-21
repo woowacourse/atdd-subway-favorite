@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -18,7 +19,7 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.NoSuchLineException;
 
 @SpringBootTest
-@Sql("/truncate.sql")
+@Transactional
 public class StationServiceTest {
     @Autowired
     private StationService stationService;
@@ -35,8 +36,8 @@ public class StationServiceTest {
         Line line = lineRepository.save(
             new Line("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
 
-        line.addLineStation(new LineStation(null, station1.getId(), 10, 10));
-        line.addLineStation(new LineStation(station1.getId(), station2.getId(), 10, 10));
+        line.addLineStation(new LineStation(null, station1, 10, 10));
+        line.addLineStation(new LineStation(station1, station2, 10, 10));
         lineRepository.save(line);
 
         stationService.deleteStationById(station1.getId());
@@ -44,7 +45,8 @@ public class StationServiceTest {
         Optional<Station> resultStation = stationRepository.findById(station1.getId());
         assertThat(resultStation).isEmpty();
 
-        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(NoSuchLineException::new);
-        assertThat(resultLine.getStations()).hasSize(1);
+        Line resultLine = lineRepository.findById(line.getId())
+            .orElseThrow(NoSuchLineException::new);
+        assertThat(resultLine.getLineStations()).hasSize(1);
     }
 }
