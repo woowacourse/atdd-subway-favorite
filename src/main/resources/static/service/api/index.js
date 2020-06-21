@@ -55,7 +55,7 @@ const api = (() => {
 
   const loginMember = {
     create(newMember) {
-      return request(`/me`, METHOD.POST(newMember));
+      return request(`/me/create`, METHOD.POST(newMember));
     },
     login(loginInfo) {
       return requestWithJsonData(`/me/login`, METHOD.POST(loginInfo));
@@ -95,7 +95,7 @@ const api = (() => {
     getAll() {
       return requestWithJsonData(`/me/favorites`, METHOD.GET_WITH_AUTH());
     },
-    delete(url="") {
+    delete(url = "") {
       return request(`/me/favorites${url}`, METHOD.DELETE());
     }
   };

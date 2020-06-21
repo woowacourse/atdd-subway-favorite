@@ -11,6 +11,7 @@ import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.exception.NoSuchLineException;
+import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
@@ -53,5 +54,12 @@ public class LineStationService {
         List<Line> lines = lineRepository.findAll();
         lines.forEach(it -> it.removeLineStationById(stationId));
         lineRepository.saveAll(lines);
+    }
+
+    public Station findStationById(Long stationId) {
+        if (stationId == null) {
+            return null;
+        }
+        return stationRepository.findById(stationId).orElseThrow(NoSuchStationException::new);
     }
 }

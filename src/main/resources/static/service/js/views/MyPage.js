@@ -22,7 +22,8 @@ function MyInfo() {
       await api.loginMember.delete();
       localStorage.setItem("jwt", "");
       location.href = "/";
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
@@ -37,7 +38,8 @@ function MyInfo() {
       };
       await api.loginMember.update(updatedInfo);
       showSnackbar(SUCCESS_MESSAGE.SAVE);
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
@@ -50,7 +52,8 @@ function MyInfo() {
         $name.value = member.name;
         $password.value = "";
       }
-    } catch (e) {
+    }
+    catch (e) {
       showSnackbar(ERROR_MESSAGE.COMMON);
     }
   };
