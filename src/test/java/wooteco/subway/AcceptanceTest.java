@@ -78,6 +78,57 @@ public class AcceptanceTest {
                         extract().as(responseType);
     }
 
+    public void postNoReturn(String path, Map<String, String> params) {
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public <T> T get(String path, Class<T> responseType) {
+        return
+                given().when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().
+                        as(responseType);
+    }
+
+    public <T> List<T> getList(String path, Class<T> responseType) {
+        return
+                given().when().
+                        get(path).
+                        then().
+                        log().all().
+                        extract().
+                        jsonPath().getList(".", responseType);
+    }
+
+    public void updateNoReturn(String path, Map<String, String> params) {
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                put(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public void delete(String path) {
+        given().when().
+                delete(path).
+                then().
+                log().all();
+    }
+
     public <T> T createByName(String path, String name, Class<T> responseType) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -85,20 +136,11 @@ public class AcceptanceTest {
     }
 
     public List<StationResponse> getStations() {
-        return
-                given().when().
-                        get("/stations").
-                        then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", StationResponse.class);
+        return getList("/stations", StationResponse.class);
     }
 
     public void deleteStation(Long id) {
-        given().when().
-                delete("/stations/" + id).
-                then().
-                log().all();
+        delete("/stations/" + id);
     }
 
     public LineResponse createLine(String name) {
@@ -112,12 +154,7 @@ public class AcceptanceTest {
     }
 
     public LineDetailResponse getLine(Long id) {
-        return
-                given().when().
-                        get("/lines/" + id).
-                        then().
-                        log().all().
-                        extract().as(LineDetailResponse.class);
+        return get("/lines/" + id, LineDetailResponse.class);
     }
 
     public void updateLine(Long id, LocalTime startTime, LocalTime endTime) {
@@ -126,32 +163,15 @@ public class AcceptanceTest {
         params.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         params.put("intervalTime", "10");
 
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                put("/lines/" + id).
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+        updateNoReturn("/lines/" + id, params);
     }
 
     public List<LineResponse> getLines() {
-        return
-                given().when().
-                        get("/lines").
-                        then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
+        return getList("lines", LineResponse.class);
     }
 
     public void deleteLine(Long id) {
-        given().when().
-                delete("/lines/" + id).
-                then().
-                log().all();
+        delete("/lines/" + id);
     }
 
     public void addLineStation(Long lineId, Long preStationId, Long stationId) {
@@ -165,49 +185,20 @@ public class AcceptanceTest {
         params.put("distance", distance.toString());
         params.put("duration", duration.toString());
 
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/lines/" + lineId + "/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+        postNoReturn("/lines/" + lineId + "/stations", params);
+
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        given().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                delete("/lines/" + lineId + "/stations/" + stationId).
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+        delete("/lines/" + lineId + "/stations/" + stationId);
     }
 
     public WholeSubwayResponse retrieveWholeSubway() {
-        return
-                given().
-                        when().
-                        get("/lines/detail").
-                        then().
-                        log().all().
-                        extract().as(WholeSubwayResponse.class);
+        return get("/lines/detail", WholeSubwayResponse.class);
     }
 
     public PathResponse findPath(String source, String target, String type) {
-        return
-                given().
-                        contentType(MediaType.APPLICATION_JSON_VALUE).
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        get("/paths?source=" + source + "&target=" + target + "&type=" + type).
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(PathResponse.class);
+        return get("/paths?source=" + source + "&target=" + target + "&type=" + type, PathResponse.class);
     }
 
     /**
@@ -251,6 +242,36 @@ public class AcceptanceTest {
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
     }
 
+    public <T> T getWithToken(String path, String token, Class<T> responseType) {
+        return
+                given().
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        header("Authorization", token).
+                        get(path).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(responseType);
+    }
+
+    public <T> List<T> getListWithToken(String path, String token, Class<T> responseType) {
+        return
+                given().
+                        accept(MediaType.APPLICATION_JSON_VALUE).
+                        when().
+                        header("Authorization", token).
+                        get(path).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().jsonPath().getList(".", responseType);
+    }
+
+    public MemberResponse getMember(String email) {
+        return getWithToken("/members?email=" + email, "bearer " + createToken(), MemberResponse.class);
+    }
+
     public String createMember(String email, String name, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -270,17 +291,26 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(String email) {
-        return
-                given().
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        header("Authorization", "bearer " + createToken()).
-                        get("/members?email=" + email).
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().as(MemberResponse.class);
+    public void postWithToken(String path, String token, Map<String, String> params) {
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                header("Authorization", token).
+                put(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public void deleteWithToken(String path, String token) {
+        given().when().
+                header("Authorization", token).
+                delete(path).
+                then().
+                log().all().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     public void updateMember() {
@@ -288,25 +318,7 @@ public class AcceptanceTest {
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                header("Authorization", "bearer " + createToken()).
-                put("/members").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
-    }
-
-    public void deleteMember() {
-        given().when().
-                header("Authorization", "bearer " + createToken()).
-                delete("/members").
-                then().
-                log().all().
-                statusCode(HttpStatus.NO_CONTENT.value());
+        postWithToken("/members", "bearer " + createToken(), params);
     }
 
     public void createFavorite(String sourceName, String destinationName) {
@@ -314,29 +326,15 @@ public class AcceptanceTest {
         params.put("sourceName", sourceName);
         params.put("destinationName", destinationName);
 
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                header("Authorization", "bearer " + createToken()).
-                post("/favorites").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value());
+        postWithToken("/favorites", "bearer " + createToken(), params);
     }
 
     public List<FavoriteResponse> getFavorites() {
-        return
-                given().
-                        accept(MediaType.APPLICATION_JSON_VALUE).
-                        when().
-                        header("Authorization", "bearer " + createToken()).
-                        get("/favorites").
-                        then().
-                        log().all().
-                        statusCode(HttpStatus.OK.value()).
-                        extract().jsonPath().getList(".", FavoriteResponse.class);
+        return getListWithToken("/favorites", "bearer " + createToken(), FavoriteResponse.class);
+    }
+
+    public void deleteMember() {
+        deleteWithToken("/members", "bearer " + createToken());
     }
 
     public void deleteFavorite(String sourceName, String destinationName) {
