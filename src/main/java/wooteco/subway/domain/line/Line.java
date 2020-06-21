@@ -33,7 +33,7 @@ public class Line {
     @Embedded
     private LineStations lineStations = LineStations.empty();
 
-    protected Line() {
+    public Line() {
     }
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {

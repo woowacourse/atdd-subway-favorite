@@ -24,7 +24,7 @@ public class Station {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    protected Station() {
+    public Station() {
     }
 
     public Station(String name) {
