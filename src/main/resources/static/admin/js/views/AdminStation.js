@@ -7,7 +7,7 @@ function AdminStation() {
   const $stationList = document.querySelector('#station-list')
   const $stationAddButton = document.querySelector('#station-add-btn')
 
-  const onAddStationHandler = event => {
+  const onAddStationHandler = async event => {
     if (event.key && event.key !== KEY_TYPE.ENTER) {
       return
     }
@@ -20,15 +20,18 @@ function AdminStation() {
     const newStation = {
       name: stationName
     }
-    api.station
+    await api.station
       .create(newStation)
-      .then(data => {
-        $stationInput.value = ''
-        $stationList.insertAdjacentHTML('beforeend', listItemTemplate(data))
-      })
+        .then($stationInput.value = '')
       .catch(() => {
         alert('에러가 발생했습니다.')
       })
+    await api.station
+        .getAll()
+        .then(stations => {
+          $stationList.innerHTML = stations.map(station => listItemTemplate(station)).join('')
+        })
+        .catch(() => alert(ERROR_MESSAGE.COMMON))
   }
 
   const onDeleteStationHandler = event => {

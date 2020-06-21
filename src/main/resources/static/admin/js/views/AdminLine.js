@@ -17,22 +17,27 @@ function AdminLine() {
 
   const subwayLineModal = new Modal()
 
-  const createSubwayLine = () => {
+  const createSubwayLine = async () => {
     const newSubwayLine = {
       name: $subwayLineNameInput.value,
       startTime: $subwayLineStartTime.value,
       endTime: $subwayLineEndTime.value,
       intervalTime: $subwayIntervalTime.value
     }
-    api.line
+
+    await api.line
       .create(newSubwayLine)
-      .then(response => {
-        $subwayLineList.insertAdjacentHTML('beforeend', subwayLinesTemplate(response))
-        subwayLineModal.toggle()
-      })
+      .then(subwayLineModal.toggle())
       .catch(error => {
         alert('에러가 발생했습니다.')
       })
+    await api.line
+        .getAll()
+        .then(lines => {
+          $subwayLineList.innerHTML = lines.map(line => subwayLinesTemplate(line)).join('')
+        })
+        .catch(() => alert(ERROR_MESSAGE.COMMON))
+
   }
 
   const onDeleteSubwayLineHandler = event => {
@@ -108,19 +113,19 @@ function AdminLine() {
     $subwayIntervalTime.value = ''
   }
 
-  const onSelectColorHandler = event => {
-    event.preventDefault()
-    const $target = event.target
-    if ($target.classList.contains('color-select-option')) {
-      document.querySelector('#subway-line-color').value = $target.dataset.color
-    }
-  }
+  // const onSelectColorHandler = event => {
+  //   event.preventDefault()
+  //   const $target = event.target
+  //   if ($target.classList.contains('color-select-option')) {
+  //     document.querySelector('#subway-line-color').value = $target.dataset.color
+  //   }
+  // }
 
-  const initCreateSubwayLineForm = () => {
-    const $colorSelectContainer = document.querySelector('#subway-line-color-select-container')
-    $colorSelectContainer.innerHTML = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(option, index)).join('')
-    $colorSelectContainer.addEventListener(EVENT_TYPE.CLICK, onSelectColorHandler)
-  }
+  // const initCreateSubwayLineForm = () => {
+  //   const $colorSelectContainer = document.querySelector('#subway-line-color-select-container')
+  //   $colorSelectContainer.innerHTML = subwayLineColorOptions.map((option, index) => colorSelectOptionTemplate(option, index)).join('')
+  //   $colorSelectContainer.addEventListener(EVENT_TYPE.CLICK, onSelectColorHandler)
+  // }
 
   const initEventListeners = () => {
     $subwayLineList.addEventListener(EVENT_TYPE.CLICK, onDeleteSubwayLineHandler)
@@ -129,9 +134,19 @@ function AdminLine() {
     $subwayLineCreateButton.addEventListener(EVENT_TYPE.CLICK, onCreateLineFormInitializeHandler)
   }
 
+  const initLines = () => {
+    api.line
+        .getAll()
+        .then(lines => {
+          $subwayLineList.innerHTML = lines.map(line => subwayLinesTemplate(line)).join('')
+        })
+        .catch(() => alert(ERROR_MESSAGE.COMMON))
+  }
+
   this.init = () => {
     initEventListeners()
-    initCreateSubwayLineForm()
+    initLines()
+    // initCreateSubwayLineForm()
   }
 }
 

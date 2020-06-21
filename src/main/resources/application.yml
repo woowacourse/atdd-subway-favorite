@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/data/subway
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+
+logging.level:
+  org.hibernate.SQL: debug
+
+
+handlebars:
+  enabled: true
+  prefix: classpath:/templates/
+  suffix: .html
+  cache: false
+
+
+
+---
+
+
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:h2:mem:test
