@@ -8,7 +8,10 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.line.LineStationService;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class StationService {
 	private final LineStationService lineStationService;
 	private final StationRepository stationRepository;

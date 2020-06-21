@@ -1,9 +1,6 @@
 package wooteco.subway.service.line;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
@@ -16,8 +13,11 @@ import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Objects;
 
 @Service
+@Transactional
 public class LineService {
 	private final LineStationService lineStationService;
 	private final LineRepository lineRepository;
@@ -43,6 +43,13 @@ public class LineService {
 		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
 	}
 
+	public Station findPreStationById(Long id) {
+		if (Objects.isNull(id)) {
+			return null;
+		}
+		return findStationById(id);
+	}
+
 	public Station findStationById(Long id) {
 		return stationRepository.findById(id).orElseThrow(RuntimeException::new);
 	}
@@ -58,8 +65,8 @@ public class LineService {
 
 	public void addLineStation(Long id, LineStationCreateRequest request) {
 		Line line = findLineById(id);
-		LineStation lineStation = LineStation.of(findStationById(request.getPreStationId()), findStationById(request.getStationId()),
-			request.getDistance(), request.getDuration());
+		LineStation lineStation = LineStation.of(findPreStationById(request.getPreStationId()), findStationById(request.getStationId()),
+				request.getDistance(), request.getDuration());
 		LineStation persist = lineStationRepository.save(lineStation);
 		line.addLineStation(persist);
 	}

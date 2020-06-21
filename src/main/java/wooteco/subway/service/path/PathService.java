@@ -16,7 +16,10 @@ import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class PathService {
 	private final StationRepository stationRepository;
 	private final LineRepository lineRepository;
@@ -42,7 +45,7 @@ public class PathService {
 
 		List<LineStation> lineStations = lines.stream()
 			.flatMap(it -> it.getStations().stream())
-			.filter(it -> Objects.nonNull(it.getPreStation().getId()))
+			.filter(it -> Objects.nonNull(it.getPreStation()))
 			.collect(Collectors.toList());
 
 		List<LineStation> paths = extractPathLineStation(path, lineStations);

@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import wooteco.subway.domain.station.Station;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Line {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +26,7 @@ public class Line {
 	private LocalDateTime createdAt;
 	@LastModifiedDate
 	private LocalDateTime updatedAt;
-	private LineStations stations = LineStations.empty();
+	private LineStations stations = new LineStations();
 
 	protected Line() {
 	}
@@ -66,6 +68,7 @@ public class Line {
 
 	public void addLineStation(LineStation lineStation) {
 		stations.add(lineStation);
+		lineStation.setLine(this);
 	}
 
 	public void removeLineStationById(Long stationId) {

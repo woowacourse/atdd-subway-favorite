@@ -1,19 +1,18 @@
 package wooteco.subway.service.line;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.Lines;
-import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
+@Transactional
 public class LineStationService {
 	private LineRepository lineRepository;
 
@@ -30,8 +29,8 @@ public class LineStationService {
 	public WholeSubwayResponse findLinesWithStations() {
 		Lines lines = new Lines(lineRepository.findAll());
 		List<LineDetailResponse> lineDetailResponses = lines.getLines().stream()
-			.map(it -> LineDetailResponse.of(it, it.getSortedStations()))
-			.collect(Collectors.toList());
+				.map(it -> LineDetailResponse.of(it, it.getSortedStations()))
+				.collect(Collectors.toList());
 
 		return WholeSubwayResponse.of(lineDetailResponses);
 	}

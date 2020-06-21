@@ -1,10 +1,6 @@
 package wooteco.subway.service.member;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.FavoriteRepository;
 import wooteco.subway.domain.member.Member;
@@ -14,12 +10,16 @@ import wooteco.subway.service.member.dto.FavoriteRequest;
 import wooteco.subway.service.member.dto.FavoriteResponse;
 import wooteco.subway.service.station.NotFoundStationException;
 
+import javax.transaction.Transactional;
+import java.util.List;
+
 /**
- *    즐겨찾기 Service 클래스입니다.
+ * 즐겨찾기 Service 클래스입니다.
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 @Service
+@Transactional
 public class FavoriteService {
 	private final StationRepository stationRepository;
 	private final FavoriteRepository favoriteRepository;
@@ -41,7 +41,7 @@ public class FavoriteService {
 
 	private Station findTargetStation(final Long id) {
 		return stationRepository.findById(id)
-			.orElseThrow(() -> new NotFoundStationException("도착역을 찾을 수 없습니다. : " + id));
+				.orElseThrow(() -> new NotFoundStationException("도착역을 찾을 수 없습니다. : " + id));
 	}
 
 	public List<FavoriteResponse> getFavorites(final Member member) {

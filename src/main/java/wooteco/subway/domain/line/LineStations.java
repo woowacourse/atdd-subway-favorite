@@ -9,7 +9,7 @@ import java.util.*;
 
 @Embeddable
 public class LineStations {
-	@OneToMany(mappedBy = "line", orphanRemoval = true)
+	@OneToMany(mappedBy = "line", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private Set<LineStation> stations = new LinkedHashSet<>();
 
 	protected LineStations() {

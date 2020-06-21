@@ -50,8 +50,11 @@ public class FavoriteServiceTest {
 		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
 
-		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of(1L, "잠실역")));
-		when(stationRepository.findById(2L)).thenReturn(Optional.of(Station.of(2L, "강남역")));
+		Station station1 = Station.of(1L, "잠실역");
+		Station station2 = Station.of(2L, "강남역");
+		when(stationRepository.findById(1L)).thenReturn(Optional.of(station1));
+		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
+		when(favoriteRepository.save(any())).thenReturn(Favorite.of(1L, station1, station2));
 
 		favoriteService.createFavorite(member, favoriteRequest);
 
@@ -98,7 +101,7 @@ public class FavoriteServiceTest {
 		when(stationRepository.findById(2L)).thenReturn(Optional.of(station2));
 		when(favoriteRepository.save(any())).thenReturn(favorite);
 
-		member.addFavorite(Favorite.of(station1, station2));
+		member.addFavorite(favorite);
 
 		assertThatThrownBy(() -> favoriteService.createFavorite(member, favoriteRequest))
 			.isInstanceOf(DuplicateFavoriteException.class)
@@ -106,14 +109,12 @@ public class FavoriteServiceTest {
 	}
 
 	@Test
-	void getFavoriteInfos() {
+	void getFavorites() {
 		final Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		Station station1 = Station.of(1L, "잠실역");
 		Station station2 = Station.of(2L, "강남역");
 		Favorite favorite = Favorite.of(1L, station1, station2);
 		member.addFavorite(favorite);
-		when(stationRepository.findById(1L)).thenReturn(Optional.of(Station.of("잠실역")));
-		when(stationRepository.findById(2L)).thenReturn(Optional.of(Station.of("강남역")));
 
 		assertThat(favoriteService.getFavorites(member)).hasSize(1);
 	}
@@ -128,6 +129,6 @@ public class FavoriteServiceTest {
 
 		favoriteService.deleteFavorite(member, 1L);
 
-		assertThat(member.getFavorites()).isNotEmpty();
+		assertThat(member.getFavorites()).isEmpty();
 	}
 }

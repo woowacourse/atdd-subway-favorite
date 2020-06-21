@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.PathType;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class GraphService {
 	public List<Long> findPath(List<Line> lines, Long source, Long target, PathType type) {
 		WeightedMultigraph<Long, DefaultWeightedEdge> graph
@@ -23,7 +26,7 @@ public class GraphService {
 
 		lines.stream()
 			.flatMap(it -> it.getStations().stream())
-			.filter(it -> Objects.nonNull(it.getPreStation().getId()))
+			.filter(it -> Objects.nonNull(it.getPreStation()))
 			.forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStation().getId(), it.getStation().getId()),
 				type.findWeightOf(it)));
 

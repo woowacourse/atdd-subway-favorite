@@ -1,6 +1,7 @@
 package wooteco.subway.domain.member;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import wooteco.subway.service.station.DuplicateFavoriteException;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Member {
 	private static final Member EMPTY = new Member(null, "", "", "", new LinkedHashSet<>());
 
