@@ -26,7 +26,7 @@ public class LineStation {
     private int distance;
     private int duration;
 
-    public LineStation() {
+    protected LineStation() {
     }
 
     public LineStation(final Station preStation, final Station station, final int distance,
