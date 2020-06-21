@@ -45,6 +45,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		final List<FavoriteResponse> favoriteInfos = getFavorites(tokenResponse.getAccessToken());
 		assertThat(favoriteInfos).hasSize(1);
 
-		deleteFavorite(tokenResponse.getAccessToken(), 1L, 2L);
+		deleteFavorite(tokenResponse.getAccessToken(), favoriteInfos.get(0).getId());
 	}
 }

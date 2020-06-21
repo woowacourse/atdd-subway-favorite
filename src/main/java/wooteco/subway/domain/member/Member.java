@@ -20,7 +20,7 @@ public class Member {
 	private String email;
 	private String name;
 	private String password;
-	@OneToMany(mappedBy = "member", orphanRemoval = true)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private Set<Favorite> favorites = new LinkedHashSet<>();
 
 	protected Member() {

@@ -13,19 +13,21 @@ import wooteco.subway.service.station.dto.StationResponse;
  *    @author HyungJu An
  */
 public class FavoriteResponse {
+	private Long id;
 	private StationResponse sourceStation;
 	private StationResponse targetStation;
 
 	private FavoriteResponse() {
 	}
 
-	public FavoriteResponse(final StationResponse sourceStation, final StationResponse targetStation) {
+	public FavoriteResponse(final Long id, final StationResponse sourceStation, final StationResponse targetStation) {
+		this.id = id;
 		this.sourceStation = sourceStation;
 		this.targetStation = targetStation;
 	}
 
 	public static FavoriteResponse of(final Favorite favorite) {
-		return new FavoriteResponse(StationResponse.of(favorite.getSourceStation()),
+		return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSourceStation()),
 			StationResponse.of(favorite.getTargetStation()));
 	}
 
@@ -33,6 +35,10 @@ public class FavoriteResponse {
 		return favorites.stream()
 			.map(FavoriteResponse::of)
 			.collect(Collectors.toList());
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public StationResponse getSourceStation() {
