@@ -12,14 +12,12 @@ repositories {
 }
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
     implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     compile 'javax.xml.bind:jaxb-api'
-    // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
