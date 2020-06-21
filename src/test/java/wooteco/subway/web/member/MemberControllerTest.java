@@ -30,7 +30,7 @@ public class MemberControllerTest extends MemberDocumentationTest {
 
 	@Test
 	public void createMember() throws Exception {
-		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD).withId(1L);
+		Member member = Member.of(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
 		given(memberService.createMember(any())).willReturn(member);
 
 		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -50,7 +50,7 @@ public class MemberControllerTest extends MemberDocumentationTest {
 	@Test
 	public void createMember2() throws Exception {
 		final String email = "";
-		Member member = Member.of(email, TEST_USER_NAME, TEST_USER_PASSWORD).withId(1L);
+		Member member = Member.of(1L, email, TEST_USER_NAME, TEST_USER_PASSWORD);
 		given(memberService.createMember(any())).willReturn(member);
 
 		String inputJson = "{\"email\":\"" + email + "\"," +
@@ -69,7 +69,7 @@ public class MemberControllerTest extends MemberDocumentationTest {
 	@Test
 	public void createMember3() throws Exception {
 		final String email = "brown";
-		Member member = Member.of(email, TEST_USER_NAME, TEST_USER_PASSWORD).withId(1L);
+		Member member = Member.of(1L, email, TEST_USER_NAME, TEST_USER_PASSWORD);
 		given(memberService.createMember(any())).willReturn(member);
 
 		String inputJson = "{\"email\":\"" + email + "\"," +
@@ -88,7 +88,7 @@ public class MemberControllerTest extends MemberDocumentationTest {
 	@Test
 	public void createMember4() throws Exception {
 		final String name = "";
-		Member member = Member.of(TEST_USER_EMAIL, name, TEST_USER_PASSWORD).withId(1L);
+		Member member = Member.of(1L, TEST_USER_EMAIL, name, TEST_USER_PASSWORD);
 		given(memberService.createMember(any())).willReturn(member);
 
 		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +
@@ -107,7 +107,7 @@ public class MemberControllerTest extends MemberDocumentationTest {
 	@Test
 	public void createMember5() throws Exception {
 		final String password = "";
-		Member member = Member.of(TEST_USER_EMAIL, TEST_USER_NAME, password).withId(1L);
+		Member member = Member.of(1L, TEST_USER_EMAIL, TEST_USER_NAME, password);
 		given(memberService.createMember(any())).willReturn(member);
 
 		String inputJson = "{\"email\":\"" + TEST_USER_EMAIL + "\"," +

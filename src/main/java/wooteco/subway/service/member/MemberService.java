@@ -6,7 +6,7 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
-import wooteco.subway.service.member.vo.UpdateMemberInfo;
+import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
@@ -25,10 +25,10 @@ public class MemberService {
 		return memberRepository.save(member);
 	}
 
-	public void updateMember(final Long id, final UpdateMemberInfo param) {
+	public void updateMember(final Long id, final UpdateMemberRequest param) {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new NotFoundMemberException("해당하는 아이디를 찾을 수 없습니다. : " + id));
-		memberRepository.save(member.update(param.getName(), param.getPassword()));
+		member.update(param.getName(), param.getPassword());
 	}
 
 	public void deleteMember(final Long id) {

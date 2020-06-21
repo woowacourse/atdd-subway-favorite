@@ -23,10 +23,6 @@ public class FavoriteRequest {
 		this.targetId = targetId;
 	}
 
-	public Favorite toFavorite() {
-		return Favorite.of(sourceId, targetId);
-	}
-
 	public Long getSourceId() {
 		return sourceId;
 	}

@@ -13,31 +13,4 @@ public class Lines {
 	public List<Line> getLines() {
 		return lines;
 	}
-
-	public List<Long> getStationIds() {
-		return lines.stream()
-			.flatMap(it -> it.getStations().stream())
-			.map(LineStation::getStationId)
-			.collect(Collectors.toList());
-	}
-	//
-	//    public LineStations extractLineStationByStationIds(List<Long> stationIds) {
-	//        for (Long stationId : stationIds) {
-	//            List<LineStation> lineStations = findLineStation(null, stationId);
-	//        }
-	//        Set<LineStation> lineStations = stationIds.stream()
-	//                .map(it -> getLineStationByStationId(it))
-	//                .collect(Collectors.toSet());
-	//
-	//        return new LineStations(lineStations);
-	//    }
-	//
-	//    private LineStation getLineStationByStationId(Long stationId) {
-	//        return lines.stream()
-	//                .flatMap(it -> it.getStations().stream())
-	////                .filter(it -> Objects.nonNull(it.getPreStationId()))
-	//                .filter(it -> it.getStationId() == stationId)
-	//                .findFirst()
-	//                .orElseThrow(RuntimeException::new);
-	//    }
 }

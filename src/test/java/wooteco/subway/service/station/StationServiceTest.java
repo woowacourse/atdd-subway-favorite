@@ -33,8 +33,8 @@ public class StationServiceTest {
         Station station2 = stationRepository.save(Station.of("역삼역"));
         Line line = lineRepository.save(Line.of("2호선", LocalTime.of(5, 30), LocalTime.of(22, 30), 10));
 
-        line.addLineStation(LineStation.of(null, station1.getId(), 10, 10));
-        line.addLineStation(LineStation.of(station1.getId(), station2.getId(), 10, 10));
+        line.addLineStation(LineStation.of(null, station1, 10, 10));
+        line.addLineStation(LineStation.of(station1, station2, 10, 10));
         lineRepository.save(line);
 
         stationService.deleteStationById(station1.getId());

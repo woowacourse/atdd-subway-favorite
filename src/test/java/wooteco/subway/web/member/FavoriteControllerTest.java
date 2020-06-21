@@ -23,7 +23,7 @@ import wooteco.subway.doc.MemberLoginDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.service.member.vo.FavoriteInfo;
+import wooteco.subway.service.member.dto.FavoriteResponse;
 
 /**
  *    class description
@@ -52,7 +52,7 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 		password = "1234";
 		name = "asdf";
 		token = jwtTokenProvider.createToken(email);
-		member = Member.of(email, name, password).withId(1L);
+		member = Member.of(1L, email, name, password);
 	}
 
 	@Test
@@ -95,11 +95,11 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 
 	@Test
 	void getFavorites() throws Exception {
-		final List<FavoriteInfo> favoriteInfos = Arrays.asList(
-			new FavoriteInfo(Station.of("강남역").withId(1L), Station.of("잠실역").withId(2L)),
-			new FavoriteInfo(Station.of("청계산입구역").withId(3L), Station.of("대모산입구역").withId(4L)));
+		final List<Favorite> favorites = Arrays.asList(
+			Favorite.of(Station.of(1L, "강남역"), Station.of(2L, "잠실역")),
+			Favorite.of(Station.of(3L, "청계산입구역"), Station.of(4L, "대모산입구역")));
 		given(memberService.findMemberByEmail(any())).willReturn(member);
-		given(favoriteService.getFavoriteInfos(any())).willReturn(favoriteInfos);
+		given(favoriteService.getFavorites(any())).willReturn(FavoriteResponse.listOf(favorites));
 
 		this.mockMvc.perform(get("/favorites")
 			.header("authorization", "Bearer " + token))
@@ -111,12 +111,16 @@ public class FavoriteControllerTest extends MemberDocumentationTest {
 	@Test
 	void deleteFavorite() throws Exception {
 		given(memberService.findMemberByEmail(any())).willReturn(member);
-		final Long sourceId = 1L;
-		final Long targetId = 2L;
-		member.addFavorite(Favorite.of(sourceId, targetId));
-		member.addFavorite(Favorite.of(3L, 4L));
+		Station station1 = Station.of(1L, "의정부역");
+		Station station2 = Station.of(1L, "회룡역");
+		Station station3 = Station.of(1L, "망월사역");
+		Station station4 = Station.of(1L, "도봉산역");
+		Favorite favorite1 = Favorite.of(1L, station1, station2);
+		Favorite favorite2 = Favorite.of(2L, station3, station4);
+		member.addFavorite(favorite1);
+		member.addFavorite(favorite2);
 
-		this.mockMvc.perform(delete("/favorites?sourceId=" + sourceId + "&targetId=" + targetId)
+		this.mockMvc.perform(delete("/favorites?sourceId=" + favorite1.getId() + "&targetId=" + favorite2.getId())
 			.header("authorization", "Bearer " + token))
 			.andExpect(status().isNoContent())
 			.andDo(print())

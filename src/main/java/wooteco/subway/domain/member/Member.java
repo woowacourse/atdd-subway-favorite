@@ -1,27 +1,30 @@
 package wooteco.subway.domain.member;
 
-import static java.util.stream.Collectors.*;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-
 import wooteco.subway.service.station.DuplicateFavoriteException;
 
+import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
 public class Member {
 	private static final Member EMPTY = new Member(null, "", "", "", new LinkedHashSet<>());
 
 	@Id
-	private final Long id;
-	private final String email;
-	private final String name;
-	private final String password;
-	private final Set<Favorite> favorites;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String email;
+	private String name;
+	private String password;
+	@OneToMany(mappedBy = "member", orphanRemoval = true)
+	private Set<Favorite> favorites = new LinkedHashSet<>();
 
-	Member(Long id, String email, String name, String password,
-		final Set<Favorite> favorites) {
+	protected Member() {
+	}
+
+	private Member(Long id, String email, String name, String password, Set<Favorite> favorites) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
@@ -36,34 +39,29 @@ public class Member {
 		return new Member(null, email, name, password, new LinkedHashSet<>());
 	}
 
-	public Member withId(final Long id) {
-		return new Member(id, this.email, this.name, this.password, this.favorites);
+	public static Member of(Long id, String email, String name, String password) {
+		return new Member(id, email, name, password, new LinkedHashSet<>());
 	}
 
-	public Member update(String name, String password) {
-		if (StringUtils.isBlank(name)) {
-			name = this.name;
+	public void update(String name, String password) {
+		if (StringUtils.isNotBlank(name)) {
+			this.name = name;
 		}
-		if (StringUtils.isBlank(password)) {
-			password = this.password;
+		if (StringUtils.isNotBlank(password)) {
+			this.password = password;
 		}
-		return new Member(this.id, this.email, name, password, this.favorites);
 	}
 
-	public Member addFavorite(final Favorite favorite) {
-		if (this.favorites.contains(favorite)) {
+	public void addFavorite(Favorite favorite) {
+		if (favorites.contains(favorite)) {
 			throw new DuplicateFavoriteException("이미 존재하는 즐겨찾기 입니다.");
 		}
-		Set<Favorite> newFavorites = new LinkedHashSet<>(this.favorites);
-		newFavorites.add(favorite);
-		return new Member(this.id, this.email, this.name, this.password, newFavorites);
+		favorites.add(favorite);
+		favorite.setMember(this);
 	}
 
-	public Member deleteFavorite(final Favorite favorite) {
-		Set<Favorite> newFavorites = this.favorites.stream()
-			.filter(it -> !it.equals(favorite))
-			.collect(toSet());
-		return new Member(this.id, this.email, this.name, this.password, newFavorites);
+	public void deleteFavoriteById(Long id) {
+		favorites.removeIf(it -> Objects.equals(it.getId(), id));
 	}
 
 	public boolean checkPassword(final String password) {

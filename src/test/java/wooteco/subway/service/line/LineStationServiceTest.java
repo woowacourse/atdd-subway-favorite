@@ -32,8 +32,6 @@ public class LineStationServiceTest {
 
 	@Mock
 	private LineRepository lineRepository;
-	@Mock
-	private StationRepository stationRepository;
 
 	private LineStationService lineStationService;
 
@@ -45,24 +43,23 @@ public class LineStationServiceTest {
 
 	@BeforeEach
 	void setUp() {
-        lineStationService = new LineStationService(lineRepository, stationRepository);
+        lineStationService = new LineStationService(lineRepository);
 
-        station1 = Station.of(STATION_NAME1).withId(1L);
-        station2 = Station.of(STATION_NAME2).withId(2L);
-        station3 = Station.of(STATION_NAME3).withId(3L);
-        station4 = Station.of(STATION_NAME4).withId(4L);
+        station1 = Station.of(1L, STATION_NAME1);
+        station2 = Station.of(2L, STATION_NAME2);
+        station3 = Station.of(3L, STATION_NAME3);
+        station4 = Station.of(4L, STATION_NAME4);
 
-        line = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(1L);
-        line.addLineStation(LineStation.of(null, 1L, 10, 10));
-        line.addLineStation(LineStation.of(1L, 2L, 10, 10));
-        line.addLineStation(LineStation.of(2L, 3L, 10, 10));
+        line = Line.of(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line.addLineStation(LineStation.of(null, station1, 10, 10));
+        line.addLineStation(LineStation.of(station1, station2, 10, 10));
+        line.addLineStation(LineStation.of(station2, station3, 10, 10));
     }
 
 	@Test
 	void findLineWithStationsById() {
 		List<Station> stations = Lists.newArrayList(station1, station2, station3);
 		when(lineRepository.findById(anyLong())).thenReturn(Optional.of(line));
-		when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
 		LineDetailResponse lineDetailResponse = lineStationService.findLineWithStationsById(1L);
 
@@ -71,17 +68,19 @@ public class LineStationServiceTest {
 
 	@Test
 	void wholeLines() {
-        Line newLine = Line.of("신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(2L);
-        newLine.addLineStation(LineStation.of(null, 4L, 10, 10));
-        newLine.addLineStation(LineStation.of(4L, 5L, 10, 10));
-        newLine.addLineStation(LineStation.of(5L, 6L, 10, 10));
+        Line newLine = Line.of(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
 
-        List<Station> stations = Lists.newArrayList(Station.of("강남역").withId(1L), Station.of("역삼역").withId(2L),
-            Station.of("삼성역").withId(3L), Station.of("양재역").withId(4L), Station.of("양재시민의숲역").withId(5L),
-            Station.of("청계산입구역").withId(6L));
+		Station station4 = Station.of(4L, "양재역");
+		Station station5 = Station.of(5L, "양재시민의숲역");
+		Station station6 = Station.of(6L, "청계산입구역");
+
+		newLine.addLineStation(LineStation.of(null, station4, 10, 10));
+        newLine.addLineStation(LineStation.of(station4, station5, 10, 10));
+        newLine.addLineStation(LineStation.of(station5, station6, 10, 10));
+
+        List<Station> stations = Lists.newArrayList();
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(this.line, newLine));
-        when(stationRepository.findAllById(anyList())).thenReturn(stations);
 
         List<LineDetailResponse> lineDetails = lineStationService.findLinesWithStations().getLineDetailResponse();
 

@@ -123,7 +123,7 @@ public class LoginMemberControllerTest extends MemberDocumentationTest {
 	void getMemberOfMineBasic() throws Exception {
 		final String email = "a@email.com";
 		final String password = "1234";
-		final Member member = Member.of(email, "asdf", password).withId(1L);
+		final Member member = Member.of(1L, email, "asdf", password);
 		final String token = jwtTokenProvider.createToken(email);
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 
@@ -151,7 +151,7 @@ public class LoginMemberControllerTest extends MemberDocumentationTest {
 		final String password = "1234";
 		final String name = "asdf";
 		final String token = jwtTokenProvider.createToken(email);
-		final Member member = Member.of(email, name, password).withId(1L);
+		final Member member = Member.of(1L, email, name, password);
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 
 		String inputJson = "{\"name\":\"" + "brown" + "\"," +
@@ -173,7 +173,7 @@ public class LoginMemberControllerTest extends MemberDocumentationTest {
 		final String password = "1234";
 		final String name = "asdf";
 		final String token = jwtTokenProvider.createToken(email);
-		final Member member = Member.of(email, name, password).withId(1L);
+		final Member member = Member.of(1L, email, name, password);
 		given(memberService.findMemberByEmail(any())).willReturn(member);
 
 		this.mockMvc.perform(delete("/me")

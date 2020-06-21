@@ -1,50 +1,68 @@
 package wooteco.subway.domain.member;
 
+import wooteco.subway.domain.station.Station;
+
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 /**
  *    즐겨찾기 class입니다.
  *
  *    @author HyungJu An
  */
+@Entity
 public class Favorite {
-	@NotNull
-	private final Long sourceId;
-	@NotNull
-	private final Long targetId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@OneToOne
+	private Station sourceStation;
+	@OneToOne
+	private Station targetStation;
+	@ManyToOne
+	@JoinColumn
+	private Member member;
 
-	Favorite(final Long sourceId, final Long targetId) {
-		this.sourceId = sourceId;
-		this.targetId = targetId;
+	protected Favorite() {
 	}
 
-	public static Favorite of(final Long source, final Long target) {
-		return new Favorite(source, target);
+	private Favorite(Long id, Station sourceStation, Station targetStation, Member member) {
+		this.id = id;
+		this.sourceStation = sourceStation;
+		this.targetStation = targetStation;
+		this.member = member;
 	}
 
-	public Long getSourceId() {
-		return sourceId;
+	public static Favorite of(Station source, Station target) {
+		return new Favorite(null, source, target, null);
 	}
 
-	public Long getTargetId() {
-		return targetId;
+	public static Favorite of(Long id, Station source, Station target) {
+		return new Favorite(id, source, target, null);
 	}
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		final Favorite favorite = (Favorite)o;
-		return sourceId.equals(favorite.sourceId) &&
-			targetId.equals(favorite.targetId);
+	public Long getId() {
+		return id;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(sourceId, targetId);
+	public Station getSourceStation() {
+		return sourceStation;
+	}
+
+	public Station getTargetStation() {
+		return targetStation;
+	}
+
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		if (!member.getFavorites().contains(this)) {
+			member.addFavorite(this);
+			return;
+		}
+		this.member = member;
 	}
 }

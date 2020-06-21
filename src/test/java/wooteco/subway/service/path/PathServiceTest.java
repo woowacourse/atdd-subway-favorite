@@ -58,22 +58,22 @@ public class PathServiceTest {
 	void setUp() {
         pathService = new PathService(stationRepository, lineRepository, graphService);
 
-        station1 = Station.of(STATION_NAME1).withId(1L);
-        station2 = Station.of(STATION_NAME2).withId(2L);
-        station3 = Station.of(STATION_NAME3).withId(3L);
-        station4 = Station.of(STATION_NAME4).withId(4L);
-        station5 = Station.of(STATION_NAME5).withId(5L);
-        station6 = Station.of(STATION_NAME6).withId(6L);
+        station1 = Station.of(1L, STATION_NAME1);
+        station2 = Station.of(2L, STATION_NAME2);
+        station3 = Station.of(3L, STATION_NAME3);
+        station4 = Station.of(4L, STATION_NAME4);
+        station5 = Station.of(5L, STATION_NAME5);
+        station6 = Station.of(6L, STATION_NAME6);
 
-        line1 = Line.of("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(1L);
-        line1.addLineStation(LineStation.of(null, 1L, 10, 10));
-        line1.addLineStation(LineStation.of(1L, 2L, 10, 10));
-        line1.addLineStation(LineStation.of(2L, 3L, 10, 10));
+        line1 = Line.of(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line1.addLineStation(LineStation.of(null, station1, 10, 10));
+        line1.addLineStation(LineStation.of(station1, station2, 10, 10));
+        line1.addLineStation(LineStation.of(station2, station3, 10, 10));
 
-        line2 = Line.of("신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5).withId(2L);
-        line2.addLineStation(LineStation.of(null, 1L, 10, 10));
-        line2.addLineStation(LineStation.of(1L, 4L, 10, 10));
-        line2.addLineStation(LineStation.of(4L, 5L, 10, 10));
+        line2 = Line.of(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line2.addLineStation(LineStation.of(null, station1, 10, 10));
+        line2.addLineStation(LineStation.of(station1, station4, 10, 10));
+        line2.addLineStation(LineStation.of(station4, station5, 10, 10));
     }
 
 	@DisplayName("일반적인 상황의 경로 찾기")

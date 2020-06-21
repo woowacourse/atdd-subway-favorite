@@ -62,7 +62,7 @@ public class MemberServiceTest {
 	void updateMember() {
 		when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> memberService.updateMember(1L, new UpdateMemberRequest().toInfo()))
+		assertThatThrownBy(() -> memberService.updateMember(1L, new UpdateMemberRequest()))
 			.isInstanceOf(NotFoundMemberException.class)
 			.hasMessageContaining("해당하는");
 	}
