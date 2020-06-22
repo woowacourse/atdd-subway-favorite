@@ -44,17 +44,4 @@ public class Station extends BaseEntity {
         return Objects.equals(getId(), station.getId()) &&
                 Objects.equals(getName(), station.getName());
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName());
-    }
-
-    @Override
-    public String toString() {
-        return "Station{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

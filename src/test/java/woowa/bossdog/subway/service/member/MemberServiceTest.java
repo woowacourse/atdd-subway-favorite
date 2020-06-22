@@ -9,7 +9,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import woowa.bossdog.subway.domain.Member;
 import woowa.bossdog.subway.infra.JwtTokenProvider;
-import woowa.bossdog.subway.repository.FavoriteRepository;
 import woowa.bossdog.subway.repository.MemberRepository;
 import woowa.bossdog.subway.service.member.dto.LoginRequest;
 import woowa.bossdog.subway.service.member.dto.MemberRequest;
@@ -35,13 +34,22 @@ class MemberServiceTest {
     @Mock private MemberRepository memberRepository;
 
     @Mock private JwtTokenProvider jwtTokenProvider;
-    @Mock private FavoriteRepository favoriteRepository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
         memberService = new MemberService(memberRepository, jwtTokenProvider);
+    }
+
+    @DisplayName("이미 존재하는 메일인 경우 회원 가입 시 예외 발생 ")
+    @Test
+    void joinWithExistedEmail() {
+        given(memberRepository.existsByEmail(any())).willReturn(true);
+
+        assertThatThrownBy(() -> {
+            memberService.createMember(new MemberRequest("test@test.com", "bossdog", "test"));
+        }).isInstanceOf(ExistedEmailException.class);
     }
 
     @DisplayName("회원 생성")
@@ -144,12 +152,20 @@ class MemberServiceTest {
         assertThat(findMember.getEmail()).isEqualTo(member.getEmail());
         assertThat(findMember.getName()).isEqualTo(member.getName());
         assertThat(findMember.getPassword()).isEqualTo(member.getPassword());
+    }
 
+    @DisplayName("로그인 실패 - 존재 하지 않은 이메일")
+    @Test
+    void loginFailWithNotExistedEmail() {
+        given(memberRepository.findByEmail(any())).willThrow(NotExistedEmailException.class);
+
+        assertThatThrownBy(() -> memberService.createToken(new LoginRequest("notExisted@email.com","test")))
+                .isInstanceOf(NotExistedEmailException.class);
     }
 
     @DisplayName("로그인 실패 - 비밀번호 틀릴 경우")
     @Test
-    void loginFail() {
+    void loginFailWithWrongPassword() {
         final Member member = new Member(111L, "test@test.com", "bossdog", "test");
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 

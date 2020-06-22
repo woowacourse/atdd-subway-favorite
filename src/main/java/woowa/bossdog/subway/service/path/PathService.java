@@ -11,10 +11,10 @@ import woowa.bossdog.subway.service.path.dto.PathRequest;
 import woowa.bossdog.subway.service.path.dto.PathResponse;
 import woowa.bossdog.subway.service.path.dto.PathType;
 import woowa.bossdog.subway.service.station.dto.StationResponse;
+import woowa.bossdog.subway.web.station.NotExistedStationException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -37,9 +37,9 @@ public class PathService {
         }
 
         Station sourceStation = stationRepository.findByName(source)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NotExistedStationException::new);
         Station targetStation = stationRepository.findByName(target)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NotExistedStationException::new);
 
         final List<Line> lines = lineRepository.findAll();
         final List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);

@@ -24,6 +24,10 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(final Member member, final FavoriteRequest request) {
+        if (favoriteRepository.existsBySourceStationIdAndTargetStationId(request.getSource(), request.getTarget())) {
+            throw new ExistedFavoriteException();
+        }
+
         Station sourceStation = stationRepository.findById(request.getSource())
                 .orElseThrow(NotExistedStationException::new);
         Station targetStation = stationRepository.findById(request.getTarget())

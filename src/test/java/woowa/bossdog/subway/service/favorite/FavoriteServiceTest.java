@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -40,6 +41,18 @@ class FavoriteServiceTest {
 
         favoriteService = new FavoriteService(favoriteRepository, stationRepository);
         member = new Member(111L, "test@test.com", "bossdog", "test");
+    }
+
+    @DisplayName("중복된 즐겨찾기일 경우 예외발생")
+    @Test
+    void createFavoriteWithDuplicatedAttributes() {
+        // given
+        final FavoriteRequest request = new FavoriteRequest(3L, 4L);
+        given(favoriteRepository.existsBySourceStationIdAndTargetStationId(any(), any())).willReturn(true);
+
+        // when
+        assertThatThrownBy(() -> favoriteService.createFavorite(member, request))
+                .isInstanceOf(ExistedFavoriteException.class);
     }
 
     @DisplayName("즐겨찾기 추가")

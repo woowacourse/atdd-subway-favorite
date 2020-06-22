@@ -14,12 +14,14 @@ import woowa.bossdog.subway.repository.StationRepository;
 import woowa.bossdog.subway.service.path.dto.PathRequest;
 import woowa.bossdog.subway.service.path.dto.PathResponse;
 import woowa.bossdog.subway.service.path.dto.PathType;
+import woowa.bossdog.subway.web.path.NotExistedPathException;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -29,9 +31,12 @@ class PathServiceTest {
 
     private PathService pathService;
 
-    @Mock private StationRepository stationRepository;
-    @Mock private LineRepository lineRepository;
-    @Mock private GraphService graphService;
+    @Mock
+    private StationRepository stationRepository;
+    @Mock
+    private LineRepository lineRepository;
+    @Mock
+    private GraphService graphService;
 
     @BeforeEach
     void setUp() {
@@ -40,14 +45,37 @@ class PathServiceTest {
         pathService = new PathService(lineRepository, stationRepository, graphService);
     }
 
+    @DisplayName("출발역과 도착역이 같은 경우 예외 발생")
+    @Test
+    void findPathWithDuplicatedStations() {
+        final PathRequest request = new PathRequest("강남역", "강남역", PathType.DISTANCE);
+
+        assertThatThrownBy(() -> pathService.findPath(request))
+                .isInstanceOf(DuplicatedStationPathException.class)
+                .hasMessage("출발역과 도착역은 같을 수 없습니다.");
+    }
+
+    @DisplayName("경로가 없는 경우 예외 발생")
+    @Test
+    void findPathWithNotExistedPath() {
+        final PathRequest request = new PathRequest("강남역", "신촌역", PathType.DISTANCE);
+
+        given(stationRepository.findByName(eq(request.getSource()))).willReturn(Optional.of(new Station("강남역")));
+        given(stationRepository.findByName(eq(request.getTarget()))).willReturn(Optional.of(new Station("신촌역")));
+        given(graphService.findPath(any(), any(), any(), any())).willThrow(NotExistedPathException.class);
+
+        assertThatThrownBy(() -> pathService.findPath(request))
+                .isInstanceOf(NotExistedPathException.class);
+    }
+
     @DisplayName("최단 경로 조회")
     @Test
     void findPathByDistance() {
         // given
         final PathRequest request = new PathRequest("강남역", "서울역", PathType.DISTANCE);
         final List<Line> lines = Lists.newArrayList(
-                new Line(1L, "2호선", LocalTime.of(5,30), LocalTime.of(23,30), 10),
-                new Line(2L, "4호선", LocalTime.of(5,30), LocalTime.of(23,30), 10));
+                new Line(1L, "2호선", LocalTime.of(5, 30), LocalTime.of(23, 30), 10),
+                new Line(2L, "4호선", LocalTime.of(5, 30), LocalTime.of(23, 30), 10));
         final List<Long> path = Lists.newArrayList(1L, 2L, 9L, 8L);
         final List<Station> stations = Lists.newArrayList(
                 new Station(1L, "강남역"), new Station(2L, "선릉역"),

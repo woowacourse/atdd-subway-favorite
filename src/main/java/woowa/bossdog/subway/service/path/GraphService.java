@@ -6,6 +6,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import woowa.bossdog.subway.domain.Line;
 import woowa.bossdog.subway.service.path.dto.PathType;
+import woowa.bossdog.subway.web.path.NotExistedPathException;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,8 +27,11 @@ public class GraphService {
                 .filter(it -> Objects.nonNull(it.getPreStation()))
                 .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStation().getId(),
                         it.getStation().getId()), type.findWeightOf(it)));
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+        try {
+            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+            return dijkstraShortestPath.getPath(source, target).getVertexList();
+        } catch (IllegalArgumentException e) {
+            throw new NotExistedPathException();
+        }
     }
 }

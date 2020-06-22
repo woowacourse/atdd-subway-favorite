@@ -46,7 +46,7 @@ class LoginMemberControllerTest {
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-        member = member = new Member(111L, "test@test.com", "bossdog", "test");
+        member = new Member(111L, "test@test.com", "bossdog", "test");
         given(memberService.findMemberByEmail(any())).willReturn(member);
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getSubject(any())).willReturn(member.getEmail());
@@ -84,16 +84,14 @@ class LoginMemberControllerTest {
     @Test
     void login() throws Exception {
         // given
-        String token = "ACCESS_TOKEN";
-        given(memberService.createToken(any())).willReturn(token);
+        given(jwtTokenProvider.createToken(any())).willReturn("Bearer ACCESS_TOKEN");
 
         // when
         mvc.perform(post("/me/login")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"test@test.com\",\"password\":\"test\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("{\"accessToken\":\"ACCESS_TOKEN\",\"tokenType\":\"Bearer\"}"));
+                .andExpect(status().isOk());
 
         // then
         verify(memberService).createToken(any());

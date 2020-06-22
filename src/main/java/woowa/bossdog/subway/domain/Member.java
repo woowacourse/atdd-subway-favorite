@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,7 @@ public class Member extends BaseEntity {
     private String password;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Favorite> favorites;
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member(final String email, final String name, final String password) {
         this(null, email, name, password);

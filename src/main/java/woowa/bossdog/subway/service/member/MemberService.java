@@ -24,6 +24,9 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(final MemberRequest request) {
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new ExistedEmailException();
+        }
         final Member member = memberRepository.save(request.toMember());
         return MemberResponse.from(member);
     }

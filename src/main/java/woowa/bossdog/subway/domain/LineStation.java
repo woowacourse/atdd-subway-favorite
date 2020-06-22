@@ -54,13 +54,4 @@ public class LineStation {
     public boolean isStart() {
         return Objects.isNull(preStation) || Objects.isNull(preStation.getId());
     }
-
-    @Override
-    public String toString() {
-        return "LineStation{" +
-                "line=" + line +
-                ", preStation=" + preStation +
-                ", station=" + station +
-                '}';
-    }
 }
