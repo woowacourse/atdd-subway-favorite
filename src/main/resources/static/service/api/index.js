@@ -54,25 +54,25 @@ const api = (() => {
 
   const member = {
     get(id) {
-      return requestWithJsonData(`/members/${id}`);
+      return requestWithJsonData(`/auth/members/${id}`);
     },
     create(newMember) {
-      return request(`/members`, METHOD.POST(newMember));
+      return request(`/auth/members`, METHOD.POST(newMember));
     },
     update(id, updatedData) {
-      return request(`/members/${id}`, METHOD.PUT(updatedData));
+      return request(`/auth/members/${id}`, METHOD.PUT(updatedData));
     },
     delete(id) {
-      return request(`/members/${id}`, METHOD.DELETE());
+      return request(`/auth/members/${id}`, METHOD.DELETE());
     },
     login(loginInfo) {
-      return requestWithJsonData(`/oauth/token`, METHOD.POST(loginInfo));
+      return requestWithJsonData(`/auth/oauth/token`, METHOD.POST(loginInfo));
     }
   };
 
   const loginMember = {
     get() {
-      return requestWithJsonData(`/members`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonData(`/auth/members`, METHOD.GET_WITH_AUTH());
     },
     update(updatedInfo) {
       return request(`/me`, METHOD.PUT(updatedInfo));
@@ -101,16 +101,16 @@ const api = (() => {
 
   const favorite = {
     create(favoritePath) {
-      return request(`/favorites`, METHOD.POST(favoritePath));
+      return request(`/auth/favorites`, METHOD.POST(favoritePath));
     },
     get(id) {
-      return requestWithJsonData(`/favorites/${id}`);
+      return requestWithJsonData(`/auth/favorites/${id}`);
     },
     getAll() {
-      return requestWithJsonData(`/favorites`, METHOD.GET_WITH_AUTH());
+      return requestWithJsonData(`/auth/favorites`, METHOD.GET_WITH_AUTH());
     },
     delete(id) {
-      return request(`/favorites/${id}`, METHOD.DELETE());
+      return request(`/auth/favorites/${id}`, METHOD.DELETE());
     }
   };
 
