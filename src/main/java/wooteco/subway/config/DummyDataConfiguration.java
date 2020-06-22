@@ -43,12 +43,13 @@ public class DummyDataConfiguration {
             lineNumber1.addLineStation(new LineStation(null, station1.getId(), 10, 10));
             lineNumber1.addLineStation(new LineStation(station1.getId(), station2.getId(), 1, 10));
             lineNumber1.addLineStation(new LineStation(station2.getId(), station3.getId(), 10, 10));
+
             Line lineNumber2 = new Line("분당선", LocalTime.of(05, 20), LocalTime.of(23, 30), 15);
             lineNumber2.addLineStation(new LineStation(null, station2.getId(), 10, 10));
             lineNumber2.addLineStation(new LineStation(station2.getId(), station3.getId(), 1, 10));
 
-            lineNumber1 = lineRepository.save(lineNumber1);
-            lineNumber2 = lineRepository.save(lineNumber2);
+            lineRepository.save(lineNumber1);
+            lineRepository.save(lineNumber2);
 
             Station station4 = stationRepository.save(new Station("신촌"));
             Station station5 = stationRepository.save(new Station("합정"));
@@ -56,12 +57,12 @@ public class DummyDataConfiguration {
             lineNumber3.addLineStation(new LineStation(null, station4.getId(), 10, 10));
             lineNumber3.addLineStation(new LineStation(station4.getId(), station5.getId(), 10, 10));
 
-            lineNumber3 = lineRepository.save(lineNumber3);
+            lineRepository.save(lineNumber3);
 
-            Member member = new Member("ramen6315@gmail.com", "ramen", "6315");
+            Member member = memberService.createMember(new Member("ramen6315@gmail.com", "ramen", "6315"));
 
-            favoriteRepository.save(new Favorite(member.getId(), station1.getId(), station2.getId()));
-            favoriteRepository.save(new Favorite(member.getId(), station2.getId(), station3.getId()));
+            favoriteRepository.save(new Favorite(1L,member.getId(), station1.getId(), station2.getId()));
+            favoriteRepository.save(new Favorite(2L,member.getId(), station2.getId(), station3.getId()));
         }
     }
 }
