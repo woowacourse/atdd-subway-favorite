@@ -15,6 +15,7 @@ create table if not exists LINE
     interval_time int not null,
     created_at datetime,
     updated_at datetime,
+    bg_color varchar(255),
     primary key(id)
 );
 
@@ -38,4 +39,9 @@ create table if not exists MEMBER
     primary key(id)
 );
 
--- // TODO 즐겨찾기 테이블 스키마 추가
+create table if not exists FAVORITE (
+    member bigint not null,
+    favorite_key bigint not null,
+    depart_station_id bigint not null,
+    arrive_station_id bigint not null
+);

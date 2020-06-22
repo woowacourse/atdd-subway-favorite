@@ -1,18 +1,20 @@
 package wooteco.subway.service.path;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineStation;
-import wooteco.subway.domain.path.PathType;
-import wooteco.subway.domain.station.Station;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.path.PathType;
+import wooteco.subway.domain.station.Station;
 
 public class GraphServiceTest {
     private static final String STATION_NAME1 = "강남역";
@@ -45,20 +47,22 @@ public class GraphServiceTest {
         station5 = new Station(5L, STATION_NAME5);
         station6 = new Station(6L, STATION_NAME6);
 
-        line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line1 = new Line(1L, "2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-black-500");
         line1.addLineStation(new LineStation(null, 1L, 10, 10));
         line1.addLineStation(new LineStation(1L, 2L, 10, 10));
         line1.addLineStation(new LineStation(2L, 3L, 10, 10));
 
-        line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+        line2 = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5, "bg-black-500");
         line2.addLineStation(new LineStation(null, 1L, 10, 10));
         line2.addLineStation(new LineStation(1L, 4L, 10, 10));
         line2.addLineStation(new LineStation(4L, 5L, 10, 10));
     }
 
+    @DisplayName("경로 조회")
     @Test
     void findPath() {
-        List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(), station5.getId(), PathType.DISTANCE);
+        List<Long> stationIds = graphService.findPath(Lists.list(line1, line2), station3.getId(), station5.getId(),
+                PathType.DISTANCE);
 
         assertThat(stationIds).hasSize(5);
         assertThat(stationIds.get(0)).isEqualTo(3L);
@@ -68,6 +72,7 @@ public class GraphServiceTest {
         assertThat(stationIds.get(4)).isEqualTo(5L);
     }
 
+    @DisplayName("경로가 존재하지 않을 때 예외 발생")
     @Test
     void findPathWithNoPath() {
         assertThrows(IllegalArgumentException.class, () ->
@@ -76,6 +81,7 @@ public class GraphServiceTest {
 
     }
 
+    @DisplayName("경로가 연결되지 않았을 때 예외 발생")
     @Test
     void findPathWithDisconnected() {
         line2.removeLineStationById(station1.getId());

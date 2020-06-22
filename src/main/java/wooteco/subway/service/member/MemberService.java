@@ -1,16 +1,19 @@
 package wooteco.subway.service.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
+import wooteco.subway.exception.LoginFailedException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -21,31 +24,30 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void updateMember(Long id, UpdateMemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.getName(), param.getPassword());
+    @Transactional
+    public void updateMember(Member member, UpdateMemberRequest updateMemberRequest) {
+        member.update(updateMemberRequest.getName(), updateMemberRequest.getPassword());
         memberRepository.save(member);
     }
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
     }
 
-    public String createToken(LoginRequest param) {
-        Member member = memberRepository.findByEmail(param.getEmail()).orElseThrow(RuntimeException::new);
-        if (!member.checkPassword(param.getPassword())) {
-            throw new RuntimeException("잘못된 패스워드");
+    @Transactional(readOnly = true)
+    public String createToken(LoginRequest loginRequest) {
+        Member member = memberRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new LoginFailedException(loginRequest.getEmail()));
+        if (!member.checkPassword(loginRequest.getPassword())) {
+            throw new LoginFailedException(loginRequest.getEmail());
         }
 
-        return jwtTokenProvider.createToken(param.getEmail());
+        return jwtTokenProvider.createToken(loginRequest.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
-    public boolean loginWithForm(String email, String password) {
-        Member member = findMemberByEmail(email);
-        return member.checkPassword(password);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new LoginFailedException(email));
     }
 }
