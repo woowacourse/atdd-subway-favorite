@@ -27,7 +27,6 @@ public class AuthorizationExtractor {
                 return authHeaderValue;
             }
         }
-
         return Strings.EMPTY;
     }
 }
