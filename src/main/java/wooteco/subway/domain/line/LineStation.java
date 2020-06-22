@@ -10,13 +10,10 @@ public class LineStation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne
-	@JoinColumn
 	private Line line;
-	@OneToOne
-	@JoinColumn
+	@ManyToOne
 	private Station preStation;
-	@OneToOne
-	@JoinColumn
+	@ManyToOne
 	private Station station;
 	private int distance;
 	private int duration;

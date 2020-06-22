@@ -14,12 +14,11 @@ public class Favorite {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne
+	@ManyToOne
 	private Station sourceStation;
-	@OneToOne
+	@ManyToOne
 	private Station targetStation;
 	@ManyToOne
-	@JoinColumn
 	private Member member;
 
 	protected Favorite() {
