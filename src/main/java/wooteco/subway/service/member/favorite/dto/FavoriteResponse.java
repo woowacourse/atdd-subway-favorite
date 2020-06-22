@@ -14,7 +14,8 @@ public class FavoriteResponse {
     }
 
     public static FavoriteResponse of(Long memberId, Favorite favorite) {
-        return new FavoriteResponse(memberId, favorite.getSourceId(), favorite.getTargetId());
+        return new FavoriteResponse(memberId, favorite.getSource().getId(),
+                favorite.getTarget().getId());
     }
 
     public Long getMemberId() {

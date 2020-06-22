@@ -1,5 +1,7 @@
 package wooteco.subway.domain.member;
 
+import wooteco.subway.domain.station.Station;
+
 public class FavoriteDetail {
     private final Long memberId;
     private final Long sourceId;
@@ -7,7 +9,8 @@ public class FavoriteDetail {
     private final String sourceName;
     private final String targetName;
 
-    public FavoriteDetail(Long memberId, Long sourceId, Long targetId, String sourceName, String targetName) {
+    public FavoriteDetail(Long memberId, Long sourceId, Long targetId, String sourceName,
+            String targetName) {
         this.memberId = memberId;
         this.sourceId = sourceId;
         this.targetId = targetId;
@@ -15,8 +18,13 @@ public class FavoriteDetail {
         this.targetName = targetName;
     }
 
-    public static FavoriteDetail of(Long memberId, Favorite favorite, String sourceName, String targetName) {
-        return new FavoriteDetail(memberId, favorite.getSourceId(), favorite.getTargetId(), sourceName, targetName);
+    public static FavoriteDetail of(Favorite favorite) {
+        Member member = favorite.getMember();
+        Station source = favorite.getSource();
+        Station target = favorite.getTarget();
+
+        return new FavoriteDetail(member.getId(), source.getId(), target.getId(), source.getName(),
+                target.getName());
     }
 
     public Long getMemberId() {

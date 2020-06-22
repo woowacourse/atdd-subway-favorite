@@ -1,12 +1,12 @@
 package wooteco.subway.domain.member;
 
-import wooteco.subway.exception.notexist.NoFavoriteExistException;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import wooteco.subway.exception.notexist.NoFavoriteExistException;
 
 public class Favorites {
     private Set<Favorite> favorites;
@@ -31,15 +31,16 @@ public class Favorites {
 
     public Set<Long> extractStationIds() {
         return favorites.stream()
-                .map(favorite -> Arrays.asList(favorite.getSourceId(), favorite.getTargetId()))
+                .map(favorite -> Arrays.asList(favorite.getSource().getId(),
+                        favorite.getTarget().getId()))
                 .flatMap(List::stream)
                 .collect(Collectors.toSet());
     }
 
-    public boolean hasFavoriteOf(long sourceId, long targetId) {
-        return favorites.stream()
-                .anyMatch(favorite -> favorite.hasSourceId(sourceId) && favorite.hasTargetId(targetId));
-    }
+    // public boolean hasFavoriteOf(long sourceId, long targetId) {
+    //     return favorites.stream()
+    //             .anyMatch(favorite -> favorite.hasSourceId(sourceId) && favorite.hasTargetId(targetId));
+    // }
 
     public Set<Favorite> getFavorites() {
         return favorites;
