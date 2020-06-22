@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -18,6 +21,12 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
+    @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
+    private List<LineStation> lineStations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "preStation", cascade = CascadeType.ALL)
+    private List<LineStation> preLineStations = new ArrayList<>();
+
     public Station(final String name) {
         this.name = name;
     }
@@ -25,5 +34,27 @@ public class Station extends BaseEntity {
     public Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Station station = (Station) o;
+        return Objects.equals(getId(), station.getId()) &&
+                Objects.equals(getName(), station.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName());
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

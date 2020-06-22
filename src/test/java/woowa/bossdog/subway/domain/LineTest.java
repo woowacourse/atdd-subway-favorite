@@ -33,21 +33,21 @@ class LineTest {
     void getStationIds() {
         // given
         Line line = new Line("2호선", LocalTime.of(5,30), LocalTime.of(23,30), 10);
-        final LineStation lineStation1 = new LineStation(null, 1L, 10, 10);
-        final LineStation lineStation2 = new LineStation(3L, 6L, 10, 10);
-        final LineStation lineStation3 = new LineStation(1L, 3L, 10, 10);
+        final LineStation lineStation1 = new LineStation(line, new Station(null), new Station(1L, "강남역"), 10, 10);
+        final LineStation lineStation2 = new LineStation(line, new Station(3L, "역삼역"), new Station(6L, "잠실역"), 10, 10);
+        final LineStation lineStation3 = new LineStation(line, new Station(1L, "강남역"), new Station(3L, "역삼역"), 10, 10);
 
         line.getLineStations().add(lineStation1);
         line.getLineStations().add(lineStation2);
         line.getLineStations().add(lineStation3);
 
         // when
-        final List<Long> stationIds = line.getStationIds();
+        final List<Station> stations = line.getStations();
 
         // then
-        assertThat(stationIds.get(0)).isEqualTo(1L);
-        assertThat(stationIds.get(1)).isEqualTo(3L);
-        assertThat(stationIds.get(2)).isEqualTo(6L);
+        assertThat(stations.get(0).getId()).isEqualTo(1L);
+        assertThat(stations.get(1).getId()).isEqualTo(3L);
+        assertThat(stations.get(2).getId()).isEqualTo(6L);
     }
 
 }

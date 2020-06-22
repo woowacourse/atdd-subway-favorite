@@ -71,13 +71,13 @@ public class PathService {
 
         List<LineStation> lineStations = lines.stream()
                 .flatMap(it -> it.getLineStations().stream())
-                .filter(it -> Objects.nonNull(it.getPreStationId()))
+                .filter(it -> Objects.nonNull(it.getPreStation()))
                 .collect(Collectors.toList());
 
         IntStream.range(0, path.size() - 1)
                 .forEach(i -> {
                     lineStations.stream()
-                            .filter(ls -> Objects.equals(ls.getPreStationId(), path.get(i)) && Objects.equals(ls.getStationId(), path.get(i + 1)))
+                            .filter(ls -> Objects.equals(ls.getPreStation().getId(), path.get(i)) && Objects.equals(ls.getStation().getId(), path.get(i + 1)))
                             .findFirst()
                             .ifPresent(pathLineStations::add);
                 });

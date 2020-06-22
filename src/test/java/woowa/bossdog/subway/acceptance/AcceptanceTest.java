@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
@@ -90,7 +91,7 @@ public class AcceptanceTest {
 
     void addLineStation(final Long lineId, final Long preStationId, final Long stationId, final int distance, final int duration) {
         final Map<String, String> params = new HashMap<>();
-        params.put("preStationId", String.valueOf(preStationId));
+        params.put("preStationId", Objects.isNull(preStationId) ? null : String.valueOf(preStationId));
         params.put("stationId", String.valueOf(stationId));
         params.put("distance", String.valueOf(distance));
         params.put("duration", String.valueOf(duration));

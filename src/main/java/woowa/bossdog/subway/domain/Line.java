@@ -9,8 +9,6 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
 
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,8 +23,7 @@ public class Line extends BaseEntity {
     private LocalTime endTime;
     private int intervalTime;
 
-    @ElementCollection(fetch = LAZY)
-    @CollectionTable(name = "line_station", joinColumns = @JoinColumn(name = "line_id"))
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LineStation> lineStations = new ArrayList<>();
 
     public Line(final String name, final LocalTime startTime, final LocalTime endTime, final int intervalTime) {
@@ -48,27 +45,27 @@ public class Line extends BaseEntity {
         this.intervalTime = request.getIntervalTime();
     }
 
-    public List<Long> getStationIds() {
-        final List<Long> stationIds = new ArrayList<>();
-        Long stationId = null;
+    public List<Station> getStations() {
+        final List<Station> stations = new ArrayList<>();
+        Station station = null;
         if (lineStations.size() > 0) {
             LineStation start = lineStations.stream()
                     .filter(LineStation::isStart)
                     .findFirst()
                     .orElseThrow(NoSuchElementException::new);
-            stationId = start.getStationId();
+            station = start.getStation();
         }
 
         for (int i = 0; i < lineStations.size(); i++) {
-            stationIds.add(stationId);
-            final Long finalStationId = stationId;
+            stations.add(station);
+            final Station finalStation = station;
             Optional<LineStation> next = lineStations.stream()
-                    .filter(ls -> Objects.equals(finalStationId, ls.getPreStationId()))
+                    .filter(ls -> Objects.equals(finalStation, ls.getPreStation()))
                     .findFirst();
             if (next.isPresent()) {
-                stationId = next.get().getStationId();
+                station = next.get().getStation();
             }
         }
-        return stationIds;
+        return stations;
     }
 }
