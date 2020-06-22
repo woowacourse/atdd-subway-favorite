@@ -18,12 +18,12 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping("/join")
     public ResponseEntity createMember(@RequestBody MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
-                .created(URI.create("/members/" + member.getId()))
-                .build();
+            .created(URI.create("/members/" + member.getId()))
+            .build();
     }
 
     @GetMapping("/members")
@@ -32,9 +32,12 @@ public class MemberController {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    @PutMapping("/members")
+    public ResponseEntity<MemberResponse> updateMember(@RequestBody UpdateMemberRequest param, @LoginMember Member member) {
+        if (member.isNotMe(param.getEmail(), param.getPassword())) {
+            throw new IllegalArgumentException(Member.NOT_ME_MESSAGE);
+        }
+        memberService.updateMember(member, param);
         return ResponseEntity.ok().build();
     }
 

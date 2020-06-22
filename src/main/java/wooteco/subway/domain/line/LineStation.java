@@ -31,13 +31,13 @@ public class LineStation {
         return duration;
     }
 
-    public void updatePreLineStation(Long preStationId) {
-        this.preStationId = preStationId;
+    public boolean isLineStationOf(Long preStationId, Long stationId) {
+        return this.preStationId.equals(preStationId) && this.stationId.equals(stationId)
+                || this.preStationId.equals(stationId) && this.stationId.equals(preStationId);
     }
 
-    public boolean isLineStationOf(Long preStationId, Long stationId) {
-        return this.preStationId == preStationId && this.stationId == stationId
-                || this.preStationId == stationId && this.stationId == preStationId;
+    void updatePreLineStation(Long preStationId) {
+        this.preStationId = preStationId;
     }
 
     @Override

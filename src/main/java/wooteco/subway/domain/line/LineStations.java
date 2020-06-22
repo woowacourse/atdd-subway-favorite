@@ -5,11 +5,11 @@ import java.util.*;
 public class LineStations {
     private Set<LineStation> stations;
 
-    public LineStations(Set<LineStation> stations) {
+    private LineStations(Set<LineStation> stations) {
         this.stations = stations;
     }
 
-    public static LineStations empty() {
+    static LineStations empty() {
         return new LineStations(new HashSet<>());
     }
 
@@ -22,20 +22,20 @@ public class LineStations {
         stations.add(targetLineStation);
     }
 
-    private void remove(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
-        stations.remove(targetLineStation);
-    }
-
-    public void removeById(Long targetStationId) {
+    void removeById(Long targetStationId) {
         extractByStationId(targetStationId)
                 .ifPresent(this::remove);
     }
 
-    public List<Long> getStationIds() {
+    List<Long> getStationIds() {
         List<Long> result = new ArrayList<>();
         extractNext(null, result);
         return result;
+    }
+
+    private void remove(LineStation targetLineStation) {
+        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
+        stations.remove(targetLineStation);
     }
 
     private void extractNext(Long preStationId, List<Long> ids) {
@@ -64,13 +64,5 @@ public class LineStations {
         return stations.stream()
                 .filter(it -> Objects.equals(it.getPreStationId(), preStationId))
                 .findFirst();
-    }
-
-    public int getTotalDistance() {
-        return stations.stream().mapToInt(it -> it.getDistance()).sum();
-    }
-
-    public int getTotalDuration() {
-        return stations.stream().mapToInt(it -> it.getDuration()).sum();
     }
 }

@@ -58,18 +58,33 @@ export const searchResultTemplate = result => {
     </div>`
 }
 
-export const pathStationTemplate = (name, index, lastIndex) => {
-  return `
-  ${
-    index === 0 || index === lastIndex
-      ? `${index === lastIndex ? `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>` : ``}
-        <span class="font-bold">${name}</span>`
-      : `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
-         <span class="text-gray-600">${name}</span>
-        `
-  }`
+  export const pathStationTemplate = (name, index, lastIndex) => {
+  if (index === 0) {
+    return `<span id=\"start-station\" class=\"font-bold\">${name}</span>`
+  }
+  if (index === lastIndex) {
+    return `<span class="mdi mdi-arrow-right-bold text-gray-500"></span><span id=\"end-station\" class="font-bold">${name}</span>`
+  }
+  return `<span class="mdi mdi-arrow-right-bold text-gray-500"></span>
+         <span class="text-gray-600">${name}</span>`
 }
 
 export const initNavigation = () => {
   document.querySelector('body').insertAdjacentHTML('afterBegin', navTemplate)
 }
+
+export const edgeItemTemplate = edge => {
+  return `<li class="edge-item w-full border border-gray-300 py-2 px-3 text-left text-gray-700">
+            <span class="mdi mdi-subway-variant mr-2"></span>
+            <span>
+              ${edge.startStationName}
+            </span>
+            <span class="mdi mdi-arrow-right text-gray-500"></span>
+            <span>
+              ${edge.endStationName}
+            </span>
+            <button class="hover:bg-gray-300 hover:text-gray-500 text-gray-300 px-1 rounded-full float-right">
+              <span class="mdi mdi-delete"></span>
+            </button>
+          </li>`;
+};

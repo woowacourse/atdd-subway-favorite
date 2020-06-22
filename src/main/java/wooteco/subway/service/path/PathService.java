@@ -1,14 +1,15 @@
 package wooteco.subway.service.path;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class PathService {
         this.graphService = graphService;
     }
 
+    @Transactional
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
             throw new RuntimeException();
@@ -45,8 +47,8 @@ public class PathService {
                 .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
-        int duration = paths.stream().mapToInt(it -> it.getDuration()).sum();
-        int distance = paths.stream().mapToInt(it -> it.getDistance()).sum();
+        int duration = paths.stream().mapToInt(LineStation::getDuration).sum();
+        int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
 
         List<Station> pathStation = path.stream()
                 .map(it -> extractStation(it, stations))

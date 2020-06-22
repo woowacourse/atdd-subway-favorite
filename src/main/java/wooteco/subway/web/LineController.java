@@ -2,13 +2,9 @@ package wooteco.subway.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.service.line.LineService;
-import wooteco.subway.service.line.dto.LineDetailResponse;
-import wooteco.subway.service.line.dto.LineRequest;
-import wooteco.subway.service.line.dto.LineResponse;
-import wooteco.subway.service.line.dto.LineStationCreateRequest;
-import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.service.line.LineService;
+import wooteco.subway.service.line.dto.*;
 
 import java.net.URI;
 import java.util.List;
@@ -25,9 +21,11 @@ public class LineController {
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest view) {
         Line persistLine = lineService.save(view.toLine());
 
+        LineResponse lineResponse = LineResponse.of(persistLine);
+
         return ResponseEntity
                 .created(URI.create("/lines/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine));
+                .body(lineResponse);
     }
 
     @GetMapping("/lines")
@@ -67,6 +65,9 @@ public class LineController {
     @GetMapping("/lines/detail")
     public ResponseEntity wholeLines() {
         WholeSubwayResponse result = lineService.findLinesWithStations();
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok()
+            .eTag(
+                result.toString()
+            ).body(result);
     }
 }

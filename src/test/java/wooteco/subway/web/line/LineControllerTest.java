@@ -1,15 +1,16 @@
 package wooteco.subway.web.line;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import wooteco.subway.config.ETagHeaderFilter;
-import wooteco.subway.web.LineController;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.line.LineService;
@@ -25,14 +26,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = LineController.class)
+
+@SpringBootTest
 @Import(ETagHeaderFilter.class)
 public class LineControllerTest {
     @MockBean
     private LineService lineService;
 
-    @Autowired
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    private void setUp(
+        WebApplicationContext webApplicationContext) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .build();
+    }
 
     @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
     @Test
