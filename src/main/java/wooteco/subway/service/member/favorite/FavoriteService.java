@@ -14,6 +14,10 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.exception.DuplicatedFavoriteException;
+import wooteco.subway.exception.notexist.NoFavoriteExistException;
+import wooteco.subway.exception.notexist.NoMemberExistException;
+import wooteco.subway.exception.notexist.NoStationExistsException;
 
 @Service
 public class FavoriteService {
@@ -29,60 +33,58 @@ public class FavoriteService {
     }
 
     public Favorite addFavorite(long memberId, long sourceId, long targetId) {
+        Member member = validateMemberId(memberId);
+        Station source = validateStationId(sourceId);
+        Station target = validateStationId(targetId);
+
+        validateNoDuplication(memberId, sourceId, targetId);
+
+        return favoriteRepository.save(new Favorite(member, source, target));
+    }
+
+    private Member validateMemberId(long memberId) {
         Optional<Member> member = memberRepository.findById(memberId);
-        Optional<Station> source = stationRepository.findById(sourceId);
-        Optional<Station> target = stationRepository.findById(targetId);
 
-        if (!member.isPresent() || !source.isPresent() || !target.isPresent()) {
-            throw new IllegalArgumentException();
+        if (!member.isPresent()) {
+            throw new NoMemberExistException();
         }
+        return member.get();
+    }
 
-        Favorite favorite = new Favorite(member.get(), source.get(), target.get());
-        favoriteRepository.save(favorite);
-        return favorite;
+    private Station validateStationId(long stationId) {
+        Optional<Station> station = stationRepository.findById(stationId);
 
-        // Member member = memberRepository.findById(memberId)
-        //         .orElseThrow(NoMemberExistException::new);
-        // member.validateDuplicatedFavorite(sourceId, targetId);
-        // Favorite favorite = Favorite.of(sourceId, targetId);
-        // member.addFavorite(favorite);
-        // memberRepository.save(member);
-        //
-        // return favorite;
+        if (!station.isPresent()) {
+            throw new NoStationExistsException();
+        }
+        return station.get();
+    }
+
+    private void validateNoDuplication(long memberId, long sourceId, long targetId) {
+        Optional<Favorite> favorite = favoriteRepository.findByMemberIdAndSourceIdAndTargetId(
+                memberId, sourceId, targetId);
+
+        if (favorite.isPresent()) {
+            throw new DuplicatedFavoriteException();
+        }
     }
 
     public List<FavoriteDetail> readFavorites(long memberId) {
+        validateMemberId(memberId);
+
         return favoriteRepository.findAllByMemberId(memberId)
                 .stream()
                 .map(FavoriteDetail::of)
                 .collect(toList());
-
-        // Member member = memberRepository.findById(memberId)
-        //         .orElseThrow(NoMemberExistException::new);
-        //
-        // Favorites favorites = member.getFavorites();
-        // Set<Long> ids = favorites.extractStationIds();
-        // Stations stations = new Stations(stationRepository.findAllById(ids));
-        //
-        // return favorites.getFavorites().stream()
-        //         .map(favorite -> FavoriteDetail.of(
-        //                 memberId,
-        //                 favorite,
-        //                 stations.extractStationById(favorite.getSourceId()).getName(),
-        //                 stations.extractStationById(favorite.getTargetId()).getName()))
-        //         .collect(Collectors.toList());
     }
 
     public void removeFavorite(long memberId, long sourceId, long targetId) {
         Optional<Favorite> favorite = favoriteRepository.findByMemberIdAndSourceIdAndTargetId(
                 memberId, sourceId, targetId);
 
-        favorite.ifPresent(value -> favoriteRepository.delete(value));
-
-        // Member member = memberRepository.findById(memberId)
-        //         .orElseThrow(NoMemberExistException::new);
-        //
-        // member.removeFavorite(Favorite.of(sourceId, targetId));
-        // memberRepository.save(member);
+        if (!favorite.isPresent()) {
+            throw new NoFavoriteExistException();
+        }
+        favoriteRepository.delete(favorite.get());
     }
 }
