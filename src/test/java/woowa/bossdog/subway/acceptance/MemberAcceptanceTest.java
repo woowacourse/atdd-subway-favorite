@@ -2,8 +2,8 @@ package woowa.bossdog.subway.acceptance;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import woowa.bossdog.subway.service.Member.dto.MemberResponse;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.dto.MemberResponse;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.List;
 

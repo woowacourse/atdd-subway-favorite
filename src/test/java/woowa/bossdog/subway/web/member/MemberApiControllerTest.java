@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import woowa.bossdog.subway.domain.Member;
-import woowa.bossdog.subway.service.Member.MemberService;
-import woowa.bossdog.subway.service.Member.dto.MemberResponse;
+import woowa.bossdog.subway.service.member.MemberService;
+import woowa.bossdog.subway.service.member.dto.MemberResponse;
 
 import java.util.List;
 

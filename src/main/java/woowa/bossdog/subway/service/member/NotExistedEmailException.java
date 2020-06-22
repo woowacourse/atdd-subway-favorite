@@ -1,4 +1,4 @@
-package woowa.bossdog.subway.service.Member;
+package woowa.bossdog.subway.service.member;
 
 import woowa.bossdog.subway.web.advice.exception.ResourcesNotFoundException;
 

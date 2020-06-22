@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import woowa.bossdog.subway.service.Member.dto.MemberResponse;
-import woowa.bossdog.subway.service.Member.dto.TokenResponse;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.dto.MemberResponse;
+import woowa.bossdog.subway.service.member.dto.TokenResponse;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.List;
 

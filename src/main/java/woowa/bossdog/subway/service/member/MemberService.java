@@ -1,4 +1,4 @@
-package woowa.bossdog.subway.service.Member;
+package woowa.bossdog.subway.service.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import woowa.bossdog.subway.domain.Member;
 import woowa.bossdog.subway.infra.JwtTokenProvider;
 import woowa.bossdog.subway.repository.MemberRepository;
-import woowa.bossdog.subway.service.Member.dto.LoginRequest;
-import woowa.bossdog.subway.service.Member.dto.MemberRequest;
-import woowa.bossdog.subway.service.Member.dto.MemberResponse;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.dto.LoginRequest;
+import woowa.bossdog.subway.service.member.dto.MemberRequest;
+import woowa.bossdog.subway.service.member.dto.MemberResponse;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import java.util.List;
 import java.util.NoSuchElementException;

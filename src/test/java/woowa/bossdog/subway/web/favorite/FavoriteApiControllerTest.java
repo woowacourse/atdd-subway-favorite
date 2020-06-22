@@ -17,7 +17,7 @@ import woowa.bossdog.subway.domain.Favorite;
 import woowa.bossdog.subway.domain.Member;
 import woowa.bossdog.subway.domain.Station;
 import woowa.bossdog.subway.infra.JwtTokenProvider;
-import woowa.bossdog.subway.service.Member.MemberService;
+import woowa.bossdog.subway.service.member.MemberService;
 import woowa.bossdog.subway.service.favorite.FavoriteService;
 import woowa.bossdog.subway.service.favorite.dto.FavoriteResponse;
 

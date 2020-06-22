@@ -1,4 +1,4 @@
-package woowa.bossdog.subway.service.Member.dto;
+package woowa.bossdog.subway.service.member.dto;
 
 import lombok.AccessLevel;
 import lombok.Data;

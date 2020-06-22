@@ -14,10 +14,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import woowa.bossdog.subway.domain.Member;
 import woowa.bossdog.subway.infra.JwtTokenProvider;
-import woowa.bossdog.subway.service.Member.MemberService;
-import woowa.bossdog.subway.service.Member.NotExistedEmailException;
-import woowa.bossdog.subway.service.Member.WrongPasswordException;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.MemberService;
+import woowa.bossdog.subway.service.member.NotExistedEmailException;
+import woowa.bossdog.subway.service.member.WrongPasswordException;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;

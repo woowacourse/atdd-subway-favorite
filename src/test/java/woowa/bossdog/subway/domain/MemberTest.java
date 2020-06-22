@@ -2,7 +2,7 @@ package woowa.bossdog.subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

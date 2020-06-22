@@ -3,7 +3,7 @@ package woowa.bossdog.subway.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import javax.persistence.*;
 import java.util.List;

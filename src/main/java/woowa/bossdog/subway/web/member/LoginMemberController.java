@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import woowa.bossdog.subway.domain.Member;
-import woowa.bossdog.subway.service.Member.MemberService;
-import woowa.bossdog.subway.service.Member.dto.LoginRequest;
-import woowa.bossdog.subway.service.Member.dto.MemberResponse;
-import woowa.bossdog.subway.service.Member.dto.TokenResponse;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.MemberService;
+import woowa.bossdog.subway.service.member.dto.LoginRequest;
+import woowa.bossdog.subway.service.member.dto.MemberResponse;
+import woowa.bossdog.subway.service.member.dto.TokenResponse;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

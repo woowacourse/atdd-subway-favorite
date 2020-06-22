@@ -3,10 +3,10 @@ package woowa.bossdog.subway.web.member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import woowa.bossdog.subway.service.Member.MemberService;
-import woowa.bossdog.subway.service.Member.dto.MemberRequest;
-import woowa.bossdog.subway.service.Member.dto.MemberResponse;
-import woowa.bossdog.subway.service.Member.dto.UpdateMemberRequest;
+import woowa.bossdog.subway.service.member.MemberService;
+import woowa.bossdog.subway.service.member.dto.MemberRequest;
+import woowa.bossdog.subway.service.member.dto.MemberResponse;
+import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
 
 import java.net.URI;
 import java.util.List;
