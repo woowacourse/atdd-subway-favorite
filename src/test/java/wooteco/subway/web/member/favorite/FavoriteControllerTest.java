@@ -1,27 +1,27 @@
 package wooteco.subway.web.member.favorite;
 
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.RestDocumentationExtension;
+
 import wooteco.subway.doc.FavoriteDocumentation;
 import wooteco.subway.domain.member.Favorite;
 import wooteco.subway.domain.member.FavoriteDetail;
 import wooteco.subway.domain.member.Member;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.favorite.FavoriteService;
 import wooteco.subway.web.member.MockMvcTest;
 import wooteco.subway.web.member.info.AuthInfo;
 import wooteco.subway.web.member.info.UriInfo;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
 public class FavoriteControllerTest extends MockMvcTest {
@@ -36,7 +36,8 @@ public class FavoriteControllerTest extends MockMvcTest {
     @Test
     void addFavorite() throws Exception {
         Member member = new Member(1L, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        Favorite favorite = Favorite.of(1L, 2L);
+        Favorite favorite = new Favorite(member, new Station(1L, "템프1"), new Station(2L, "템프2"));
+        // Favorite favorite = Favorite.of(1L, 2L);
 
         when(favoriteService.addFavorite(anyLong(), anyLong(), anyLong())).thenReturn(favorite);
         when(memberService.findMemberByEmail(anyString())).thenReturn(member);

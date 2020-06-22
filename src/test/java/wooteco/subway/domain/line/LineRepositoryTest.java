@@ -1,30 +1,60 @@
 package wooteco.subway.domain.line;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJdbcTest
+import wooteco.subway.domain.station.StationRepository;
+
+@DataJpaTest
 public class LineRepositoryTest {
     @Autowired
-    private LineRepository lineRepository;
+    private StationRepository stations;
+
+    @Autowired
+    private LineRepository lines;
+
+    private Line initialLine;
+
+    @BeforeEach
+    void setUp() {
+        initialLine = lines.save(new Line("3호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 10));
+        initialLine.addLineStation(new LineStation(null, 1L, 10, 10));
+        initialLine.addLineStation(new LineStation(1L, 2L, 10, 10));
+    }
+
+    @Test
+    void 뭐지() {
+        Line line = lines.findById(initialLine.getId()).get();
+
+        assertThat(line).isEqualTo(initialLine);
+        assertThat(line.getStations().getStations()).hasSize(2);
+    }
+
+    @Test
+    void find() {
+        Line line = lines.findById(initialLine.getId()).get();
+
+        // for 쿼리 확인
+        lines.flush();
+
+        assertThat(line.getName()).isEqualTo("3호선");
+        assertThat(line.getStations().getStations()).hasSize(2);
+    }
 
     @Test
     void addLineStation() {
-        // given
-        Line line = new Line("2호선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
-        Line persistLine = lineRepository.save(line);
-        persistLine.addLineStation(new LineStation(null, 1L, 10, 10));
-        persistLine.addLineStation(new LineStation(1L, 2L, 10, 10));
+        initialLine.addLineStation(new LineStation(2L, 3L, 10, 10));
+        initialLine.addLineStation(new LineStation(3L, 4L, 10, 10));
 
-        // when
-        Line resultLine = lineRepository.save(persistLine);
+        // for 쿼리 확인
+        lines.flush();
 
-        // then
-        assertThat(resultLine.getStations()).hasSize(2);
+        assertThat(initialLine.getStations().getStations()).hasSize(4);
     }
 }
