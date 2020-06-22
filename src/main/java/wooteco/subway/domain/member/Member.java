@@ -53,12 +53,6 @@ public class Member {
         }
     }
 
-    // public void validateDuplicatedFavorite(long sourceId, long targetId) {
-    //     if (favorites.hasFavoriteOf(sourceId, targetId)) {
-    //         throw new DuplicatedFavoriteException();
-    //     }
-    // }
-
     public Long getId() {
         return id;
     }
