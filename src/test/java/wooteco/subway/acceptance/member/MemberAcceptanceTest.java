@@ -1,19 +1,23 @@
 package wooteco.subway.acceptance.member;
 
-import io.restassured.response.Response;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.stream.Stream;
+
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+
+import io.restassured.response.Response;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.acceptance.Authentication;
 import wooteco.subway.service.member.dto.MemberResponse;
 
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class MemberAcceptanceTest extends AcceptanceTest {
 
+    @Transactional
     @DisplayName("회원 관리 기능")
     @TestFactory
     Stream<DynamicTest> manageMember() {

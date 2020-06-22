@@ -1,6 +1,9 @@
 package wooteco.subway.service.member;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.exception.DuplicatedEmailException;
@@ -28,10 +31,10 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(NoMemberExistException::new);
         member.update(param.getName(), param.getPassword());
-        memberRepository.save(member);
     }
 
     public void deleteMember(Long id) {

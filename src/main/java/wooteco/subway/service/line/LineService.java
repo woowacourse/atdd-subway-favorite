@@ -2,6 +2,8 @@ package wooteco.subway.service.line;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.domain.line.Line;
@@ -35,34 +37,30 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(NoLineExistException::new);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest request) {
         Line persistLine = lineRepository.findById(id).orElseThrow(NoLineExistException::new);
         persistLine.update(request.toLine());
-        lineRepository.save(persistLine);
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long id, LineStationCreateRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(NoLineExistException::new);
         LineStation lineStation = new LineStation(request.getPreStationId(), request.getStationId(),
                 request.getDistance(), request.getDuration());
         line.addLineStation(lineStation);
-
-        System.out.println("====x===");
-        System.out.println(line);
-        line.getStations().getStations().forEach(x -> System.out.println(x));
-        System.out.println("===x====");
-
-        // lineRepository.save(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(NoLineExistException::new);
+
         line.removeLineStationById(stationId);
-        lineRepository.save(line);
     }
 
     public LineDetailResponse retrieveLine(Long id) {
