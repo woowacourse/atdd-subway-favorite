@@ -27,23 +27,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler(NotExistFavoriteDataException.class)
+    @ExceptionHandler(NotExistException.class)
     public ResponseEntity<ErrorResponse> NotExistFavoriteDataException(NotExistFavoriteDataException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
-    @ExceptionHandler(NotExistMemberDataException.class)
-    public ResponseEntity<ErrorResponse> NotExistMemberDataException(NotExistMemberDataException e) {
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
-    }
-
-    @ExceptionHandler(NotExistStationDataException.class)
-    public ResponseEntity<ErrorResponse> NotExistStationDataException(NotExistStationDataException e) {
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-    }
-
     @ExceptionHandler(NotMatchedEmailIExistInJwtException.class)
     public ResponseEntity<ErrorResponse> NotMatchedEmailIExistInJwtException(NotMatchedEmailIExistInJwtException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
@@ -56,9 +44,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> remainingException(Exception e) {
-//        ErrorResponse errorResponse = new ErrorResponse(e.getMessage() + "UnHandleException");
-//        return ResponseEntity.badRequest().body(errorResponse);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> remainingException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage() + "UnHandleException");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
 }
