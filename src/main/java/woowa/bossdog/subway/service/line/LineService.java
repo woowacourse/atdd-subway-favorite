@@ -60,11 +60,12 @@ public class LineService {
         final Line line = lineRepository.findById(lineId).orElseThrow(NoSuchElementException::new);
         final Station requestPreStation = Objects.isNull(request.getPreStationId()) ? null
                 : stationRepository.findById(request.getPreStationId()).orElse(null);
-        final Station requestStation = stationRepository.findById(request.getStationId()).orElseThrow(NotExistedStationException::new);
+        final Station requestStation = stationRepository.findById(request.getStationId())
+                .orElseThrow(NotExistedStationException::new);
 
         if (request.getPreStationId() == null | line.getStations().contains(requestPreStation)) {
             line.getLineStations().stream()
-                    .filter(ls -> Objects.equals(ls.getPreStation(), requestStation))
+                    .filter(ls -> Objects.equals(ls.getPreStation(), requestPreStation))
                     .findFirst()
                     .ifPresent(ls -> ls.updatePreStation(requestStation));
 
