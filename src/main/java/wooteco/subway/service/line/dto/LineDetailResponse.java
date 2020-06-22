@@ -1,8 +1,9 @@
 package wooteco.subway.service.line.dto;
 
-import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,7 +19,7 @@ public class LineDetailResponse {
     private LocalDateTime updatedAt;
     private List<StationResponse> stations;
 
-    public LineDetailResponse() {
+    private LineDetailResponse() {
     }
 
     public LineDetailResponse(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime, LocalDateTime createdAt, LocalDateTime updatedAt, List<Station> stations) {
@@ -29,7 +30,7 @@ public class LineDetailResponse {
         this.intervalTime = intervalTime;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.stations = StationResponse.listOf(stations);
+        this.stations = StationResponse.listOf(new Stations(stations));
     }
 
     public static LineDetailResponse of(Line line, List<Station> stations) {

@@ -3,6 +3,7 @@ package wooteco.subway.service.station;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @Sql("/truncate.sql")
 public class StationServiceTest {

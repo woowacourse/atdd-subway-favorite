@@ -1,7 +1,6 @@
-import { EVENT_TYPE } from '../../utils/constants.js'
+import {ERROR_MESSAGE, EVENT_TYPE, PATH_TYPE} from '../../utils/constants.js'
 import api from '../../api/index.js'
-import { searchResultTemplate } from '../../utils/templates.js'
-import { PATH_TYPE, ERROR_MESSAGE } from '../../utils/constants.js'
+import {searchResultTemplate} from '../../utils/templates.js'
 
 function Search() {
   const $departureStationName = document.querySelector('#departure-station-name')
@@ -42,29 +41,77 @@ function Search() {
       type: pathType
     }
     api.path
-      .find(searchInput)
-      .then(data => showSearchResult(data))
-      .catch(error => alert(ERROR_MESSAGE.COMMON))
+        .find(searchInput)
+        .then(data => showSearchResult(data))
+        .catch(error => alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR)))
+
+    api.favorite
+        .exists($departureStationName.value, $arrivalStationName.value)
+        .then(result => {
+          if (result.exists) {
+            turnOnStar()
+          } else {
+            turnOffStar()
+          }
+        })
+        .catch(error => {
+          turnOffStar()
+          $favoriteButton.removeEventListener(EVENT_TYPE.CLICK, onToggleFavorite);
+          $favoriteButton.addEventListener(EVENT_TYPE.CLICK, unauthorizedToggleFavorite);
+        })
+  }
+
+  const unauthorizedToggleFavorite = event => {
+    event.preventDefault()
+    if (confirm(ERROR_MESSAGE.LOGIN_NEEDED)) {
+      location.href = "/login"
+    }
   }
 
   const onToggleFavorite = event => {
     event.preventDefault()
     const isFavorite = $favoriteButton.classList.contains('mdi-star')
-    const classList = $favoriteButton.classList
-
-    if (isFavorite) {
-      classList.add('mdi-star-outline')
-      classList.add('text-gray-600')
-      classList.add('bg-yellow-500')
-      classList.remove('mdi-star')
-      classList.remove('text-yellow-500')
-    } else {
-      classList.remove('mdi-star-outline')
-      classList.remove('text-gray-600')
-      classList.remove('bg-yellow-500')
-      classList.add('mdi-star')
-      classList.add('text-yellow-500')
+    const favorite = {
+      sourceName: $departureStationName.value,
+      destinationName: $arrivalStationName.value
     }
+    if (isFavorite) {
+      api.favorite.delete(favorite)
+          .then(() => {
+            turnOffStar();
+          })
+          .catch(error => {
+            alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR));
+            location.href = "/login";
+          })
+    } else {
+      api.favorite.create(favorite)
+          .then(() => {
+            turnOnStar();
+          })
+          .catch(error => {
+            alert((ERROR_MESSAGE[error.message] || ERROR_MESSAGE.DEFAULT_ERROR));
+            location.href = "/login";
+          })
+    }
+  }
+
+  const turnOnStar = () => {
+    const classList = $favoriteButton.classList
+    classList.remove('mdi-star-outline')
+    classList.remove('text-gray-600')
+    classList.remove('bg-yellow-500')
+    classList.add('mdi-star')
+    classList.add('text-yellow-500')
+  }
+
+  const turnOffStar = () => {
+    const classList = $favoriteButton.classList
+    classList.add('mdi-star-outline')
+    classList.add('text-gray-600')
+    classList.add('bg-yellow-500')
+    classList.remove('mdi-star')
+    classList.remove('text-yellow-500')
   }
 
   const initEventListener = () => {

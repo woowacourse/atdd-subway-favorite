@@ -7,18 +7,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.domain.station.Stations;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.StationService;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,7 +35,7 @@ public class PathServiceTest {
     private static final String STATION_NAME6 = "서울역";
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
     @Mock
     private LineRepository lineRepository;
     @Mock
@@ -55,7 +55,7 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationRepository, lineRepository, graphService);
+        pathService = new PathService(stationService, lineRepository, graphService);
 
         station1 = new Station(1L, STATION_NAME1);
         station2 = new Station(2L, STATION_NAME2);
@@ -79,10 +79,10 @@ public class PathServiceTest {
     @Test
     void findPath() {
         when(lineRepository.findAll()).thenReturn(Lists.list(line1, line2));
-        when(stationRepository.findAllById(anyList())).thenReturn(Lists.list(station3, station2, station1, station4, station5));
-        when(stationRepository.findByName(STATION_NAME3)).thenReturn(Optional.of(station3));
-        when(stationRepository.findByName(STATION_NAME5)).thenReturn(Optional.of(station5));
-        when(graphService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
+        when(stationService.findStationsById(anyList())).thenReturn(new Stations(Lists.list(station3, station2, station1, station4, station5)));
+        when(stationService.findStationByName(STATION_NAME3)).thenReturn(station3);
+        when(stationService.findStationByName(STATION_NAME5)).thenReturn(station5);
+        when(graphService.findPath(any(), anyLong(), anyLong(), any())).thenReturn(Lists.list(3L, 2L, 1L, 4L, 5L));
 
         PathResponse pathResponse = pathService.findPath(STATION_NAME3, STATION_NAME5, PathType.DISTANCE);
 
