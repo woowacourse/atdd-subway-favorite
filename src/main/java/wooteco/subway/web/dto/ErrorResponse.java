@@ -1,9 +1,9 @@
 package wooteco.subway.web.dto;
 
 /**
- *    class description
+ * class description
  *
- *    @author HyungJu An, MinWoo Yim
+ * @author HyungJu An, MinWoo Yim
  */
 public class ErrorResponse {
 	private final String errorMessage;

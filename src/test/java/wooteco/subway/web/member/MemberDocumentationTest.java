@@ -7,7 +7,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
-
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.FavoriteService;
 import wooteco.subway.service.member.MemberService;

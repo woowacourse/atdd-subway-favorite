@@ -1,33 +1,42 @@
 package wooteco.subway.domain.station;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Station {
 	@Id
-	private final Long id;
-	private final String name;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Column(unique = true)
+	private String name;
 	@CreatedDate
-	private final LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 
-	Station(Long id, String name, LocalDateTime createdAt) {
+	protected Station() {
+	}
+
+	private Station(Long id, String name, LocalDateTime createdAt) {
 		this.id = id;
 		this.name = name;
 		this.createdAt = createdAt;
+	}
+
+	public static Station of(Long id, String name) {
+		return new Station(id, name, null);
 	}
 
 	public static Station of(String name) {
 		return new Station(null, name, null);
 	}
 
-	public Station withId(final Long id) {
-		return new Station(id, this.name, this.createdAt);
-	}
-
-	public Station withCreatedAt(final LocalDateTime createdAt) {
-		return new Station(this.id, this.name, createdAt);
+	public boolean isSameId(Long id) {
+		return Objects.equals(this.id, id);
 	}
 
 	public Long getId() {

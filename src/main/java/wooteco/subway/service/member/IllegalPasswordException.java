@@ -1,9 +1,9 @@
 package wooteco.subway.service.member;
 
 /**
- *    class description
+ * class description
  *
- *    @author HyungJu An
+ * @author HyungJu An
  */
 public class IllegalPasswordException extends MemberException {
 	public IllegalPasswordException(final String message) {

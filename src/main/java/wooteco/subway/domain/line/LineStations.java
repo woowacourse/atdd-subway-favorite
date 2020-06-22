@@ -1,78 +1,79 @@
 package wooteco.subway.domain.line;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import wooteco.subway.domain.station.Station;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+import java.util.*;
+
+@Embeddable
 public class LineStations {
-	private final Set<LineStation> stations;
+	@OneToMany(mappedBy = "line", cascade = CascadeType.PERSIST, orphanRemoval = true)
+	private Set<LineStation> stations = new LinkedHashSet<>();
 
-	LineStations(Set<LineStation> stations) {
+	protected LineStations() {
+	}
+
+	private LineStations(Set<LineStation> stations) {
 		this.stations = stations;
 	}
 
 	public static LineStations empty() {
-		return new LineStations(new HashSet<>());
-	}
-
-	public Set<LineStation> getStations() {
-		return stations;
+		return new LineStations();
 	}
 
 	public void add(LineStation targetLineStation) {
-		updatePreStationOfNextLineStation(targetLineStation.getPreStationId(), targetLineStation.getStationId());
+		updatePreStationOfNextLineStation(targetLineStation.getPreStation(), targetLineStation.getStation());
 		stations.add(targetLineStation);
 	}
 
 	private void remove(LineStation targetLineStation) {
-		updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
+		updatePreStationOfNextLineStation(targetLineStation.getStation(), targetLineStation.getPreStation());
 		stations.remove(targetLineStation);
 	}
 
 	public void removeById(Long targetStationId) {
 		extractByStationId(targetStationId)
-			.ifPresent(this::remove);
+				.ifPresent(this::remove);
 	}
 
-	public List<Long> getStationIds() {
-		List<Long> result = new ArrayList<>();
+	public List<Station> getSortedStations() {
+		List<Station> result = new ArrayList<>();
 		extractNext(null, result);
 		return result;
 	}
 
-	private void extractNext(Long preStationId, List<Long> ids) {
+	private void extractNext(Station preStation, List<Station> tempStations) {
 		stations.stream()
-			.filter(it -> Objects.equals(it.getPreStationId(), preStationId))
-			.findFirst()
-			.ifPresent(it -> {
-				Long nextStationId = it.getStationId();
-				ids.add(nextStationId);
-				extractNext(nextStationId, ids);
-			});
+				.filter(it -> Objects.equals(it.getPreStation(), preStation))
+				.findFirst()
+				.ifPresent(it -> {
+					Station station = it.getStation();
+					tempStations.add(station);
+					extractNext(station, tempStations);
+				});
 	}
 
-	private void updatePreStationOfNextLineStation(Long targetStationId, Long newPreStationId) {
-		extractByPreStationId(targetStationId)
-			.ifPresent(it -> {
-				final LineStation lineStation = it.updatePreLineStation(newPreStationId);
-				stations.remove(it);
-				stations.add(lineStation);
-			});
+	private void updatePreStationOfNextLineStation(Station targetStation, Station newPreStation) {
+		extractByPreStation(targetStation)
+				.ifPresent(it -> it.updatePreLineStation(newPreStation));
 	}
 
 	private Optional<LineStation> extractByStationId(Long stationId) {
 		return stations.stream()
-			.filter(it -> Objects.equals(it.getStationId(), stationId))
-			.findFirst();
+				.filter(it -> it.isSameStationId(stationId))
+				.findFirst();
 	}
 
-	private Optional<LineStation> extractByPreStationId(Long preStationId) {
+	private Optional<LineStation> extractByPreStation(Station preStation) {
 		return stations.stream()
-			.filter(it -> Objects.equals(it.getPreStationId(), preStationId))
-			.findFirst();
+				.filter(it -> Objects.equals(it.getPreStation(), preStation))
+				.findFirst();
+	}
+
+	public Set<LineStation> getStations() {
+		return stations;
 	}
 
 	public int getTotalDistance() {

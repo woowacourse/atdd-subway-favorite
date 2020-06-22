@@ -5,16 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import wooteco.subway.service.member.MemberException;
 import wooteco.subway.service.station.StationException;
 import wooteco.subway.web.dto.ErrorResponse;
 import wooteco.subway.web.member.InvalidAuthenticationException;
 
 /**
- *    예외처리를 담당하는 컨트롤러 클래스입니다.
+ * 예외처리를 담당하는 컨트롤러 클래스입니다.
  *
- *    @author HyungJu An, MinWoo Yim
+ * @author HyungJu An, MinWoo Yim
  */
 @ControllerAdvice
 public class ExceptionAdvice {
