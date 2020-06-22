@@ -86,7 +86,7 @@ class LoginMemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
     @DisplayName("비밀 번호 형식이 올바르지 않을경우 BAD_REQUEST를 반환한다.")
@@ -104,6 +104,6 @@ class LoginMemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 }

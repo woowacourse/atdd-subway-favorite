@@ -9,6 +9,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.service.member.MemberService;
 import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
 import wooteco.subway.web.member.exception.InvalidAuthenticationException;
+import wooteco.subway.web.member.exception.NotExistMemberDataException;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
@@ -31,7 +32,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
         String email = (String) webRequest.getAttribute("requestMemberEmail", SCOPE_REQUEST);
         try {
             return memberService.findMemberByEmail(email);
-        } catch (Exception e) {
+        } catch (NotExistMemberDataException e) {
             throw new InvalidAuthenticationException("해당 정보를 가진 유저가 존재하지 않습니다.");
         }
     }
