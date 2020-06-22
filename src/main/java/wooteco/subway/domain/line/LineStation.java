@@ -2,11 +2,17 @@ package wooteco.subway.domain.line;
 
 import java.util.Objects;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class LineStation {
     private Long preStationId;
     private Long stationId;
     private int distance;
     private int duration;
+
+    protected LineStation() {
+    }
 
     public LineStation(Long preStationId, Long stationId, int distance, int duration) {
         this.preStationId = preStationId;

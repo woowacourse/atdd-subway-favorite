@@ -1,9 +1,30 @@
 package wooteco.subway.domain.line;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+
+@Embeddable
 public class LineStations {
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "line_station",
+            joinColumns = @JoinColumn(name = "line_id")
+    )
     private Set<LineStation> stations;
+
+    public LineStations() {
+    }
 
     public LineStations(Set<LineStation> stations) {
         this.stations = stations;
