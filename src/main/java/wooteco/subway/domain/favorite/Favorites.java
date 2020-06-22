@@ -10,12 +10,6 @@ public class Favorites {
         this.favorites = favorites;
     }
 
-    public List<Long> extractIds() {
-        return favorites.stream()
-                .map(Favorite::getId)
-                .collect(Collectors.toList());
-    }
-
     public List<Long> extractSourceIds() {
         return favorites.stream()
                 .map(Favorite::getSourceId)
