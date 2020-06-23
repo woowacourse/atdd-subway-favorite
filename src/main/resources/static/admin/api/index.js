@@ -40,7 +40,7 @@ const api = (() => {
       return requestWithJsonData(`/stations`)
     },
     create(data) {
-      return requestWithJsonData(`/stations`, METHOD.POST(data))
+      return request(`/stations`, METHOD.POST(data))
     },
     update(data, id) {
       return requestWithJsonData(`/stations/${id}`, METHOD.PUT(data))
@@ -57,6 +57,9 @@ const api = (() => {
     getAll() {
       return requestWithJsonData(`/lines`)
     },
+    getDetail(id) {
+      return requestWithJsonData(`/lines/${id}/stations`)
+    },
     getAllDetail() {
       return requestWithJsonData(`/lines/detail`)
     },
@@ -64,7 +67,7 @@ const api = (() => {
       return request(`/lines/${lineId}/stations`, METHOD.POST(lineStationCreateRequestView))
     },
     create(data) {
-      return requestWithJsonData(`/lines`, METHOD.POST(data))
+      return request(`/lines`, METHOD.POST(data))
     },
     update(id, data) {
       return request(`/lines/${id}`, METHOD.PUT(data))
