@@ -29,14 +29,6 @@ public class LineRepositoryTest {
     }
 
     @Test
-    void 뭐지() {
-        Line line = lines.findById(initialLine.getId()).get();
-
-        assertThat(line).isEqualTo(initialLine);
-        assertThat(line.getStations().getStations()).hasSize(2);
-    }
-
-    @Test
     void find() {
         Line line = lines.findById(initialLine.getId()).get();
 

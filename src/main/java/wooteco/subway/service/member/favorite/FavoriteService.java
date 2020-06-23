@@ -61,7 +61,7 @@ public class FavoriteService {
     }
 
     private void validateNoDuplication(long memberId, long sourceId, long targetId) {
-        Optional<Favorite> favorite = favoriteRepository.findByMemberIdAndSourceIdAndTargetId(
+        Optional<Favorite> favorite = favoriteRepository.findByAllInfo(
                 memberId, sourceId, targetId);
 
         if (favorite.isPresent()) {
@@ -79,7 +79,7 @@ public class FavoriteService {
     }
 
     public void removeFavorite(long memberId, long sourceId, long targetId) {
-        Optional<Favorite> favorite = favoriteRepository.findByMemberIdAndSourceIdAndTargetId(
+        Optional<Favorite> favorite = favoriteRepository.findByAllInfo(
                 memberId, sourceId, targetId);
 
         if (!favorite.isPresent()) {

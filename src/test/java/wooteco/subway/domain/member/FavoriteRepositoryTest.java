@@ -71,8 +71,15 @@ public class FavoriteRepositoryTest {
 
     @Test
     void findByAllInfo() {
-        Favorite favorite = favorites.findByMemberIdAndSourceIdAndTargetId(1L, 1L, 2L).get();
+        Favorite favorite = favorites.findByAllInfo(1L, 1L, 2L).get();
 
         assertThat(favorite.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void findAll() {
+        List<Favorite> favoriteList = favorites.findAll();
+
+        assertThat(favoriteList).hasSize(5);
     }
 }
