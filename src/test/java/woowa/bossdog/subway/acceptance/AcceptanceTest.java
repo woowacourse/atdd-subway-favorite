@@ -7,13 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import woowa.bossdog.subway.service.line.dto.LineDetailResponse;
+import woowa.bossdog.subway.service.line.dto.LineResponse;
+import woowa.bossdog.subway.service.line.dto.UpdateLineRequest;
 import woowa.bossdog.subway.service.member.dto.LoginRequest;
 import woowa.bossdog.subway.service.member.dto.MemberResponse;
 import woowa.bossdog.subway.service.member.dto.TokenResponse;
 import woowa.bossdog.subway.service.member.dto.UpdateMemberRequest;
-import woowa.bossdog.subway.service.line.dto.LineDetailResponse;
-import woowa.bossdog.subway.service.line.dto.LineResponse;
-import woowa.bossdog.subway.service.line.dto.UpdateLineRequest;
 import woowa.bossdog.subway.service.station.dto.StationResponse;
 
 import javax.transaction.Transactional;
@@ -26,6 +27,7 @@ import java.util.Objects;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
+@Sql("/truncate.sql")
 public class AcceptanceTest {
 
     @LocalServerPort
