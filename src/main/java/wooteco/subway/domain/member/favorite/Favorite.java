@@ -2,22 +2,16 @@ package wooteco.subway.domain.member.favorite;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import wooteco.subway.domain.BaseEntity;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.station.Station;
 
 @Entity
-public class Favorite {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Favorite extends BaseEntity {
     @ManyToOne
     private Member member;
     @ManyToOne
@@ -70,20 +64,5 @@ public class Favorite {
     public void setMember(Member member) {
         member.addFavorite(this);
         this.member = member;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Favorite favorite = (Favorite)o;
-        return Objects.equals(id, favorite.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

@@ -146,4 +146,19 @@ public class LineServiceTest {
         assertThat(stationIds.get(0)).isEqualTo(1L);
         assertThat(stationIds.get(1)).isEqualTo(2L);
     }
+
+    @Test
+    void removeOtherLineHasLineStation() {
+        Line newLine = new Line(2L, "신분당선", LocalTime.of(05, 30), LocalTime.of(22, 30), 5);
+
+        when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
+        lineService.removeLineStation(1L, 3L);
+
+        when(lineRepository.findById(2L)).thenReturn(Optional.of(newLine));
+
+        assertThat(lineRepository.findById(2L)
+            .orElseThrow(AssertionError::new)
+            .getLineStations()
+            .getValues()).hasSize(0);
+    }
 }

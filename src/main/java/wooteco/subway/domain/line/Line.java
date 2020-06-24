@@ -1,31 +1,23 @@
 package wooteco.subway.domain.line;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.EntityListeners;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import wooteco.subway.domain.BaseEntity;
+
+@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Line {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Line extends BaseEntity {
     private String name;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
     @Embedded
     private LineStations lineStations = LineStations.empty();
 
@@ -66,10 +58,6 @@ public class Line {
         lineStations.removeById(stationId);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
@@ -88,14 +76,6 @@ public class Line {
 
     public LineStations getLineStations() {
         return lineStations;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public List<Long> getLineStationIds() {

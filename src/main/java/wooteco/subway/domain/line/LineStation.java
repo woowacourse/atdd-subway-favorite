@@ -1,20 +1,13 @@
 package wooteco.subway.domain.line;
 
-import java.util.Objects;
-
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import wooteco.subway.domain.BaseEntity;
 import wooteco.subway.domain.station.Station;
 
 @Entity
-public class LineStation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class LineStation extends BaseEntity {
 
     @ManyToOne
     private Line line;
@@ -83,20 +76,5 @@ public class LineStation {
     public void setLine(Line line) {
         line.addLineStation(this);
         this.line = line;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        LineStation that = (LineStation)o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

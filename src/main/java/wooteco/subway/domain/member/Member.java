@@ -1,25 +1,16 @@
 package wooteco.subway.domain.member;
 
-import java.util.Objects;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import wooteco.subway.domain.BaseEntity;
 import wooteco.subway.domain.member.favorite.Favorite;
 import wooteco.subway.domain.member.favorite.Favorites;
 
 @Entity
-public class Member {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Member extends BaseEntity {
     private String email;
     private String name;
     private String password;
@@ -91,20 +82,5 @@ public class Member {
 
     public Favorites getFavorites() {
         return favorites;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Member member = (Member)o;
-        return Objects.equals(id, member.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }
