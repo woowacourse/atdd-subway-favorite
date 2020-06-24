@@ -7,10 +7,13 @@ import wooteco.subway.service.member.MemberService;
 import wooteco.subway.service.member.dto.MemberRequest;
 import wooteco.subway.service.member.dto.MemberResponse;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
+import wooteco.subway.web.member.argumentresolver.annotation.LoginMember;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/auth/members")
 public class MemberController {
     private MemberService memberService;
 
@@ -18,29 +21,30 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest view) {
+    @PostMapping
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest view) {
         Member member = memberService.createMember(view.toMember());
         return ResponseEntity
                 .created(URI.create("/members/" + member.getId()))
                 .build();
     }
 
-    @GetMapping("/members")
-    public ResponseEntity<MemberResponse> getMemberByEmail(@RequestParam String email) {
-        Member member = memberService.findMemberByEmail(email);
+    @GetMapping
+    public ResponseEntity<MemberResponse> getMemberByEmail(@LoginMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody UpdateMemberRequest param) {
-        memberService.updateMember(id, param);
+    @PutMapping
+    public ResponseEntity<MemberResponse> updateMember(@LoginMember Member member, @RequestBody UpdateMemberRequest param) {
+        memberService.updateMember(member, param);
+
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    @DeleteMapping
+    public ResponseEntity<MemberResponse> deleteMember(@LoginMember Member member) {
+        memberService.deleteMember(member.getId());
+
         return ResponseEntity.noContent().build();
     }
 }

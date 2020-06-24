@@ -3,11 +3,13 @@ package wooteco.subway;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -40,6 +42,9 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+
+    @Autowired
+    public JwtTokenProvider jwtTokenProvider;
 
     @LocalServerPort
     public int port;
@@ -247,7 +252,7 @@ public class AcceptanceTest {
         addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
     }
 
-    public String createMember(String email, String name, String password) {
+    public String createMember(String email, String name, String password, String token) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("name", name);
@@ -256,10 +261,11 @@ public class AcceptanceTest {
         return
                 given().
                         body(params).
+                        header("Authorization", "Bearer " + token).
                         contentType(MediaType.APPLICATION_JSON_VALUE).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        post("/members").
+                        post("/auth/members").
                         then().
                         log().all().
                         statusCode(HttpStatus.CREATED.value()).
@@ -267,36 +273,41 @@ public class AcceptanceTest {
     }
 
     public MemberResponse getMember(String email) {
+        String token = jwtTokenProvider.createToken(email);
         return
                 given().
+                        header("Authorization", "Bearer " + token).
                         accept(MediaType.APPLICATION_JSON_VALUE).
                         when().
-                        get("/members?email=" + email).
+                        get("/auth/members?email=" + email).
                         then().
                         log().all().
                         statusCode(HttpStatus.OK.value()).
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
+    public void updateMember(String token) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "NEW_" + TEST_USER_NAME);
         params.put("password", "NEW_" + TEST_USER_PASSWORD);
 
         given().
+                header("Authorization", "Bearer " + token).
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                put("/auth/members").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-                delete("/members/" + memberResponse.getId()).
+    public void deleteMember(String token) {
+        given().
+                header("Authorization", "Bearer " + token).
+                when().
+                delete("/auth/members").
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());

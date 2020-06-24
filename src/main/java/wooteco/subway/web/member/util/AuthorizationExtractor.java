@@ -1,11 +1,13 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.util;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+@Primary
 @Component
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
@@ -25,7 +27,6 @@ public class AuthorizationExtractor {
                 return authHeaderValue;
             }
         }
-
         return Strings.EMPTY;
     }
 }
