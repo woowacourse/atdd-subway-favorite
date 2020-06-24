@@ -50,7 +50,12 @@ public class LineStationService {
     }
 
     @Transactional
-    public void deleteLineStationByStationId(Long stationId) {
+    public void deleteLineStationByLineIdAndStationId(Long lindId, Long stationId) {
+        lineStationRepository.deleteByLineIdAndStationId(lindId, stationId);
+    }
+
+    @Transactional
+    public void deleteAllByStationId(Long stationId) {
         lineStationRepository.deleteAllByStationId(stationId);
     }
 

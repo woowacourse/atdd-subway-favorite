@@ -33,7 +33,7 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        lineStationService.deleteLineStationByStationId(id);
+        lineStationService.deleteAllByStationId(id);
         memberService.deleteFavoriteByStationId(id);
         stationRepository.deleteById(id);
     }

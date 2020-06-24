@@ -54,7 +54,7 @@ public class LineService {
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
-        lineStationService.deleteLineStationByStationId(stationId);
+        lineStationService.deleteLineStationByLineIdAndStationId(lineId, stationId);
         line.removeLineStationById(stationId);
         lineRepository.save(line);
     }
