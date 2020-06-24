@@ -1,26 +1,25 @@
 package wooteco.subway.domain.member;
 
-import java.util.Objects;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.relational.core.mapping.Embedded;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import wooteco.subway.domain.BaseEntity;
 import wooteco.subway.domain.member.favorite.Favorite;
 import wooteco.subway.domain.member.favorite.Favorites;
 
-public class Member {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Id
-    private Long id;
+@Entity
+public class Member extends BaseEntity {
     private String email;
     private String name;
     private String password;
 
-    @Embedded.Empty
+    @Embedded
     private Favorites favorites = Favorites.empty();
+
+    protected Member() {
+    }
 
     public Member(String email, String name, String password) {
         this.email = email;
@@ -35,7 +34,6 @@ public class Member {
         this.password = password;
     }
 
-    @PersistenceConstructor
     public Member(final Long id, final String email, final String name, final String password,
         final Favorites favorites) {
         this.id = id;
@@ -84,20 +82,5 @@ public class Member {
 
     public Favorites getFavorites() {
         return favorites;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Member member = (Member)o;
-        return Objects.equals(id, member.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

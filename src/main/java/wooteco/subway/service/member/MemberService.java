@@ -10,6 +10,7 @@ import wooteco.subway.domain.member.LoginEmail;
 import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.member.favorite.Favorite;
+import wooteco.subway.domain.member.favorite.FavoriteRepository;
 import wooteco.subway.domain.member.favorite.Favorites;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
@@ -27,15 +28,18 @@ import wooteco.subway.web.member.exception.MemberException;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private StationRepository stationRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final StationRepository stationRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public MemberService(final MemberRepository memberRepository,
-        final StationRepository stationRepository, final JwtTokenProvider jwtTokenProvider) {
+        final StationRepository stationRepository, final JwtTokenProvider jwtTokenProvider,
+        final FavoriteRepository favoriteRepository) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.favoriteRepository = favoriteRepository;
     }
 
     @Transactional
@@ -101,26 +105,31 @@ public class MemberService {
                 favoriteRequest.getTargetStationId())));
         Station source = stations.extractStationById(favoriteRequest.getSourceStationId());
         Station target = stations.extractStationById(favoriteRequest.getTargetStationId());
-        Favorite favorite = new Favorite(source.getId(), target.getId());
-        member.addFavorite(favorite);
-        memberRepository.save(member);
+        Favorite entity = new Favorite(source, target);
+        Favorite favorite = favoriteRepository.save(entity);
+        favorite.setMember(member);
     }
 
     @Transactional
     public void deleteFavorite(final FavoriteDeleteRequest deleteRequest,
         final LoginEmail loginEmail) {
-        Favorite favorite = new Favorite(deleteRequest.getSourceStationId(),
-            deleteRequest.getTargetStationId());
         Member member = getMember(loginEmail);
+        Favorite favorite = favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(
+            member.getId(), deleteRequest.getSourceStationId(),
+            deleteRequest.getTargetStationId()).orElseThrow(AssertionError::new);
+        favoriteRepository.deleteById(favorite.getId());
         member.removeFavorite(favorite);
-        memberRepository.save(member);
     }
 
     public FavoriteResponses getAllFavorites(final LoginEmail loginEmail) {
         Member member = getMember(loginEmail);
         Favorites favorites = member.getFavorites();
-        Stations stations = new Stations(stationRepository.findAllById(favorites.getStationIds()));
 
-        return FavoriteResponses.of(favorites, stations.toMap());
+        return FavoriteResponses.of(favorites);
+    }
+
+    public void deleteFavoriteByStationId(Long id) {
+        favoriteRepository.deleteAllBySourceStationId(id);
+        favoriteRepository.deleteAllByTargetStationId(id);
     }
 }

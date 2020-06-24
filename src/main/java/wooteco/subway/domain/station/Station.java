@@ -1,16 +1,12 @@
 package wooteco.subway.domain.station;
 
-import java.time.LocalDateTime;
+import javax.persistence.Entity;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
+import wooteco.subway.domain.BaseEntity;
 
-public class Station {
-    @Id
-    private Long id;
+@Entity
+public class Station extends BaseEntity {
     private String name;
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     public Station() {
     }
@@ -24,15 +20,11 @@ public class Station {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
+    public boolean isSame(Long id) {
+        return this.id.equals(id);
     }
 
     public String getName() {
         return name;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 }

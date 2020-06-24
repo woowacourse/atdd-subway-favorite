@@ -22,7 +22,7 @@ import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
 @RestController
 public class LineController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -76,6 +76,7 @@ public class LineController {
     @GetMapping("/lines/detail")
     public ResponseEntity<WholeSubwayResponse> wholeLines() {
         WholeSubwayResponse result = lineService.findLinesWithStations();
+
         return ResponseEntity.ok().body(result);
     }
 }

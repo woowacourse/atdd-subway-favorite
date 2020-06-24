@@ -1,28 +1,25 @@
 package wooteco.subway.domain.line;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Embedded;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 
-public class Line {
-    @Id
-    private Long id;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import wooteco.subway.domain.BaseEntity;
+
+@EntityListeners(AuditingEntityListener.class)
+@Entity
+public class Line extends BaseEntity {
     private String name;
     private LocalTime startTime;
     private LocalTime endTime;
     private int intervalTime;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-    @Embedded.Empty
-    private LineStations stations = LineStations.empty();
+    @Embedded
+    private LineStations lineStations = LineStations.empty();
 
     public Line() {
     }
@@ -54,15 +51,11 @@ public class Line {
     }
 
     public void addLineStation(LineStation lineStation) {
-        stations.add(lineStation);
+        lineStations.add(lineStation);
     }
 
     public void removeLineStationById(Long stationId) {
-        stations.removeById(stationId);
-    }
-
-    public Long getId() {
-        return id;
+        lineStations.removeById(stationId);
     }
 
     public String getName() {
@@ -81,19 +74,11 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
-        return stations.getStations();
+    public LineStations getLineStations() {
+        return lineStations;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public List<Long> getStationIds() {
-        return stations.getStationIds();
+    public List<Long> getLineStationIds() {
+        return lineStations.getLineStationIds();
     }
 }
