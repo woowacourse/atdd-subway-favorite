@@ -1,10 +1,18 @@
 package wooteco.subway.domain.member;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+import org.apache.commons.lang3.StringUtils;
+
+import wooteco.subway.exception.authentication.InvalidAuthenticationException;
+
+@Entity
 public class Member {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String name;
@@ -26,6 +34,25 @@ public class Member {
         this.password = password;
     }
 
+    public void update(String name, String password) {
+        if (StringUtils.isNotBlank(name)) {
+            this.name = name;
+        }
+        if (StringUtils.isNotBlank(password)) {
+            this.password = password;
+        }
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public void validateId(Long id) {
+        if (!this.id.equals(id)) {
+            throw new InvalidAuthenticationException("니 아이디 아니야");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -40,18 +67,5 @@ public class Member {
 
     public String getPassword() {
         return password;
-    }
-
-    public void update(String name, String password) {
-        if (StringUtils.isNotBlank(name)) {
-            this.name = name;
-        }
-        if (StringUtils.isNotBlank(password)) {
-            this.password = password;
-        }
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
     }
 }

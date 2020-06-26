@@ -1,19 +1,24 @@
 package wooteco.subway.service.path;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.path.dto.PathResponse;
-import wooteco.subway.service.station.dto.StationResponse;
+
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.path.PathType;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import wooteco.subway.exception.SourceEqualsTargetException;
+import wooteco.subway.exception.notexist.NoLineStationExistsException;
+import wooteco.subway.exception.notexist.NoPathExistsException;
+import wooteco.subway.exception.notexist.NoStationExistsException;
+import wooteco.subway.service.path.dto.PathResponse;
+import wooteco.subway.service.station.dto.StationResponse;
 
 @Service
 public class PathService {
@@ -29,18 +34,23 @@ public class PathService {
 
     public PathResponse findPath(String source, String target, PathType type) {
         if (Objects.equals(source, target)) {
-            throw new RuntimeException();
+            throw new SourceEqualsTargetException();
         }
 
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = stationRepository.findByName(source).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findByName(target).orElseThrow(RuntimeException::new);
+        Station sourceStation = stationRepository.findByName(source).orElseThrow(NoStationExistsException::new);
+        Station targetStation = stationRepository.findByName(target).orElseThrow(NoStationExistsException::new);
 
         List<Long> path = graphService.findPath(lines, sourceStation.getId(), targetStation.getId(), type);
+
+        if (path.isEmpty()) {
+            throw new NoPathExistsException();
+        }
+
         List<Station> stations = stationRepository.findAllById(path);
 
         List<LineStation> lineStations = lines.stream()
-                .flatMap(it -> it.getStations().stream())
+                .flatMap(it -> it.getStations().getStations().stream())
                 .filter(it -> Objects.nonNull(it.getPreStationId()))
                 .collect(Collectors.toList());
 
@@ -59,7 +69,7 @@ public class PathService {
         return stations.stream()
                 .filter(it -> it.getId() == stationId)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NoStationExistsException::new);
     }
 
     private List<LineStation> extractPathLineStation(List<Long> path, List<LineStation> lineStations) {
@@ -76,7 +86,7 @@ public class PathService {
             LineStation lineStation = lineStations.stream()
                     .filter(it -> it.isLineStationOf(finalPreStationId, stationId))
                     .findFirst()
-                    .orElseThrow(RuntimeException::new);
+                    .orElseThrow(NoLineStationExistsException::new);
 
             paths.add(lineStation);
             preStationId = stationId;

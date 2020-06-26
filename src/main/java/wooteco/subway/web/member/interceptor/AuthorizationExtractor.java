@@ -1,4 +1,4 @@
-package wooteco.subway.web.member;
+package wooteco.subway.web.member.interceptor;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;

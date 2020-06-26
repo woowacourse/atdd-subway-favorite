@@ -1,6 +1,8 @@
-package wooteco.subway;
+package wooteco.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,10 +10,15 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 import wooteco.subway.service.member.dto.MemberResponse;
+import wooteco.subway.service.member.dto.TokenResponse;
+import wooteco.subway.service.member.favorite.dto.AddFavoriteRequest;
+import wooteco.subway.service.member.favorite.dto.FavoriteResponse;
+import wooteco.subway.service.member.favorite.dto.FavoritesResponse;
 import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
@@ -40,6 +47,10 @@ public class AcceptanceTest {
     public static final String TEST_USER_EMAIL = "brown@email.com";
     public static final String TEST_USER_NAME = "브라운";
     public static final String TEST_USER_PASSWORD = "brown";
+
+    public static final String TEST_USER_EMAIL2 = "phobi@email.com";
+    public static final String TEST_USER_NAME2 = "포비";
+    public static final String TEST_USER_PASSWORD2 = "phobi";
 
     @LocalServerPort
     public int port;
@@ -266,10 +277,37 @@ public class AcceptanceTest {
                         extract().header("Location");
     }
 
-    public MemberResponse getMember(String email) {
+    public void failToCreateMember(String email, String name, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        params.put("password", password);
+
+        given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    protected RequestSpecification setAuthorization(Authentication authentication) {
+        TokenResponse tokenResponse = authentication.getTokenResponse();
+
         return
                 given().
+                        cookie("JSESSIONID", authentication.getSessionId()).
+                        header("Authorization", tokenResponse.getTokenType() + " " + tokenResponse.getAccessToken()).
                         accept(MediaType.APPLICATION_JSON_VALUE).
+                        contentType(MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    public MemberResponse getMember(String email, Authentication authentication) {
+        return
+                setAuthorization(authentication).
                         when().
                         get("/members?email=" + email).
                         then().
@@ -278,28 +316,146 @@ public class AcceptanceTest {
                         extract().as(MemberResponse.class);
     }
 
-    public void updateMember(MemberResponse memberResponse) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "NEW_" + TEST_USER_NAME);
-        params.put("password", "NEW_" + TEST_USER_PASSWORD);
+    public ExceptionResponse failToGetMemberByAuthentication(String email, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members?email=" + email).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.UNAUTHORIZED.value()).
+                        extract().as(ExceptionResponse.class);
+    }
 
-        given().
+    public ExceptionResponse failToGetMemberByNotExisting(String email, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members?email=" + email).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.NOT_FOUND.value()).
+                        extract().as(ExceptionResponse.class);
+    }
+
+    public MemberResponse getMemberById(String memberId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members/" + memberId).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().as(MemberResponse.class);
+    }
+
+    public ExceptionResponse failToGetMemberByIdBecauseOfAuthentication(String memberId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members/" + memberId).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.UNAUTHORIZED.value()).
+                        extract().as(ExceptionResponse.class);
+    }
+
+    public void updateMember(String id, Authentication authentication, String newName, String newPassword) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", newName);
+        params.put("password", newPassword);
+
+        setAuthorization(authentication).
                 body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                put("/members/" + memberResponse.getId()).
+                put("/members/" + id).
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value());
     }
 
-    public void deleteMember(MemberResponse memberResponse) {
-        given().when().
-                delete("/members/" + memberResponse.getId()).
+    public void deleteMember(String id, Authentication authentication) {
+        setAuthorization(authentication).
+                when().
+                delete("/members/" + id).
                 then().
                 log().all().
                 statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public Response login(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return given().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members/login");
+    }
+
+    public TokenResponse getTokenResponse(Response response) {
+        return response.
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                and().
+                extract().as(TokenResponse.class);
+    }
+
+    public FavoriteResponse addFavorite(Long memberId, AddFavoriteRequest addFavoriteRequest, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        body(addFavoriteRequest).
+                        when().
+                        post("/members/" + memberId + "/favorites").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.CREATED.value()).
+                        extract().as(FavoriteResponse.class);
+    }
+
+    public void failToAddFavorite(Long memberId, AddFavoriteRequest addFavoriteRequest, Authentication authentication) {
+        setAuthorization(authentication).
+                body(addFavoriteRequest).
+                when().
+                post("/members/" + memberId + "/favorites").
+                then().
+                log().all().
+                statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public FavoritesResponse readFavorite(Long memberId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        get("/members/" + memberId + "/favorites").
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.OK.value()).
+                        extract().
+                        as(FavoritesResponse.class);
+    }
+
+    public void removeFavorite(Long memberId, Long sourceId, Long targetId, Authentication authentication) {
+        setAuthorization(authentication).
+                when().
+                delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value());
+    }
+
+    public ValidatableResponse failToRemoveFavorite(Long memberId, Long sourceId, Long targetId, Authentication authentication) {
+        return
+                setAuthorization(authentication).
+                        when().
+                        delete("/members/" + memberId + "/favorites/source/" + sourceId + "/target/" + targetId).
+                        then().
+                        log().all().
+                        statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
 

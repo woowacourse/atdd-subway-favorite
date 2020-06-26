@@ -1,14 +1,15 @@
 package wooteco.subway.service.path;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.PathType;
-
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class GraphService {
@@ -21,7 +22,7 @@ public class GraphService {
                 .forEach(it -> graph.addVertex(it));
 
         lines.stream()
-                .flatMap(it -> it.getStations().stream())
+                .flatMap(it -> it.getStations().getStations().stream())
                 .filter(it -> Objects.nonNull(it.getPreStationId()))
                 .forEach(it -> graph.setEdgeWeight(graph.addEdge(it.getPreStationId(), it.getStationId()), type.findWeightOf(it)));
 

@@ -1,17 +1,24 @@
 package wooteco.subway.domain.line;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Embedded;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+@Entity
+@Table(name = "line")
 public class Line {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private LocalTime startTime;
@@ -21,13 +28,14 @@ public class Line {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
-    @Embedded.Empty
+    @Embedded
     private LineStations stations = LineStations.empty();
 
     public Line() {
     }
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -58,8 +66,8 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
-        return stations.getStations();
+    public LineStations getStations() {
+        return stations;
     }
 
     public LocalDateTime getCreatedAt() {

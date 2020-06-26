@@ -1,31 +1,35 @@
 package wooteco.subway.service.station;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalTime;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-
-import java.time.LocalTime;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import wooteco.subway.exception.notexist.NoLineExistException;
 
 @SpringBootTest
 @Sql("/truncate.sql")
 public class StationServiceTest {
     @Autowired
     private StationService stationService;
-
     @Autowired
     private StationRepository stationRepository;
     @Autowired
     private LineRepository lineRepository;
 
+    @Transactional
     @Test
     public void removeStation() {
         Station station1 = stationRepository.save(new Station("강남역"));
@@ -41,7 +45,7 @@ public class StationServiceTest {
         Optional<Station> resultStation = stationRepository.findById(station1.getId());
         assertThat(resultStation).isEmpty();
 
-        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(RuntimeException::new);
-        assertThat(resultLine.getStations()).hasSize(1);
+        Line resultLine = lineRepository.findById(line.getId()).orElseThrow(NoLineExistException::new);
+        assertThat(resultLine.getStations().getStations()).hasSize(1);
     }
 }

@@ -1,16 +1,20 @@
 package wooteco.subway.acceptance.line;
 
+import static org.assertj.core.api.Assertions.*;
+
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.AcceptanceTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineStationAcceptanceTest extends AcceptanceTest {
 
+    @Transactional
     @DisplayName("지하철 노선에서 지하철역 추가 / 제외")
     @Test
     void manageLineStation() {
@@ -30,6 +34,6 @@ public class LineStationAcceptanceTest extends AcceptanceTest {
         removeLineStation(lineResponse.getId(), stationResponse2.getId());
 
         LineDetailResponse lineResponseAfterRemoveLineStation = getLine(lineResponse.getId());
-        assertThat(lineResponseAfterRemoveLineStation.getStations().size()).isEqualTo(2);
+        assertThat(lineResponseAfterRemoveLineStation.getStations()).hasSize(2);
     }
 }

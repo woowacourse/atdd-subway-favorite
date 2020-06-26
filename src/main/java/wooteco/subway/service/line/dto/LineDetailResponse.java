@@ -1,8 +1,8 @@
 package wooteco.subway.service.line.dto;
 
-import wooteco.subway.service.station.dto.StationResponse;
-import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

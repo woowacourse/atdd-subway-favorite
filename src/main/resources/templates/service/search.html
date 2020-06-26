@@ -1,67 +1,70 @@
 <!DOCTYPE html>
 <html lang="kr">
 <head>
-  <meta charset="UTF-8" />
-  <title>RunningMap</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-  <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
-  <link href="/service/css/app.css" rel="stylesheet" />
-  <link href="/service/css/search.css" rel="stylesheet" />
+    <meta charset="UTF-8"/>
+    <title>RunningMap</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"/>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet"/>
+    <link href="/service/css/app.css" rel="stylesheet"/>
+    <link href="/service/css/search.css" rel="stylesheet"/>
 </head>
 <body class="bg-gray-200 h-screen">
 <div class="flex justify-center items-center flex-col app-container md:py-10 lg:py-10 relative">
-  <div class="max-w-sm w-full lg:width-350px rounded bg-white shadow-lg px-6 pt-6 pb-2">
-    <div class="font-bold text-xl mb-4 text-center">지하철 경로 검색</div>
-    <form class="bg-white mb-4">
-      <div class="flex flex-wrap mb-3">
-        <div class="w-5/12 h-12 text-center text-gray-800">
-          <input
-                  class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
-                  id="departure-station-name"
-                  type="text"
-                  value=""
-                  placeholder="출발역"
-          />
-        </div>
+    <div class="max-w-sm w-full lg:width-350px rounded bg-white shadow-lg px-6 pt-6 pb-2">
+        <div class="font-bold text-xl mb-4 text-center">지하철 경로 검색</div>
+        <form class="bg-white mb-4">
+            <div class="flex flex-wrap mb-3">
+                <div class="w-5/12 h-12 text-center text-gray-800">
+                    <input
+                            class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+                            id="departure-station-name"
+                            type="text"
+                            value=""
+                            placeholder="출발역"
+                    />
+                </div>
 
-        <div class="w-2/12 h-12 text-center text-gray-800 flex justify-center items-center">
-          <span class="mdi mdi-arrow-right-thick relative bottom-6px text-lg"></span>
-        </div>
-        <div class="w-5/12 h-12 text-center text-gray-800">
-          <input
-                  class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
-                  id="arrival-station-name"
-                  type="text"
-                  value=""
-                  placeholder="도착역"
-          />
-        </div>
-      </div>
-      <button type="submit" id="search-button" class="w-full text-sm bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-bold py-2 px-4 rounded-sm">
-        검색
-      </button>
-    </form>
-  </div>
+                <div class="w-2/12 h-12 text-center text-gray-800 flex justify-center items-center">
+                    <span class="mdi mdi-arrow-right-thick relative bottom-6px text-lg"></span>
+                </div>
+                <div class="w-5/12 h-12 text-center text-gray-800">
+                    <input
+                            class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+                            id="arrival-station-name"
+                            type="text"
+                            value=""
+                            placeholder="도착역"
+                    />
+                </div>
+            </div>
+            <button type="submit" id="search-button"
+                    class="w-full text-sm bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-bold py-2 px-4 rounded-sm">
+                검색
+            </button>
+        </form>
+    </div>
 
-  <div id="search-result-container" class="max-w-sm w-full lg:width-350px rounded bg-white shadow-lg p-6 relative border top hidden">
-    <button
-            id="favorite-button"
-            class="favorite-button bg-yellow-500 mdi mdi-star-outline absolute text-white bg-transparent d-inline-block font-semibold py-2 px-3 hover:border-transparent rounded-full z-10"
-    >
-    </button>
-    <ul class="flex border-b w-full">
-      <li id="shortest-distance-tab" class="-mb-px w-2/4 active-tab tab-menu">
-        <a class="w-full text-center inline-block py-2 px-4 font-semibold" href="#">최단거리</a>
-      </li>
-      <li id="minimum-time-tab" class="-mb-px w-2/4 tab-menu">
-        <a class="w-full text-center bg-white inline-block py-2 px-4 font-semibold" href="#"
-        >최소시간</a
+    <div id="search-result-container"
+         class="max-w-sm w-full lg:width-350px rounded bg-white shadow-lg p-6 relative border top hidden">
+        <button
+                id="favorite-button"
+                class="favorite-button bg-yellow-500 mdi mdi-star-outline absolute text-white bg-transparent d-inline-block font-semibold py-2 px-3 hover:border-transparent rounded-full z-10"
         >
-      </li>
-    </ul>
-    <div id="search-result"></div>
-  </div>
+        </button>
+        <ul class="flex border-b w-full">
+            <li id="shortest-distance-tab" class="-mb-px w-2/4 active-tab tab-menu">
+                <a class="w-full text-center inline-block py-2 px-4 font-semibold" href="#">최단거리</a>
+            </li>
+            <li id="minimum-time-tab" class="-mb-px w-2/4 tab-menu">
+                <a class="w-full text-center bg-white inline-block py-2 px-4 font-semibold" href="#"
+                >최소시간</a
+                >
+            </li>
+        </ul>
+        <div id="search-result"></div>
+    </div>
 </div>
 </div>
 

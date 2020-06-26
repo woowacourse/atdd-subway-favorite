@@ -19,22 +19,27 @@ public class PageController {
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
+        return "service/index";
+    }
+
+    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
+    public String adminIndex() {
         return "admin/index";
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin/stations", produces = MediaType.TEXT_HTML_VALUE)
     public String stationPage(Model model) {
         model.addAttribute("stations", stationService.findStations());
         return "admin/admin-station";
     }
 
-    @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin/lines", produces = MediaType.TEXT_HTML_VALUE)
     public String linePage(Model model) {
         model.addAttribute("lines", lineService.findLines());
         return "admin/admin-line";
     }
 
-    @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/admin/edges", produces = MediaType.TEXT_HTML_VALUE)
     public String edgePage() {
         return "admin/admin-edge";
     }
@@ -57,6 +62,16 @@ public class PageController {
     @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
     public String loginPage() {
         return "service/login";
+    }
+
+    @GetMapping(value = "/my-page", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPage() {
+        return "service/mypage";
+    }
+
+    @GetMapping(value = "/my-page-edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String myPageEdit() {
+        return "service/mypage-edit";
     }
 
     @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)

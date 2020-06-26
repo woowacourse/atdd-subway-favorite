@@ -7,16 +7,80 @@ endif::[]
 :toc: left
 :toclevels: 2
 :sectlinks:
-:operation-http-request-title: Example Request
-:operation-http-response-title: Example Response
+:operation-http-request-title: 요청 예시
+:operation-request-fields-title: 요청 JSON 데이터
+:operation-http-response-title: 응답 예시
+:operation-request-parameters-title: 요청 파라미터 데이터
+:operation-path-parameters-title: 요청 Path 데이터
 
 [[resources]]
-= Resources
+= 자원
+
+[[resources-authorization]]
+== 인가
+
+[[resources-authorization-authorize_fail_token]]
+=== 인가 실패 (토큰)
+
+operation::authorization/authorize_fail_token[snippets='http-request,http-response']
+
+[[resources-authorization-authorize_fail_session]]
+=== 인가 실패 (세션)
+
+operation::authorization/authorize_fail_session[snippets='http-request,http-response']
 
 [[resources-members]]
-== Member
+== 멤버
 
 [[resources-members-create]]
 === 회원 가입
 
-operation::members/create[snippets='http-request,http-response']
+operation::members/create[snippets='http-request,request-fields,http-response']
+
+[[resources-members-create_fail_weired_email]]
+=== 회원 가입 실패 (이상한 이메일)
+
+operation::members/create_fail_weired_email[snippets='http-request,http-response']
+
+[[resources-members-create_fail_duplicated_email]]
+=== 회원 가입 실패 (중복된 이메일)
+
+operation::members/create_fail_duplicated_email[snippets='http-request,http-response']
+
+[[resources-members-read]]
+=== 회원 정보 조회
+
+operation::members/read[snippets='http-request,request-parameters,http-response']
+
+[[resources-members-read_fail_email]]
+=== 회원 정보 조회 실패 (이메일)
+
+operation::members/read_fail_email[snippets='http-request,http-response']
+
+[[resources-members-update]]
+=== 회원 정보 수정
+
+operation::members/update[snippets='http-request,request-fields,path-parameters,http-response']
+
+[[resources-members-delete]]
+=== 회원 정보 삭제
+
+operation::members/delete[snippets='http-request,path-parameters,http-response']
+
+[[resources-favorites]]
+== 즐겨찾기
+
+[[resources-favorites-add]]
+=== 즐겨찾기 추가
+
+operation::favorites/add[snippets='http-request,path-parameters,request-fields,http-response']
+
+[[resources-favorites-read]]
+=== 즐겨찾기 조회
+
+operation::favorites/read[snippets='http-request,path-parameters,http-response']
+
+[[resources-favorites-delete]]
+=== 즐겨찾기 삭제
+
+operation::favorites/delete[snippets='http-request,path-parameters,http-response']

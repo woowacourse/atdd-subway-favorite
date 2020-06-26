@@ -1,22 +1,29 @@
 package wooteco.subway.domain.station;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@DataJdbcTest
+@DataJpaTest
 public class StationRepositoryTest {
     @Autowired
-    private StationRepository stationRepository;
+    private StationRepository stations;
 
     @Test
-    void saveStation() {
+    void save() {
         String stationName = "강남역";
-        stationRepository.save(new Station(stationName));
+        Station station = stations.save(new Station(stationName));
 
-        assertThrows(DbActionExecutionException.class, () -> stationRepository.save(new Station(stationName)));
+        assertThat(station.getName()).isEqualTo(stationName);
+        assertThat(station.getId()).isNotNull();
+    }
+
+    @Test
+    void findByName() {
+        Station station = stations.findByName("테스트역1").get();
+
+        assertThat(station.getName()).isEqualTo("테스트역1");
     }
 }

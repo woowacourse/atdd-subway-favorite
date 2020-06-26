@@ -1,11 +1,14 @@
 package wooteco.subway.service.station;
 
+import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
-import wooteco.subway.service.line.LineStationService;
+
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-
-import java.util.List;
+import wooteco.subway.service.line.LineStationService;
 
 @Service
 public class StationService {
@@ -25,6 +28,7 @@ public class StationService {
         return stationRepository.findAll();
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         lineStationService.deleteLineStationByStationId(id);
         stationRepository.deleteById(id);
