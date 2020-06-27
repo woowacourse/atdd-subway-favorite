@@ -7,7 +7,8 @@ import wooteco.subway.domain.member.Member;
 import wooteco.subway.domain.member.MemberRepository;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.exception.CommonException;
+import wooteco.subway.exception.InvalidPasswordException;
+import wooteco.subway.exception.NotExistException;
 import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.*;
 
@@ -32,7 +33,7 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()-> new CommonException(HttpStatus.BAD_REQUEST, "Not exist member id = " + id));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member id = %d", id)));
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -43,9 +44,9 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(()-> new CommonException(HttpStatus.BAD_REQUEST, "Not exist member email = " + param.getEmail()));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member email = %s", param.getEmail())));
         if (!member.checkPassword(param.getPassword())) {
-            throw new CommonException(HttpStatus.UNAUTHORIZED, "잘못된 패스워드");
+            throw new InvalidPasswordException("Invalid password");
         }
 
         return jwtTokenProvider.createToken(member.getId() + ":" + param.getEmail());
@@ -53,7 +54,7 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(()-> new CommonException(HttpStatus.BAD_REQUEST, "Not exist member email = " + email));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member email = %s", email)));
     }
 
     public boolean loginWithForm(String email, String password) {
@@ -63,7 +64,7 @@ public class MemberService {
 
     public MemberFavoriteResponse findFavorites(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()-> new CommonException(HttpStatus.BAD_REQUEST, "Not exist member id = " + id));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member id = %d", id)));
 
         Set<Favorite> favorites = member.getFavorites();
         Set<Long> stationIds = new HashSet<>();
@@ -90,7 +91,7 @@ public class MemberService {
 
     public void addFavorite(Long id, FavoriteCreateRequest favoriteCreateRequest) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()-> new CommonException(HttpStatus.BAD_REQUEST, "Not exist member id = " + id));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member id = %d", id)));
         member.addFavorite(new Favorite(favoriteCreateRequest.getStartStationId(),
                 favoriteCreateRequest.getEndStationId()));
         memberRepository.save(member);
@@ -99,7 +100,7 @@ public class MemberService {
 
     public void deleteFavoriteById(Long memberId, Long favoriteId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new CommonException(HttpStatus.BAD_REQUEST, "Not exist member id = " + memberId));
+                .orElseThrow(()-> new NotExistException("Not exist member id = " + memberId));
         member.removeFavorite(favoriteId);
         memberRepository.save(member);
     }
