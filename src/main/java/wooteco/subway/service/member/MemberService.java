@@ -33,7 +33,7 @@ public class MemberService {
 
     public void updateMember(Long id, UpdateMemberRequest param) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()-> new NotExistException("Not exist member id = " + id));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member id = %d", id)));
         member.update(param.getName(), param.getPassword());
         memberRepository.save(member);
     }
@@ -44,7 +44,7 @@ public class MemberService {
 
     public String createToken(LoginRequest param) {
         Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(()-> new NotExistException("Not exist member email = " + param.getEmail()));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member email = %s", param.getEmail())));
         if (!member.checkPassword(param.getPassword())) {
             throw new InvalidPasswordException("Invalid password");
         }
@@ -54,7 +54,7 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(()-> new NotExistException("Not exist member email = " + email));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member email = %s", email)));
     }
 
     public boolean loginWithForm(String email, String password) {
@@ -64,7 +64,7 @@ public class MemberService {
 
     public MemberFavoriteResponse findFavorites(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()-> new NotExistException("Not exist member id = " + id));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member id = %d", id)));
 
         Set<Favorite> favorites = member.getFavorites();
         Set<Long> stationIds = new HashSet<>();
@@ -91,7 +91,7 @@ public class MemberService {
 
     public void addFavorite(Long id, FavoriteCreateRequest favoriteCreateRequest) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()-> new NotExistException("Not exist member id = " + id));
+                .orElseThrow(()-> new NotExistException(String.format("Not exist member id = %d", id)));
         member.addFavorite(new Favorite(favoriteCreateRequest.getStartStationId(),
                 favoriteCreateRequest.getEndStationId()));
         memberRepository.save(member);
